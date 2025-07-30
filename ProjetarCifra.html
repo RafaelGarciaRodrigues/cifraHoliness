@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Projeção de Músicas</title>
+
+  <style>
+    body {
+      margin: 0;
+      background-color: black;
+      color: white;
+      font-family: 'Arial', sans-serif;
+      overflow: hidden;
+    }
+
+	#seletor {
+	  position: relative;
+	  top: 0;
+	  left: 0;
+	}
+
+    select {
+      font-size: 18px;
+      padding: 5px;
+    }
+
+	#container {
+	  position: absolute;
+	  top: 0;
+	  left: 0;
+	  right: 0;
+	  bottom: 0;
+	  overflow: hidden;
+	  display: flex;
+	  align-items: center;
+	  justify-content: center;
+	  padding: 60px;
+	  box-sizing: border-box;
+	}
+
+	#letraWrapper {
+	  position: relative;
+	  width: 100%;
+	  height: 100%;
+	  overflow: hidden;
+	}
+
+	#letra {
+	  position: absolute;
+	  top: 100%;
+	  white-space: pre-wrap;
+	  text-align: left;
+	  font-size: 2em;
+	  line-height: 1.5em;
+	}
+
+    musica {
+      display: none;
+    }
+	
+	#layout {
+	  display: flex;
+	  height: 100vh;
+	  width: 100vw;
+	}
+	
+	#colunaEsquerda {
+	  width: 300px; /* ou ajuste como quiser */
+	  background-color: #111;
+	  padding: 20px;
+	  box-sizing: border-box;
+	  border-right: 1px solid #444;
+	}
+
+	#colunaDireita {
+	  flex: 1;
+	  position: relative;
+	}
+
+	.tituloMusica {
+	  font-size: 1.25em;
+	  font-weight: bold;
+	  text-align: left;
+	  margin-bottom: 0.5em;
+	}
+
+	.introTexto {
+	  text-align: left;
+	}
+
+	.cifraTexto {
+	  text-align: left;
+	}
+
+
+  </style>
+</head>
+<body>
+
+
+  <div id="layout">
+    <div id="colunaEsquerda">
+      <div id="seletor">
+        <select id="listaMusicas">
+          <option>Selecione uma música</option>
+        </select>
+      </div>
+    </div>
+    <div id="colunaDireita">
+      <div id="container">
+        <div id="letraWrapper">
+          <div id="letra"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+<!-- MÚSICAS -->
+<musica>
+	<nome>A Alegria Está No Coração</nome>
+	<tom>C</tom>
+	<tempo>115</tempo>
+	<rolagem>125</rolagem>
+	<delay>2</delay>
+	<intro>
+C F C D7 G 
+C C7 F G C G C F C F
+	</intro>
+	<cifra>
+C          
+A alegria está no coração
+     F                  C  A# F
+De quem já conhece a Jesus
+C             
+A verdadeira paz só tem aquele
+     D7             G
+Que já conhece a Jesus
+
+[Refrão]
+
+C                   C7
+O sentimento mais precioso
+     F               G#
+Que vem do nosso Senhor
+      C          G       
+É o amor que só tem quem
+                C  A# F  
+Já conhece a Jesus
+
+[Primeira Parte]
+
+C            
+A alegria está no coração
+     F                  C  A# F
+De quem já conhece a Jesus
+C             
+A verdadeira paz só tem aquele
+     D7             G
+Que já conhece a Jesus
+
+[Refrão]
+
+C                   C7
+O sentimento mais precioso
+     F               G#
+Que vem do nosso Senhor
+      C          G       
+É o amor que só tem quem
+                C  G
+Já conhece a Jesus
+
+[Ponte]
+
+         C           
+Posso pisar numa tropa
+      C7
+E saltar as muralhas
+    F        G#
+Aleluia! Aleluia!
+         C           
+Posso pisar numa tropa
+      C7
+E saltar as muralhas
+    F        G#
+Aleluia! Aleluia!
+
+  C                 C7
+E Ele é a rocha da minha salvação
+    F                G#
+Com Ele não há mais condenação
+         C      
+Posso pisar numa tropa
+   G
+E saltar as muralhas
+    C    G
+Aleluia! 
+
+    C        F  C
+Aleluia! Alelui_a!
+             D7  G
+Aleluia! Alelui__a!
+    C        F  C
+Aleluia! Alelui_a!
+             D7  G
+Aleluia! Alelui__a!
+
+[Refrão]
+
+C
+O sentimento mais precioso
+     F               G#
+Que vem do nosso Senhor
+      C          G 
+É o amor que só tem quem
+                C  G
+Já conhece a Jesus
+      C          G      
+É o amor que só tem quem
+                A# F
+Já conhece a Jesus
+      C          G 
+É o amor que só tem quem
+                C  
+Já conhece a Jesus
+    </cifra>
+  </musica>
+  
+  
+  
+<musica>
+	<nome>Bondade de Deus</nome>
+	<tom>A</tom>
+	<tempo>115</tempo>
+	<rolagem>30</rolagem>
+	<delay>5</delay>
+	<intro></intro>
+	<cifra>
+[Intro] A  A4  A  A4
+
+[Primeira Parte]
+
+         A
+Te amo, Deus
+      D7M/A      A
+Tua graça nunca falha
+   E/G#   F#m7
+Todos os dias
+      D7M/A       E6
+Eu estou em Tuas mãos
+                   F#m7 D7M/A
+Desde quando me levanto
+        A     E/G# F#m7
+Até eu me deitar
+         D7M/A     E6      A
+Eu cantarei da bondade de Deus
+
+[Refrão]
+
+D7M/A                  A
+      És fiel em todo tempo
+D7M/A                      A        E6
+      Em todo tempo Tu és tão, tão bom
+D7M/A                      F#m7
+      Com todo fôlego que tenho
+         D7M/A     E6      A
+Eu cantarei da bondade de Deus
+
+[Segunda Parte]
+
+          A
+Tua doce voz
+         D7M/A          A
+Que me guia em meio ao fogo
+      E/G# F#m7
+Na escuri_dão
+        D7M/A       E6
+Tua presença me conforta
+                F#m7 D7M/A
+Sei que és meu Pai
+      A   E/G# F#m7
+Que amigo és
+      D7M/A  E       A
+Vivo na bon_dade de Deus
+
+[Refrão]
+
+D7M/A                  A
+      És fiel em todo tempo
+D7M/A                      A        E6
+      Em todo tempo Tu és tão, tão bom
+D7M/A                      F#m7
+      Com todo fôlego que tenho
+         D7M/A     E6      A
+Eu cantarei da bondade de Deus
+
+D7M/A                  A
+      És fiel em todo tempo
+D7M/A                      A        E6
+      Em todo tempo Tu és tão, tão bom
+D7M/A                      F#m7
+      Com todo fôlego que tenho
+         D7M/A     E6      A
+Eu cantarei da bondade de Deus
+
+( A9  A  A4 )
+( A  A9  A  A4 )
+
+[Ponte]
+
+A/C#                D7M/A                
+    Tua bondade me seguirá
+    E6         A
+Me seguirá Senhor
+A/C#                D7M/A
+    Tua bondade me seguirá
+    E6         A
+Me seguirá Senhor
+
+       A/C#           D7M/A               
+Eu me rendo a Ti, te dou o meu ser
+    E6          F#m7
+Entrego tudo a Ti
+A/C#                D7M/A
+    Tua bondade me seguirá
+    E6         A
+Me seguirá Senhor
+
+A/C#                D7M/A
+    Tua bondade me seguirá
+    E6         A
+Me seguirá Senhor
+A/C#                D7M/A
+    Tua bondade me seguirá
+    E6         A
+Me seguirá Senhor
+
+       A/C#           D7M/A               
+Eu me rendo a Ti, te dou o meu ser
+    E6          F#m7
+Entrego tudo a Ti
+A/C#                D7M/A
+    Tua bondade me seguirá
+    E6         A    
+Me seguirá Senhor
+
+[Refrão Final]
+
+D7M/A                  A
+      És fiel em todo tempo
+D7M/A                      A        E6
+      Em todo tempo Tu és tão, tão bom
+D7M/A                      F#m7
+      Com todo fôlego que tenho
+         D7M/A     E6      A
+Eu cantarei da bondade de Deus
+
+D7M/A                  A
+      És fiel em todo tempo
+D7M/A                      A        E6
+      Em todo tempo Tu és tão, tão bom
+D7M/A                      F#m7
+      Com todo fôlego que tenho
+         D7M/A     E6      A
+Eu cantarei da bondade de Deus
+</cifra>
+</musica>
+
+
+<musica>
+	<nome>Grande É o Senhor</nome>
+	<tom>D</tom>
+	<tempo>115</tempo>
+	<rolagem>200</rolagem>
+	<delay>2</delay>
+	<intro>
+G  F#m7 Em7  D/F#  
+G  F#m7 Em7  
+	</intro>
+	<cifra>
+
+
+  D           
+Grande 
+       G/D
+é o Senhor
+                   D
+E mui digno de louvor
+
+
+      G/D
+Na cidade do nosso Deus
+     A/C#  Bm7
+Seu Santo monte
+
+
+
+A/C# D               Em7  F#m7 G7M  A4
+     Alegria de toda ter - ra - a - a
+
+
+
+[Segunda Parte]
+
+
+  D           
+Grande 
+       G/D
+é o Senhor
+                       D
+Em quem nós temos a vitória 
+
+       G/D
+E que nos ajuda
+             Bm
+Contra o inimigo
+
+
+A/C#    D9
+    Por isso diante
+              Em7  F#m7 G7M  A4
+Dele nos prostramos
+
+
+
+[Refrão]
+
+    D
+Queremos o Teu
+             D7M
+Nome engrandecer
+
+
+G7M
+E agradecer-Te
+D/F#      Em7             A
+Por Tua obra em nossas vidas
+
+     D
+Confiamos em Teu
+           D7M
+Infinito amor
+
+
+      G7M                D/F#
+Pois só Tu és o Deus eterno
+
+Em7        A4
+Sobre toda terra e céus
+
+[Interlúdio]
+
+
+
+
+
+
+( G  D/F# Em7  D/F# )
+
+
+
+
+
+( G  F#m7 Em7 )
+
+
+
+
+
+  D           
+Grande 
+       G/D
+é o Senhor
+                       D
+Em quem nós temos a vitória
+
+
+       G/D
+E que nos ajuda
+        A/C# Bm7
+Contra o inimigo
+
+
+A/C#    D9
+    Por isso diante
+           Em7  F#m7 G7M  A4(7/9)
+Dele nos prostramos
+
+
+
+
+[Refrão]
+
+    D
+Queremos o Teu
+            D7M
+Nome engrandecer
+
+
+G7M
+E agradecer-Te
+D/F#        Em7             A4
+    Por Tua obra em nossas vidas
+	
+	
+
+     D
+Confiamos em Teu
+           D7M
+Infinito amor
+
+
+      G7M                 D/F#      
+Pois só Tu és o Deus eterno
+ Em7        A4
+Sobre toda terra
+
+    D
+Queremos o Teu
+            D7M
+Nome engrandecer
+
+
+G7M
+E agradecer-Te
+D/F#        Em7             A4
+    Por Tua obra em nossas vidas
+	
+	
+
+     D
+Confiamos em Teu
+           D7M
+Infinito amor
+
+
+      G7M                 D/F#      
+Pois só Tu és o Deus eterno
+
+ Em7        A4      D9
+Sobre toda terra e céus
+
+	</cifra>
+</musica>
+
+
+
+
+<musica>
+	<nome></nome>
+	<tom></tom>
+	<tempo>115</tempo>
+	<rolagem>125</rolagem>
+	<delay>2</delay>
+	<intro>
+
+	</intro>
+	<cifra>
+
+</cifra>
+</musica>
+  
+
+<script>
+  const select = document.getElementById('listaMusicas');
+  const letraDiv = document.getElementById('letra');
+  const musicas = document.querySelectorAll('musica');
+
+  let scrollInterval;
+
+  // Preencher o seletor com nomes das músicas
+  musicas.forEach((musica, index) => {
+    const nome = musica.querySelector('nome').textContent.trim();
+    if (nome) {
+      const option = document.createElement('option');
+      option.value = index;
+      option.textContent = nome;
+      select.appendChild(option);
+    }
+  });
+
+  select.addEventListener('change', () => {
+    clearInterval(scrollInterval);
+
+    const index = select.value;
+    if (index === "Selecione uma música") return;
+
+    const musica = musicas[index];
+    const nome = musica.querySelector('nome')?.textContent.trim() || '';
+    const intro = musica.querySelector('intro')?.textContent.trim() || '';
+    const cifra = musica.querySelector('cifra')?.textContent.trim() || '';
+    const rolagem = parseFloat(musica.querySelector('rolagem')?.textContent) || 30;
+    const delay = parseFloat(musica.querySelector('delay')?.textContent) || 0;
+
+    const nomeHTML = `<div class="tituloMusica">${nome}</div>`;
+    const introHTML = `<div class="introTexto">${intro.replace(/\n/g, "<br>")}</div>`;
+    const cifraHTML = `<div class="cifraTexto">${cifra.replace(/\n/g, "<br>")}</div>`;
+
+    // Mostra nome + intro no centro da tela
+    letraDiv.innerHTML = nomeHTML + introHTML;
+    letraDiv.style.transition = 'none';
+    letraDiv.style.transform = 'none';
+
+    const alturaWrapper = document.getElementById('letraWrapper').offsetHeight;
+    const alturaNomeIntro = medirAlturaHTML(letraDiv.innerHTML);
+
+    const topInicial = (alturaWrapper / 2) - (alturaNomeIntro / 2);
+    letraDiv.style.top = `${topInicial}px`;
+
+    // Após o delay, rola o bloco nome + intro + cifra
+    setTimeout(() => {
+      letraDiv.innerHTML = nomeHTML + introHTML + "<br><br>" + cifraHTML;
+      letraDiv.style.top = `${topInicial}px`;
+
+      setTimeout(() => {
+        const alturaTexto = letraDiv.scrollHeight;
+        const distancia = alturaTexto + topInicial;
+        const pixelsPorSegundo = distancia / rolagem;
+        let pos = topInicial;
+
+        scrollInterval = setInterval(() => {
+          pos -= pixelsPorSegundo / 30;
+          letraDiv.style.top = pos + "px";
+          if (pos + alturaTexto < 0) {
+            clearInterval(scrollInterval);
+          }
+        }, 1000 / 30);
+      }, 50);
+    }, delay * 1000);
+  });
+
+  // Mede a altura de um HTML com o mesmo estilo de letraDiv
+  function medirAlturaHTML(html) {
+    const temp = document.createElement('div');
+    temp.style.position = 'absolute';
+    temp.style.visibility = 'hidden';
+    temp.style.whiteSpace = 'pre-wrap';
+    temp.style.fontSize = '2em';
+    temp.style.lineHeight = '1.5em';
+    temp.style.width = '80%';
+    temp.style.fontFamily = 'Arial, sans-serif';
+    temp.style.textAlign = 'left';
+    temp.innerHTML = html;
+    document.body.appendChild(temp);
+    const altura = temp.scrollHeight;
+    document.body.removeChild(temp);
+    return altura;
+  }
+</script>
+
+
+
+
+
+  
+  
+</body>
+</html>
