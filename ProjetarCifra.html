@@ -1,119 +1,3 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <title>Projeção de Músicas</title>
-
-  <style>
-    body {
-      margin: 0;
-      background-color: black;
-      color: white;
-      font-family: 'Arial', sans-serif;
-      overflow: hidden;
-    }
-
-	#seletor {
-	  position: relative;
-	  top: 0;
-	  left: 0;
-	}
-
-    select {
-      font-size: 18px;
-      padding: 5px;
-    }
-
-	#container {
-	  position: absolute;
-	  top: 0;
-	  left: 0;
-	  right: 0;
-	  bottom: 0;
-	  overflow: hidden;
-	  display: flex;
-	  align-items: center;
-	  justify-content: center;
-	  padding: 60px;
-	  box-sizing: border-box;
-	}
-
-	#letraWrapper {
-	  position: relative;
-	  width: 100%;
-	  height: 100%;
-	  overflow: hidden;
-	}
-
-	#letra {
-	  position: absolute;
-	  top: 100%;
-	  white-space: pre-wrap;
-	  text-align: left;
-	  font-size: 2em;
-	  line-height: 1.5em;
-	}
-
-    musica {
-      display: none;
-    }
-	
-	#layout {
-	  display: flex;
-	  height: 100vh;
-	  width: 100vw;
-	}
-	
-	#colunaEsquerda {
-	  width: 300px; /* ou ajuste como quiser */
-	  background-color: #111;
-	  padding: 20px;
-	  box-sizing: border-box;
-	  border-right: 1px solid #444;
-	}
-
-	#colunaDireita {
-	  flex: 1;
-	  position: relative;
-	}
-
-	.tituloMusica {
-	  font-size: 1.25em;
-	  font-weight: bold;
-	  text-align: left;
-	  margin-bottom: 0.5em;
-	}
-
-	.introTexto {
-	  text-align: left;
-	}
-
-	.cifraTexto {
-	  text-align: left;
-	}
-
-
-  </style>
-</head>
-<body>
-
-
-  <div id="layout">
-    <div id="colunaEsquerda">
-      <div id="seletor">
-        <select id="listaMusicas">
-          <option>Selecione uma música</option>
-        </select>
-      </div>
-    </div>
-    <div id="colunaDireita">
-      <div id="container">
-        <div id="letraWrapper">
-          <div id="letra"></div>
-        </div>
-      </div>
-    </div>
-  </div>
 
 
 
@@ -123,9 +7,9 @@
 <musica>
 	<nome>A Alegria Está No Coração</nome>
 	<tom>C</tom>
-	<tempo>115</tempo>
-	<rolagem>125</rolagem>
-	<delay>2</delay>
+	<tempo>130</tempo>
+	<rolagem>120</rolagem>
+	<delay>0</delay>
 	<intro>
 C F C D7 G 
 C C7 F G C G C F C F
@@ -135,45 +19,51 @@ C
 A alegria está no coração
      F                  C  A# F
 De quem já conhece a Jesus
+
 C             
 A verdadeira paz só tem aquele
      D7             G
 Que já conhece a Jesus
 
-[Refrão]
+
+
 
 C                   C7
 O sentimento mais precioso
      F               G#
 Que vem do nosso Senhor
+
       C          G       
 É o amor que só tem quem
                 C  A# F  
 Já conhece a Jesus
 
-[Primeira Parte]
 
-C            
+
+C          
 A alegria está no coração
      F                  C  A# F
 De quem já conhece a Jesus
+
 C             
 A verdadeira paz só tem aquele
      D7             G
 Que já conhece a Jesus
 
-[Refrão]
+
+
 
 C                   C7
 O sentimento mais precioso
      F               G#
 Que vem do nosso Senhor
+
       C          G       
 É o amor que só tem quem
-                C  G
+                C  A# F  
 Já conhece a Jesus
 
-[Ponte]
+
 
          C           
 Posso pisar numa tropa
@@ -199,16 +89,22 @@ E saltar as muralhas
     C    G
 Aleluia! 
 
+
     C        F  C
 Aleluia! Alelui_a!
-             D7  G
-Aleluia! Alelui__a!
-    C        F  C
-Aleluia! Alelui_a!
+
+
              D7  G
 Aleluia! Alelui__a!
 
-[Refrão]
+
+    C        F  C
+Aleluia! Alelui_a!
+
+
+             D7  G
+Aleluia! Alelui__a!
+
 
 C
 O sentimento mais precioso
@@ -226,6 +122,11 @@ Já conhece a Jesus
 É o amor que só tem quem
                 C  
 Já conhece a Jesus
+
+
+C F C D7 G 
+
+
     </cifra>
   </musica>
   
@@ -235,22 +136,23 @@ Já conhece a Jesus
 	<nome>Bondade de Deus</nome>
 	<tom>A</tom>
 	<tempo>115</tempo>
-	<rolagem>30</rolagem>
-	<delay>5</delay>
-	<intro></intro>
+	<rolagem>240</rolagem>
+	<delay>0</delay>
+	<intro>
+ A  A4  A  A4
+	</intro>
 	<cifra>
-[Intro] A  A4  A  A4
-
-[Primeira Parte]
-
          A
 Te amo, Deus
+
       D7M/A      A
 Tua graça nunca falha
+
    E/G#   F#m7
 Todos os dias
       D7M/A       E6
 Eu estou em Tuas mãos
+
                    F#m7 D7M/A
 Desde quando me levanto
         A     E/G# F#m7
@@ -258,63 +160,92 @@ Até eu me deitar
          D7M/A     E6      A
 Eu cantarei da bondade de Deus
 
+
+
 [Refrão]
 
 D7M/A                  A
       És fiel em todo tempo
+	  
+	  
 D7M/A                      A        E6
       Em todo tempo Tu és tão, tão bom
+	  
+	  
 D7M/A                      F#m7
       Com todo fôlego que tenho
+	  
          D7M/A     E6      A
 Eu cantarei da bondade de Deus
 
-[Segunda Parte]
+
+
 
           A
 Tua doce voz
+
          D7M/A          A
 Que me guia em meio ao fogo
+
       E/G# F#m7
 Na escuri_dão
+
         D7M/A       E6
 Tua presença me conforta
+
                 F#m7 D7M/A
 Sei que és meu Pai
+
       A   E/G# F#m7
 Que amigo és
+
       D7M/A  E       A
 Vivo na bon_dade de Deus
+
+
 
 [Refrão]
 
 D7M/A                  A
       És fiel em todo tempo
+	  
+	  
 D7M/A                      A        E6
       Em todo tempo Tu és tão, tão bom
+	  
+	  
 D7M/A                      F#m7
       Com todo fôlego que tenho
+	  
          D7M/A     E6      A
 Eu cantarei da bondade de Deus
 
 D7M/A                  A
       És fiel em todo tempo
+	  
+	  
 D7M/A                      A        E6
       Em todo tempo Tu és tão, tão bom
+	  
+	  
 D7M/A                      F#m7
       Com todo fôlego que tenho
+	  
          D7M/A     E6      A
 Eu cantarei da bondade de Deus
 
+
 ( A9  A  A4 )
+
 ( A  A9  A  A4 )
 
-[Ponte]
+
 
 A/C#                D7M/A                
     Tua bondade me seguirá
     E6         A
 Me seguirá Senhor
+
 A/C#                D7M/A
     Tua bondade me seguirá
     E6         A
@@ -324,15 +255,18 @@ Me seguirá Senhor
 Eu me rendo a Ti, te dou o meu ser
     E6          F#m7
 Entrego tudo a Ti
-A/C#                D7M/A
-    Tua bondade me seguirá
-    E6         A
-Me seguirá Senhor
 
 A/C#                D7M/A
     Tua bondade me seguirá
     E6         A
 Me seguirá Senhor
+
+
+A/C#                D7M/A
+    Tua bondade me seguirá
+    E6         A
+Me seguirá Senhor
+
 A/C#                D7M/A
     Tua bondade me seguirá
     E6         A
@@ -342,28 +276,41 @@ Me seguirá Senhor
 Eu me rendo a Ti, te dou o meu ser
     E6          F#m7
 Entrego tudo a Ti
+
 A/C#                D7M/A
     Tua bondade me seguirá
     E6         A    
 Me seguirá Senhor
 
-[Refrão Final]
+
+
+[Refrão]
 
 D7M/A                  A
       És fiel em todo tempo
+	  
+	  
 D7M/A                      A        E6
       Em todo tempo Tu és tão, tão bom
+	  
+	  
 D7M/A                      F#m7
       Com todo fôlego que tenho
+	  
          D7M/A     E6      A
 Eu cantarei da bondade de Deus
 
 D7M/A                  A
       És fiel em todo tempo
+	  
+	  
 D7M/A                      A        E6
       Em todo tempo Tu és tão, tão bom
+	  
+	  
 D7M/A                      F#m7
       Com todo fôlego que tenho
+	  
          D7M/A     E6      A
 Eu cantarei da bondade de Deus
 </cifra>
@@ -549,113 +496,550 @@ Sobre toda terra e céus
 
 
 
+
 <musica>
-	<nome></nome>
-	<tom></tom>
-	<tempo>115</tempo>
-	<rolagem>125</rolagem>
-	<delay>2</delay>
+	<nome>Rompendo em Fé</nome>
+	<tom>D</tom>
+	<tempo>10</tempo>
+	<rolagem>238</rolagem>
+	<delay>0</delay>
+	<url>https://www.youtube.com/watch?v=fRsTowW3TSA</url>
 	<intro>
-
+G  D  G  Bm 
+Em  A  D  D4  D  D4
 	</intro>
-	<cifra>
+<cifra>
 
+      D                       G
+Cada vez que a minha fé é provada
+       A                          D          
+Tu me dás a chance de crescer um pouco mais
+       Bm              F#m7
+As montanhas e vales desertos e mares
+         Em7                A        A4  A
+Que atravesso me levam pra perto de Ti
+
+         D                  D/F#   Em7
+Minhas provações não são maiores que o meu Deus
+       A                      D
+E não vão me impedir de caminhar
+
+      Em7     A            F#7   Bm
+Se diante de mim não se abrir o mar
+          Em7        A               D
+Deus vai me fazer andar por sobre as águas
+ D4          D  D/F#
+Rompendo em fé
+
+       G         A          D
+Minha vida se revestirá do Teu poder
+ D4          D  D5(9/11)
+Rompendo em fé
+         G         A           Bm
+Com ousadia vou mover o sobrenatural
+ Bm  A/C#  G/B     D
+Vou  lu____tar e vencer
+         G        Bm
+Vou plantar e colher
+        Em7       A
+A cada dia vou viver
+             D  D4  D  D4
+Rompendo em fé
+
+      D                       G
+Cada vez que a minha fé é provada
+       A                          D          
+Tu me dás a chance de crescer um pouco mais
+       Bm              F#m7
+As montanhas e vales desertos e mares
+         Em7                A        A4  A
+Que atravesso me levam pra perto de Ti
+
+         D                  D/F#   Em7
+Minhas provações não são maiores que o meu Deus
+       A                      D
+E não vão me impedir de caminhar
+      Em7     A            F#7   Bm
+Se diante de mim não se abrir o mar
+          Em7        A               D
+Deus vai me fazer andar por sobre as águas
+ D4          D  D/F#
+Rompendo em fé
+
+       G         A          D
+Minha vida se revestirá do Teu poder
+ D4          D  D5(9/11)
+Rompendo em fé
+
+         G         A           Bm
+Com ousadia vou mover o sobrenatural
+ Bm  A/C#  G/B     D
+Vou  lu____tar e vencer
+         G        Bm
+Vou plantar e colher
+        Em7       A
+A cada dia vou viver
+             D  D4  D  D4
+Rompendo em fé
+
+        Em7       A
+A cada dia vou viver
+             D  D4  D  D4
+Rompendo em fé
+
+        Em7       A
+A cada dia vou viver
+             D  D4  D  D4
+Rompendo em fé
+
+
+
+
+</cifra>
+</musica>
+
+
+
+
+<musica>
+	<nome>Eu Vejo a Glória</nome>
+	<tom>C</tom>
+	<tempo>10</tempo>
+	<rolagem>120</rolagem>
+	<delay>0</delay>
+	<url>https://www.youtube.com/watch?v=qZjzUUv7zCY</url>
+	<intro>
+C  F  Am  G
+	</intro>
+<cifra>
+C         F             Am         G
+Eu vejo a glória do Senhor hoje aqui
+C         F        Am         G
+A sua mão o seu poder sobre mim
+C         F              Am         G
+Os céus abertos hoje eu vou contemplar
+    Dm         F       G
+O amor descer nesse lugar
+
+C         F             Am         G
+Eu vejo a glória do Senhor hoje aqui
+C         F        Am         G
+A sua mão o seu poder sobre mim
+C         F              Am         G
+Os céus abertos hoje eu vou contemplar
+    Dm         F       G
+O amor descer nesse lugar
+
+C         F        Am      G
+Eu quero ver agora o Teu poder
+C      F          Am       G
+A Tua glória inundando meu ser
+C         F            Am      G
+Vou levantar as mãos e vou receber
+      Dm           F             G                    C
+Vou louvando o Teu nome, porque sinto o Senhor me tocar
+C         F        Am      G
+Eu quero ver agora o Teu poder
+C      F          Am       G
+A Tua glória inundando meu ser
+C         F            Am      G
+Vou levantar as mãos e vou receber
+      Dm           F             G                    C
+Vou louvando o Teu nome, porque sinto o Senhor me tocar
+
+C  F  Am  G
+
+
+
+</cifra>
+</musica>
+
+
+<musica>
+	<nome>Exemplo</nome>
+	<tom>C</tom>
+	<tempo>10</tempo>
+	<rolagem>10</rolagem>
+	<delay>2</delay>
+	<url></url>
+	<intro>
+A
+	</intro>
+<cifra>
+A
 </cifra>
 </musica>
   
 
-<script>
-  const select = document.getElementById('listaMusicas');
-  const letraDiv = document.getElementById('letra');
-  const musicas = document.querySelectorAll('musica');
 
-  let scrollInterval;
 
-  // Preencher o seletor com nomes das músicas
-  musicas.forEach((musica, index) => {
-    const nome = musica.querySelector('nome').textContent.trim();
-    if (nome) {
-      const option = document.createElement('option');
-      option.value = index;
-      option.textContent = nome;
-      select.appendChild(option);
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Projeção de Músicas</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: black;
+      color: white;
+      font-family: 'Arial', sans-serif;
+      overflow: hidden;
     }
-  });
 
-  select.addEventListener('change', () => {
-    clearInterval(scrollInterval);
+    #layout {
+      display: flex;
+      height: 100vh;
+      width: 100vw;
+    }
 
-    const index = select.value;
-    if (index === "Selecione uma música") return;
+    #colunaEsquerda {
+      width: 300px;
+      background-color: #111;
+      padding: 20px;
+      box-sizing: border-box;
+      border-right: 1px solid #444;
+      overflow-y: auto;
+    }
 
-    const musica = musicas[index];
-    const nome = musica.querySelector('nome')?.textContent.trim() || '';
-    const intro = musica.querySelector('intro')?.textContent.trim() || '';
-    const cifra = musica.querySelector('cifra')?.textContent.trim() || '';
-    const rolagem = parseFloat(musica.querySelector('rolagem')?.textContent) || 30;
-    const delay = parseFloat(musica.querySelector('delay')?.textContent) || 0;
+    #colunaDireita {
+      flex: 1;
+      position: relative;
+    }
 
-    const nomeHTML = `<div class="tituloMusica">${nome}</div>`;
-    const introHTML = `<div class="introTexto">${intro.replace(/\n/g, "<br>")}</div>`;
-    const cifraHTML = `<div class="cifraTexto">${cifra.replace(/\n/g, "<br>")}</div>`;
+    #container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 60px;
+      box-sizing: border-box;
+    }
 
-    // Mostra nome + intro no centro da tela
-    letraDiv.innerHTML = nomeHTML + introHTML;
-    letraDiv.style.transition = 'none';
-    letraDiv.style.transform = 'none';
+    #letraWrapper {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
 
-    const alturaWrapper = document.getElementById('letraWrapper').offsetHeight;
-    const alturaNomeIntro = medirAlturaHTML(letraDiv.innerHTML);
+	#letra {
+	  position: absolute;
+	  top: 100%;
+	  white-space: pre-wrap; /* já está bom */
+	  text-align: left;
+	  font-size: 2em;
+	  line-height: 1.5em;
+	  font-family: 'Courier New', monospace;
+	}
 
-    const topInicial = (alturaWrapper / 2) - (alturaNomeIntro / 2);
-    letraDiv.style.top = `${topInicial}px`;
+    .tituloMusica {
+      font-size: 1.25em;
+      font-weight: bold;
+      text-align: left;
+      margin-bottom: 0.5em;
+    }
 
-    // Após o delay, rola o bloco nome + intro + cifra
-    setTimeout(() => {
-      letraDiv.innerHTML = nomeHTML + introHTML + "<br><br>" + cifraHTML;
-      letraDiv.style.top = `${topInicial}px`;
+    .introTexto {
+      text-align: left;
+    }
 
-      setTimeout(() => {
-        const alturaTexto = letraDiv.scrollHeight;
-        const distancia = alturaTexto + topInicial;
-        const pixelsPorSegundo = distancia / rolagem;
-        let pos = topInicial;
+    .cifraTexto {
+      text-align: left;
+    }
 
-        scrollInterval = setInterval(() => {
-          pos -= pixelsPorSegundo / 30;
-          letraDiv.style.top = pos + "px";
-          if (pos + alturaTexto < 0) {
-            clearInterval(scrollInterval);
-          }
-        }, 1000 / 30);
-      }, 50);
-    }, delay * 1000);
-  });
+    .musica-option {
+      margin-bottom: 10px;
+      display: flex;
+      align-items: left;
+      gap: 10px;
+    }
 
-  // Mede a altura de um HTML com o mesmo estilo de letraDiv
-  function medirAlturaHTML(html) {
-    const temp = document.createElement('div');
-    temp.style.position = 'absolute';
-    temp.style.visibility = 'hidden';
-    temp.style.whiteSpace = 'pre-wrap';
-    temp.style.fontSize = '2em';
-    temp.style.lineHeight = '1.5em';
-    temp.style.width = '80%';
-    temp.style.fontFamily = 'Arial, sans-serif';
-    temp.style.textAlign = 'left';
-    temp.innerHTML = html;
-    document.body.appendChild(temp);
-    const altura = temp.scrollHeight;
-    document.body.removeChild(temp);
-    return altura;
-  }
-</script>
+    .ordem {
+      display: inline-block;
+      width: 20px;
+      text-align: right;
+      color: #0f0;
+    }
+
+	#playButton {
+		font-size: 12px;
+		padding: 4px 12px;
+		margin-bottom: 20px;
+		cursor: pointer;
+		color: #383d41;
+		background-color: #e2e3e5;
+		border-color: #d6d8db;
+		border-radius: 20px;
+	}
+
+	#contadorDelay {
+	  font-size: 1.5em;
+	  color: #ccc;
+	  text-align: left;
+	  margin-bottom: 0.5em;
+	}
+
+    musica {
+      display: none;
+    }
+	
+	.acorde {
+	  color: #666;
+	}
+	.delaySelect{
+		margin: 1px 0px 15px 9px;
+		padding: 5px 15px 5px 15px;
+		border-radius: 6px;
+		color: #383d41;
+		background-color: #e2e3e5;
+		border-color: #d6d8db;
+	}
+  </style>
+</head>
+<body>
+  <div id="layout">
+    <div id="colunaEsquerda">
+      
+	  <div style='display: inline-flex;'>
+		<div><button id="playButton">Iniciar</button></div>
+		<div>
+			<select id='delayInicial' class='delaySelect'>
+				<option>0</option>
+				<option>2</option>
+				<option>5</option>
+				<option>10</option>
+				<option>15</option>
+			</select>
+		</div>
+		<div>
+			<select id='delayEntreMusicas' class='delaySelect'>
+				<option>0</option>
+				<option>2</option>
+				<option>5</option>
+				<option>10</option>
+				<option>15</option>
+			</select>
+		</div>
+	  </div>
+      <div id="listaMusicas"></div>
+    </div>
+    <div id="colunaDireita">
+      <div id="container">
+        <div id="letraWrapper">
+          <div id="letra"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUAS TAGS <musica> ESTÃO AQUI -->
+  <!-- (Não precisam ser alteradas, são lidas dinamicamente) -->
+
+  <script>
+    const letraDiv = document.getElementById('letra');
+    const musicas = Array.from(document.querySelectorAll('musica'));
+    const listaContainer = document.getElementById('listaMusicas');
+    const playButton = document.getElementById('playButton');
+    let ordemSelecionada = [];
+
+    // Monta a lista com checkboxes e ordem dinâmica
+    musicas.forEach((musica, index) => {
+      const nome = musica.querySelector('nome')?.textContent.trim() || `Música ${index + 1}`;
+      const container = document.createElement('div');
+      container.className = 'musica-option';
+
+      const ordemSpan = document.createElement('span');
+      ordemSpan.className = 'ordem';
+
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.dataset.index = index;
+
+      const label = document.createElement('label');
+      label.textContent = nome;
+
+      checkbox.addEventListener('change', () => {
+        if (checkbox.checked) {
+          ordemSelecionada.push(index);
+        } else {
+          ordemSelecionada = ordemSelecionada.filter(i => i !== index);
+        }
+        atualizarOrdemNumerica();
+      });
+
+      container.appendChild(ordemSpan);
+      container.appendChild(checkbox);
+      container.appendChild(label);
+      listaContainer.appendChild(container);
+    });
+
+    function atualizarOrdemNumerica() {
+      const inputs = document.querySelectorAll('.musica-option input');
+      inputs.forEach(input => {
+        const idx = parseInt(input.dataset.index);
+        const span = input.parentElement.querySelector('.ordem');
+        const pos = ordemSelecionada.indexOf(idx);
+        span.textContent = pos !== -1 ? pos + 1 : '';
+      });
+    }
+
+    playButton.addEventListener('click', async () => {
+      for (const index of ordemSelecionada) {
+        await tocarMusica(musicas[index]);
+      }
+    });
+
+    let scrollInterval;
+	
+	function formatarCifra(cifraTexto) {
+	  const linhas = cifraTexto.replace(/\t/g, "    ").split('\n');
+
+	  return linhas.map(linha => {
+		const l = linha.trim();
+
+		const ehLinhaDeAcorde =
+		  l.length > 0 &&
+		  !/[a-z&&[^m]]/.test(l) && // ignora minúsculas exceto "m"
+		  (
+			/[A-G]/.test(l) ||               // contém letras de acordes
+			/[#76()\/]/.test(l) ||           // contém símbolos típicos
+			(linha.match(/\s/g) || []).length > 3 // muitos espaços
+		  );
+
+		if (ehLinhaDeAcorde) {
+		  return `<span class="acorde">${linha}</span>`;
+		} else {
+		  return linha;
+		}
+	  }).join('\n');
+	}
+
+	function formatarLinhasCifra(cifraTexto) {
+	  const linhas = cifraTexto.replace(/\t/g, "    ").split('\n');
+
+	  return linhas.map(linha => {
+		const linhaSemEspacos = linha.trim();
+
+		// Regra: só letras maiúsculas e "m", e símbolos típicos de acordes
+		const temSimbolos = /[#76()\/]/.test(linhaSemEspacos);
+		const temMaiusculas = /[A-G]/.test(linhaSemEspacos);
+		const temMinusculasNaoPermitidas = /[a-ln-z]/.test(linhaSemEspacos); // ignora 'm'
+
+		const muitosEspacos = (linha.match(/ /g) || []).length > 3;
+
+		const ehLinhaDeAcorde = (
+		  !temMinusculasNaoPermitidas &&
+		  (temSimbolos || temMaiusculas || muitosEspacos)
+		);
+
+		if (ehLinhaDeAcorde && linhaSemEspacos !== '') {
+		  return `<span class="acorde">${linha}</span>`;
+		} else {
+		  return linha;
+		}
+	  }).join('\n');
+	}
 
 
 
+	async function tocarMusica(musica) {
+	  clearInterval(scrollInterval);
+
+	  const nome = musica.querySelector('nome')?.textContent.trim() || '';
+	  const intro = musica.querySelector('intro')?.textContent.trim() || '';
+	  const cifra = musica.querySelector('cifra')?.textContent.trim() || '';
+	  const rolagem = parseFloat(musica.querySelector('rolagem')?.textContent) || 30;
+	  const delay = parseFloat(musica.querySelector('delay')?.textContent) || 0;
+
+	  // Bloco inicial: contador + nome + intro
+	  const contadorHTML = `<div id="contadorDelay">${delay}</div>`;
+	  const nomeHTML = `<div class="tituloMusica">${nome}</div>`;
+	  const introHTML = `<div class="introTexto">${intro.replace(/\n/g, "<br>")}</div>`;
+	  const cifraHTML = `<pre class="cifraTexto">${formatarLinhasCifra(cifra)}</pre>`;
+
+	  letraDiv.innerHTML = contadorHTML + nomeHTML + introHTML;
+	  letraDiv.style.transition = 'none';
+	  letraDiv.style.transform = 'none';
+
+	  const alturaWrapper = document.getElementById('letraWrapper').offsetHeight;
+	  const alturaBlocoInicial = medirAlturaHTML(letraDiv.innerHTML);
+	  const topInicial = (alturaWrapper / 2) - (alturaBlocoInicial / 2);
+	  letraDiv.style.top = `${topInicial}px`;
+
+	  // Atualiza o número do contador sem remover o elemento
+	  await new Promise(resolve => {
+		let restante = delay;
+		const contador = document.getElementById('contadorDelay');
+		const intervalo = setInterval(() => {
+		  restante--;
+		  if (contador) contador.textContent = restante;
+		  if (restante <= 0) {
+			clearInterval(intervalo);
+			resolve();
+		  }
+		}, 1000);
+	  });
+
+	  // Atualiza o conteúdo para incluir cifra (mantendo o contador no topo)
+	  letraDiv.innerHTML = contadorHTML + nomeHTML + introHTML + "<br><br>" + cifraHTML;
+	  letraDiv.style.top = `${topInicial}px`;
+
+	  await new Promise(resolve => {
+		const alturaTexto = letraDiv.scrollHeight;
+		const distancia = alturaTexto + topInicial;
+		const pixelsPorSegundo = distancia / rolagem;
+		let pos = topInicial;
+
+		scrollInterval = setInterval(() => {
+		  pos -= pixelsPorSegundo / 30;
+		  letraDiv.style.top = pos + "px";
+		  if (pos + alturaTexto < 0) {
+			clearInterval(scrollInterval);
+			resolve();
+		  }
+		}, 1000 / 30);
+	  });
+	}
 
 
-  
-  
+
+    function esperar(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    function medirAlturaHTML(html) {
+      const temp = document.createElement('div');
+      temp.style.position = 'absolute';
+      temp.style.visibility = 'hidden';
+      temp.style.whiteSpace = 'pre-wrap';
+      temp.style.fontSize = '2em';
+      temp.style.lineHeight = '1.5em';
+      temp.style.width = '80%';
+      temp.style.fontFamily = 'Arial, sans-serif';
+      temp.style.textAlign = 'left';
+      temp.innerHTML = html;
+      document.body.appendChild(temp);
+      const altura = temp.scrollHeight;
+      document.body.removeChild(temp);
+      return altura;
+    }
+  </script>
 </body>
 </html>
