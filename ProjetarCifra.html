@@ -2,12 +2,14 @@
 
 
 
-
+<todasAsMusicas>
 <!-- -------------------------------------------------------------------------------------------------------------------------------- -->
 <musica>
 	<nome>A Alegria Está No Coração</nome>
 	<tom>C</tom>
 	<rolagem>150</rolagem>
+	<tempo>148</tempo>
+	<ritmo>1</ritmo>
 	<delay>10</delay>
 	<url>https://www.youtube.com/watch?v=5drSCKZQjX4</url>
 	<intro>
@@ -147,6 +149,8 @@ C F C D7 G
 	<tom>A</tom>
 	<rolagem>275</rolagem>
 	<delay>10</delay>
+	<tempo>129</tempo>
+	<ritmo>2</ritmo>
 	<url>https://www.youtube.com/watch?v=b5DN9mPxMEI</url>
 	<intro>
  A  A4  A  A4
@@ -365,6 +369,8 @@ Eu cantarei da bondade de Deus
 	<tom>D</tom>
 	<rolagem>190</rolagem>
 	<delay>13</delay>
+	<tempo>120</tempo>
+	<ritmo>2</ritmo>
 	<url>https://www.youtube.com/watch?v=6OnuqNFeGUY</url>
 	<intro>
 G  F#m7 Em7  D/F#  
@@ -500,6 +506,8 @@ Sobre toda terra e céus
 	<tom>D</tom>
 	<rolagem>238</rolagem>
 	<delay>0</delay>
+	<tempo>128</tempo>
+	<ritmo>2</ritmo>
 	<url>https://www.youtube.com/watch?v=fRsTowW3TSA</url>
 	<intro>
 G  D  G  Bm 
@@ -592,6 +600,8 @@ Rompendo em fé
 	<tom>C</tom>
 	<rolagem>120</rolagem>
 	<delay>0</delay>
+	<tempo>107</tempo>
+	<ritmo>1</ritmo>
 	<url>https://www.youtube.com/watch?v=qZjzUUv7zCY</url>
 	<intro>
 D  G  Bm  A
@@ -890,6 +900,8 @@ Tão certo como eu te falo podes me ouvir
 	<tom>C</tom>
 	<rolagem>210</rolagem>
 	<delay>10</delay>
+	<tempo>105</tempo>
+	<ritmo>2</ritmo>
 	<url>https://www.youtube.com/watch?v=UJKNjAjMf44</url>
 	<intro>
 C  Am7  F
@@ -1379,13 +1391,16 @@ Tão ami - go,          há.
 
 
 
-
+<!-- -------------------------------------------------------------------------------------------------------------------------------- -->
+<!-- -------------------------------------------------------------------------------------------------------------------------------- -->
 <!-- -------------------------------------------------------------------------------------------------------------------------------- -->
 <musica>
 	<nome>zzz</nome>
 	<tom>C</tom>
 	<rolagem>200</rolagem>
 	<delay>10</delay>
+	<tempo>120</tempo>
+	<ritmo>2</ritmo>
 	<url></url>
 	<intro>
 A
@@ -1397,9 +1412,7 @@ A
   
 
 
-
-
-
+</todasAsMusicas>
 
 
 
@@ -1436,7 +1449,7 @@ A
       box-sizing: border-box;
       border-right: 1px solid #444;
       overflow-y: auto;
-	  margin-top: 20px;
+      margin-top: 20px;
     }
 
     #colunaDireita {
@@ -1465,15 +1478,15 @@ A
       overflow: hidden;
     }
 
-	#letra {
-	  position: absolute;
-	  top: 100%;
-	  white-space: pre-wrap; /* já está bom */
-	  text-align: left;
-	  font-size: 2em;
-	  line-height: 1.5em;
-	  font-family: 'Courier New', monospace;
-	}
+    #letra {
+      position: absolute;
+      top: 100%;
+      white-space: pre-wrap;
+      text-align: left;
+      font-size: 2em;
+      line-height: 1.5em;
+      font-family: 'Courier New', monospace;
+    }
 
     .tituloMusica {
       font-size: 1.25em;
@@ -1484,7 +1497,7 @@ A
 
     .introTexto {
       text-align: left;
-	  color:#444;
+      color:#444;
     }
 
     .cifraTexto {
@@ -1493,7 +1506,7 @@ A
 
     .musica-option {
       margin-bottom: 10px;
-	  margin-left: -15px;
+      margin-left: -15px;
       display: flex;
       align-items: left;
       gap: 0px;
@@ -1506,102 +1519,90 @@ A
       color: #0f0;
     }
 
-	#playButton {
-		font-size: 12px;
-		padding: 4px 12px;
-		margin-bottom: 20px;
-		cursor: pointer;
-		color: #383d41;
-		background-color: #e2e3e5;
-		border-color: #d6d8db;
-		border-radius: 20px;
-	}
+    #playButton {
+      font-size: 12px;
+      padding: 4px 12px;
+      margin-bottom: 20px;
+      cursor: pointer;
+      color: #383d41;
+      background-color: #e2e3e5;
+      border-color: #d6d8db;
+      border-radius: 20px;
+    }
 
-	#contadorDelay {
-	  font-size: 1.5em;
-	  color: #444;
-	  text-align: left;
-	  margin-bottom: 0.5em;
-	}
+    #contadorDelay {
+      font-size: 1.5em;
+      color: #444;
+      text-align: left;
+      margin-bottom: 0.5em;
+    }
 
     musica {
       display: none;
     }
-	
-	.acorde {
-	  color: #444;
-	}
-	.delaySelect{
-		margin: 1px 0px 15px 9px;
-		padding: 5px 15px 5px 15px;
-		border-radius: 6px;
-		color: #383d41;
-		background-color: #e2e3e5;
-		border-color: #d6d8db;
-	}
-	
-	
-	#toggleMenu {
-	  position: fixed;
-	  top: 0px;
-	  left: 10px;
-	  background-color: #222;
-	  color: #444;
-	  border: none;
-	  padding: 0px 20px;
-	  font-size: 16px;
-	  cursor: pointer;
-	  z-index: 9999;
-	  opacity: 0.6;
-	}
-	#toggleMenu:hover {
-	  opacity: 1;
-	}
-	.oculto #colunaEsquerda {
-	  display: none;
-	}
-	.oculto #colunaDireita {
-	  width: 100vw;
-	}
-	
-	#timerTotal{
-		margin: 4px 5px 5px 10px;
-	}
-	
+
+    .acorde {
+      color: #444;
+    }
+    .delaySelect{
+      margin: 1px 0px 15px 9px;
+      padding: 5px 15px 5px 15px;
+      border-radius: 6px;
+      color: #383d41;
+      background-color: #e2e3e5;
+      border-color: #d6d8db;
+    }
+
+    #toggleMenu {
+      position: fixed;
+      top: 0px;
+      left: 10px;
+      background-color: #222;
+      color: #444;
+      border: none;
+      padding: 0px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      z-index: 9999;
+      opacity: 0.6;
+    }
+    #toggleMenu:hover {
+      opacity: 1;
+    }
+    .oculto #colunaEsquerda {
+      display: none;
+    }
+    .oculto #colunaDireita {
+      width: 100vw;
+    }
+
+    #timerTotal{
+      margin: 4px 5px 5px 10px;
+    }
+
   </style>
 </head>
 <body>
-	<div>
-		<button id="toggleMenu" title="Mostrar/Ocultar painel">...</button>
-	</div>
+  <div>
+    <button id="toggleMenu" title="Mostrar/Ocultar painel">...</button>
+  </div>
   <div id="layout">
     <div id="colunaEsquerda">
-      
-	  <div style='display: inline-flex;'>
-		<div><button id="playButton">Iniciar</button></div>
-		<div>
-			<select id='delayInicial' class='delaySelect'>
-				<option>0</option>
-				<option>2</option>
-				<option>5</option>
-				<option>10</option>
-				<option>15</option>
-				<option>20</option>
-				<option>25</option>
-				<option>30</option>
-			</select>
-		</div>
-		<div>
-			<select id='delayEntreMusicas' class='delaySelect'>
-				<option>0</option>
-				<option>2</option>
-				<option>5</option>
-				<option>10</option>
-				<option>15</option>
-			</select>
-		</div>
-		<div id='timerTotal'></div>
-	  </div>
+      <div style='display: inline-flex;'>
+        <div><button id="playButton">Iniciar</button></div>
+        <div>
+          <select id='delayInicial' class='delaySelect'>
+            <option>0</option><option>2</option><option>5</option><option>10</option>
+            <option>15</option><option>20</option><option>25</option><option>30</option>
+          </select>
+        </div>
+        <div>
+          <select id='delayEntreMusicas' class='delaySelect'>
+            <option>0</option><option>2</option><option>5</option><option>10</option><option>15</option>
+          </select>
+        </div>
+        <div id='timerTotal'></div>
+      </div>
       <div id="listaMusicas"></div>
     </div>
     <div id="colunaDireita">
@@ -1613,8 +1614,11 @@ A
     </div>
   </div>
 
-  <!-- SUAS TAGS <musica> ESTÃO AQUI -->
-  <!-- (Não precisam ser alteradas, são lidas dinamicamente) -->
+
+
+
+
+
 
 
 
@@ -1628,21 +1632,19 @@ A
   let totalSegundos = 0;
   let timerInterval = null;
 
-  // Função utilitária para exibir em mm:ss
   function formatarTempo(segundos) {
     const m = String(Math.floor(segundos / 60)).padStart(2, '0');
     const s = String(segundos % 60).padStart(2, '0');
     return `${m}:${s}`;
   }
 
-  // 🔹 Ordena músicas pelo nome antes de montar a lista
+  // Ordenação e montagem da lista (mesmo código anterior)...
   const musicasOrdenadas = [...musicas].sort((a, b) => {
     const nomeA = a.querySelector('nome')?.textContent.trim().toLowerCase() || "";
     const nomeB = b.querySelector('nome')?.textContent.trim().toLowerCase() || "";
     return nomeA.localeCompare(nomeB);
   });
 
-  // Monta a lista com checkboxes e ordem dinâmica
   musicasOrdenadas.forEach((musica, index) => {
     const nome = musica.querySelector('nome')?.textContent.trim() || `Música ${index + 1}`;
     const tom = musica.querySelector('tom')?.textContent.trim() || '';
@@ -1656,9 +1658,8 @@ A
 
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
-    checkbox.dataset.index = musicas.indexOf(musica); // mantém o índice real
+    checkbox.dataset.index = musicas.indexOf(musica);
 
-    // 🔹 Nome da música: link se tiver URL
     let nomeElemento;
     if (url) {
       nomeElemento = document.createElement('a');
@@ -1672,7 +1673,6 @@ A
       nomeElemento.textContent = nome;
     }
 
-    // 🔹 Tom da música em cinza claro
     const tomSpan = document.createElement('span');
     tomSpan.textContent = ` (${tom})`;
     tomSpan.style.color = "#444";
@@ -1706,28 +1706,23 @@ A
       const pos = ordemSelecionada.indexOf(idx);
       span.textContent = pos !== -1 ? pos + 1 : '';
     });
-
     atualizarTimerTotal();
   }
 
   function atualizarTimerTotal() {
     const delayInicial = parseInt(document.getElementById('delayInicial').value) || 0;
     const delayEntre = parseInt(document.getElementById('delayEntreMusicas').value) || 0;
-
     let soma = 0;
-
     ordemSelecionada.forEach(index => {
       const musica = musicas[index];
       const rolagem = parseInt(musica.querySelector('rolagem')?.textContent) || 0;
       const delayMusica = parseInt(musica.querySelector('delay')?.textContent) || 0;
       soma += rolagem + delayMusica;
     });
-
     if (ordemSelecionada.length > 0) {
       soma += delayInicial;
       soma += delayEntre * (ordemSelecionada.length - 1);
     }
-
     totalSegundos = soma;
     timerTotalDiv.textContent = formatarTempo(soma);
   }
@@ -1736,7 +1731,6 @@ A
     clearInterval(timerInterval);
     let restante = totalSegundos;
     timerTotalDiv.textContent = formatarTempo(restante);
-
     timerInterval = setInterval(() => {
       restante--;
       if (restante <= 0) {
@@ -1750,41 +1744,76 @@ A
 
   playButton.addEventListener('click', async () => {
     iniciarContagemRegressiva();
-
     const delayInicial = parseInt(document.getElementById('delayInicial').value) || 0;
     const delayEntre = parseInt(document.getElementById('delayEntreMusicas').value) || 0;
-
     for (let i = 0; i < ordemSelecionada.length; i++) {
       const index = ordemSelecionada[i];
       const musica = musicas[index];
-
       const baseDelay = parseFloat(musica.querySelector('delay')?.textContent) || 0;
       const delayExtra = i === 0 ? delayInicial : delayEntre;
-
       await tocarMusica(musica, baseDelay + delayExtra);
     }
   });
 
   let scrollInterval;
 
-  function formatarCifra(cifraTexto) {
-    const linhas = cifraTexto.replace(/\t/g, "    ").split('\n');
-    return linhas.map(linha => {
-      const l = linha.trim();
-      const ehLinhaDeAcorde =
-        l.length > 0 &&
-        !/[a-z&&[^m]]/.test(l) &&
-        (
-          /[A-G]/.test(l) ||
-          /[#76()\/]/.test(l) ||
-          (linha.match(/\s/g) || []).length > 3
-        );
-      if (ehLinhaDeAcorde) {
-        return `<span class="acorde">${linha}</span>`;
-      } else {
-        return linha;
+  // --- Metrônomo de precisão com ritmo e batidas alternadas ---
+  let metronomeInterval = null;
+  let audioCtx = null;
+  let nextNoteTime = 0;
+  let contagem = 0;
+  let batidaIntervalo = 0;
+
+  function iniciarMetronomo(bpm, ritmo = 1) {
+    pararMetronomo();
+    if (!bpm) return;
+
+    if (!audioCtx) {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    contagem = 0;
+    batidaIntervalo = (60.0 / bpm) * ritmo; // intervalo ajustado pelo ritmo
+    nextNoteTime = audioCtx.currentTime;
+
+    function scheduler() {
+      while (nextNoteTime < audioCtx.currentTime + 0.1) {
+        tocarClickPrecisao(nextNoteTime);
+        nextNoteTime += batidaIntervalo;
       }
-    }).join('\n');
+    }
+
+    metronomeInterval = setInterval(scheduler, 25);
+  }
+
+  function pararMetronomo() {
+    if (metronomeInterval) {
+      clearInterval(metronomeInterval);
+      metronomeInterval = null;
+    }
+  }
+
+  function tocarClickPrecisao(time) {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = "sine";
+
+    if (contagem % 2 === 0) {
+      // 🔊 Batida forte
+      osc.frequency.value = 70;
+      gain.gain.setValueAtTime(1.5, time);
+    } else {
+      // 🔉 Batida fraca
+      osc.frequency.value = 120;
+      gain.gain.setValueAtTime(0.4, time);
+    }
+
+    gain.gain.exponentialRampToValueAtTime(0.001, time + 0.2);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start(time);
+    osc.stop(time + 0.2);
+
+    contagem++;
   }
 
   function formatarLinhasCifra(cifraTexto) {
@@ -1795,10 +1824,7 @@ A
       const temMaiusculas = /[A-G]/.test(linhaSemEspacos);
       const temMinusculasNaoPermitidas = /[a-ln-z]/.test(linhaSemEspacos);
       const muitosEspacos = (linha.match(/ /g) || []).length > 3;
-      const ehLinhaDeAcorde = (
-        !temMinusculasNaoPermitidas &&
-        (temSimbolos || temMaiusculas || muitosEspacos)
-      );
+      const ehLinhaDeAcorde = (!temMinusculasNaoPermitidas && (temSimbolos || temMaiusculas || muitosEspacos));
       if (ehLinhaDeAcorde && linhaSemEspacos !== '') {
         return `<span class="acorde">${linha}</span>`;
       } else {
@@ -1807,67 +1833,66 @@ A
     }).join('\n');
   }
 
-	async function tocarMusica(musica, delayTotal = 0) {
-	  clearInterval(scrollInterval);
+  async function tocarMusica(musica, delayTotal = 0) {
+    clearInterval(scrollInterval);
+    pararMetronomo();
 
-	  const nome = musica.querySelector('nome')?.textContent.trim() || '';
-	  const intro = musica.querySelector('intro')?.textContent.trim() || '';
-	  const cifra = musica.querySelector('cifra')?.textContent.trim() || '';
-	  const rolagem = parseFloat(musica.querySelector('rolagem')?.textContent) || 30;
-	  const delay = delayTotal;
+    const nome = musica.querySelector('nome')?.textContent.trim() || '';
+    const intro = musica.querySelector('intro')?.textContent.trim() || '';
+    const cifra = musica.querySelector('cifra')?.textContent.trim() || '';
+    const rolagem = parseFloat(musica.querySelector('rolagem')?.textContent) || 30;
+    const tempo = parseInt(musica.querySelector('tempo')?.textContent) || 0;
+    const ritmo = parseInt(musica.querySelector('ritmo')?.textContent) || 1;
+    const delay = delayTotal;
 
-	  const contadorHTML = `<div id="contadorDelay">${formatarTempo(delay)}</div>`;
-	  const nomeHTML = `<div class="tituloMusica">${nome}</div>`;
-	  const introHTML = `<div class="introTexto">${intro.replace(/\n/g, "<br>")}</div>`;
-	  const cifraHTML = `<pre class="cifraTexto">${formatarLinhasCifra(cifra)}</pre>`;
-	  // 🔹 Indicador de fim
-	  const fimMusicaHTML = `<div style="text-align:center; color:#777; font-size:1.7em; margin-top:20px;">...</div>`;
+    const contadorHTML = `<div id="contadorDelay">${formatarTempo(delay)}</div>`;
+    const nomeHTML = `<div class="tituloMusica">${nome}</div>`;
+    const introHTML = `<div class="introTexto">${intro.replace(/\n/g, "<br>")}</div>`;
+    const cifraHTML = `<pre class="cifraTexto">${formatarLinhasCifra(cifra)}</pre>`;
+    const fimMusicaHTML = `<div style="text-align:center; color:#777; font-size:1.7em; margin-top:20px;">...</div>`;
 
-	  letraDiv.innerHTML = contadorHTML + nomeHTML + introHTML;
-	  letraDiv.style.transition = 'none';
-	  letraDiv.style.transform = 'none';
+    letraDiv.innerHTML = contadorHTML + nomeHTML + introHTML;
+    letraDiv.style.transition = 'none';
+    letraDiv.style.transform = 'none';
 
-	  const alturaWrapper = document.getElementById('letraWrapper').offsetHeight;
-	  const alturaBlocoInicial = medirAlturaHTML(letraDiv.innerHTML);
-	  const topInicial = (alturaWrapper / 2) - (alturaBlocoInicial / 2);
-	  letraDiv.style.top = `${topInicial}px`;
+    const alturaWrapper = document.getElementById('letraWrapper').offsetHeight;
+    const alturaBlocoInicial = medirAlturaHTML(letraDiv.innerHTML);
+    const topInicial = (alturaWrapper / 2) - (alturaBlocoInicial / 2);
+    letraDiv.style.top = `${topInicial}px`;
 
-	  await new Promise(resolve => {
-		let restante = delay;
-		const contador = document.getElementById('contadorDelay');
-		const intervalo = setInterval(() => {
-		  restante--;
-		  if (contador) contador.textContent = formatarTempo(restante);
-		  if (restante <= 0) {
-			clearInterval(intervalo);
-			resolve();
-		  }
-		}, 1000);
-	  });
+    if (tempo > 0) iniciarMetronomo(tempo, ritmo);
 
-	  // 🔹 Agora adiciona a cifra + "..." no final
-	  letraDiv.innerHTML = contadorHTML + nomeHTML + introHTML + "<br><br>" + cifraHTML + fimMusicaHTML;
-	  letraDiv.style.top = `${topInicial}px`;
+    await new Promise(resolve => {
+      let restante = delay;
+      const contador = document.getElementById('contadorDelay');
+      const intervalo = setInterval(() => {
+        restante--;
+        if (contador) contador.textContent = formatarTempo(restante);
+        if (restante <= 0) {
+          clearInterval(intervalo);
+          resolve();
+        }
+      }, 1000);
+    });
 
-	  await new Promise(resolve => {
-		const alturaTexto = letraDiv.scrollHeight;
-		const distancia = alturaTexto + topInicial;
-		const pixelsPorSegundo = distancia / rolagem;
-		let pos = topInicial;
-		scrollInterval = setInterval(() => {
-		  pos -= pixelsPorSegundo / 30;
-		  letraDiv.style.top = pos + "px";
-		  if (pos + alturaTexto < 0) {
-			clearInterval(scrollInterval);
-			resolve();
-		  }
-		}, 1000 / 30);
-	  });
-	}
+    letraDiv.innerHTML = contadorHTML + nomeHTML + introHTML + "<br><br>" + cifraHTML + fimMusicaHTML;
+    letraDiv.style.top = `${topInicial}px`;
 
-
-  function esperar(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    await new Promise(resolve => {
+      const alturaTexto = letraDiv.scrollHeight;
+      const distancia = alturaTexto + topInicial;
+      const pixelsPorSegundo = distancia / rolagem;
+      let pos = topInicial;
+      scrollInterval = setInterval(() => {
+        pos -= pixelsPorSegundo / 30;
+        letraDiv.style.top = pos + "px";
+        if (pos + alturaTexto < 0) {
+          clearInterval(scrollInterval);
+          pararMetronomo();
+          resolve();
+        }
+      }, 1000 / 30);
+    });
   }
 
   function medirAlturaHTML(html) {
@@ -1902,6 +1927,7 @@ A
   document.getElementById('delayInicial').addEventListener('change', atualizarTimerTotal);
   document.getElementById('delayEntreMusicas').addEventListener('change', atualizarTimerTotal);
 </script>
+
 
 
 
