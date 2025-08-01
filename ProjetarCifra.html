@@ -1593,7 +1593,22 @@ A
       z-index: 9999;
       opacity: 0.6;
     }
+
 	
+    #divtranspor {
+      position: fixed;
+      top: 0px;
+      left: 210px;
+      background-color: #222;
+      color: #444;
+      border: none;
+      padding: 0px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      z-index: 9999;
+      opacity: 0.6;
+    }
+
     .oculto #colunaEsquerda {
       display: none;
     }
@@ -1621,6 +1636,7 @@ A
     <button id="toggleMenu" title="Mostrar/Ocultar painel">...</button>
 	<a id='bpmlink' target=_blank href='https://audioaidynamics.com/music-analyzer'>bpm</a>
 	<div id='timeRolagem' contenteditable="true" title="Clique para editar o tempo de rolagem (em segundos)">-</div>
+	<div id='divtranspor'><select id='seltranspor'><option>A</option></select></div>
   </div>
   <div id="layout">
     <div id="colunaEsquerda">
@@ -2052,6 +2068,145 @@ A
   document.getElementById('delayInicial').addEventListener('change', atualizarTimerTotal);
   document.getElementById('delayEntreMusicas').addEventListener('change', atualizarTimerTotal);
 </script>
+
+
+
+
+
+
+<script>
+// ---------------- TRANSPOSTO ----------------
+const selTranspor = document.getElementById("seltranspor");
+const tons = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
+const tonsMenores = tons.map(t => t + "m");
+
+// popula select com 12 maiores + 12 menores
+selTranspor.innerHTML = "";
+[...tons, ...tonsMenores].forEach(t => {
+  const opt = document.createElement("option");
+  opt.value = t;
+  opt.textContent = t;
+  selTranspor.appendChild(opt);
+});
+
+let musicaTransposicao = null; // música selecionada para transpor
+
+// clique no tom (ao lado do nome) para escolher a música
+document.querySelectorAll("#listaMusicas .musica-option").forEach(container => {
+  const tomSpan = container.querySelector("span:last-child"); 
+  if (tomSpan) {
+    tomSpan.style.cursor = "pointer";
+    tomSpan.title = "Clique para selecionar esta música para transposição";
+    tomSpan.addEventListener("click", () => {
+      document.querySelectorAll("#listaMusicas .musica-option span:last-child").forEach(s => {
+        s.style.fontWeight = "normal";
+        s.style.color = "#444";
+      });
+      tomSpan.style.fontWeight = "bold";
+      tomSpan.style.color = "#0ff";
+
+      const idx = container.querySelector("input").dataset.index;
+      musicaTransposicao = musicas[idx];
+    });
+  }
+});
+
+// quando mudar select → transpõe música ativa
+selTranspor.addEventListener("change", () => {
+  if (!musicaTransposicao) return;
+  const novoTom = selTranspor.value;
+  transporMusica(musicaTransposicao, novoTom);
+
+  // se a música já estiver em execução, atualiza tela
+  if (musicaEmExecucao === musicaTransposicao) {
+    const cifraNova = musicaTransposicao.querySelector("cifra").textContent;
+    const introNova = musicaTransposicao.querySelector("intro")?.textContent || "";
+    const cifraHTML = `<pre class="cifraTexto">${formatarLinhasCifra(cifraNova)}</pre>`;
+    const introHTML = introNova ? `<div class="introTexto">${introNova.replace(/\n/g,"<br>")}</div>` : "";
+    const titulo = musicaTransposicao.querySelector("nome").textContent;
+    letraDiv.innerHTML = `<div class="tituloMusica">${titulo}</div>${introHTML}<br>${cifraHTML}`;
+  }
+});
+
+function transporTextoDeCifra(texto, delta) {
+  const linhas = texto.split("\n");
+  return linhas.map(linha => {
+    const linhaSemEspacos = linha.trim();
+    const temSimbolos = /[#76()\/]/.test(linhaSemEspacos);
+    const temMaiusculas = /[A-G]/.test(linhaSemEspacos);
+    const temMinusculasNaoPermitidas = /[a-ln-zç]/.test(linhaSemEspacos); // 🔹 inclui ç
+    const muitosEspacos = (linha.match(/ /g) || []).length > 3;
+
+    const ehLinhaDeAcorde = (!temMinusculasNaoPermitidas && (temSimbolos || temMaiusculas || muitosEspacos));
+
+    if (ehLinhaDeAcorde && linhaSemEspacos !== "") {
+      // só nesta linha aplica regex para transpor
+      return linha.replace(/([A-G](#|b)?(m)?(7)?(\/[A-G](#|b)?)?)/g, acorde => transporAcorde(acorde, delta));
+    } else {
+      return linha; // letra intacta
+    }
+  }).join("\n");
+}
+
+
+function transporMusica(musica, novoTom) {
+  const cifraTag = musica.querySelector("cifra");
+  const introTag = musica.querySelector("intro");
+  const tomTag = musica.querySelector("tom");
+  if (!cifraTag || !tomTag) return;
+
+  const tomOriginal = tomTag.textContent.trim();
+  const delta = calcularDelta(tomOriginal, novoTom);
+
+	const cifraOriginal = cifraTag.textContent;
+	cifraTag.textContent = transporTextoDeCifra(cifraOriginal, delta);
+
+	if (introTag) {
+	  const introOriginal = introTag.textContent;
+	  introTag.textContent = transporTextoDeCifra(introOriginal, delta);
+	}
+
+  // --- tom atualizado ---
+  tomTag.textContent = novoTom;
+
+  const idx = musicas.indexOf(musica);
+  const container = document.querySelector(`#listaMusicas input[data-index="${idx}"]`).parentElement;
+  const tomSpan = container.querySelector("span:last-child");
+  if (tomSpan) {
+    tomSpan.textContent = ` (${novoTom})`;
+    tomSpan.style.fontWeight = "bold";
+    tomSpan.style.color = "#0ff";
+  }
+}
+
+function calcularDelta(orig, dest) {
+  const tons = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
+  const mapa = {"Db":"C#","Eb":"D#","Gb":"F#","Ab":"G#","Bb":"A#"};
+  if (mapa[orig]) orig = mapa[orig];
+  if (mapa[dest]) dest = mapa[dest];
+  const iOrig = tons.indexOf(orig.replace("m",""));
+  const iDest = tons.indexOf(dest.replace("m",""));
+  if (iOrig === -1 || iDest === -1) return 0;
+  return (iDest - iOrig + 12) % 12;
+}
+
+function transporAcorde(acorde, delta) {
+  const tons = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
+  const mapa = {"Db":"C#","Eb":"D#","Gb":"F#","Ab":"G#","Bb":"A#"};
+  const match = acorde.match(/^([A-G](#|b)?)(.*)$/);
+  if (!match) return acorde;
+  let raiz = match[1];
+  const sufixo = match[3] || "";
+  if (mapa[raiz]) raiz = mapa[raiz];
+  const idx = tons.indexOf(raiz);
+  if (idx === -1) return acorde;
+  const novaRaiz = tons[(idx + delta) % 12];
+  return novaRaiz + sufixo;
+}
+</script>
+
+
+
 
 
 </body>
