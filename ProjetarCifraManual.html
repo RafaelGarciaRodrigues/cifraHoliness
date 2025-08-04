@@ -1646,6 +1646,20 @@ A
       z-index: 9999;
       opacity: 0.6;
     }
+	
+    #divTeoria {
+      position: fixed;
+      top: 3px;
+      left: 440px;
+      background-color: #222;
+      color: #666;
+      border: none;
+      padding: 0px 10px;
+      font-size: 16px;
+      cursor: pointer;
+      z-index: 9999;
+      opacity: 0.6;
+    }
 
     .oculto #colunaEsquerda {
       display: none;
@@ -1696,6 +1710,11 @@ A
 	  background-color: #666;
 	}
 	
+	#teoria{
+		position: relative;
+		top:0px;
+	}
+	
 
 
   </style>
@@ -1708,38 +1727,228 @@ A
 	<div id='divtranspor'><select id='seltranspor'><option>A</option></select></div>
 	<div id='divManual'><input type="checkbox" id="chManual" name="Manual" checked /><label for="Manual">Manual</label></div>
 	<div id='divPlay'><button id="playButton">Iniciar</button></div>
+	<div id='divTeoria'>#</div>
+  </div>
+  
+  <div id="cifra">
+	  <div id="layout">
+		<div id="colunaEsquerda">
+		  <div style='display: inline-flex;'>
+			<div>
+			  <select id='delayInicial' class='delaySelect'>
+				<option>0</option><option>2</option><option>5</option><option>10</option>
+				<option>15</option><option>20</option><option>25</option><option>30</option>
+			  </select>
+			</div>
+			<div>
+			  <select id='delayEntreMusicas' class='delaySelect'>
+				<option>0</option><option>2</option><option>5</option><option>10</option><option>15</option>
+			  </select>
+			</div>
+			<div id='timerTotal'></div>
+		  </div>
+		  <div id="listaMusicas"></div>
+		</div>
+		<div id="colunaDireita">
+		  <div id="container">
+			<div id="letraWrapper">
+			  <div id="letra"></div>
+			</div>
+		  </div>
+		</div>
+	  </div>
+	  <div id="indicadorSlides"></div>
+  </div>
+  
+
+
+<div id="teoria">
+	<style>
+.circulo-wrapper {
+  position: relative;
+  width: 500px;
+  height: 500px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+.circulo-quintas {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 2px solid #444;
+  transition: transform 0.8s ease;
+}
+
+.circulo-quintas .nota {
+  --total: 12;
+  --raio: 230px; /* default (para maiores) */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: rotate(calc(360deg / var(--total) * var(--i)))
+             translateY(var(--raio));
+  text-align: center;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* Texto SEM rotação extra */
+.circulo-quintas .nota span {
+  display: inline-block;
+  transform: rotate(0deg);
+}
+
+/* Maiores → círculo externo */
+.circulo-quintas .nota.maior {
+  --raio: -230px;
+  font-size: 1.5em;
+  color: #fff;
+}
+
+/* Menores → círculo interno */
+.circulo-quintas .nota.menor {
+  --raio: -160px;
+  font-size: 1.2em;
+  color: #1e90ff;
+}
+
+	</style>
+	<table>
+	<tr>
+	<td style='padding: 20px;'>
+	<div class="circulo-wrapper">
+		<div class="circulo-quintas" id="circuloQuintas">
+			<!-- Acordes maiores -->
+			<div class="nota maior" style="--i:0"><span>C</span></div>
+			<div class="nota maior" style="--i:1"><span>G</span></div>
+			<div class="nota maior" style="--i:2"><span>D</span></div>
+			<div class="nota maior" style="--i:3"><span>A</span></div>
+			<div class="nota maior" style="--i:4"><span>E</span></div>
+			<div class="nota maior" style="--i:5"><span>B</span></div>
+			<div class="nota maior" style="--i:6"><span>F#</span></div>
+			<div class="nota maior" style="--i:7"><span>C#</span></div>
+			<div class="nota maior" style="--i:8"><span>Ab</span></div>
+			<div class="nota maior" style="--i:9"><span>Eb</span></div>
+			<div class="nota maior" style="--i:10"><span>Bb</span></div>
+			<div class="nota maior" style="--i:11"><span>F</span></div>
+
+			<!-- Acordes menores -->
+			<div class="nota menor" style="--i:0"><span>Am</span></div>
+			<div class="nota menor" style="--i:1"><span>Em</span></div>
+			<div class="nota menor" style="--i:2"><span>Bm</span></div>
+			<div class="nota menor" style="--i:3"><span>F#m</span></div>
+			<div class="nota menor" style="--i:4"><span>C#m</span></div>
+			<div class="nota menor" style="--i:5"><span>G#m</span></div>
+			<div class="nota menor" style="--i:6"><span>D#m</span></div>
+			<div class="nota menor" style="--i:7"><span>A#m</span></div>
+			<div class="nota menor" style="--i:8"><span>Fm</span></div>
+			<div class="nota menor" style="--i:9"><span>Cm</span></div>
+			<div class="nota menor" style="--i:10"><span>Gm</span></div>
+			<div class="nota menor" style="--i:11"><span>Dm</span></div>
+		</div>
+	</div>
+	</td>
+
+	<td style='padding: 20px;'>
+		<div id='listaDosGraus'>
+			GRAUS
+		</div>
+	
+	</td>
+	</tr>
+	</table>
+	
+	
+<script>
+const circulo = document.getElementById("circuloQuintas");
+const notas = document.querySelectorAll(".circulo-quintas .nota");
+
+const listaDosGraus = document.getElementById("listaDosGraus");
+
+// Escalas maiores simplificadas
+const escalas = {
+  "C": ["C","D","E","F","G","A","B"],
+  "G": ["G","A","B","C","D","E","F#"],
+  "D": ["D","E","F#","G","A","B","C#"],
+  "A": ["A","B","C#","D","E","F#","G#"],
+  "E": ["E","F#","G#","A","B","C#","D#"],
+  "B": ["B","C#","D#","E","F#","G#","A#"],
+  "F#": ["F#","G#","A#","B","C#","D#","E#"],
+  "C#": ["C#","D#","E#","F#","G#","A#","B#"],
+  "F": ["F","G","A","Bb","C","D","E"],
+  "Bb": ["Bb","C","D","Eb","F","G","A"],
+  "Eb": ["Eb","F","G","Ab","Bb","C","D"],
+  "Ab": ["Ab","Bb","C","Db","Eb","F","G"]
+};
+
+// Info extra por grau
+const infoGraus = [
+  {grau:"I",   func:"Tônica",             emoc:"Estável",       vars:"maj7, maj9, 6"},
+  {grau:"ii",  func:"Pré-Dominante",      emoc:"Suave tensão",  vars:"m7, m9, m11"},
+  {grau:"iii", func:"Tônica menor fraca", emoc:"Melancólico",   vars:"m7, m9"},
+  {grau:"IV",  func:"Pré-Dominante",      emoc:"Doce, nobre",   vars:"maj7, 6"},
+  {grau:"V",   func:"Dominante",          emoc:"Tenso",         vars:"7, 9, 13, 7(b9)"},
+  {grau:"vi",  func:"Tônica menor",       emoc:"Introspectivo", vars:"m7, m9, m11"},
+  {grau:"vii°",func:"Dominante fraco",    emoc:"Instável",      vars:"m7(b5)"}
+];
+
+// Função que monta a tabela do campo harmônico
+function mostrarCampoHarmonico(tonica) {
+  const escala = escalas[tonica];
+  if (!escala) {
+    listaDosGraus.innerHTML = `<p>Não tenho a escala para ${tonica} ainda.</p>`;
+    return;
+  }
+
+  let html = "<table border='1' cellpadding='5'>";
+  html += "<tr><th>Grau</th><th>Acorde</th><th>Função</th><th>Emoção</th><th>Variações úteis</th></tr>";
+
+  escala.forEach((nota, idx) => {
+    let acorde = nota;
+    if (idx === 1 || idx === 2 || idx === 5) acorde += "m";   // ii, iii, vi
+    if (idx === 6) acorde += "dim";                           // vii°
+    
+    html += `<tr>
+      <td>${infoGraus[idx].grau}</td>
+      <td>${acorde}</td>
+      <td>${infoGraus[idx].func}</td>
+      <td>${infoGraus[idx].emoc}</td>
+      <td>${nota}${infoGraus[idx].vars}</td>
+    </tr>`;
+  });
+
+  html += "</table>";
+  listaDosGraus.innerHTML = html;
+}
+
+// Eventos de clique
+notas.forEach((nota, i) => {
+  nota.addEventListener("click", () => {
+    // gira o círculo
+    const angulo = -(360 / 12) * i;
+    circulo.style.transform = `rotate(${angulo}deg)`;
+
+    // só reage se clicou em maior
+    if (nota.classList.contains("maior")) {
+      const tonica = nota.innerText.trim();
+      mostrarCampoHarmonico(tonica);
+    }
+  });
+});
+</script>
 
 	
 	
-  </div>
-  <div id="layout">
-    <div id="colunaEsquerda">
-      <div style='display: inline-flex;'>
-        <div>
-          <select id='delayInicial' class='delaySelect'>
-            <option>0</option><option>2</option><option>5</option><option>10</option>
-            <option>15</option><option>20</option><option>25</option><option>30</option>
-          </select>
-        </div>
-        <div>
-          <select id='delayEntreMusicas' class='delaySelect'>
-            <option>0</option><option>2</option><option>5</option><option>10</option><option>15</option>
-          </select>
-        </div>
-        <div id='timerTotal'></div>
-      </div>
-      <div id="listaMusicas"></div>
-    </div>
-    <div id="colunaDireita">
-      <div id="container">
-        <div id="letraWrapper">
-          <div id="letra"></div>
-        </div>
-      </div>
-    </div>
-  </div>
+</div>
 
-	<div id="indicadorSlides"></div>
+
+
+
+
+
+  
 
 
 
@@ -2494,7 +2703,26 @@ window.tocarMusica = async function(musica, delayTotal = 0) {
 </script>
 
 
+<script>
+// 🔹 inicia #teoria oculto
+document.getElementById("teoria").style.display = "none";
 
+document.getElementById("divTeoria").addEventListener("click", () => {
+  const teoria = document.getElementById("teoria");
+  const cifra = document.getElementById("cifra");
+
+  if (teoria.style.display === "none" || teoria.style.display === "") {
+    // mostra teoria, esconde cifra
+    teoria.style.display = "block";
+    cifra.style.display = "none";
+  } else {
+    // mostra cifra, esconde teoria
+    teoria.style.display = "none";
+    cifra.style.display = "block";
+  }
+});
+
+</script>
 
 </body>
 </html>
