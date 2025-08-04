@@ -7,7 +7,7 @@
 <musica>
 	<nome>A Alegria Está No Coração</nome>
 	<tom>C</tom>
-	<rolagem>120</rolagem>
+	<rolagem>210</rolagem>
 	<tempo>130</tempo>
 	<ritmo>1</ritmo>
 	<delay>10</delay>
@@ -60,7 +60,6 @@ Que vem do nosso Senhor
 É o amor que só tem quem
                 C  A# F  
 Já conhece a Jesus
-
 --
          C           
 Posso pisar numa tropa
@@ -68,6 +67,7 @@ Posso pisar numa tropa
 E saltar as muralhas
     F        G#
 Aleluia! Aleluia!
+--
          C           
 Posso pisar numa tropa
       C7
@@ -85,20 +85,16 @@ Posso pisar numa tropa
    G
 E saltar as muralhas
 
+    C    G    C    G
+Aleluia! Aleluia! 
 --
-    C    G
-Aleluia! 
-
     C        F  C
 Aleluia! Alelui_a!
              D7  G
-
 Aleluia! Alelui__a!
     C        F  C
-
 Aleluia! Alelui_a!
              D7  G
-
 Aleluia! Alelui__a!
 
 --
@@ -111,6 +107,7 @@ Que vem do nosso Senhor
 É o amor que só tem quem
                 C  G
 Já conhece a Jesus
+--
       C          G      
 É o amor que só tem quem
                 A# F
@@ -169,7 +166,7 @@ Tua graça nunca falha
 Todos os dias
       D7M/A       E6
 Eu estou em Tuas mãos
-
+--
                    F#m7 D7M/A
 Desde quando me levanto
         A     E/G# F#m7
@@ -212,7 +209,7 @@ Na escuri_dão
 
         D7M/A       E6
 Tua presença me conforta
-
+--
                 F#m7 D7M/A
 Sei que és meu Pai
 
@@ -260,7 +257,7 @@ A/C#                D7M/A
     Tua bondade me seguirá
     E6         A
 Me seguirá Senhor
-
+--
        A/C#           D7M/A               
 Eu me rendo a Ti, te dou o meu ser
     E6          F#m7
@@ -326,7 +323,7 @@ Grande
 é o Senhor
                    D
 E mui digno de louvor
-
+--
       G/D
 Na cidade do nosso Deus
      A/C#  Bm7
@@ -337,7 +334,7 @@ Seu Santo monte
 
  Em7  F#m7 G7M  A4
  ter - ra - a - a
- 
+ --
  
  
   D           
@@ -351,13 +348,13 @@ Em quem nós temos a vitória
 E que nos ajuda
              Bm
 Contra o inimigo
-
+--
         D9
     Por isso diante dele nos
 
        Em7  F#m7 G7M  A4
  prostramos
- 
+ --
  
  
     D
@@ -369,7 +366,7 @@ G7M
 E agradecer-Te
 D/F#      Em7             A
 Por Tua obra em nossas vidas
-
+--
      D
 Confiamos em Teu
            D7M
@@ -380,7 +377,7 @@ Pois só Tu és o Deus eterno
 
 Em7        A4
 Sobre toda terra e céus
-
+--
 
 
   D           
@@ -389,18 +386,18 @@ Grande
 é o Senhor
                        D
 Em quem nós temos a vitória 
-
+--
        G/D
 E que nos ajuda
              Bm
 Contra o inimigo
-
+--
         D9
     Por isso diante dele nos
 
        Em7  F#m7 G7M  A4
  prostramos
-
+--
 
 
     D
@@ -414,7 +411,7 @@ G7M
 E agradecer-Te
 D/F#        Em7             A4
     Por Tua obra em nossas vidas
-	
+--	
      D
 Confiamos em Teu
            D7M
@@ -424,7 +421,7 @@ Infinito amor
 Pois só Tu és o Deus eterno
  Em7        A4
 Sobre toda terra
-
+--
     D
 Queremos o Teu
             D7M
@@ -434,7 +431,7 @@ G7M
 E agradecer-Te
 D/F#        Em7             A4
     Por Tua obra em nossas vidas
-		
+--		
      D
 Confiamos em Teu
            D7M
@@ -1508,6 +1505,7 @@ A
 
     .cifraTexto {
       text-align: left;
+	  line-height: 1.5em;
     }
 
     .musica-option {
@@ -1549,6 +1547,7 @@ A
 
     .acorde {
       color: #666;
+	  line-height: 1.2em;
     }
     .delaySelect{
       margin: 1px 0px 15px 9px;
@@ -1668,6 +1667,37 @@ A
 	  border-radius: 50%;
 	}
 
+  .proximoAcorde {
+    display: block;
+    margin-top: 0px;
+    font-size: 0.9em;
+    color: #888;
+    text-align: right;
+  }
+
+	#indicadorSlides {
+	  position: fixed;
+	  top: 15px;
+	  right: 15px;
+	  display: flex;
+	  gap: 6px;
+	  z-index: 9999;
+	}
+
+	.bolinhaSlide {
+	  width: 10px;
+	  height: 10px;
+	  border: 1px solid #666;
+	  border-radius: 50%;
+	  background-color: transparent;
+	}
+
+	.bolinhaSlide.ativa {
+	  background-color: #666;
+	}
+	
+
+
   </style>
 </head>
 <body>
@@ -1709,7 +1739,7 @@ A
     </div>
   </div>
 
-
+	<div id="indicadorSlides"></div>
 
 
 
@@ -2291,18 +2321,21 @@ function transporAcorde(acorde, delta) {
   document.addEventListener('keydown', (e) => {
     if (!emModoManual || slides.length === 0) return;
 
-    if (e.key === "ArrowRight") {
-      if (slideAtual < slides.length - 1) {
-        slideAtual++;
-        exibirSlideAtual();
-      } else if (slideAtual === slides.length - 1) {
-        // último slide, então encerra modo manual e chama próxima música
-        emModoManual = false;
-        if (typeof proximaMusicaCallback === "function") {
-          proximaMusicaCallback();
-        }
-      }
-    } else if (e.key === "ArrowLeft") {
+	if (e.key === "ArrowRight") {
+	  if (slideAtual < slides.length - 1) {
+		slideAtual++;
+		exibirSlideAtual();
+	  } else if (slideAtual === slides.length - 1) {
+		// usuário pressionou → no último slide: encerrar pad/metrônomo
+		emModoManual = false;
+		pararMetronomo?.();
+		pararPad?.();
+		if (typeof proximaMusicaCallback === "function") {
+		  proximaMusicaCallback();
+		}
+	  }
+	}
+	 else if (e.key === "ArrowLeft") {
       if (slideAtual > 0) {
         slideAtual--;
         exibirSlideAtual();
@@ -2310,23 +2343,35 @@ function transporAcorde(acorde, delta) {
     }
   });
 
-  function exibirSlideAtual() {
-    const letraDiv = document.getElementById('letra');
-    letraDiv.style.transition = 'top 500ms';
-
-    if (slideAtual === 0) {
-      letraDiv.innerHTML = slides[0];
-    } else {
-      letraDiv.innerHTML = `
-        <pre class="cifraTexto">${formatarLinhasCifra(slides[slideAtual])}</pre>
-        <div style="text-align:center; color:#aaa; font-size:0.8em; margin-top:10px;">
-          Slide ${slideAtual}/${slides.length - 1}
-        </div>
-      `;
+function atualizarIndicadorSlides() {
+  const indicador = document.getElementById('indicadorSlides');
+  indicador.innerHTML = ""; // limpa antes
+  slides.forEach((_, i) => {
+    if (i === 0) return; // não cria bolinha para slide de título/intro
+    const bolinha = document.createElement("div");
+    bolinha.className = "bolinhaSlide";
+    if (i === slideAtual) {
+      bolinha.classList.add("ativa");
     }
+    indicador.appendChild(bolinha);
+  });
+}
 
-    letraDiv.style.top = '20px';
+function exibirSlideAtual() {
+  const letraDiv = document.getElementById('letra');
+  letraDiv.style.transition = 'top 500ms';
+
+  if (slideAtual === 0) {
+    letraDiv.innerHTML = slides[0];
+  } else {
+    letraDiv.innerHTML = `
+      <pre class="cifraTexto">${formatarLinhasCifra(slides[slideAtual])}</pre>
+    `;
   }
+
+  letraDiv.style.top = '0px';
+  atualizarIndicadorSlides();
+}
 
   function formatarLinhasCifra(cifraTexto) {
     const linhas = cifraTexto.split('\n');
@@ -2355,20 +2400,47 @@ window.tocarMusica = async function(musica, delayTotal = 0) {
   const letraDiv = document.getElementById('letra');
   const nome = musica.querySelector('nome')?.textContent.trim() || '';
   const intro = musica.querySelector('intro')?.textContent.trim() || '';
-  const cifra = musica.querySelector('cifra')?.textContent.trim() || '';
   const rolagemTag = parseFloat(musica.querySelector('rolagem')?.textContent) || 30;
   const tempo = parseInt(musica.querySelector('tempo')?.textContent) || 0;
   const ritmo = parseInt(musica.querySelector('ritmo')?.textContent) || 1;
   const tom = musica.querySelector('tom')?.textContent.trim() || 'C';
-
   const modoManual = document.getElementById('chManual').checked;
+
+  // --- extrai o conteúdo puro de <cifra> preservando quebras de linha ---
+  let cifra = '';
+  const raw = musica.innerHTML;
+  const match = raw.match(/<cifra[^>]*>([\s\S]*?)<\/cifra>/i);
+  if (match) {
+    cifra = match[1]
+      .replace(/^\s+|\s+$/g, '')
+      .replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+  }
+
+  // 🔹 remove linhas em branco (vazias ou com espaços/tabs) no modo manual
+  if (modoManual) {
+    cifra = cifra
+      .split('\n')
+      .map(l => l.trim())
+      .filter(l => l !== '')
+      .join('\n');
+  }
 
   rolagemAtual = rolagemTag > 1 ? rolagemTag : 30;
   document.getElementById('timeRolagem').textContent = rolagemAtual;
 
-  // MODO MANUAL (slide)
+  // ✅ MODO MANUAL
   if (modoManual && cifra.includes("--")) {
     emModoManual = true;
+
+    const partes = cifra.split("--")
+      .map(parte =>
+        parte
+          .split('\n')
+          .map(l => l.trim())
+          .filter(l => l !== '')
+          .join('\n')
+      )
+      .filter(p => p.length > 0);
 
     slides = [
       `
@@ -2377,9 +2449,18 @@ window.tocarMusica = async function(musica, delayTotal = 0) {
       <div style="margin-top:30px; font-size:1.2em; color:#777;">>>></div>
       `
     ];
-    slides.push(
-      ...cifra.split("--").map(parte => parte.trim()).filter(p => p.length > 0)
-    );
+
+    for (let i = 0; i < partes.length; i++) {
+      let atual = partes[i];
+      let proximo = partes[i + 1] || '';
+      let proximoAcorde = proximo.match(/[A-G][#b]?m?(?:sus\d*|add\d*|dim|aug)?\d*/)?.[0] || '';
+
+      if (proximoAcorde) {
+        atual += `\n\n<span class="proximoAcorde">... <b>${proximoAcorde}</b></span>`;
+      }
+
+      slides.push(atual);
+    }
 
     slideAtual = 0;
     exibirSlideAtual();
@@ -2390,18 +2471,25 @@ window.tocarMusica = async function(musica, delayTotal = 0) {
       iniciarPad?.(tom);
     }
 
-    // Retorna uma Promise que será resolvida ao final do último slide
     return new Promise((resolve) => {
       proximaMusicaCallback = () => {
         emModoManual = false;
+        pararMetronomo?.();
+        pararPad?.();
         resolve(); // permite seguir para próxima música na sequência
       };
     });
   }
 
-  // MODO AUTOMÁTICO
+  // ✅ MODO AUTOMÁTICO — mantém comportamento original
   return await tocarMusicaOriginal(musica, delayTotal);
 };
+
+
+
+
+
+
 
 </script>
 
