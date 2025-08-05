@@ -1814,6 +1814,13 @@ A
   color: #1e90ff;
 }
 
+.nota.destacar {
+  background: yellow;
+  border-radius: 50%;
+  padding: 5px;
+  color: black !important;
+}
+
 	</style>
 	<table>
 	<tr>
@@ -1902,14 +1909,44 @@ function mostrarCampoHarmonico(tonica) {
     return;
   }
 
+  // Limpa cores anteriores (fundo e texto)
+  document.querySelectorAll('.nota').forEach(div => {
+    div.style.background = '';
+    div.style.color = 'white'; // volta para a cor original
+  });
+
   let html = "<table border='1' cellpadding='5'>";
   html += "<tr><th>Grau</th><th>Acorde</th><th>Função</th><th>Emoção</th><th>Variações úteis</th></tr>";
 
   escala.forEach((nota, idx) => {
     let acorde = nota;
-    if (idx === 1 || idx === 2 || idx === 5) acorde += "m";   // ii, iii, vi
-    if (idx === 6) acorde += "dim";                           // vii°
-    
+    let cor = "yellow"; // cor padrão para os acordes do campo harmônico
+
+    if (idx === 1 || idx === 2 || idx === 5) {
+      acorde += "m";
+    } else if (idx === 6) {
+      acorde = nota + "dim";
+      cor = "orange"; // cor especial para o diminuto
+    }
+
+    // Marca os acordes no círculo (tanto os maiores quanto menores)
+    document.querySelectorAll('.nota').forEach(div => {
+      const span = div.querySelector('span');
+      if (!span) return;
+      const texto = span.innerText;
+
+      if (idx === 6) {
+        // Para o diminuto, tenta encontrar a nota equivalente no círculo
+        if (texto === nota || texto === nota + "m") {
+          div.style.color = cor;
+        }
+      } else {
+        if (texto === acorde) {
+          div.style.color = cor;
+        }
+      }
+    });
+
     html += `<tr>
       <td>${infoGraus[idx].grau}</td>
       <td>${acorde}</td>
@@ -1922,6 +1959,8 @@ function mostrarCampoHarmonico(tonica) {
   html += "</table>";
   listaDosGraus.innerHTML = html;
 }
+
+
 
 // Eventos de clique
 notas.forEach((nota, i) => {
@@ -2527,30 +2566,33 @@ function transporAcorde(acorde, delta) {
   let emModoManual = false;
   let proximaMusicaCallback = null;
 
-  document.addEventListener('keydown', (e) => {
-    if (!emModoManual || slides.length === 0) return;
+document.addEventListener('keydown', (e) => {
+  if (!emModoManual || slides.length === 0) return;
 
-	if (e.key === "ArrowRight") {
-	  if (slideAtual < slides.length - 1) {
-		slideAtual++;
-		exibirSlideAtual();
-	  } else if (slideAtual === slides.length - 1) {
-		// usuário pressionou → no último slide: encerrar pad/metrônomo
-		emModoManual = false;
-		pararMetronomo?.();
-		pararPad?.();
-		if (typeof proximaMusicaCallback === "function") {
-		  proximaMusicaCallback();
-		}
-	  }
-	}
-	 else if (e.key === "ArrowLeft") {
-      if (slideAtual > 0) {
-        slideAtual--;
-        exibirSlideAtual();
+  // Avançar slide: → ou ↑ ou PageDown
+  if (["ArrowRight", "ArrowDown", "PageDown"].includes(e.key)) { 
+    if (slideAtual < slides.length - 1) {
+      slideAtual++;
+      exibirSlideAtual();
+    } else if (slideAtual === slides.length - 1) {
+      emModoManual = false;
+      pararMetronomo?.();
+      pararPad?.();
+      if (typeof proximaMusicaCallback === "function") {
+        proximaMusicaCallback();
       }
     }
-  });
+  }
+
+  // Retroceder slide: ← ou ↓ ou PageUp
+  else if (["ArrowLeft", "ArrowUp", "PageUp"].includes(e.key)) {
+    if (slideAtual > 0) {
+      slideAtual--;
+      exibirSlideAtual();
+    }
+  }
+});
+
 
 function atualizarIndicadorSlides() {
   const indicador = document.getElementById('indicadorSlides');
