@@ -3664,11 +3664,15 @@ function alterarBpm(novo) {
 
 
 
+
+
+
+
 <script>
-/* === RESYNC NO ESPAÇO — COM LOGS DE DEBUG, FUNCIONA TAMBÉM NO MODO MANUAL === */
+/* === RESYNC NO ESPAÇO — COM LOGS DE DEBUG (não bloqueia o TAP) === */
 (function () {
   const TAG = "[SYNC]";
-  const PERMITIR_EM_MODO_MANUAL = true; // << se quiser bloquear em modo manual, mude para false
+  const PERMITIR_EM_MODO_MANUAL = true;
 
   function tapAtivo() {
     const btn = document.getElementById("btnBpmTap");
@@ -3678,18 +3682,14 @@ function alterarBpm(novo) {
   function estado() {
     const hasCtx = (typeof audioCtx !== "undefined") && !!audioCtx;
     const hasMet = (typeof metronomeInterval !== "undefined") && !!metronomeInterval;
-    const _emManual = (typeof emModoManual !== "undefined") ? emModoManual : false;
-    const _bpmAtual = (typeof bpmAtual !== "undefined") ? bpmAtual : (typeof window !== "undefined" ? window.bpmAtual : undefined);
-    const _bpmBase  = (typeof bpmBase  !== "undefined") ? bpmBase  : (typeof window !== "undefined" ? window.bpmBase  : undefined);
-    const _ritmo    = (typeof ritmoAtual !== "undefined") ? ritmoAtual : (typeof window !== "undefined" ? window.ritmoAtual : undefined);
     return {
       hasAudioCtx: hasCtx,
       hasMetronome: hasMet,
-      emModoManual: _emManual,
+      emModoManual: (typeof emModoManual !== "undefined") ? emModoManual : false,
       tapAtivo: tapAtivo(),
-      bpmAtual: _bpmAtual,
-      bpmBase: _bpmBase,
-      ritmoAtual: _ritmo,
+      bpmAtual: (typeof bpmAtual !== "undefined") ? bpmAtual : window.bpmAtual,
+      bpmBase: (typeof bpmBase !== "undefined") ? bpmBase : window.bpmBase,
+      ritmoAtual: (typeof ritmoAtual !== "undefined") ? ritmoAtual : window.ritmoAtual,
       contagem: (typeof contagem !== "undefined") ? contagem : "(indisp.)",
       nextNoteTime: (typeof nextNoteTime !== "undefined") ? nextNoteTime : "(indisp.)",
       currentTime: hasCtx ? audioCtx.currentTime : "(sem audioCtx)"
@@ -3698,9 +3698,7 @@ function alterarBpm(novo) {
 
   function getBpmRitmo() {
     const st = estado();
-    const bpm   = (st.bpmAtual ?? st.bpmBase ?? 120);
-    const ritmo = (st.ritmoAtual ?? 1);
-    return { bpm, ritmo };
+    return { bpm: (st.bpmAtual ?? st.bpmBase ?? 120), ritmo: (st.ritmoAtual ?? 1) };
   }
 
   function resyncMetronomo() {
@@ -3708,31 +3706,27 @@ function alterarBpm(novo) {
     console.log(TAG, "RESYNC requisitado — estado inicial:", st);
 
     if (!st.hasAudioCtx || !st.hasMetronome) {
-      console.warn(TAG, "Sem audioCtx ou metronomeInterval ativo — não dá pra resync agora.");
+      console.warn(TAG, "Sem audioCtx/metronome — não dá pra resync agora.");
       return;
     }
-
     if (!PERMITIR_EM_MODO_MANUAL && st.emModoManual) {
       console.warn(TAG, "emModoManual=true e bloqueado por configuração.");
       return;
     }
-
     if (st.tapAtivo) {
-      console.warn(TAG, "Modo TAP BPM ativo — mantendo como TAP. Desative o TAP para resync.");
+      console.warn(TAG, "TAP ativo — não vou resync.");
       return;
     }
 
     const { bpm, ritmo } = getBpmRitmo();
-    console.log(TAG, `Chamando iniciarMetronomo(${bpm}, ${ritmo}) para zerar fase/compasso`);
+    console.log(TAG, `Chamando iniciarMetronomo(${bpm}, ${ritmo})`);
 
     try { audioCtx.resume && audioCtx.resume(); } catch {}
-
     if (typeof iniciarMetronomo !== "function") {
       console.error(TAG, "iniciarMetronomo não existe.");
       return;
     }
 
-    // Logs "ANTES" de reiniciar
     const antes = {
       contagem: (typeof contagem !== "undefined") ? contagem : "(indisp.)",
       nextNoteTime: (typeof nextNoteTime !== "undefined") ? nextNoteTime : "(indisp.)",
@@ -3740,9 +3734,8 @@ function alterarBpm(novo) {
     };
     console.log(TAG, "ANTES de iniciarMetronomo:", antes);
 
-    iniciarMetronomo(bpm, ritmo); // isso zera contagem e reposiciona a fase
+    iniciarMetronomo(bpm, ritmo);
 
-    // Logs "DEPOIS" de reiniciar
     const depois = {
       contagem: (typeof contagem !== "undefined") ? contagem : "(indisp.)",
       nextNoteTime: (typeof nextNoteTime !== "undefined") ? nextNoteTime : "(indisp.)",
@@ -3750,7 +3743,6 @@ function alterarBpm(novo) {
     };
     console.log(TAG, "DEPOIS de iniciarMetronomo:", depois);
 
-    // Downbeat imediato para “colar” tua referência
     try {
       const tomAtual =
         (typeof musicaEmExecucao !== "undefined" && musicaEmExecucao
@@ -3761,10 +3753,7 @@ function alterarBpm(novo) {
       console.log(TAG, `Downbeat agendado: tom=${tomAtual}, when=${when.toFixed(3)}s`);
       if (typeof tocarNotaBaixo === "function") {
         tocarNotaBaixo(tomAtual, when, true);
-      } else {
-        console.warn(TAG, "tocarNotaBaixo inexistente — sem clique de referência.");
       }
-      // Confirmação rápida pós-agendamento
       setTimeout(() => {
         console.log(TAG, "Confirmação pós-downbeat:", {
           contagem: (typeof contagem !== "undefined") ? contagem : "(indisp.)",
@@ -3777,27 +3766,40 @@ function alterarBpm(novo) {
     }
   }
 
+  // 🔧 Handler ESPAÇO: só bloqueia o evento quando vamos RESYNC de fato.
   window.addEventListener("keydown", function (e) {
     if (e.code !== "Space") return;
+
     const st = estado();
     console.log(TAG, "ESPAÇO lido:", st);
 
-    // Não rolamos a página, e garantimos prioridade
-    e.preventDefault();
-    e.stopImmediatePropagation();
-
-    // Se você quiser que o ESPAÇO só resync quando o metrônomo estiver ativo:
-    if (!st.hasMetronome) {
-      console.warn(TAG, "Metrônomo OFF — ESPAÇO ignorado para resync.");
+    // 1) Se TAP está ativo → NÃO bloqueia; deixa o evento fluir para o TAP
+    if (st.tapAtivo) {
+      console.log(TAG, "TAP ativo — liberando evento para o medidor de BPM.");
       return;
     }
-    // PERMITIMOS resync mesmo em modo manual (config no topo)
+
+    // 2) Se metrônomo não está rodando → também não bloqueia (TAP pode usar)
+    if (!st.hasMetronome) {
+      console.log(TAG, "Metrônomo OFF — liberando evento (TAP/teclas).");
+      return;
+    }
+
+    // 3) Aqui sim: vamos ressync → bloqueia a tecla e ressincroniza
+    e.preventDefault();
+    e.stopImmediatePropagation();
     resyncMetronomo();
   }, { capture: true });
 
-  console.log(TAG, "Handler instalado. (manual permitido =", PERMITIR_EM_MODO_MANUAL, ")");
+  console.log(TAG, "Handler instalado (não bloqueia TAP nem metrônomo OFF).");
 })();
 </script>
+
+
+
+
+
+
 
 
 
