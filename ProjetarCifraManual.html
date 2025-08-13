@@ -2237,7 +2237,19 @@ Sobre a morte venceu
 		top:0px;
 	}
 	
-
+	.bolaBatida{
+		
+		width: 30px;
+		height: 30px;
+		border-radius: 50%;
+		margin: 0px 15px 15px 15px;
+		opacity: 0.25;
+	}
+	#bola1{background-color: limegreen;}
+	#bola2{background-color: limegreen;}
+	#bola3{background-color: limegreen;}
+	#bola4{background-color: greenyellow;}
+	#bola5{background-color: tomato;}
 
   </style>
 </head>
@@ -2275,6 +2287,13 @@ Sobre a morte venceu
 		  <div id="container">
 			<div id="letraWrapper">
 			  <div id="letra"></div>
+			  <div id="batidaVisual" style='justify-self: right;'>
+				<div id="bola5" class='bolaBatida'></div>
+				<div id="bola4" class='bolaBatida'></div>
+				<div id="bola3" class='bolaBatida'></div>
+				<div id="bola2" class='bolaBatida'></div>
+				<div id="bola1" class='bolaBatida'></div>
+			  </div>
 			</div>
 		  </div>
 		</div>
@@ -3779,6 +3798,125 @@ function alterarBpm(novo) {
   console.log(TAG, "Handler instalado. (manual permitido =", PERMITIR_EM_MODO_MANUAL, ")");
 })();
 </script>
+
+
+
+
+
+<script>
+/* === LUZES EM CASCATA (mesa de som) ===
+   - Liga 1→2→3→(4→5) com step curto
+   - Segura todas acesas por hold curto
+   - Desliga em ordem inversa (5→4→…→1)
+   - #bola1 liga primeiro e apaga por último
+*/
+(function () {
+  const CFG = {
+    baseOpacity: 0.25,
+    stepOnMs: 15,   // intervalo entre ligar cada bola (rápido)
+    holdMs: 50,     // tempo com TODAS acesas antes de começar a desligar
+    stepOffMs: 35,  // intervalo entre desligar cada bola (inverso)
+    fadeMs: 70      // duração do fade para voltar à base
+  };
+
+  const bolas = [
+    document.getElementById("bola1"),
+    document.getElementById("bola2"),
+    document.getElementById("bola3"),
+    document.getElementById("bola4"),
+    document.getElementById("bola5"),
+  ].filter(Boolean);
+
+  if (bolas.length < 5) {
+    console.warn("[BATIDA] faltam bolas (#bola1..#bola5).");
+    return;
+  }
+
+  // estado inicial
+  bolas.forEach(el => {
+    el.style.opacity = String(CFG.baseOpacity);
+    el.style.transition = "opacity 0ms";
+    el.style.willChange = "opacity";
+  });
+
+  function cancelTimers(el) {
+    if (el._onT)  { clearTimeout(el._onT);  el._onT  = null; }
+    if (el._offT) { clearTimeout(el._offT); el._offT = null; }
+  }
+
+  function ligarInstant(el) {
+    el.style.transition = "opacity 0ms";
+    el.style.opacity = "1";
+  }
+  function desligarComFade(el) {
+    el.style.transition = `opacity ${CFG.fadeMs}ms linear`;
+    el.style.opacity = String(CFG.baseOpacity);
+  }
+
+  function cascata(count) {
+    // limpa timers e garante extras (se houver) na base
+    for (let i = 0; i < bolas.length; i++) {
+      cancelTimers(bolas[i]);
+      if (i >= count) {
+        bolas[i].style.transition = "opacity 0ms";
+        bolas[i].style.opacity = String(CFG.baseOpacity);
+      }
+    }
+
+    // 1) LIGAR 1→...→count
+    for (let i = 0; i < count; i++) {
+      const el = bolas[i];
+      el._onT = setTimeout(() => ligarInstant(el), i * CFG.stepOnMs);
+    }
+
+    // 2) HOLD com todas acesas
+    const allOnAt = (count - 1) * CFG.stepOnMs; // instante em que a última acende
+    const startOffAt = allOnAt + CFG.holdMs;
+
+    // 3) DESLIGAR inverso: count→...→1
+    for (let k = count - 1; k >= 0; k--) {
+      const el = bolas[k];
+      const order = (count - 1) - k; // 0,1,2,...
+      el._offT = setTimeout(() => desligarComFade(el), startOffAt + order * CFG.stepOffMs);
+    }
+  }
+
+  // agenda pelo clock do áudio
+  function scheduleVisual(when, isForte) {
+    const count = isForte ? 5 : 3;
+    try {
+      if (typeof audioCtx !== "undefined" && audioCtx) {
+        const delayMs = Math.max(0, (when - audioCtx.currentTime) * 1000);
+        setTimeout(() => cascata(count), delayMs);
+      } else {
+        cascata(count);
+      }
+    } catch {
+      cascata(count);
+    }
+  }
+
+  // patch em tocarNotaBaixo
+  function patch() {
+    if (typeof window.tocarNotaBaixo !== "function" || window._visualBeatPatchedMixer) return false;
+    const _orig = window.tocarNotaBaixo;
+    window.tocarNotaBaixo = function (tom, when, isTonica = true) {
+      try { scheduleVisual(when, !!isTonica); } catch {}
+      return _orig.apply(this, arguments);
+    };
+    window._visualBeatPatchedMixer = true;
+    return true;
+  }
+
+  if (!patch()) {
+    let tries = 0;
+    const t = setInterval(() => {
+      if (patch() || ++tries > 80) clearInterval(t);
+    }, 25);
+  }
+})();
+</script>
+
 
 
 
