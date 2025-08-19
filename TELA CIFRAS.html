@@ -3975,7 +3975,29 @@ function alterarBpm(novo) {
 </script>
 
 
+<script>
+// --- REMOVE o evento antigo do playButton ---
+playButton.replaceWith(playButton.cloneNode(true)); 
+// (isso remove todos os listeners do botão Play)
 
+// --- ADICIONA no letraWrapper ---
+document.getElementById('letraWrapper').addEventListener('click', async () => {
+  autoHideMenuIfMulti(); // mantém a lógica de esconder menu/tela cheia
+  iniciarContagemRegressiva();
+
+  const delayInicial = parseInt(document.getElementById('delayInicial').value) || 0;
+  const delayEntre   = parseInt(document.getElementById('delayEntreMusicas').value) || 0;
+
+  for (let i = 0; i < ordemSelecionada.length; i++) {
+    const index = ordemSelecionada[i];
+    const musica = musicas[index];
+    const baseDelay = parseFloat(musica.querySelector('delay')?.textContent) || 0;
+    const delayExtra = i === 0 ? delayInicial : delayEntre;
+    await tocarMusica(musica, baseDelay + delayExtra);
+  }
+});
+
+</script>
 
 
 
