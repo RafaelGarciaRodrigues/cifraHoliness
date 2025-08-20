@@ -31,7 +31,7 @@
 	<delay>10</delay>
 	<tempo>72</tempo>
 	<ritmo>1</ritmo>
-	<url></url>
+	<url>https://www.youtube.com/watch?v=_WpLhbXcLQQ</url>
 	<intro>
 Bm  A/C#  G
 	</intro>
@@ -87,7 +87,7 @@ Obras maiores se farão aqui
 	<tom>G</tom>
 	<rolagem>200</rolagem>
 	<delay>10</delay>
-	<tempo>43</tempo>
+	<tempo>42</tempo>
 	<ritmo>1</ritmo>
 	<url>https://www.youtube.com/watch?v=3gjtTVr4yfc&t=153s</url>
 	<intro>
@@ -95,79 +95,74 @@ Em7  D  C
 Em7  D  C
 	</intro>
 <cifra>
-      Em7    D    
+C      G    D/F#
 Eis-me aqui outra vez
-C
-Diante de Ti abro meu coração
-      Em7    D   
+  Em                 C
+Diante de Ti abro o meu coração
+      G          D/F#
 Meu clamor Tu escutas
-C
+   Em               C
 E fazes cair as barreiras em mim
 --
-    Em7           D  
+     G              D/F#
 És fiel, Senhor, e dizes
-C
+   Em                   C
 Palavras de amor e esperança sem fim
+    G      D/F#
+Ao sentir Teu toque
+     Em             C
+Por Tua bondade, libertas meu ser
+      Am7    Bm7  C7M       
+No calor deste lugar
 --
-    Em7    D  
-Ao sentir o Teu toque
-C
-Por Tua bondade libertas meu ser
---
-     Am    G/B  C      D
-No calor deste lugar   Eu venho
-G           D
-Me derramar, dizer que Te amo
-Em7          C
-Me derramar, dizer Te preciso
-G           D
+D         G              D/F#
+Eu venho me derramar, dizer que Te amo
+ Em             C
+Me derramar, dizer: Te preciso
+ G              D/F#
 Me derramar, dizer que sou grato
-Em7          C
-Me derramar, dizer que És formoso
+ Em             C
+Me derramar, dizer que és formoso
 --
-Em7  D  C
+G  D/F#  Em  C
 --
-      Em7    D    
+       G    D/F#
 Eis-me aqui outra vez
-C
-Diante de Ti abro meu coração
-      Em7    D   
+  Em                 C
+Diante de Ti abro o meu coração
+      G          D/F#
 Meu clamor Tu escutas
-C
+   Em               C
 E fazes cair as barreiras em mim
 --
-    Em7           D  
+     G              D/F#
 És fiel, Senhor, e dizes
-C
+   Em                   C
 Palavras de amor e esperança sem fim
+    G      D/F#
+Ao sentir Teu toque
+     Em             C
+Por Tua bondade, libertas meu ser 
+      Am7    Bm7  C7M       
+No calor deste lugar
 --
-    Em7    D  
-Ao sentir o Teu toque
-C
-Por Tua bondade libertas meu ser
---
-     Am    G/B  C      D
-No calor deste lugar   Eu venho
-G           D
-Me derramar, dizer que Te amo
-Em7          C
-Me derramar, dizer Te preciso
-G           D
+D         G              D/F#
+Eu venho me derramar, dizer que Te amo
+ Em             C
+Me derramar, dizer: Te preciso
+ G              D/F#
 Me derramar, dizer que sou grato
-Em7          C
-Me derramar, dizer que És formoso
+ Em             C
+Me derramar, dizer que és formoso
 --
-Em7  D  C
---
-G           D
+ G              D/F#     
 Me derramar, dizer que Te amo
-Em7          C
-Me derramar, dizer Te preciso
-G           D
+ Em             C         
+Me derramar, dizer: Te preciso
+ G              D/F#
 Me derramar, dizer que sou grato
-Em7          C
-Me derramar, dizer que És formoso
---
+ Em             C
+Me derramar, dizer que és formoso
 </cifra>
 </musica>
 
@@ -2021,15 +2016,15 @@ Sobre a morte venceu
       overflow: hidden;
     }
 
-    #letra {
-      position: absolute;
-      top: 100%;
-      //white-space: pre-wrap;
-      text-align: left;
-      font-size: 2em;
-      line-height: 1.5em;
-      font-family: 'Courier New', monospace;
-    }
+	#letra {
+	  position: absolute;
+	  top: 100%;
+	  //white-space: pre-wrap;   /* mantém quebras de linha e múltiplos espaços */
+	  text-align: left;
+	  font-size: 2em;
+	  line-height: 1.5em;
+	  font-family: 'Courier New', monospace;
+	}
 
     .tituloMusica {
       font-size: 1.25em;
@@ -2043,10 +2038,11 @@ Sobre a morte venceu
       color:#666;
     }
 
-    .cifraTexto {
-      text-align: left;
-	  line-height: 1.5em;
-    }
+	.cifraTexto, .acorde{
+	  white-space: pre;   /* mantém quebras e múltiplos espaços */
+	  tab-size: 4;       /* controla largura do TAB */
+	  font-family: 'Courier New', monospace;
+	}
 
     .musica-option {
       margin-bottom: 10px;
@@ -2956,22 +2952,35 @@ async function executarSequenciaSelecionada() {
 
 
 
-  function formatarLinhasCifra(cifraTexto) {
-    const linhas = cifraTexto.replace(/\t/g, "    ").split('\n');
-    return linhas.map(linha => {
-      const linhaSemEspacos = linha.trim();
-      const temSimbolos = /[#76()\/]/.test(linhaSemEspacos);
-      const temMaiusculas = /[A-G]/.test(linhaSemEspacos);
-      const temMinusculasNaoPermitidas = /[a-ln-z]/.test(linhaSemEspacos);
-      const muitosEspacos = (linha.match(/ /g) || []).length > 3;
-      const ehLinhaDeAcorde = (!temMinusculasNaoPermitidas && (temSimbolos || temMaiusculas || muitosEspacos));
-      if (ehLinhaDeAcorde && linhaSemEspacos !== '') {
-        return `<span class="acorde">${linha}</span>`;
-      } else {
-        return linha;
-      }
-    }).join('\n');
+function formatarLinhasCifra(cifraTexto) {
+  const TAB = 4; // quantos espaços vale um \t
+  const linhas = cifraTexto.split('\n');
+
+  function protegerIndentacao(linha) {
+    // 1) converte apenas os TABs do INÍCIO da linha
+    linha = linha.replace(/^\t+/g, t => ' '.repeat(t.length * TAB));
+    // 2) transforma SOMENTE os espaços iniciais em &nbsp;
+    linha = linha.replace(/^ +/g, s => '&nbsp;'.repeat(s.length));
+    return linha;
   }
+
+  return linhas.map(linha => {
+    const linhaSemEspacos = linha.trim();
+    const temSimbolos = /[#76()\/]/.test(linhaSemEspacos);
+    const temMaiusculas = /[A-G]/.test(linhaSemEspacos);
+    const temMinusculasNaoPermitidas = /[a-ln-z]/.test(linhaSemEspacos);
+    const muitosEspacos = (linha.match(/ /g) || []).length > 3;
+    const ehLinhaDeAcorde = (!temMinusculasNaoPermitidas && (temSimbolos || temMaiusculas || muitosEspacos));
+
+    if (ehLinhaDeAcorde && linhaSemEspacos !== '') {
+      return `<span class="acorde">${protegerIndentacao(linha)}</span>`;
+    } else {
+      // letra normal: não mexe no começo da linha
+      return protegerIndentacao(linha);
+    }
+  }).join('\n');
+}
+
 
 
 
@@ -3004,48 +3013,59 @@ async function tocarMusica(musica, delayTotal = 0, opts = {}) {
     if (link) { link.textContent = `${window.bpmAtual}`; link.title = 'Ctrl+L ↓ | Ctrl+P ↑'; }
   }
 
-  const contadorHTML = `<div id="contadorDelay">${formatarTempo(delay)}</div>`;
-  const nomeHTML = `<div class="tituloMusica">${nome}</div>`;
-  const introHTML = `<div class="introTexto">${intro.replace(/\n/g, "<br>")}</div>`;
-  const cifraHTML = `<pre class="cifraTexto">${formatarLinhasCifra(cifra)}</pre>`;
-  const fimMusicaHTML = `<div style="text-align:center; color:#777; font-size:1.7em; margin-top:20px;">...</div>`;
+	const contadorHTML   = `<div id="contadorDelay">${formatarTempo(delay)}</div>`;
+	const nomeHTML       = `<div class="tituloMusica">${nome}</div>`;
+	const introHTML      = `<div class="introTexto">${intro.replace(/\n/g, "<br>")}</div>`;
+	const cifraHTML      = `<pre class="cifraTexto">${formatarLinhasCifra(cifra)}</pre>`;
+	const fimMusicaHTML  = `<div id="fimMusica" style="text-align:center; color:#777; font-size:1.7em; margin-top:20px;">...</div>`;
 
-  letraDiv.innerHTML = contadorHTML + nomeHTML + introHTML;
-  letraDiv.style.transition = 'none';
-  letraDiv.style.transform = 'none';
+	// 1) Monta TUDO já com <pre>, mas deixa a cifra oculta
+	letraDiv.innerHTML = `
+	  ${contadorHTML}
+	  ${nomeHTML}
+	  ${introHTML}
+	  <div id="cifraBlock" style="display:none">${cifraHTML}</div>
+	  ${fimMusicaHTML}
+	`;
+	letraDiv.style.transition = 'none';
+	letraDiv.style.transform  = 'none';
 
-  const alturaWrapper = document.getElementById('letraWrapper').offsetHeight;
-  const alturaBlocoInicial = medirAlturaHTML(letraDiv.innerHTML);
-  const topInicial = (alturaWrapper / 2) - (alturaBlocoInicial / 2);
-  letraDiv.style.top = `${topInicial}px`;
+	// 2) Centraliza pela altura VISÍVEL (contador + título + intro)
+	const alturaWrapper      = document.getElementById('letraWrapper').offsetHeight;
+	const alturaBlocoInicial = medirAlturaHTML(contadorHTML + nomeHTML + introHTML);
+	const topInicial         = (alturaWrapper / 2) - (alturaBlocoInicial / 2);
+	letraDiv.style.top = `${topInicial}px`;
 
-  if (tempo > 0) {
-    // [sem-contagem-na-1ª] só pule se opts.pularContagem === true
-    if (!opts?.pularContagem) {
-      await contagemInicial(tempo);
-    }
-    iniciarMetronomo(tempo, ritmo);
+	// 3) Contagem / metrônomo / pad
+	if (tempo > 0) {
+	  if (!opts?.pularContagem) {
+		await contagemInicial(tempo);
+	  }
+	  iniciarMetronomo(tempo, ritmo);
+	  if (!opts?.manterPad) {
+		iniciarPad(tom);
+		try { if (window.padAudio) window.padAudio.playbackRate = 1.0; } catch(_) {}
+	  }
+	}
 
-    // [2-etapas] não reinicie o pad se já estava tocando
-    if (!opts?.manterPad) {
-      iniciarPad(tom);
-      try { if (window.padAudio) window.padAudio.playbackRate = 1.0; } catch(_) {}
-    }
-  }
+	// 4) Espera o delay mantendo a cifra oculta
+	await new Promise(resolve => {
+	  let restante = delay;
+	  const contador = document.getElementById('contadorDelay');
+	  const intervalo = setInterval(() => {
+		restante--;
+		if (contador) contador.textContent = formatarTempo(restante);
+		if (restante <= 0) { clearInterval(intervalo); resolve(); }
+	  }, 1000);
+	});
 
-  // (seu delay antes da letra/rolagem) — mantido
-  await new Promise(resolve => {
-    let restante = delay;
-    const contador = document.getElementById('contadorDelay');
-    const intervalo = setInterval(() => {
-      restante--;
-      if (contador) contador.textContent = formatarTempo(restante);
-      if (restante <= 0) { clearInterval(intervalo); resolve(); }
-    }, 1000);
-  });
+	// 5) Agora só MOSTRA a cifra (sem reconstruir HTML) — preserva indentação da 1ª linha
+	const cifraBlock = document.getElementById('cifraBlock');
+	if (cifraBlock) cifraBlock.style.display = 'block';
 
-  letraDiv.innerHTML = contadorHTML + nomeHTML + introHTML + "<br><br>" + cifraHTML + fimMusicaHTML;
-  letraDiv.style.top = `${topInicial}px`;
+	// mantém o mesmo top calculado para iniciar a rolagem
+	letraDiv.style.top = `${topInicial}px`;
+
 
   await new Promise(resolve => {
     const alturaTexto = letraDiv.scrollHeight;
@@ -3391,22 +3411,35 @@ function exibirSlideAtual() {
   atualizarIndicadorSlides();
 }
 
-  function formatarLinhasCifra(cifraTexto) {
-    const linhas = cifraTexto.split('\n');
-    return linhas.map(linha => {
-      const linhaSemEspacos = linha.trim();
-      const temSimbolos = /[#76()\/]/.test(linhaSemEspacos);
-      const temMaiusculas = /[A-G]/.test(linhaSemEspacos);
-      const temMinusculasNaoPermitidas = /[a-ln-z]/.test(linhaSemEspacos);
-      const muitosEspacos = (linha.match(/ /g) || []).length > 3;
-      const ehLinhaDeAcorde = (!temMinusculasNaoPermitidas && (temSimbolos || temMaiusculas || muitosEspacos));
-      if (ehLinhaDeAcorde && linhaSemEspacos !== '') {
-        return `<span class="acorde">${linha}</span>`;
-      } else {
-        return linha;
-      }
-    }).join('\n');
+function formatarLinhasCifra(cifraTexto) {
+  const TAB = 4; // quantos espaços vale um \t
+  const linhas = cifraTexto.split('\n');
+
+  function protegerIndentacao(linha) {
+    // 1) converte apenas os TABs do INÍCIO da linha
+    linha = linha.replace(/^\t+/g, t => ' '.repeat(t.length * TAB));
+    // 2) transforma SOMENTE os espaços iniciais em &nbsp;
+    linha = linha.replace(/^ +/g, s => '&nbsp;'.repeat(s.length));
+    return linha;
   }
+
+  return linhas.map(linha => {
+    const linhaSemEspacos = linha.trim();
+    const temSimbolos = /[#76()\/]/.test(linhaSemEspacos);
+    const temMaiusculas = /[A-G]/.test(linhaSemEspacos);
+    const temMinusculasNaoPermitidas = /[a-ln-z]/.test(linhaSemEspacos);
+    const muitosEspacos = (linha.match(/ /g) || []).length > 3;
+    const ehLinhaDeAcorde = (!temMinusculasNaoPermitidas && (temSimbolos || temMaiusculas || muitosEspacos));
+
+    if (ehLinhaDeAcorde && linhaSemEspacos !== '') {
+      return `<span class="acorde">${protegerIndentacao(linha)}</span>`;
+    } else {
+      // letra normal: não mexe no começo da linha
+      return protegerIndentacao(linha);
+    }
+  }).join('\n');
+}
+
 
 const tocarMusicaOriginal = window.tocarMusica;
 
@@ -3435,7 +3468,7 @@ window.tocarMusica = async function(musica, delayTotal = 0, opts = {}) {
     cifra = match[1].replace(/^\s+|\s+$/g, '').replace(/&lt;/g, "<").replace(/&gt;/g, ">");
   }
   if (modoManual) {
-    cifra = cifra.split('\n').map(l => l.trim()).filter(l => l !== '').join('\n');
+    cifra = cifra.split('\n').map(l => l.replace(/\s+$/,'')).join('\n');
   }
 
   rolagemAtual = rolagemTag > 1 ? rolagemTag : 30;
@@ -3455,8 +3488,8 @@ window.tocarMusica = async function(musica, delayTotal = 0, opts = {}) {
     emModoManual = true;
 
     const partes = cifra.split("--")
-      .map(parte => parte.split('\n').map(l => l.trim()).filter(l => l !== '').join('\n'))
-      .filter(p => p.length > 0);
+      .map(parte => parte.split('\n').map(l => l.replace(/\s+$/,'')).join('\n'))
+      .filter(p => p.trim().length > 0);
 
     slides = [
       `
