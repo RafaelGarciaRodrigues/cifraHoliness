@@ -2138,30 +2138,6 @@ Sobre a morte venceu
       height: 100%;
       overflow: hidden;
     }
-	
-	/* Cobertura de foco (vignette) */
-	#letraWrapper .focus-overlay {
-	  position: absolute;
-	  inset: 0;             /* cobre 100% do wrapper */
-	  pointer-events: none; /* não intercepta cliques/scroll */
-	  z-index: 5;
-
-	  /* Gradiente: escuro em cima/baixo, transparente no centro */
-	  background: linear-gradient(
-		to bottom,
-		rgba(0,0,0,0.95) 0%,
-		rgba(0,0,0,0.75) 10%,
-		rgba(0,0,0,0.55) 20%,
-		rgba(0,0,0,0.25) 30%,
-		rgba(0,0,0,0.10) 40%,
-		rgba(0,0,0,0.00) 50%,
-		rgba(0,0,0,0.10) 60%,
-		rgba(0,0,0,0.25) 70%,
-		rgba(0,0,0,0.55) 80%,
-		rgba(0,0,0,0.75) 90%,
-		rgba(0,0,0,0.95) 100%
-	  );
-	}
 
 	#letra {
 	  position: absolute;
@@ -2405,13 +2381,6 @@ Sobre a morte venceu
 		top:0px;
 	}
 	
-	
-	#batidaVisual{
-		justify-self: right;
-		position: relative;
-		z-index: 10;  
-	}
-	
 	.bolaBatida{
 		
 		width: 30px;
@@ -2461,7 +2430,6 @@ Sobre a morte venceu
 		<div id="colunaDireita">
 		  <div id="container">
 			<div id="letraWrapper">
-			  <div class="focus-overlay" aria-hidden="true"></div>
 			  <div id="letra"></div>
 			  <div id="batidaVisual" style='justify-self: right;'>
 				<div id="bola5" class='bolaBatida'></div>
@@ -2788,11 +2756,9 @@ async function iniciarPadDaPrimeira() {
   `;
   letraDiv.style.transition = 'none';
   letraDiv.style.transform  = 'none';
-  const alturaWrapper = document.getElementById('letraWrapper').offsetHeight;
-  const alturaTitulo  = 40; // altura média do título (ou medir só o .tituloMusica)
-  const topInicial    = (alturaWrapper / 2) - (alturaTitulo / 2);
+  const alturaWrapper      = document.getElementById('letraWrapper').offsetHeight;
   const alturaBlocoInicial = medirAlturaHTML(letraDiv.innerHTML);
-  letraDiv.style.top  = `${topInicial}px`;
+  letraDiv.style.top = `${(alturaWrapper/2)-(alturaBlocoInicial/2)}px`;
 
   // liga só o pad no tom da música
   try { pararPad?.(); } catch(_) {}
@@ -3085,100 +3051,6 @@ musicasOrdenadas.forEach((musica, index) => {
       metronomeInterval = null;
     }
   }
-  
-
-
-
-
-
-
-
-
-// === HOLD-TO-SCROLL (manual fluido) ===
-const manualScroll = {
-  active: false,
-  dir: 0,                 // 1 = desce, -1 = sobe
-  raf: null,
-  speedBase: 300,         // px/s
-  speedBoost: 600,        // px/s com Shift
-  shiftKey: false,
-
-  // auto-avançar quando segurar no fim
-  autoAdvanceHoldMs: 500, // segurar 0.5s no fim → próxima música
-  _holdMs: 0,
-  onEnd: null,            // setado por tocarMusica() pra avançar a fila
-};
-
-function __stepManualScroll__() {
-  if (!manualScroll.active) return;
-  const wrapper = document.getElementById('letraWrapper');
-  const letra   = document.getElementById('letra');
-  if (!wrapper || !letra) return;
-
-  const speed = (manualScroll.shiftKey ? manualScroll.speedBoost : manualScroll.speedBase);
-  const dt = 1/60; // ~60fps
-  const delta = manualScroll.dir * speed * dt;
-
-  const topNow = parseFloat(letra.style.top || "0");
-  let newTop = topNow - delta; // dir=1 desce conteúdo
-
-  const alturaTexto   = letra.scrollHeight;
-  const alturaWrapper = wrapper.offsetHeight;
-
-  // limites (ajuste a folga se quiser)
-  const minTop = Math.min(0, alturaWrapper - alturaTexto - 40); // topo máximo negativo (fim do texto)
-  const maxTop = alturaWrapper - 40;                             // mais pra baixo (início)
-
-  // clamp
-  const clampedTop = Math.max(minTop, Math.min(newTop, maxTop));
-  letra.style.top = clampedTop + "px";
-
-  // Detecta se atingiu o fim (minTop) rolando para baixo (dir=1)
-  if (manualScroll.dir === 1 && Math.abs(clampedTop - minTop) < 0.1) {
-    manualScroll._holdMs += dt * 1000;
-    if (manualScroll._holdMs >= manualScroll.autoAdvanceHoldMs) {
-      // segura no fim por X ms → avança
-      const cb = manualScroll.onEnd;
-      stopManualScroll();
-      if (typeof cb === 'function') cb();
-      return; // não agenda novo frame
-    }
-  } else {
-    manualScroll._holdMs = 0;
-  }
-
-  manualScroll.raf = requestAnimationFrame(__stepManualScroll__);
-}
-
-function startManualScroll(dir, withShift=false) {
-  manualScroll.dir = dir;
-  manualScroll.shiftKey = !!withShift;
-  if (!manualScroll.active) {
-    manualScroll.active = true;
-    manualScroll._holdMs = 0;
-    manualScroll.raf = requestAnimationFrame(__stepManualScroll__);
-  }
-}
-
-function stopManualScroll() {
-  manualScroll.active = false;
-  manualScroll.dir = 0;
-  manualScroll._holdMs = 0;
-  if (manualScroll.raf) cancelAnimationFrame(manualScroll.raf);
-  manualScroll.raf = null;
-}
-
-
-
-
-
-
-
-
-
-
-
-  
 
   // === tocarNotaBaixo (restaurado e compatível com agendamento 'when') ===
   function tocarNotaBaixo(tom, time, isTonica = true) {
@@ -3601,7 +3473,6 @@ document.addEventListener('keydown', (e) => {
 function resetarInicio() {
   clearInterval(timerInterval);
   clearInterval(scrollInterval);
-  stopManualScroll(); // <<< adiciona isto
   try { pararMetronomo?.(); } catch(_) {}
   try { pararPad?.(); }       catch(_) {}
 
@@ -3749,152 +3620,53 @@ window.tocarMusica = async function(musica, delayTotal = 0, opts = {}) {
     if (_b) { _b.textContent = `${window.bpmAtual}`; _b.title = 'Ctrl+L ↓ | Ctrl+P ↑'; }
   }
 
+  // ✅ MODO MANUAL — mantido, só respeita opts
+  if (modoManual && cifra.includes("--")) {
+    emModoManual = true;
 
+    const partes = cifra.split("--")
+      .map(parte => parte.split('\n').map(l => l.replace(/\s+$/,'')).join('\n'))
+      .filter(p => p.trim().length > 0);
 
+    slides = [
+      `
+      <div class="tituloMusica">${nome}</div>
+      <div class="introTexto">${intro.replace(/\n/g, "<br>")}</div>
+      <div style="margin-top:30px; font-size:1.2em; color:#777;">>>></div>
+      `
+    ];
 
-
-// ✅ MODO MANUAL FLUIDO — cifra inteira + rolagem por tecla (segurar = rola, soltar = para)
-if (modoManual) {
-  emModoManual = true;
-  slides = []; // mantém vazio para não acionar a lógica antiga de slides
-
-  // tela inicial (título + intro + cifra completa)
-  letraDiv.innerHTML = `
-    <div class="tituloMusica">${nome}</div>
-    <div class="introTexto">${intro.replace(/\n/g, "<br>")}</div>
-    <pre class="cifraTexto">${formatarLinhasCifra(cifra)}</pre>
-  `;
-  letraDiv.style.transition = 'none';
-  letraDiv.style.transform  = 'none';
-
-  // centraliza como no automático (pelo bloco visível sem rolagem)
-  const alturaWrapper      = document.getElementById('letraWrapper').offsetHeight;
-  const alturaBlocoInicial = medirAlturaHTML(`
-    <div class="tituloMusica">${nome}</div>
-    <div class="introTexto">${intro.replace(/\n/g, "<br>")}</div>
-  `);
-  const topInicial = (alturaWrapper / 2) - (alturaBlocoInicial / 2);
-  letraDiv.style.top = `${topInicial}px`;
-
-  // metronômo/pad/contagem iguais
-  if (tempo > 0) {
-    if (!opts?.pularContagem) await contagemInicial(tempo);
-    iniciarMetronomo?.(tempo, ritmo);
-    if (!opts?.manterPad) {
-      iniciarPad?.(tom);
-      try { if (window.padAudio) window.padAudio.playbackRate = 1.0; } catch(_) {}
+    for (let i = 0; i < partes.length; i++) {
+      let atual = partes[i];
+      let proximo = partes[i + 1] || '';
+      let proximoAcorde = proximo.match(/[A-G][#b]?m?(?:sus\d*|add\d*|dim|aug)?\d*/)?.[0] || '';
+      if (proximoAcorde) atual += `\n\n<span class="proximoAcorde">... <b>${proximoAcorde}</b></span>`;
+      slides.push(atual);
     }
-  }
 
-  // ====== CONTROLES DE TECLADO (hold-to-scroll) ======
-  const downKeys = new Set();
+    slideAtual = 0;
+    exibirSlideAtual();
 
-  function keyDownHandler(e) {
-    // teclas para descer (as mesmas que você usava pra avançar slides)
-    if (["ArrowRight","ArrowDown","PageDown"].includes(e.key)) {
-      e.preventDefault();
-      downKeys.add(e.key);
-      startManualScroll(1, e.shiftKey);
-    }
-    // teclas para subir
-    if (["ArrowLeft","ArrowUp","PageUp"].includes(e.key)) {
-      e.preventDefault();
-      downKeys.add(e.key);
-      startManualScroll(-1, e.shiftKey);
-    }
-    // ESC finaliza música manual e resolve promise (vai para a próxima da sequência, se houver)
-    if (e.key === "Escape") {
-      e.preventDefault();
-      cleanup();
-      resolver();
-    }
-  }
-
-  function keyUpHandler(e) {
-    if (downKeys.has(e.key)) {
-      downKeys.delete(e.key);
-      // se nenhuma tecla de rolagem está pressionada, para a rolagem
-      if (![..."ArrowRight ArrowDown PageDown ArrowLeft ArrowUp PageUp".split(" ")].some(k => downKeys.has(k))) {
-        stopManualScroll();
+    if (tempo > 0) {
+      if (!opts?.pularContagem) {
+        await contagemInicial(tempo);
+      }
+      iniciarMetronomo?.(tempo, ritmo);
+      if (!opts?.manterPad) {
+        iniciarPad?.(tom);
+        try { if (window.padAudio) window.padAudio.playbackRate = 1.0; } catch(_) {}
       }
     }
+
+    return new Promise((resolve) => {
+      proximaMusicaCallback = () => {
+        emModoManual = false;
+        pararMetronomo?.();
+        pararPad?.();
+        resolve();
+      };
+    });
   }
-
-
-
-
-
-function cleanup() {
-  stopManualScroll();
-  manualScroll.onEnd = null; // limpa callback
-  document.removeEventListener('keydown', keyDownHandler, true);
-  document.removeEventListener('keyup',   keyUpHandler,   true);
-  emModoManual = false;
-  pararMetronomo?.();
-  if (!opts?.manterPad) pararPad?.();
-}
-
-  document.addEventListener('keydown', keyDownHandler, true);
-  document.addEventListener('keyup',   keyUpHandler,   true);
-
-return await new Promise((resolver) => {
-  // quando atingir o fim e segurar um pouco, avançar automaticamente
-  manualScroll.onEnd = () => { cleanup(); resolver(); };
-
-  function keyDownHandler(e) {
-    // descer
-    if (["ArrowRight","ArrowDown","PageDown"].includes(e.key)) {
-      e.preventDefault();
-      downKeys.add(e.key);
-      startManualScroll(1, e.shiftKey);
-    }
-    // subir
-    if (["ArrowLeft","ArrowUp","PageUp"].includes(e.key)) {
-      e.preventDefault();
-      downKeys.add(e.key);
-      startManualScroll(-1, e.shiftKey);
-    }
-    // ENTER/SPACE também avançam imediatamente
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      cleanup();
-      resolver();
-    }
-    // ESC encerra esta música
-    if (e.key === "Escape") {
-      e.preventDefault();
-      cleanup();
-      resolver();
-    }
-    // tecla End também encerra
-    if (e.key === "End") {
-      e.preventDefault();
-      cleanup();
-      resolver();
-    }
-  }
-
-  function keyUpHandler(e) {
-    if (downKeys.has(e.key)) {
-      downKeys.delete(e.key);
-      // se nenhuma tecla de rolagem está pressionada, para a rolagem
-      const aindaPressionada = ["ArrowRight","ArrowDown","PageDown","ArrowLeft","ArrowUp","PageUp"]
-        .some(k => downKeys.has(k));
-      if (!aindaPressionada) stopManualScroll();
-    }
-  }
-
-  document.addEventListener('keydown', keyDownHandler, true);
-  document.addEventListener('keyup',   keyUpHandler,   true);
-});
-}
-
-
-
-
-
-
-
 
   // ✅ AUTOMÁTICO — mantém comportamento original
   return await tocarMusicaOriginal(musica, delayTotal);
