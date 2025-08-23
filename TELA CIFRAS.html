@@ -2366,6 +2366,44 @@ Sobre a morte venceu
 	#bola4{background-color: greenyellow;}
 	#bola5{background-color: tomato;}
 
+
+
+
+
+
+
+/* Faixa de destaque central que tinge o texto */
+#letraWrapper .color-overlay {
+  position: absolute;
+  inset: 0;                 /* cobre 100% do wrapper */
+  pointer-events: none;     /* não intercepta cliques/scroll */
+  z-index: 6;               /* acima do texto (#letra) e da focus-overlay */
+  /* Gradiente vertical: transparente → amarelo (centro) → transparente */
+  background: linear-gradient(
+    to bottom,
+    rgba(255,255,255,0) 0%,
+	rgba(255,255,255,0) 10%,
+	rgba(255,255,255,0) 20%,
+	rgba(255,255,0,0.20) 30%,
+	rgba(255,255,0,0.4) 40%,
+	rgba(255,255,0,1) 50%,
+	rgba(255,255,0,0.5) 60%,
+    rgba(255,255,0,0.20) 70%,
+    rgba(255,255,255,0) 80%,
+	rgba(255,255,255,0) 90%,
+    rgba(255,255,255,0) 100%
+  );
+  /* Este truque tinge o que está por baixo (texto branco fica amarelo) */
+  mix-blend-mode: multiply;
+}
+
+
+
+
+
+
+
+
   </style>
 </head>
 <body>
@@ -2402,6 +2440,7 @@ Sobre a morte venceu
 		  <div id="container">
 			<div id="letraWrapper">
 			  <div class="focus-overlay" aria-hidden="true"></div>
+			  <div class="color-overlay"></div>
 			  <div id="letra"></div>
 			  <div id="batidaVisual" style='justify-self: right;'>
 				<div id="bola5" class='bolaBatida'></div>
@@ -2477,6 +2516,10 @@ Sobre a morte venceu
   padding: 5px;
   color: black !important;
 }
+
+
+
+
 
 	</style>
 	<table>
@@ -3039,22 +3082,26 @@ const manualScroll = {
   active: false,
   dir: 0,                   // 1 = desce, -1 = sobe, 0 = parado
   raf: null,
-  speedBase: 100,           // px/s
-  speedBoost: 600,          // px/s (Shift)
+  speedBase: 250,           // px/s
+  speedBoost: 900,          // px/s (Shift)
   shiftKey: false,
 
   // Dinâmica (easing)
   v: 0,                     // velocidade atual (px/s)
   lastTs: 0,                // timestamp do último frame
-  tauIn: 0.5,              // constante de tempo aceleração (s) → menor = arranca mais rápido
-  tauOut: 0.50,             // constante de tempo desaceleração (s) → menor = freia mais rápido
-  maxAccel: 500,           // teto de aceleração (px/s²) como segurança
+  tauIn: 0.3,              // constante de tempo aceleração (s) → menor = arranca mais rápido
+  tauOut: 0.3,             // constante de tempo desaceleração (s) → menor = freia mais rápido
+  maxAccel: 2500,           // teto de aceleração (px/s²) como segurança
 
   // Auto-avançar no fim
   autoAdvanceHoldMs: 500,   // segurar 0.5s no fim → próxima música
   _holdMs: 0,
   onEnd: null,
 };
+
+
+
+
 
 function __stepManualScroll__(ts) {
   if (!manualScroll.active) return;
@@ -3063,44 +3110,42 @@ function __stepManualScroll__(ts) {
   const letra   = document.getElementById('letra');
   if (!wrapper || !letra) return;
 
-  // dt real (seg)
+  // dt em segundos
   if (!manualScroll.lastTs) manualScroll.lastTs = ts;
-  let dt = Math.max(0.001, (ts - manualScroll.lastTs) / 1000);
+  const dt = Math.max(0.001, (ts - manualScroll.lastTs) / 1000);
   manualScroll.lastTs = ts;
 
   const target = manualScroll.dir * (manualScroll.shiftKey ? manualScroll.speedBoost : manualScroll.speedBase);
 
-  // easing: aproxima v do target com constantes de tempo diferentes para acelerar x desacelerar
-  const movingAway = Math.abs(target) > Math.abs(manualScroll.v);  // “acelerando”
-  const tau = movingAway ? manualScroll.tauIn : manualScroll.tauOut;
-  const alpha = 1 - Math.exp(-dt / Math.max(0.001, tau));          // coeficiente de suavização
+  // --- escolhe tau: acelera só se tem alvo ≠ 0, mesma direção e |target|>|v|
+  const sameDir = Math.sign(target) === Math.sign(manualScroll.v) || manualScroll.v === 0;
+  const accelerating = (target !== 0) && sameDir && (Math.abs(target) > Math.abs(manualScroll.v));
+  const tau = accelerating ? manualScroll.tauIn : manualScroll.tauOut;
 
-  // aproximação exponencial
+  const alpha = 1 - Math.exp(-dt / Math.max(0.001, tau));
   let vNext = manualScroll.v + (target - manualScroll.v) * alpha;
 
-  // limita aceleração (segurança)
-  const maxDV = manualScroll.maxAccel * dt;
-  const dv = vNext - manualScroll.v;
-  if (Math.abs(dv) > maxDV) vNext = manualScroll.v + Math.sign(dv) * maxDV;
+  // --- clamp de aceleração opcional (defina maxAccel <= 0 para desativar)
+  if (manualScroll.maxAccel && manualScroll.maxAccel > 0) {
+    const maxDV = manualScroll.maxAccel * dt;
+    const dv = vNext - manualScroll.v;
+    if (Math.abs(dv) > maxDV) vNext = manualScroll.v + Math.sign(dv) * maxDV;
+  }
 
   // integra posição
   const topNow = parseFloat(letra.style.top || "0");
-  let newTop = topNow - vNext * dt;   // v>0 → desce conteúdo (top diminui)
+  let newTop = topNow - vNext * dt;
 
-  const alturaTexto   = letra.scrollHeight;
-  const alturaWrapper = wrapper.offsetHeight;
+  // limites (fim = última linha no TOPO)
+  let minTop = calcularTopFinal(0);
+  if (minTop === null) {
+    const alturaTexto   = letra.scrollHeight;
+    const alturaWrapper = wrapper.offsetHeight;
+    minTop = Math.min(0, alturaWrapper - alturaTexto - 40);
+  }
+  const maxTop = wrapper.offsetHeight - 40;
 
-  // limites
-	let minTop = calcularTopFinal(0); // fim desejado: última palavra no topo
-	if (minTop === null) {
-	  // fallback: antigo
-	  minTop = Math.min(0, alturaWrapper - alturaTexto - 40);
-	}
-	const maxTop = alturaWrapper - 40; // início como antes
-
-
-
-  // clamp e “amortecedor” na borda: zera v quando cravar no limite
+  // clamp e zerinho de segurança na borda
   let clampedTop = newTop;
   if (clampedTop < minTop) { clampedTop = minTop; vNext = 0; }
   if (clampedTop > maxTop) { clampedTop = maxTop; vNext = 0; }
@@ -3108,12 +3153,22 @@ function __stepManualScroll__(ts) {
   letra.style.top = clampedTop + "px";
   manualScroll.v = vNext;
 
-  // detectar “fim” + segurar → auto-avança
+  // --- AUTO-STOP: se não há alvo (dir=0) e a velocidade ficou quase zero, desligue o loop
+  if (manualScroll.dir === 0 && Math.abs(manualScroll.v) < 0.5) {
+    manualScroll.active = false;
+    manualScroll.v = 0;
+    manualScroll._holdMs = 0;
+    manualScroll.lastTs = 0;
+    manualScroll.raf = null;
+    return;
+  }
+
+  // detecção de “segurou no fim” para auto-avançar (mantém tua lógica)
   if (manualScroll.dir === 1 && Math.abs(clampedTop - minTop) < 0.5 && Math.abs(manualScroll.v) < 30) {
     manualScroll._holdMs += dt * 1000;
     if (manualScroll._holdMs >= manualScroll.autoAdvanceHoldMs) {
       const cb = manualScroll.onEnd;
-      stopManualScroll();
+      stopManualScroll(false); // hard stop, já que vai trocar de música
       if (typeof cb === 'function') cb();
       return;
     }
@@ -3123,6 +3178,13 @@ function __stepManualScroll__(ts) {
 
   manualScroll.raf = requestAnimationFrame(__stepManualScroll__);
 }
+
+
+
+
+
+
+
 
 function startManualScroll(dir, withShift=false) {
   manualScroll.dir = dir;
@@ -3135,16 +3197,27 @@ function startManualScroll(dir, withShift=false) {
   }
 }
 
-function stopManualScroll() {
+function stopManualScroll(soft = true) {
+  if (soft) {
+    // alvo de velocidade vira 0 → desacelera com tauOut
+    manualScroll.dir = 0;
+    manualScroll.shiftKey = false;
+
+    // garante que o loop está vivo para fazer a desaceleração
+    if (!manualScroll.active) {
+      manualScroll.active = true;
+      manualScroll.lastTs = 0;
+      manualScroll.raf = requestAnimationFrame(__stepManualScroll__);
+    }
+    return;
+  }
+
+  // parada brusca (hard stop), se precisar
   manualScroll.active = false;
   manualScroll.dir = 0;
+  manualScroll.v = 0;
   manualScroll._holdMs = 0;
   manualScroll.lastTs = 0;
-
-  // ao soltar, o target vira 0 e a v desacelera suavemente (graças ao easing no próximo start)
-  // mas para garantir que pare já (sem drift), se quiser zera v aqui:
-  // manualScroll.v = 0;
-
   if (manualScroll.raf) cancelAnimationFrame(manualScroll.raf);
   manualScroll.raf = null;
 }
@@ -3864,14 +3937,15 @@ if (modoManual) {
     }
   }
 
-  function keyUpHandler(e) {
-    if (downKeys.has(e.key)) {
-      downKeys.delete(e.key);
-      const aindaPressionada = ["ArrowRight","ArrowDown","PageDown","ArrowLeft","ArrowUp","PageUp"]
-        .some(k => downKeys.has(k));
-      if (!aindaPressionada) stopManualScroll();
-    }
+function keyUpHandler(e) {
+  if (downKeys.has(e.key)) {
+    downKeys.delete(e.key);
+    const algumaPressionada = ["ArrowRight","ArrowDown","PageDown","ArrowLeft","ArrowUp","PageUp"]
+      .some(k => downKeys.has(k));
+    if (!algumaPressionada) stopManualScroll(true); // ⬅️ suave
   }
+}
+
 
   document.addEventListener('keydown', keyDownHandler, true);
   document.addEventListener('keyup',   keyUpHandler,   true);
