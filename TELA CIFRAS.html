@@ -511,33 +511,25 @@ C
 A verdadeira paz só tem aquele
      D7             G
 Que já conhece a Jesus
-
 --
-
 C                   C7
 O sentimento mais precioso
      F               G#
 Que vem do nosso Senhor
-
       C          G       
 É o amor que só tem quem
                 C  A# F  
 Já conhece a Jesus
-
 --
-
 C          
 A alegria está no coração
      F                  C  A# F
 De quem já conhece a Jesus
-
 C             
 A verdadeira paz só tem aquele
      D7             G
 Que já conhece a Jesus
-
 --
-
 C                   C7
 O sentimento mais precioso
      F               G#
@@ -570,7 +562,6 @@ Com Ele não há mais condenação
 Posso pisar numa tropa
    G
 E saltar as muralhas
-
     C    G    C    G
 Aleluia! Aleluia! 
 --
@@ -582,9 +573,7 @@ Aleluia! Alelui__a!
 Aleluia! Alelui_a!
              D7  G
 Aleluia! Alelui__a!
-
 --
-
 C
 O sentimento mais precioso
      F               G#
@@ -602,9 +591,6 @@ Já conhece a Jesus
 É o amor que só tem quem
                 C  
 Já conhece a Jesus
-
-
-
 
     </cifra>
   </musica>
@@ -641,86 +627,48 @@ Desde quando me levanto
 Até eu me deitar
          D7M/A     E6      A
 Eu cantarei da bondade de Deus
-
-
 --
-
-
 D7M/A                  A
       És fiel em todo tempo
-	  
-	  
-	  
 D7M/A                      A        E6
       Em todo tempo Tu és tão, tão bom
-	  
-	  
-	  
 D7M/A                      F#m7
       Com todo fôlego que tenho
 	  
-	  
          D7M/A     E6      A
 Eu cantarei da bondade de Deus
-
-
 --
-
           A
 Tua doce voz
-
          D7M/A          A
 Que me guia em meio ao fogo
-
       E/G# F#m7
 Na escuri_dão
-
         D7M/A       E6
 Tua presença me conforta
 --
                 F#m7 D7M/A
 Sei que és meu Pai
-
       A   E/G# F#m7
 Que amigo és
-
       D7M/A  E       A
 E eu vivo na bon_dade de Deus
-
 --
-
-
 D7M/A                  A
       És fiel em todo tempo
-	  
-	  
-	  
 D7M/A                      A        E6
       Em todo tempo Tu és tão, tão bom
-	  
-	  
-	  
 D7M/A                      F#m7
       Com todo fôlego que tenho
-	  
-	  
          D7M/A     E6      A
 Eu cantarei da bondade de Deus
 
-
-
-
 ( A9  A  A4 )
 --
-
-
-
-
 A/C#                D7M/A                
     Tua bondade me seguirá
     E6         A
 Me seguirá Senhor
-
 A/C#                D7M/A
     Tua bondade me seguirá
     E6         A
@@ -730,27 +678,17 @@ Me seguirá Senhor
 Eu me rendo a Ti, te dou o meu ser
     E6          F#m7
 Entrego tudo a Ti
-
 A/C#                D7M/A
     Tua bondade me seguirá
     E6         A
 Me seguirá Senhor
-
-
 --
-
 D7M/A                  A
       És fiel em todo tempo
-  
-	  
 D7M/A                      A        E6
       Em todo tempo Tu és tão, tão bom
-	  
-	  
 D7M/A                      F#m7
       Com todo fôlego que tenho
-
-	  
          D7M/A     E6      A
 Eu cantarei da bondade de Deus
          D7M/A     E6      A
@@ -791,14 +729,12 @@ Seu Santo monte
  ter - ra - a - a
  --
  
- 
   D           
 Grande 
        G/D
 é o Senhor
                        D
 Em quem nós temos a vitória 
-
        G/D
 E que nos ajuda
              Bm
@@ -810,13 +746,10 @@ Contra o inimigo
        Em7  F#m7 G7M  A4
  prostramos
  --
- 
- 
     D
 Queremos o Teu
              D7M
 Nome engrandecer
-
 G7M
 E agradecer-Te
 D/F#      Em7             A
@@ -826,14 +759,12 @@ Por Tua obra em nossas vidas
 Confiamos em Teu
            D7M
 Infinito amor
-
       G7M                D/F#
 Pois só Tu és o Deus eterno
 
 Em7        A4
 Sobre toda terra e céus
 --
-
 
   D           
 Grande 
@@ -2357,6 +2288,15 @@ Sobre a morte venceu
       margin: 4px 5px 5px 10px;
     }
 	
+	.fimMusica{
+	  text-align:center;
+	  color:#888;
+	  font-size:1.2em;
+	  letter-spacing:2px;
+	  margin-top:6px;
+	}
+
+	
 	.bolinha {
 	  display: inline-block;
 	  width: 5px;
@@ -3094,54 +3034,88 @@ musicasOrdenadas.forEach((musica, index) => {
 
 
 
-// === HOLD-TO-SCROLL (manual fluido) ===
+// === HOLD-TO-SCROLL (manual fluido com easing) ===
 const manualScroll = {
   active: false,
-  dir: 0,                 // 1 = desce, -1 = sobe
+  dir: 0,                   // 1 = desce, -1 = sobe, 0 = parado
   raf: null,
-  speedBase: 300,         // px/s
-  speedBoost: 600,        // px/s com Shift
+  speedBase: 100,           // px/s
+  speedBoost: 600,          // px/s (Shift)
   shiftKey: false,
 
-  // auto-avançar quando segurar no fim
-  autoAdvanceHoldMs: 500, // segurar 0.5s no fim → próxima música
+  // Dinâmica (easing)
+  v: 0,                     // velocidade atual (px/s)
+  lastTs: 0,                // timestamp do último frame
+  tauIn: 0.5,              // constante de tempo aceleração (s) → menor = arranca mais rápido
+  tauOut: 0.50,             // constante de tempo desaceleração (s) → menor = freia mais rápido
+  maxAccel: 500,           // teto de aceleração (px/s²) como segurança
+
+  // Auto-avançar no fim
+  autoAdvanceHoldMs: 500,   // segurar 0.5s no fim → próxima música
   _holdMs: 0,
-  onEnd: null,            // setado por tocarMusica() pra avançar a fila
+  onEnd: null,
 };
 
-function __stepManualScroll__() {
+function __stepManualScroll__(ts) {
   if (!manualScroll.active) return;
+
   const wrapper = document.getElementById('letraWrapper');
   const letra   = document.getElementById('letra');
   if (!wrapper || !letra) return;
 
-  const speed = (manualScroll.shiftKey ? manualScroll.speedBoost : manualScroll.speedBase);
-  const dt = 1/60; // ~60fps
-  const delta = manualScroll.dir * speed * dt;
+  // dt real (seg)
+  if (!manualScroll.lastTs) manualScroll.lastTs = ts;
+  let dt = Math.max(0.001, (ts - manualScroll.lastTs) / 1000);
+  manualScroll.lastTs = ts;
 
+  const target = manualScroll.dir * (manualScroll.shiftKey ? manualScroll.speedBoost : manualScroll.speedBase);
+
+  // easing: aproxima v do target com constantes de tempo diferentes para acelerar x desacelerar
+  const movingAway = Math.abs(target) > Math.abs(manualScroll.v);  // “acelerando”
+  const tau = movingAway ? manualScroll.tauIn : manualScroll.tauOut;
+  const alpha = 1 - Math.exp(-dt / Math.max(0.001, tau));          // coeficiente de suavização
+
+  // aproximação exponencial
+  let vNext = manualScroll.v + (target - manualScroll.v) * alpha;
+
+  // limita aceleração (segurança)
+  const maxDV = manualScroll.maxAccel * dt;
+  const dv = vNext - manualScroll.v;
+  if (Math.abs(dv) > maxDV) vNext = manualScroll.v + Math.sign(dv) * maxDV;
+
+  // integra posição
   const topNow = parseFloat(letra.style.top || "0");
-  let newTop = topNow - delta; // dir=1 desce conteúdo
+  let newTop = topNow - vNext * dt;   // v>0 → desce conteúdo (top diminui)
 
   const alturaTexto   = letra.scrollHeight;
   const alturaWrapper = wrapper.offsetHeight;
 
-  // limites (ajuste a folga se quiser)
-  const minTop = Math.min(0, alturaWrapper - alturaTexto - 40); // topo máximo negativo (fim do texto)
-  const maxTop = alturaWrapper - 40;                             // mais pra baixo (início)
+  // limites
+	let minTop = calcularTopFinal(0); // fim desejado: última palavra no topo
+	if (minTop === null) {
+	  // fallback: antigo
+	  minTop = Math.min(0, alturaWrapper - alturaTexto - 40);
+	}
+	const maxTop = alturaWrapper - 40; // início como antes
 
-  // clamp
-  const clampedTop = Math.max(minTop, Math.min(newTop, maxTop));
+
+
+  // clamp e “amortecedor” na borda: zera v quando cravar no limite
+  let clampedTop = newTop;
+  if (clampedTop < minTop) { clampedTop = minTop; vNext = 0; }
+  if (clampedTop > maxTop) { clampedTop = maxTop; vNext = 0; }
+
   letra.style.top = clampedTop + "px";
+  manualScroll.v = vNext;
 
-  // Detecta se atingiu o fim (minTop) rolando para baixo (dir=1)
-  if (manualScroll.dir === 1 && Math.abs(clampedTop - minTop) < 0.1) {
+  // detectar “fim” + segurar → auto-avança
+  if (manualScroll.dir === 1 && Math.abs(clampedTop - minTop) < 0.5 && Math.abs(manualScroll.v) < 30) {
     manualScroll._holdMs += dt * 1000;
     if (manualScroll._holdMs >= manualScroll.autoAdvanceHoldMs) {
-      // segura no fim por X ms → avança
       const cb = manualScroll.onEnd;
       stopManualScroll();
       if (typeof cb === 'function') cb();
-      return; // não agenda novo frame
+      return;
     }
   } else {
     manualScroll._holdMs = 0;
@@ -3156,6 +3130,7 @@ function startManualScroll(dir, withShift=false) {
   if (!manualScroll.active) {
     manualScroll.active = true;
     manualScroll._holdMs = 0;
+    manualScroll.lastTs = 0; // força dt correto no 1º frame
     manualScroll.raf = requestAnimationFrame(__stepManualScroll__);
   }
 }
@@ -3164,9 +3139,16 @@ function stopManualScroll() {
   manualScroll.active = false;
   manualScroll.dir = 0;
   manualScroll._holdMs = 0;
+  manualScroll.lastTs = 0;
+
+  // ao soltar, o target vira 0 e a v desacelera suavemente (graças ao easing no próximo start)
+  // mas para garantir que pare já (sem drift), se quiser zera v aqui:
+  // manualScroll.v = 0;
+
   if (manualScroll.raf) cancelAnimationFrame(manualScroll.raf);
   manualScroll.raf = null;
 }
+
 
 
 
@@ -3282,7 +3264,7 @@ async function tocarMusica(musica, delayTotal = 0, opts = {}) {
 	const nomeHTML       = `<div class="tituloMusica">${nome}</div>`;
 	const introHTML      = `<div class="introTexto">${intro.replace(/\n/g, "<br>")}</div>`;
 	const cifraHTML      = `<pre class="cifraTexto">${formatarLinhasCifra(cifra)}</pre>`;
-	const fimMusicaHTML  = `<div id="fimMusica" style="text-align:center; color:#777; font-size:1.7em; margin-top:20px;">...</div>`;
+	const fimMusicaHTML  = `<div id="fimAnchor" style="height:0; line-height:0;"></div><div class="fimMusica">&gt;&gt;&gt;&gt;&gt;&gt;&gt;</div>`;
 
 	// 1) Monta TUDO já com <pre>, mas deixa a cifra oculta
 	letraDiv.innerHTML = `
@@ -3331,45 +3313,97 @@ async function tocarMusica(musica, delayTotal = 0, opts = {}) {
 	// mantém o mesmo top calculado para iniciar a rolagem
 	letraDiv.style.top = `${topInicial}px`;
 
+await new Promise(resolve => {
+  let pos = topInicial;
+  const fps = 30;
 
-  await new Promise(resolve => {
+  // alvo: última palavra no topo (0). Se quiser um “respiro”,
+  // use calcularTopFinal(8) para 8px abaixo do topo.
+  let topFinal = calcularTopFinal(0);
+
+  if (topFinal === null) {
+    // fallback: se não houver fimAnchor por algum motivo, cai no antigo
     const alturaTexto = letraDiv.scrollHeight;
-    const distancia = alturaTexto + topInicial;
-    let pos = topInicial;
-    const fps = 30;
-
+    const distancia   = alturaTexto + topInicial;
     scrollInterval = setInterval(() => {
       const tempoUsado = rolagemAtual > 1 ? rolagemAtual : 30;
-      const pixelsPorSegundo = distancia / tempoUsado;
-      pos -= pixelsPorSegundo / fps;
+      const pxs        = distancia / tempoUsado / fps;
+      pos -= pxs;
       letraDiv.style.top = pos + "px";
       if (pos + alturaTexto < 0) {
         clearInterval(scrollInterval);
-        pararMetronomo();
-        pararPad();
-        resolve();
+        pararMetronomo(); pararPad(); resolve();
       }
     }, 1000 / fps);
-  });
+    return;
+  }
+
+  const distancia = Math.max(1, Math.abs(topFinal - topInicial));
+  scrollInterval = setInterval(() => {
+    // se reflow ocorrer (troca de fonte, transpose…), recalcule o alvo
+    const novoFinal = calcularTopFinal(0);
+    if (novoFinal !== null) topFinal = novoFinal;
+
+    const tempoUsado = rolagemAtual > 1 ? rolagemAtual : 30;
+    const step       = (distancia / tempoUsado) / fps;
+
+    // anda na direção do alvo
+    if (pos > topFinal) pos = Math.max(topFinal, pos - step);
+    else                pos = Math.min(topFinal, pos + step);
+
+    letraDiv.style.top = pos + "px";
+
+    // crava e finaliza
+    if (Math.abs(pos - topFinal) < 0.5) {
+      letraDiv.style.top = `${topFinal}px`;
+      clearInterval(scrollInterval);
+      pararMetronomo(); pararPad();
+      resolve();
+    }
+  }, 1000 / fps);
+});
+
+
+
 }
 
 
-  function medirAlturaHTML(html) {
-    const temp = document.createElement('div');
-    temp.style.position = 'absolute';
-    temp.style.visibility = 'hidden';
-    temp.style.whiteSpace = 'pre-wrap';
-    temp.style.fontSize = '2em';
-    temp.style.lineHeight = '1.5em';
-    temp.style.width = '80%';
-    temp.style.fontFamily = 'Arial, sans-serif';
-    temp.style.textAlign = 'left';
-    temp.innerHTML = html;
-    document.body.appendChild(temp);
-    const altura = temp.scrollHeight;
-    document.body.removeChild(temp);
-    return altura;
-  }
+function calcularTopFinal(alvoY = 0) {
+  const anchor  = document.getElementById('fimAnchor');
+  const wrapper = document.getElementById('letraWrapper');
+  const letra   = document.getElementById('letra');
+  if (!anchor || !wrapper || !letra) return null;
+
+  // Usa a line-height da <pre> (cifra) se existir, senão da #letra
+  const pre = letra.querySelector('pre.cifraTexto');
+  const lh  = pre ? parseFloat(getComputedStyle(pre).lineHeight)
+                  : parseFloat(getComputedStyle(letra).lineHeight) || 32;
+
+  // A âncora vem LOGO DEPOIS da última linha; subimos 1 line-height
+  // topFinal = alvoY + lh - offsetTop(anchor)
+  return (alvoY + lh) - anchor.offsetTop;
+}
+
+
+
+
+
+	function medirAlturaHTML(html) {
+		const temp = document.createElement('div');
+		temp.style.position = 'absolute';
+		temp.style.visibility = 'hidden';
+		temp.style.whiteSpace = 'pre-wrap';
+		temp.style.fontSize = '2em';
+		temp.style.lineHeight = '1.5em';
+		temp.style.width = '80%';
+		temp.style.fontFamily = 'Arial, sans-serif';
+		temp.style.textAlign = 'left';
+		temp.innerHTML = html;
+		document.body.appendChild(temp);
+		const altura = temp.scrollHeight;
+		document.body.removeChild(temp);
+		return altura;
+	}
 
   // 👉 edição manual em #timeRolagem muda a rolagem em tempo real
   timeRolagemDiv.addEventListener("input", () => {
@@ -3753,30 +3787,36 @@ window.tocarMusica = async function(musica, delayTotal = 0, opts = {}) {
 
 
 
+
+
+
+
+
+
 // ✅ MODO MANUAL FLUIDO — cifra inteira + rolagem por tecla (segurar = rola, soltar = para)
+// (SUBSTITUA INTEIRO O BLOCO if (modoManual) { ... } PELO CÓDIGO ABAIXO)
 if (modoManual) {
   emModoManual = true;
   slides = []; // mantém vazio para não acionar a lógica antiga de slides
 
-  // tela inicial (título + intro + cifra completa)
-  letraDiv.innerHTML = `
-    <div class="tituloMusica">${nome}</div>
-    <div class="introTexto">${intro.replace(/\n/g, "<br>")}</div>
-    <pre class="cifraTexto">${formatarLinhasCifra(cifra)}</pre>
-  `;
+  // tela inicial (título + intro + cifra completa + fimAnchor)
+  const tituloHTML = `<div class="tituloMusica">${nome}</div>`;
+  const introHTML  = `<div class="introTexto">${intro.replace(/\n/g, "<br>")}</div>`;
+  const cifraHTML  = `<pre class="cifraTexto">${formatarLinhasCifra(cifra)}</pre>`;
+  // ⚠️ fimAnchor garante que calcularTopFinal(0) funcione e a última linha pare no topo
+  const fimHTML    = `<div id="fimAnchor" style="height:0; line-height:0;"></div><div class="fimMusica">&gt;&gt;&gt;&gt;&gt;</div>`;
+
+  letraDiv.innerHTML = `${tituloHTML}${introHTML}${cifraHTML}${fimHTML}`;
   letraDiv.style.transition = 'none';
   letraDiv.style.transform  = 'none';
 
-  // centraliza como no automático (pelo bloco visível sem rolagem)
+  // centraliza pelo bloco visível (título + intro), antes da rolagem
   const alturaWrapper      = document.getElementById('letraWrapper').offsetHeight;
-  const alturaBlocoInicial = medirAlturaHTML(`
-    <div class="tituloMusica">${nome}</div>
-    <div class="introTexto">${intro.replace(/\n/g, "<br>")}</div>
-  `);
-  const topInicial = (alturaWrapper / 2) - (alturaBlocoInicial / 2);
+  const alturaBlocoInicial = medirAlturaHTML(`${tituloHTML}${introHTML}`);
+  const topInicial         = (alturaWrapper / 2) - (alturaBlocoInicial / 2);
   letraDiv.style.top = `${topInicial}px`;
 
-  // metronômo/pad/contagem iguais
+  // metrônomo/pad/contagem
   if (tempo > 0) {
     if (!opts?.pularContagem) await contagemInicial(tempo);
     iniciarMetronomo?.(tempo, ritmo);
@@ -3789,95 +3829,44 @@ if (modoManual) {
   // ====== CONTROLES DE TECLADO (hold-to-scroll) ======
   const downKeys = new Set();
 
+  function cleanup() {
+    stopManualScroll();
+    manualScroll.onEnd = null;
+    document.removeEventListener('keydown', keyDownHandler, true);
+    document.removeEventListener('keyup',   keyUpHandler,   true);
+    emModoManual = false;
+    pararMetronomo?.();
+    if (!opts?.manterPad) pararPad?.();
+  }
+
   function keyDownHandler(e) {
-    // teclas para descer (as mesmas que você usava pra avançar slides)
+    // descer: → ↓ PageDown
     if (["ArrowRight","ArrowDown","PageDown"].includes(e.key)) {
       e.preventDefault();
       downKeys.add(e.key);
-      startManualScroll(1, e.shiftKey);
+      startManualScroll(1, e.shiftKey); // shift = boost
     }
-    // teclas para subir
+    // subir: ← ↑ PageUp
     if (["ArrowLeft","ArrowUp","PageUp"].includes(e.key)) {
       e.preventDefault();
       downKeys.add(e.key);
       startManualScroll(-1, e.shiftKey);
     }
-    // ESC finaliza música manual e resolve promise (vai para a próxima da sequência, se houver)
-    if (e.key === "Escape") {
+    // ENTER, SPACE, ESC ou End encerram a música manual
+    if (e.key === "Enter" || e.key === " " || e.key === "Escape" || e.key === "End") {
       e.preventDefault();
-      cleanup();
-      resolver();
-    }
-  }
-
-  function keyUpHandler(e) {
-    if (downKeys.has(e.key)) {
-      downKeys.delete(e.key);
-      // se nenhuma tecla de rolagem está pressionada, para a rolagem
-      if (![..."ArrowRight ArrowDown PageDown ArrowLeft ArrowUp PageUp".split(" ")].some(k => downKeys.has(k))) {
-        stopManualScroll();
+      if (e.key === " " && document.getElementById("btnBpmTap")?.classList.contains("tap-ativo")) {
+        // se o TAP está ativo, não intercepta o espaço
+        return;
       }
-    }
-  }
-
-
-
-
-
-function cleanup() {
-  stopManualScroll();
-  manualScroll.onEnd = null; // limpa callback
-  document.removeEventListener('keydown', keyDownHandler, true);
-  document.removeEventListener('keyup',   keyUpHandler,   true);
-  emModoManual = false;
-  pararMetronomo?.();
-  if (!opts?.manterPad) pararPad?.();
-}
-
-  document.addEventListener('keydown', keyDownHandler, true);
-  document.addEventListener('keyup',   keyUpHandler,   true);
-
-return await new Promise((resolver) => {
-  // quando atingir o fim e segurar um pouco, avançar automaticamente
-  manualScroll.onEnd = () => { cleanup(); resolver(); };
-
-  function keyDownHandler(e) {
-    // descer
-    if (["ArrowRight","ArrowDown","PageDown"].includes(e.key)) {
-      e.preventDefault();
-      downKeys.add(e.key);
-      startManualScroll(1, e.shiftKey);
-    }
-    // subir
-    if (["ArrowLeft","ArrowUp","PageUp"].includes(e.key)) {
-      e.preventDefault();
-      downKeys.add(e.key);
-      startManualScroll(-1, e.shiftKey);
-    }
-    // ENTER/SPACE também avançam imediatamente
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
       cleanup();
-      resolver();
-    }
-    // ESC encerra esta música
-    if (e.key === "Escape") {
-      e.preventDefault();
-      cleanup();
-      resolver();
-    }
-    // tecla End também encerra
-    if (e.key === "End") {
-      e.preventDefault();
-      cleanup();
-      resolver();
+      resolver?.();
     }
   }
 
   function keyUpHandler(e) {
     if (downKeys.has(e.key)) {
       downKeys.delete(e.key);
-      // se nenhuma tecla de rolagem está pressionada, para a rolagem
       const aindaPressionada = ["ArrowRight","ArrowDown","PageDown","ArrowLeft","ArrowUp","PageUp"]
         .some(k => downKeys.has(k));
       if (!aindaPressionada) stopManualScroll();
@@ -3886,8 +3875,19 @@ return await new Promise((resolver) => {
 
   document.addEventListener('keydown', keyDownHandler, true);
   document.addEventListener('keyup',   keyUpHandler,   true);
-});
+
+  // Quando atingir o fim (última linha no TOPO) e segurar 0.5s, avança sozinho
+  return await new Promise((resolver) => {
+    manualScroll.onEnd = () => { cleanup(); resolver(); };
+  });
 }
+
+
+
+
+
+
+
 
 
 
