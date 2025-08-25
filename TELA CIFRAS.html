@@ -24,6 +24,40 @@
 <!-- -------------------------------------------------------------------------------------------------------------------------------- -->
 
 
+<!-- -------------------------------------------------------------------------------------------------------------------------------- -->
+
+
+
+
+
+
+<musica>
+	<nome>TESTAR</nome>
+	<tom>A</tom>
+	<rolagem>200</rolagem>
+	<delay>10</delay>
+	<tempo>95</tempo>
+	<ritmo>1</ritmo>
+	<url>https://youtu.be/jmqJxxGdtNQ</url>
+	<intro>
+A9   D 
+A9   E
+
+	</intro>
+<cifra>
+A9          A9  E
+Porque Ele vive
+              D
+Posso crer no amanhã
+            A9
+Porque Ele vive
+           E
+Temor não há
+
+</cifra>
+</musica>
+
+<!-- -------------------------------------------------------------------------------------------------------------------------------- -->
 
 
 
@@ -42,7 +76,7 @@ A9   E
 
 	</intro>
 <cifra>
-A9          A9  A9/C#
+A9          A9  E
 Porque Ele vive
               D
 Posso crer no amanhã
@@ -84,12 +118,9 @@ Mas eu bem sei, eu sei
 Que a minha vida
 Bm    A9/C#  F#m           E/G#   
    Está nas mãos do meu Jesus
-            G  
+            G    E  
 Que vivo está
 
-F#5  G#5  E
-
---
 ...
             A9            D
 E quando enfim, chegar a hora
@@ -233,7 +264,7 @@ Palavras de amor e esperança sem fim
 Ao sentir Teu toque
      Em             C
 Por Tua bondade, libertas meu ser
-      Am7    Bm7  C7M       
+      Am    Bm  Em       
 No calor deste lugar
 --
 D         G              D/F#
@@ -533,44 +564,40 @@ G  Em  F  C
 	<delay>10</delay>
 	<url>https://www.youtube.com/watch?v=5drSCKZQjX4</url>
 	<intro>
-C     F    C   F        C   D7     G 
+C F C F C D7 G 
 	</intro>
 	<cifra>
 C          
 A alegria está no coração
-     F                  C  A# F
+     F                  C   F
 De quem já conhece a Jesus
-
 C             
 A verdadeira paz só tem aquele
      D7             G
 Que já conhece a Jesus
---
 C                   C7
 O sentimento mais precioso
      F               G#
 Que vem do nosso Senhor
       C          G       
 É o amor que só tem quem
-                C  A# F  
+                C   F  
 Já conhece a Jesus
---
 C          
 A alegria está no coração
-     F                  C  A# F
+     F                  C   F
 De quem já conhece a Jesus
 C             
 A verdadeira paz só tem aquele
      D7             G
 Que já conhece a Jesus
---
 C                   C7
 O sentimento mais precioso
      F               G#
 Que vem do nosso Senhor
       C          G       
 É o amor que só tem quem
-                C  A# F  
+                C   F  
 Já conhece a Jesus
 --
          C           
@@ -596,7 +623,7 @@ Com Ele não há mais condenação
 Posso pisar numa tropa
    G
 E saltar as muralhas
-    C    G    C    G
+    C          G 
 Aleluia! Aleluia! 
 --
     C        F  C
@@ -1413,7 +1440,7 @@ Vivo pra te adorar
 	<nome>Amigo de Deus</nome>
 	<tom>C</tom>
 	<rolagem>180</rolagem>
-	<delay>10</delay>
+	<delay>0</delay>
 	<tempo>83</tempo>
 	<ritmo>1</ritmo>
 	<url>https://www.youtube.com/watch?v=hIrw_wRXAfk</url>
@@ -1441,7 +1468,7 @@ A grandeza do  poder
       C/G      G      
 De Jesus, meu Bom Pastor
 --
-( C  G/B  Am  Dm  C  G )
+C  G/B  Am  Dm  C  G
 --
 
       C     G/B       Am
@@ -1478,7 +1505,9 @@ De Jesus, meu Bom Pastor
       C/G      G      F
 De Jesus, meu Bom Pastor
 
-C/G      G      C  F/C  C
+--
+C  G/B  Am  Dm  C  G
+--
 </cifra>
 </musica>
 
@@ -2151,6 +2180,7 @@ Sobre a morte venceu
     }
 
 	.cifraTexto .acorde{
+	  display: inline-block;
 	  color: #666;
 	  line-height: 1.2em;
 	  white-space: pre;
@@ -2433,7 +2463,26 @@ Sobre a morte venceu
 
 
 
+/* linha destacada (verde) */
+.cifra-linha.destacada {
+  color: #00e676;
+  font-weight: 600;
+}
 
+/* opcional: melhora a legibilidade ao centralizar */
+.cifra-linha {
+  transition: color 160ms ease;
+}
+
+
+.introTexto .acorde-intro {
+  color: #aaa;
+  margin: 0 4px;
+}
+.introTexto .acorde-intro.destacado {
+  color: #00e676;
+  font-weight: bold;
+}
 
 
 
@@ -2475,6 +2524,7 @@ Sobre a morte venceu
 			<div id="letraWrapper">
 			  <div class="focus-overlay" aria-hidden="true"></div>
 			  <div class="color-overlay"></div>
+			  <div id="introNav" style="display:none"></div>
 			  <div id="letra"></div>
 			  <div id="batidaVisual" style='justify-self: right;'>
 				<div id="bola5" class='bolaBatida'></div>
@@ -2544,13 +2594,10 @@ Sobre a morte venceu
   color: #1e90ff;
 }
 
-.nota.destacar {
-  background: yellow;
-  border-radius: 50%;
-  padding: 5px;
-  color: black !important;
+.acorde.destacado {
+  color: #00e676 !important;
+  font-weight: bold;
 }
-
 
 
 
@@ -2724,7 +2771,21 @@ notas.forEach((nota, i) => {
 
 
 
+<script>
+window.__metronomeMuted = true;  // metrônomo começa mudo
+window.__padLigado = true;       // pad começa ligado
+window.__padChordAtual = null;    // guarda o acorde atualmente no pad
 
+
+
+function clamp01(v) {
+  if (!Number.isFinite(v)) return 0;
+  // margem para erros de ponto flutuante
+  return Math.max(0, Math.min(1, v));
+}
+
+
+</script>
   
 
 
@@ -2811,9 +2872,11 @@ async function iniciarPadDaPrimeira() {
   const alturaBlocoInicial = medirAlturaHTML(letraDiv.innerHTML);
   letraDiv.style.top  = `${topInicial}px`;
 
-  // liga só o pad no tom da música
-  try { pararPad?.(); } catch(_) {}
-  iniciarPad?.(tom); // o pad já é ligado em tocarMusica “como hoje” também
+// liga só o pad no tom da música
+try { pararPad?.(); } catch(_) {}
+window.__padLigado = true;     // <— adicionado
+iniciarPadSuave?.(tom);
+
 
   // deixa playbackRate neutro (caso exista)
   try { if (window.padAudio) window.padAudio.playbackRate = 1.0; } catch(_) {}
@@ -3061,10 +3124,21 @@ musicasOrdenadas.forEach((musica, index) => {
     });
   }
 
-  function __scheduleBeat__(when, isTonica, tomAtual) {
-    // Som do "baixo" + visual (o visual é conectado por outro patch que envolve tocarNotaBaixo)
-    try { tocarNotaBaixo(tomAtual, when, isTonica); } catch (_) {}
-  }
+
+
+
+function __scheduleBeat__(when, isTonica, tomAtual) {
+  try {
+    const vol = (window.__metronomeMuted ? 0 : 0.8); // 0 = mudo
+    //console.log(`[METRO] when=${when.toFixed(3)}s, tom=${tomAtual}, pulso=${isTonica ? 'TÔNICA' : 'TERÇA'}, vol=${vol}`);
+    tocarNotaBaixo(tomAtual, when, isTonica, vol);
+  } catch (_) {}
+}
+
+
+
+
+
 
   function iniciarMetronomo(bpm, ritmo = 1) {
     pararMetronomo(); // zera anterior
@@ -3197,18 +3271,35 @@ function __stepManualScroll__(ts) {
     return;
   }
 
-  // detecção de “segurou no fim” para auto-avançar (mantém tua lógica)
-  if (manualScroll.dir === 1 && Math.abs(clampedTop - minTop) < 0.5 && Math.abs(manualScroll.v) < 30) {
-    manualScroll._holdMs += dt * 1000;
-    if (manualScroll._holdMs >= manualScroll.autoAdvanceHoldMs) {
-      const cb = manualScroll.onEnd;
-      stopManualScroll(false); // hard stop, já que vai trocar de música
-      if (typeof cb === 'function') cb();
-      return;
+// detectar “fim” + segurar → auto-avança (com tolerância) + reset de estado da próxima
+const nearEnd = (clampedTop - minTop) <= 2; // 2px de folga
+if (manualScroll.dir === 1 && nearEnd) {
+  manualScroll._holdMs += dt * 1000;
+  if (manualScroll._holdMs >= manualScroll.autoAdvanceHoldMs) {
+    const cb = manualScroll.onEnd;
+
+    // 1) para a rolagem manual (hard stop)
+    stopManualScroll(false);
+
+    // 2) importantíssimo: zere o estado de navegação para a PRÓXIMA música
+    //    (isso faz a próxima começar pela INTRO, depois seguir acorde por acorde)
+    window.__introAtivo = true;
+    window.__acordeIntroAtual = -1;
+    window.__acordeAtual = -1;
+
+    // 3) chama o callback de “fim da música” que resolve a Promise do tocarMusica
+    if (typeof cb === 'function') {
+      // deixa o layout assentar um frame antes de trocar a música
+      requestAnimationFrame(() => cb());
     }
-  } else {
-    manualScroll._holdMs = 0;
+    return;
   }
+} else {
+  manualScroll._holdMs = 0;
+}
+
+
+
 
   manualScroll.raf = requestAnimationFrame(__stepManualScroll__);
 }
@@ -3262,84 +3353,98 @@ function stopManualScroll(soft = true) {
 
 
 
+function tocarNotaBaixo(tom, time, isTonica = true, vol = 0.8) {
+  __initAudioCtx__();
+
+  const notasBase = { "C":65.41,"C#":69.30,"D":73.42,"D#":77.78,"E":82.41,"F":87.31,
+                      "F#":92.50,"G":98.00,"G#":103.83,"A":110.00,"A#":116.54,"B":123.47 };
+  const alias = { "Db":"C#","Eb":"D#","Gb":"F#","Ab":"G#","Bb":"A#" };
+  if (alias[tom]) tom = alias[tom];
+  if (!notasBase[tom]) return;
+
+  const freqs = Object.values(notasBase);
+  const tons = Object.keys(notasBase);
+  const index = tons.indexOf(tom);
+
+  const freq1 = notasBase[tom];
+  const freq3 = freqs[(index + 4) % 12];
+  const freq  = isTonica ? freq1 : freq3;
+	//console.log(`[METRO→OSC] ${isTonica ? 'TÔNICA' : 'TERÇA'} de ${tom} = ${freq.toFixed(2)} Hz`);
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+
+  osc.type = "sine";
+  osc.frequency.setValueAtTime(freq, time);
+  gain.gain.setValueAtTime(Math.max(0, vol), time);
+  gain.gain.exponentialRampToValueAtTime(0.001, time + 0.6);
+
+  osc.connect(gain).connect(audioCtx.destination);
+  osc.start(time);
+  osc.stop(time + 0.6);
+}
 
 
 
 
 
-  
 
-  // === tocarNotaBaixo (restaurado e compatível com agendamento 'when') ===
-  function tocarNotaBaixo(tom, time, isTonica = true) {
-    __initAudioCtx__();
 
-    const notasBase = {
-      "C": 65.41, "C#": 69.30, "D": 73.42, "D#": 77.78, "E": 82.41, "F": 87.31,
-      "F#": 92.50, "G": 98.00, "G#": 103.83, "A": 110.00, "A#": 116.54, "B": 123.47
-    };
 
-    const alias = { "Db": "C#", "Eb": "D#", "Gb": "F#", "Ab": "G#", "Bb": "A#" };
-    if (alias[tom]) tom = alias[tom];
-    if (!notasBase[tom]) return;
 
-    const freqs = Object.values(notasBase);
-    const tons = Object.keys(notasBase);
-    const index = tons.indexOf(tom);
-
-    const freq1 = notasBase[tom];                 // tônica
-    const freq3 = freqs[(index + 4) % 12];        // mediante (terça maior)
-
-    const freq = isTonica ? freq1 : freq3;
-
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-
-    osc.type = "sine";
-    osc.frequency.setValueAtTime(freq, time);
-    gain.gain.setValueAtTime(0.8, time);
-    gain.gain.exponentialRampToValueAtTime(0.001, time + 0.6);
-
-    osc.connect(gain).connect(audioCtx.destination);
-    osc.start(time);
-    osc.stop(time + 0.6);
-  }
 
 
 
 function formatarLinhasCifra(cifraTexto) {
-  const TAB = 4; // quantos espaços vale um \t
-  const linhas = cifraTexto.split('\n');
+  const TAB = 4;
 
-  function protegerIndentacao(linha) {
-    // 1) converte apenas os TABs do INÍCIO da linha
-    linha = linha.replace(/^\t+/g, t => ' '.repeat(t.length * TAB));
-    // 2) transforma SOMENTE os espaços iniciais em &nbsp;
-    linha = linha.replace(/^ +/g, s => '&nbsp;'.repeat(s.length));
-    return linha;
+  // Token de acorde: raiz + acidentes, sufixos (m, maj, sus, dim, aug), extensões,
+  // opcional com parênteses e opcional baixo ("/nota")
+  const RE_ACORDE = /^[A-G](?:#|b)?(?:maj|min|m|sus[24]?|dim|aug|add)?\d*(?:\([^)]+\))?(?:\/[A-G](?:#|b)?)?$/;
+
+  function protegerIndentacao(inicio) {
+    // tabs do INÍCIO da linha -> espaços; depois espaços iniciais -> &nbsp;
+    inicio = inicio.replace(/^\t+/g, t => ' '.repeat(t.length * TAB));
+    inicio = inicio.replace(/^ +/g, s => '&nbsp;'.repeat(s.length));
+    return inicio;
   }
 
-  return linhas.map(linha => {
-    const linhaSemEspacos = linha.trim();
-    const temSimbolos = /[#76()\/]/.test(linhaSemEspacos);
-    const temMaiusculas = /[A-G]/.test(linhaSemEspacos);
-    const temMinusculasNaoPermitidas = /[a-ln-z]/.test(linhaSemEspacos);
-    const muitosEspacos = (linha.match(/ /g) || []).length > 3;
-    const ehLinhaDeAcorde = (!temMinusculasNaoPermitidas && (temSimbolos || temMaiusculas || muitosEspacos));
+  function ehLinhaDeAcorde(texto) {
+    // true somente se cada token não-vazio (sem ser só espaço) for um acorde
+    const tokens = texto.trim().split(/\s+/).filter(Boolean);
+    if (tokens.length === 0) return false;
+    return tokens.every(t => RE_ACORDE.test(t));
+  }
 
-    if (ehLinhaDeAcorde && linhaSemEspacos !== '') {
-      return `<span class="acorde">${protegerIndentacao(linha)}</span>`;
-    } else {
-      // letra normal: não mexe no começo da linha
-      return protegerIndentacao(linha);
+  return cifraTexto.split('\n').map(linha => {
+    // separa prefixo de espaços/tabs do resto
+    const m = linha.match(/^\s*/);
+    const inicio = protegerIndentacao(m ? m[0] : '');
+    const resto  = linha.slice(m ? m[0].length : 0);
+
+    if (ehLinhaDeAcorde(resto)) {
+      // envolve APENAS os acordes individuais
+      return inicio + resto.split(/(\s+)/).map(tok => {
+        const t = tok.trim();
+        if (t && RE_ACORDE.test(t)) return `<span class="acorde">${tok}</span>`;
+        return tok.replace(/ /g, '&nbsp;');
+      }).join('');
     }
+
+    // linha de LETRA: não tocar em palavras; só preservar indentação/espaços
+    return inicio + resto.replace(/ /g, '&nbsp;');
   }).join('\n');
 }
 
 
 
 
+
+
 // ⬇ altera só a assinatura e pontos marcados; resto é idêntico ao seu
 async function tocarMusica(musica, delayTotal = 0, opts = {}) {
+
+
+
   // [2-etapas] não pare o pad se pedirem pra manter
   clearInterval(scrollInterval);
   pararMetronomo();
@@ -3369,7 +3474,7 @@ async function tocarMusica(musica, delayTotal = 0, opts = {}) {
 
 	const contadorHTML   = `<div id="contadorDelay">${formatarTempo(delay)}</div>`;
 	const nomeHTML       = `<div class="tituloMusica">${nome}</div>`;
-	const introHTML      = `<div class="introTexto">${intro.replace(/\n/g, "<br>")}</div>`;
+	const introHTML = `<div class="introTexto">${formatarIntro(intro)}</div>`;
 	const cifraHTML      = `<pre class="cifraTexto">${formatarLinhasCifra(cifra)}</pre>`;
 	const fimMusicaHTML  = `<div id="fimAnchor" style="height:0; line-height:0;"></div><div class="fimMusica">&gt;&gt;&gt;&gt;&gt;&gt;&gt;</div>`;
 
@@ -3397,7 +3502,7 @@ async function tocarMusica(musica, delayTotal = 0, opts = {}) {
 	  }
 	  iniciarMetronomo(tempo, ritmo);
 	  if (!opts?.manterPad) {
-		iniciarPad(tom);
+		iniciarPadSuave(tom);
 		try { if (window.padAudio) window.padAudio.playbackRate = 1.0; } catch(_) {}
 	  }
 	}
@@ -3525,26 +3630,9 @@ function calcularTopFinal(alvoY = 0) {
 
   // --- PAD WORSHIP COM MP3 ---
   let padAudio = null;
+// estado mestre do pad (padrão: ligado)
+window.__padLigado = (window.__padLigado !== false);
 
-  function iniciarPad(tom) {
-    pararPad(); // garante que o anterior pare
-
-    if (!tom) return;
-
-    // normaliza para nomes aceitos
-    const mapa = {
-      "Db": "C#", "Eb": "D#", "Gb": "F#", "Ab": "G#", "Bb": "A#"
-    };
-    if (mapa[tom]) tom = mapa[tom];
-
-    const src = `pad/${tom}.mp3`;
-    padAudio = new Audio(src);
-    padAudio.loop = true;
-    padAudio.volume = 0.4; // ajuste de volume
-    padAudio.play().catch(err => {
-      console.warn("Erro ao tocar pad:", err);
-    });
-  }
 
   function pararPad() {
     if (padAudio) {
@@ -3553,6 +3641,313 @@ function calcularTopFinal(alvoY = 0) {
       padAudio = null;
     }
   }
+
+
+
+
+
+
+
+
+// --- mapeia nome do arquivo do pad a partir do tom (evita '#')
+// mapeia nome de arquivo se você usa "sharp" em vez de "#"
+function __padSrcFromTom(tom) {
+  const bemol = { "Db":"C#","Eb":"D#","Gb":"F#","Ab":"G#","Bb":"A#" };
+  tom = bemol[tom] || tom;
+  const sharp = { "C#":"Csharp","D#":"Dsharp","F#":"Fsharp","G#":"Gsharp","A#":"Asharp" };
+  const nome = sharp[tom] || tom;
+  return `pad/${nome}.mp3`; // ajuste se sua pasta for outra
+}
+
+window.__padVol = window.__padVol ?? 0.9;
+
+function iniciarPadSuave(tom, fadeMs = 320) {
+  if (!window.__padLigado || !tom) return;
+
+  // se já estamos neste tom e o player está ativo, não recria
+  if (window._padTomAtual === tom && window.padAudio && !window.padAudio.paused) return;
+
+  // utilitário: clamp em [0,1] para evitar IndexSizeError
+  const clamp01 = v => Math.max(0, Math.min(1, Number.isFinite(v) ? v : 0));
+
+  const old = window.padAudio || null;
+  const novo = new Audio(__padSrcFromTom(tom));
+  novo.loop = true;
+  novo.volume = 0.0;
+
+  // tenta tocar; se falhar (autoplay), seguimos o crossfade mesmo assim
+  novo.play().catch(() => {});
+
+  // cancela fade anterior, se houver
+  if (window.__padFadeRaf) cancelAnimationFrame(window.__padFadeRaf);
+
+  const vAlvo = clamp01(window.__padVol ?? 0.8);
+  const vOld0 = clamp01(old ? old.volume : 0);
+  const t0 = performance.now();
+
+  // easing mais macio
+  const easeInOutCubic = x => (x < 0.5 ? 4*x*x*x : 1 - Math.pow(-2*x + 2, 3) / 2);
+
+  function step(ts) {
+    const progresso = (ts - t0) / Math.max(60, fadeMs);
+    const tLin = clamp01(progresso);
+    const t = easeInOutCubic(tLin);
+
+    if (old) {
+      const volOld = clamp01(vOld0 * (1 - t));
+      try { old.volume = volOld; } catch (_) {}
+    }
+
+    const volNovo = clamp01(vAlvo * t);
+    try { novo.volume = volNovo; } catch (_) {}
+
+    if (tLin < 1) {
+      window.__padFadeRaf = requestAnimationFrame(step);
+    } else {
+      // fim do crossfade
+      if (old) {
+        try { old.pause(); old.src = ""; } catch (_) {}
+      }
+      window.padAudio = novo;
+      window._padTomAtual = tom;   // chave do tom atual atualizada aqui
+      window.__padFadeRaf = null;
+      // garanta volume final correto
+      try { novo.volume = vAlvo; } catch (_) {}
+    }
+  }
+
+  window.__padFadeRaf = requestAnimationFrame(step);
+}
+
+
+function pararPadSuave(fadeMs = 180) {
+  const a = window.padAudio;
+  if (!a) return;
+  if (window.__padFadeRaf) cancelAnimationFrame(window.__padFadeRaf);
+
+  const v0 = a.volume;
+  const t0 = performance.now();
+  function step(ts){
+    const t = Math.min(1, (ts - t0) / Math.max(40, fadeMs));
+    a.volume = v0 * (1 - t);
+    if (t < 1) {
+      window.__padFadeRaf = requestAnimationFrame(step);
+    } else {
+      try { a.pause(); a.src = ""; } catch(_) {}
+      window.padAudio = null;
+	  window._padTomAtual = null;   // <<< importante: zera a chave atual
+      window.__padFadeRaf = null;
+    }
+  }
+  window.__padFadeRaf = requestAnimationFrame(step);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ===== Utilitários para tocar o pad do acorde destacado =====
+function normalizarNota(n) {
+  const mapa = { "Db":"C#", "Eb":"D#", "Gb":"F#", "Ab":"G#", "Bb":"A#" };
+  return mapa[n] || n;
+}
+
+// pega a raiz do acorde (antes da barra), ex.: "A9/C#" -> "A"
+function extrairTomDoAcorde(str) {
+  if (!str) return null;
+  const parte = String(str).trim().split(/\s+/)[0].split('/')[0];
+  const m = parte.match(/^([A-G](?:#|b)?)/);
+  return m ? normalizarNota(m[1]) : null;
+}
+
+
+
+
+
+
+// ===== CONFIG =====
+// true = usar a nota do BAIXO (após a barra) para o pad, ex.: "E/G#" -> "G#"
+// false = usar a RAIZ do acorde, ex.: "E/G#" -> "E"
+const PAD_USA_BAIXO_DA_INVERSAO = true;
+
+// Se seus arquivos não têm "#", e sim "sharp" ou "sus", ajuste aqui:
+const MAPA_ARQUIVO_PAD = { "C#":"Csharp", "D#":"Dsharp", "F#":"Fsharp", "G#":"Gsharp", "A#":"Asharp" };
+// Se seus arquivos aceitam "#", pode deixar MAPA_ARQUIVO_PAD vazio.
+
+
+// ————— Sanitização de texto (remove NBSP, tabs etc.)
+function __sanitize(str) {
+  return String(str || "")
+    .replace(/\u00A0/g, " ")  // NBSP -> espaço normal
+    .replace(/\s+/g, " ")     // colapsa
+    .trim();
+}
+
+
+
+// ————— Converte bemol -> sustenido (seus arquivos/sintonia usam #)
+function __bemolParaSustenido(nota) {
+  const map = { "Db":"C#", "Eb":"D#", "Gb":"F#", "Ab":"G#", "Bb":"A#" };
+  return map[nota] || nota;
+}
+
+// ————— Extrai APENAS a RAIZ (ignora inversões e sufixos)
+// sanitiza, converte bemol->sustenido e pega só a tônica (antes da barra)
+function __extrairRaiz(acordeStr) {
+  const s = __sanitize(acordeStr);
+  if (!s) return null;
+  const [antes] = s.split("/");
+  const m = antes.match(/^([A-Ga-g])([#b]?)/);
+  if (!m) return null;
+  let nota = m[1].toUpperCase() + (m[2] || "").toUpperCase();
+  if (nota.endsWith("B")) nota = __bemolParaSustenido(nota);
+  return nota; // "C", "F#", "A#"
+}
+
+
+
+// ————— Transforma a raiz em NOME DE ARQUIVO (ajuste se usar “sharp”)
+function __padSrcFromKey(key) {
+  // Se seus arquivos são "Csharp.mp3" etc., mapeie aqui:
+  const SHARP = { "C#":"Csharp", "D#":"Dsharp", "F#":"Fsharp", "G#":"Gsharp", "A#":"Asharp" };
+  const nome = SHARP[key] || key;   // troque por seu padrão, se for diferente
+  return `pad/${nome}.mp3`;         // ajuste a pasta se necessário
+}
+
+
+
+// troca o pad para o tom do acorde atual (respeita o toggle do "p")
+// troca de pad SEMPRE com crossfade e só pela RAIZ
+// troca o pad para o tom do acorde atual (com crossfade), usando só a RAIZ
+function tocarPadDoAcorde(acordeStr) {
+  if (!window.__padLigado) return;
+
+  const nota = __extrairRaiz(acordeStr);
+  if (!nota) return;
+
+  // se já estamos na mesma nota e tocando, não refaz o fade
+  if (window._padTomAtual === nota && window.padAudio && !window.padAudio.paused) return;
+
+  // ⚠️ NÃO atualize _padTomAtual aqui — deixe a iniciarPadSuave fazê-lo ao final do crossfade
+  console.log(`[PAD] trocar → ${nota}`);
+  iniciarPadSuave(nota, 360); // 360ms deixa a transição um pouco mais “aveludada”
+}
+
+
+
+
+
+
+
+
+
+
+
+// ===== INTRO: estado e helpers =====
+window.__introAtivo = false;
+window.__acordeIntroAtual = -1;
+
+function tokenizarAcordes(str) {
+  // mesmo padrão de acordes usado na cifra
+  const RE_ACORDE = /^[A-G](?:#|b)?(?:maj|min|m|sus[24]?|dim|aug|add)?\d*(?:\([^)]+\))?(?:\/[A-G](?:#|b)?)?$/;
+  // separa por espaços mantendo tokens
+  return String(str || "")
+    .split(/(\s+)/)
+    .map(t => t.trim())
+    .filter(Boolean)
+    .filter(t => RE_ACORDE.test(t));
+}
+
+function prepararIntroNavbar(introTexto) {
+  const nav = document.getElementById('introNav');
+  if (!nav) return false;
+
+  const acordes = tokenizarAcordes(introTexto);
+  if (!acordes.length) {
+    nav.style.display = 'none';
+    window.__introAtivo = false;
+    return false;
+  }
+
+  nav.innerHTML = acordes.map((a,i)=>`<span class="acorde-intro" data-i="${i}">${a}</span>`).join('');
+  nav.style.display = '';
+  window.__introAtivo = true;
+  window.__acordeIntroAtual = -1;
+  return true;
+}
+
+function obterAcordesIntro() {
+  return Array.from(document.querySelectorAll('#introNav .acorde-intro'));
+}
+
+window.__introAtivo = false;
+window.__acordeIntroAtual = -1;
+
+function obterAcordesIntro() {
+  return Array.from(document.querySelectorAll('.introTexto .acorde-intro'));
+}
+
+function destacarIntroPorIndice(idx) {
+  const acordes = obterAcordesIntro();
+  if (!acordes.length) return false;
+  idx = Math.max(0, Math.min(idx, acordes.length - 1));
+
+  acordes.forEach(el => el.classList.remove('destacado'));
+  const alvo = acordes[idx];
+  if (!alvo) return false;
+  alvo.classList.add('destacado');
+
+  window.__acordeIntroAtual = idx;
+
+  // troca pad
+  tocarPadDoAcorde(alvo.textContent);
+  const raiz = (alvo.textContent.trim().match(/^[A-G](?:#|b)?/i) || ['?'])[0].toUpperCase();
+  console.log(`[PAD] acorde="${alvo.textContent.trim()}" → raiz="${raiz}" (trocando PAD)`);
+  return true;
+}
+
+function avancarIntro(passo) {
+  const acordes = obterAcordesIntro();
+  if (!acordes.length) return false;
+
+  let idx = (window.__acordeIntroAtual ?? -1) + passo;
+  if (idx < 0) idx = 0;
+  if (idx >= acordes.length) {
+    // terminou a intro → desativa
+    window.__introAtivo = false;
+    return false;
+  }
+
+  destacarIntroPorIndice(idx);
+  return true;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3818,34 +4213,66 @@ function exibirSlideAtual() {
   atualizarIndicadorSlides();
 }
 
-function formatarLinhasCifra(cifraTexto) {
-  const TAB = 4; // quantos espaços vale um \t
-  const linhas = cifraTexto.split('\n');
 
-  function protegerIndentacao(linha) {
-    // 1) converte apenas os TABs do INÍCIO da linha
-    linha = linha.replace(/^\t+/g, t => ' '.repeat(t.length * TAB));
-    // 2) transforma SOMENTE os espaços iniciais em &nbsp;
-    linha = linha.replace(/^ +/g, s => '&nbsp;'.repeat(s.length));
-    return linha;
+
+function formatarIntro(introTexto) {
+  if (!introTexto) return '';
+  const RE_ACORDE = /^[A-G](?:#|b)?(?:maj|min|m|sus[24]?|dim|aug|add)?\d*(?:\([^)]+\))?(?:\/[A-G](?:#|b)?)?$/;
+
+  return introTexto.split(/(\s+)/).map(tok => {
+    const t = tok.trim();
+    if (t && RE_ACORDE.test(t)) {
+      return `<span class="acorde-intro">${tok}</span>`;
+    }
+    return tok.replace(/ /g, '&nbsp;');
+  }).join('');
+}
+
+
+
+
+function formatarLinhasCifra(cifraTexto) {
+  const TAB = 4;
+
+  // Token de acorde: raiz + acidentes, sufixos (m, maj, sus, dim, aug), extensões,
+  // opcional com parênteses e opcional baixo ("/nota")
+  const RE_ACORDE = /^[A-G](?:#|b)?(?:maj|min|m|sus[24]?|dim|aug|add)?\d*(?:\([^)]+\))?(?:\/[A-G](?:#|b)?)?$/;
+
+  function protegerIndentacao(inicio) {
+    // tabs do INÍCIO da linha -> espaços; depois espaços iniciais -> &nbsp;
+    inicio = inicio.replace(/^\t+/g, t => ' '.repeat(t.length * TAB));
+    inicio = inicio.replace(/^ +/g, s => '&nbsp;'.repeat(s.length));
+    return inicio;
   }
 
-  return linhas.map(linha => {
-    const linhaSemEspacos = linha.trim();
-    const temSimbolos = /[#76()\/]/.test(linhaSemEspacos);
-    const temMaiusculas = /[A-G]/.test(linhaSemEspacos);
-    const temMinusculasNaoPermitidas = /[a-ln-z]/.test(linhaSemEspacos);
-    const muitosEspacos = (linha.match(/ /g) || []).length > 3;
-    const ehLinhaDeAcorde = (!temMinusculasNaoPermitidas && (temSimbolos || temMaiusculas || muitosEspacos));
+  function ehLinhaDeAcorde(texto) {
+    // true somente se cada token não-vazio (sem ser só espaço) for um acorde
+    const tokens = texto.trim().split(/\s+/).filter(Boolean);
+    if (tokens.length === 0) return false;
+    return tokens.every(t => RE_ACORDE.test(t));
+  }
 
-    if (ehLinhaDeAcorde && linhaSemEspacos !== '') {
-      return `<span class="acorde">${protegerIndentacao(linha)}</span>`;
-    } else {
-      // letra normal: não mexe no começo da linha
-      return protegerIndentacao(linha);
+  return cifraTexto.split('\n').map(linha => {
+    // separa prefixo de espaços/tabs do resto
+    const m = linha.match(/^\s*/);
+    const inicio = protegerIndentacao(m ? m[0] : '');
+    const resto  = linha.slice(m ? m[0].length : 0);
+
+    if (ehLinhaDeAcorde(resto)) {
+      // envolve APENAS os acordes individuais
+      return inicio + resto.split(/(\s+)/).map(tok => {
+        const t = tok.trim();
+        if (t && RE_ACORDE.test(t)) return `<span class="acorde">${tok}</span>`;
+        return tok.replace(/ /g, '&nbsp;');
+      }).join('');
     }
+
+    // linha de LETRA: não tocar em palavras; só preservar indentação/espaços
+    return inicio + resto.replace(/ /g, '&nbsp;');
   }).join('\n');
 }
+
+
 
 
 const tocarMusicaOriginal = window.tocarMusica;
@@ -3908,12 +4335,23 @@ if (modoManual) {
 
   // tela inicial (título + intro + cifra completa + fimAnchor)
   const tituloHTML = `<div class="tituloMusica">${nome}</div>`;
-  const introHTML  = `<div class="introTexto">${intro.replace(/\n/g, "<br>")}</div>`;
+  const introHTML  = `<div class="introTexto">${formatarIntro(intro)}</div>`;
   const cifraHTML  = `<pre class="cifraTexto">${formatarLinhasCifra(cifra)}</pre>`;
   // ⚠️ fimAnchor garante que calcularTopFinal(0) funcione e a última linha pare no topo
   const fimHTML    = `<div id="fimAnchor" style="height:0; line-height:0;"></div><div class="fimMusica">&gt;&gt;&gt;&gt;&gt;</div>`;
 
   letraDiv.innerHTML = `${tituloHTML}${introHTML}${cifraHTML}${fimHTML}`;
+  
+  
+// ativa o modo intro se houver acordes na intro
+// ativa o modo intro se houver acordes na intro
+const temIntroAcordes = document.querySelectorAll('.introTexto .acorde-intro').length > 0;
+window.__introAtivo = temIntroAcordes;
+window.__acordeIntroAtual = -1;
+
+
+
+  
   letraDiv.style.transition = 'none';
   letraDiv.style.transform  = 'none';
 
@@ -3928,7 +4366,7 @@ if (modoManual) {
     if (!opts?.pularContagem) await contagemInicial(tempo);
     iniciarMetronomo?.(tempo, ritmo);
     if (!opts?.manterPad) {
-      iniciarPad?.(tom);
+      iniciarPadSuave?.(tom);
       try { if (window.padAudio) window.padAudio.playbackRate = 1.0; } catch(_) {}
     }
   }
@@ -3946,39 +4384,87 @@ if (modoManual) {
     if (!opts?.manterPad) pararPad?.();
   }
 
-  function keyDownHandler(e) {
-    // descer: → ↓ PageDown
-    if (["ArrowRight","ArrowDown","PageDown"].includes(e.key)) {
-      e.preventDefault();
-      downKeys.add(e.key);
-      startManualScroll(1, e.shiftKey); // shift = boost
-    }
-    // subir: ← ↑ PageUp
-    if (["ArrowLeft","ArrowUp","PageUp"].includes(e.key)) {
-      e.preventDefault();
-      downKeys.add(e.key);
-      startManualScroll(-1, e.shiftKey);
-    }
-    // ENTER, SPACE, ESC ou End encerram a música manual
-    if (e.key === "Enter" || e.key === " " || e.key === "Escape" || e.key === "End") {
-      e.preventDefault();
-      if (e.key === " " && document.getElementById("btnBpmTap")?.classList.contains("tap-ativo")) {
-        // se o TAP está ativo, não intercepta o espaço
-        return;
-      }
-      cleanup();
-      resolver?.();
-    }
+
+
+
+// tempo máximo para considerar um "tap" (ms)
+// tempo máximo para considerar um "tap" (ms)
+const TAP_MS = 180;
+const __tapTimes = new Map();
+
+// ⬇️ novas teclas que contam como "passo por acorde"
+const NAV_TAP_KEYS = new Set(["ArrowRight","ArrowLeft","PageDown","PageUp"]);
+
+function keyDownHandler(e) {
+  // marca instante do keydown para tap
+  if (NAV_TAP_KEYS.has(e.key)) {
+    __tapTimes.set(e.key, performance.now());
   }
 
+  // ===== rolagem suave ao SEGURAR (mantém seu comportamento atual) =====
+  if (["ArrowRight","ArrowDown","PageDown"].includes(e.key)) {
+    e.preventDefault();
+    downKeys.add(e.key);
+    startManualScroll(1, e.shiftKey);
+  }
+  if (["ArrowLeft","ArrowUp","PageUp"].includes(e.key)) {
+    e.preventDefault();
+    downKeys.add(e.key);
+    startManualScroll(-1, e.shiftKey);
+  }
+
+  // (resto do seu keyDownHandler: Enter/Espaço/Esc/End etc.)
+}
+
 function keyUpHandler(e) {
+  // soltar tecla: se nenhuma outra está pressionada, parar suave
   if (downKeys.has(e.key)) {
     downKeys.delete(e.key);
     const algumaPressionada = ["ArrowRight","ArrowDown","PageDown","ArrowLeft","ArrowUp","PageUp"]
       .some(k => downKeys.has(k));
-    if (!algumaPressionada) stopManualScroll(true); // ⬅️ suave
+    if (!algumaPressionada) stopManualScroll(true);
   }
+
+  // ===== TAP curto → passo por acorde (incluindo PageDown/PageUp) =====
+  if (NAV_TAP_KEYS.has(e.key)) {
+    const t0 = __tapTimes.get(e.key) || 0;
+    const dur = performance.now() - t0;
+    __tapTimes.delete(e.key);
+
+    if (dur <= TAP_MS) {
+      // toque curto → não queremos scroll continuado
+      stopManualScroll(false);
+
+      // 1) Se ainda estamos na INTRO, consumir aqui primeiro
+      if (window.__introAtivo) {
+        const passo = (e.key === "ArrowRight" || e.key === "PageDown") ? +1 : -1;
+        const ok = avancarIntro(passo);
+        if (ok) return; // ainda na intro, já usamos a tecla
+        // se a intro terminou (ok=false), cai para a cifra abaixo
+      }
+
+      // 2) Cifra: acorde por acorde
+      const acordes = Array.from(document.querySelectorAll('#letra pre.cifraTexto .acorde'));
+      if (acordes.length) {
+        let idx = (window.__acordeAtual ?? -1);
+        const passo = (e.key === "ArrowRight" || e.key === "PageDown") ? +1 : -1;
+        idx = Math.max(0, Math.min(idx + passo, acordes.length - 1));
+        centralizarAcordePorIndice(idx); // já destaca + (se ligado) toca o pad do acorde
+      }
+    } else {
+      // segurar → mantém rolagem suave
+      stopManualScroll(true);
+    }
+  }
+
+  // (resto do seu keyUpHandler, se houver)
 }
+
+
+
+
+
+
 
 
   document.addEventListener('keydown', keyDownHandler, true);
@@ -4295,6 +4781,9 @@ function alterarBpm(novo) {
     };
     console.log(TAG, "ANTES de iniciarMetronomo:", antes);
 
+
+	window.__metronomeMuted = true;
+
     iniciarMetronomo(bpm, ritmo);
 
     const depois = {
@@ -4504,6 +4993,140 @@ document.getElementById('letraWrapper').addEventListener('click', async () => {
 });
 
 </script>
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+
+
+// Estado global
+window.__acordeAtual = -1;
+const __tapTimes = new Map();
+const TAP_MS = 180;
+
+function obterTodosAcordes() {
+  return Array.from(document.querySelectorAll('#letra pre.cifraTexto .acorde'));
+}
+
+
+
+function centralizarAcordePorIndice(idx) {
+  const wrapper = document.getElementById('letraWrapper');
+  const letra   = document.getElementById('letra');
+  const acordes = obterTodosAcordes();
+  if (!wrapper || !letra || acordes.length === 0) return;
+
+  idx = Math.max(0, Math.min(idx, acordes.length - 1));
+  const alvo = acordes[idx];
+
+  // limpa anteriores e aplica destaque só no acorde atual
+  document.querySelectorAll('#letra .acorde.destacado')
+    .forEach(el => el.classList.remove('destacado'));
+  alvo.classList.add('destacado');
+
+  // centraliza verticalmente
+  const wrapperH = wrapper.offsetHeight;
+  const mid = alvo.offsetTop + alvo.offsetHeight/2;
+  let novoTop = (wrapperH/2) - mid;
+
+  letra.style.transition = "top 0.25s ease";
+  letra.style.top = novoTop + "px";
+  setTimeout(()=>{ letra.style.transition = "none"; }, 260);
+
+  window.__acordeAtual = idx;
+  
+  // ⬇️ NOVO: toca o pad do acorde destacado (se pad estiver ligado)
+  tocarPadDoAcorde(alvo.textContent);
+  const raiz = (alvo.textContent.trim().match(/^[A-G](?:#|b)?/i) || ['?'])[0].toUpperCase();
+  console.log(`[PAD] acorde="${alvo.textContent.trim()}" → raiz="${raiz}" (trocando PAD)`);
+}
+
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+
+document.addEventListener("keydown", (ev) => {
+  if (ev.target.tagName === "INPUT" || ev.target.isContentEditable) return;
+
+  // --- tecla "m" → alterna som do metrônomo ---
+  if (ev.key.toLowerCase() === "m") {
+    window.__metronomeMuted = !window.__metronomeMuted;
+    console.log("Metrônomo", window.__metronomeMuted ? "MUDO" : "ATIVO");
+    return;
+  }
+
+
+// --- tecla "p" → liga/desliga pad ---
+// tecla "p" → liga/desliga pad com fade
+if (ev.key.toLowerCase() === 'p' && !ev.repeat) {
+  ev.preventDefault();
+  if (window.__padLigado) {
+    pararPadSuave(220);
+    window.__padLigado = false;
+  } else {
+    window.__padLigado = true;
+    // se já existe um acorde em destaque (intro ou cifra), liga nele
+    const el = document.querySelector('.acorde.destacado, .acorde-intro.destacado');
+    const acorde = el?.textContent?.trim();
+    if (acorde) {
+      tocarPadDoAcorde(acorde);
+    } else if (window._padTomAtual) {
+      iniciarPadSuave(window._padTomAtual, 220);
+    }
+  }
+  return;
+}
+
+
+
+
+});
+
+
+
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
