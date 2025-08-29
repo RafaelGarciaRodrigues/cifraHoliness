@@ -1,7 +1,6 @@
 
 <todasAsMusicas>
 
-VER TESTE
 <!-- -------------------------------------------------------------------------------------------------------------------------------- -->
 
 <musica>
@@ -445,8 +444,8 @@ Me derramar, dizer que és formoso
 	<ritmo>1</ritmo>
 	<url>https://www.youtube.com/watch?v=22c5Flzd8Iw</url>
 	<intro>
-D D/F# G G/B A/C# 
-D D/F# G A    G/B  A/C#  B/D# 
+D D/F# G   G/B A/C# 
+D D/F# G   A    G/B  A/C#  B/D# 
 	</intro>
 <cifra>
 D                   
@@ -462,7 +461,7 @@ O seu no__me lou___va___rei
 
 --
 
-Em  Em/D    A/C#
+*Em  Em/D    A/C#
 Ele é o Senhor
         D        D/F#      G
 Sua verdade vai sempre reinar
@@ -472,7 +471,7 @@ Ter_ra e  céus
 Glorificam seu santo no__me
 Em7        Em/D  
 Ele é exaltado
-   C        A        D   A7
+   C        A        D   A7*
 O rei é exaltado nos céus
 
 --
@@ -490,7 +489,7 @@ O seu no__me lou___va___rei
 
 --
 
-Em  Em/D    A/C#
+*Em  Em/D    A/C#
 Ele é o Senhor
         D        D/F#      G
 Sua verdade vai sempre reinar
@@ -515,7 +514,7 @@ Ter_ra e  céus
 Glorificam seu santo no__me
 Em7        Em/D  
 Ele é exaltado
-   C        A        D   A7
+   C        A        D   A7*
 O rei é exaltado nos céus
 </cifra>
 </musica>
@@ -673,7 +672,7 @@ C F C F C D7 G
 	<cifra>
 C
 A alegria está no coração
-     F                  C   F
+    F                  C   F
 De quem já conhece a Jesus
 C
 A verdadeira paz só tem aquele
@@ -775,7 +774,7 @@ Já conhece a Jesus
  A  A4  A  A4
 	</intro>
 	<cifra>
-         A
+           A
 Te amo, Deus
 
       D/A         A
@@ -790,7 +789,7 @@ Eu estou em Tuas mãos
 Desde quando me levanto
         A     E/G# F#m7
 Até eu me deitar
-         D/A       E6      A
+         D/A       E6      *A
 Eu cantarei da bondade de Deus
 --
 D/A                  A
@@ -800,7 +799,7 @@ D/A                      A        E6
 D/A                      F#m7
       Com todo fôlego que tenho
 
-         D/A     E6      A
+         D/A     E6      A*
 Eu cantarei da bondade de Deus
 --
           A
@@ -816,7 +815,7 @@ Tua presença me conforta
 Sei que és meu Pai
       A   E/G# F#m7
 Que amigo és
-      D/A  E       A
+      D/A  E              *A
 E eu vivo na bon_dade de Deus
 --
 D/A                  A
@@ -856,7 +855,7 @@ D/A                      F#m7
       Com todo fôlego que tenho
          D/A     E6      A
 Eu cantarei da bondade de Deus
-         D/A     E6      A
+         D/A     E6      A*
 Eu cantarei da bondade de Deus
 </cifra>
 </musica>
@@ -1494,7 +1493,7 @@ Honra e majestade estão diante do Senhor
 Não existe nenhum Deus que seja   digno como Tu
      Dm7/E   C/E
 Nada vai me separar de Ti
-     F              G
+     F              *G
 Tu  és  a própria vida em mim
 --
 C9
@@ -1532,7 +1531,7 @@ Bm7
 Não deixarei de te buscar
         G           D/F#
 És a razão da minha  vi-da
-Em7           G/A
+Em7           G/A*
 Vivo pra te adorar
 </cifra>
 </musica>
@@ -2880,7 +2879,6 @@ window.__padLigado = true;       // pad começa ligado
 window.__padChordAtual = null;    // guarda o acorde atualmente no pad
 
 
-
 function clamp01(v) {
   if (!Number.isFinite(v)) return 0;
   // margem para erros de ponto flutuante
@@ -3502,7 +3500,9 @@ function formatarLinhasCifra(cifraTexto) {
 
   // Token de acorde: raiz + acidentes, sufixos (m, maj, sus, dim, aug), extensões,
   // opcional com parênteses e opcional baixo ("/nota")
-  const RE_ACORDE = /^[A-G](?:#|b)?(?:maj|min|m|sus[24]?|dim|aug|add)?\d*(?:\([^)]+\))?(?:\/[A-G](?:#|b)?)?$/;
+  // permite * antes ou depois do acorde
+const RE_ACORDE = /^\*?[A-G](?:#|b)?(?:maj|min|m|sus[24]?|dim|aug|add)?\d*(?:\([^)]+\))?(?:\/[A-G](?:#|b)?)?\*?$/;
+
 
   function protegerIndentacao(inicio) {
     // tabs do INÍCIO da linha -> espaços; depois espaços iniciais -> &nbsp;
@@ -3783,7 +3783,7 @@ function __padSrcFromTom(tom) {
 }
 
 
-window.__padVol = window.__padVol ?? 0.9;
+window.__padVol = window.__padVol ?? 0.65;
 
 function iniciarPadSuave(tom, fadeMs = 320) {
   if (!window.__padLigado || !tom) return;
@@ -3805,7 +3805,7 @@ function iniciarPadSuave(tom, fadeMs = 320) {
   // cancela fade anterior, se houver
   if (window.__padFadeRaf) cancelAnimationFrame(window.__padFadeRaf);
 
-  const vAlvo = clamp01(window.__padVol ?? 0.8);
+  const vAlvo = clamp01(window.__padVol ?? 0.65);
   const vOld0 = clamp01(old ? old.volume : 0);
   const t0 = performance.now();
 
@@ -3972,12 +3972,20 @@ function tocarPadDoAcorde(acordeStr) {
   const tomPad = __extrairPadTom(acordeStr);
   if (!tomPad) return;
 
-  // evita refazer fade se já estamos no mesmo
-  if (window._padTomAtual === tomPad && window.padAudio && !window.padAudio.paused) return;
+  // se já estamos no mesmo tom, apenas sincroniza volume atual com __padVol
+  if (window._padTomAtual === tomPad && window.padAudio && !window.padAudio.paused) {
+    try {
+      const v = Math.max(0, Math.min(1, window.__padVol ?? window.padAudio.volume));
+      window.padAudio.volume = v;
+    } catch(_) {}
+    return;
+  }
 
-  console.log(`[PAD] trocar → ${tomPad}`);
+  // caso contrário, troca com crossfade
   iniciarPadSuave(tomPad, 360);
 }
+
+
 
 
 
@@ -4047,8 +4055,9 @@ function destacarIntroPorIndice(idx) {
   window.__acordeIntroAtual = idx;
 
   // troca pad
-  tocarPadDoAcorde(alvo.textContent);
-  iniciarBaixoDoAcorde(alvo.textContent);
+  const acordeLimpo = alvo.textContent.replace(/\*/g, "").trim();
+  tocarPadDoAcorde(acordeLimpo);
+  iniciarBaixoDoAcorde(acordeLimpo);
   const raiz = (alvo.textContent.trim().match(/^[A-G](?:#|b)?/i) || ['?'])[0].toUpperCase();
   console.log(`[PAD] acorde="${alvo.textContent.trim()}" → raiz="${raiz}" (trocando PAD)`);
   return true;
@@ -4374,7 +4383,8 @@ function formatarLinhasCifra(cifraTexto) {
 
   // Token de acorde: raiz + acidentes, sufixos (m, maj, sus, dim, aug), extensões,
   // opcional com parênteses e opcional baixo ("/nota")
-  const RE_ACORDE = /^[A-G](?:#|b)?(?:maj|min|m|sus[24]?|dim|aug|add)?\d*(?:\([^)]+\))?(?:\/[A-G](?:#|b)?)?$/;
+const RE_ACORDE = /^\*?[A-G](?:#|b)?(?:maj|min|m|sus[24]?|dim|aug|add)?\d*(?:\([^)]+\))?(?:\/[A-G](?:#|b)?)?\*?$/;
+
 
   function protegerIndentacao(inicio) {
     // tabs do INÍCIO da linha -> espaços; depois espaços iniciais -> &nbsp;
@@ -5161,6 +5171,28 @@ function obterTodosAcordes() {
 
 
 
+
+
+
+// bases memorizadas 1x
+window.__padVolBase   = window.__padVolBase   ?? (window.__padVol   ?? 0.65);
+window.__baixoVolBase = window.__baixoVolBase ?? (window.__baixoVol ?? 0.45);
+window.__volBoost = window.__volBoost ?? false;
+
+// +25%
+function __aplicarVolumesBoost(ativo){
+  const mult = ativo ? 2 : 1.0;
+  window.__padVol   = Math.min(1, window.__padVolBase   * mult);
+  window.__baixoVol = Math.min(1, window.__baixoVolBase * mult);
+}
+
+
+
+
+
+
+
+
 function centralizarAcordePorIndice(idx) {
   const wrapper = document.getElementById('letraWrapper');
   const letra   = document.getElementById('letra');
@@ -5186,12 +5218,39 @@ function centralizarAcordePorIndice(idx) {
 
   window.__acordeAtual = idx;
 
-  // ⬇️ NOVO: toca o pad do acorde destacado (se pad estiver ligado)
-  tocarPadDoAcorde(alvo.textContent);
-  iniciarBaixoDoAcorde(alvo.textContent);
+// --- BOOST 25% entre *INICIO . FIM* ---
+const raw = alvo.textContent.trim();
+const leading  = raw.startsWith('*');  // *C  => liga boost a partir deste
+const trailing = raw.endsWith('*');    // G*  => desliga boost após este
+const acordeLimpo = raw.replace(/\*/g, '').trim();
+
+// este acorde já toca com boost se o estado estava ativo OU começa com *
+const boostAgora = window.__volBoost || leading;
+__aplicarVolumesBoost(boostAgora);
+
+// depois de __aplicarVolumesBoost(boostAgora);
+if (window.padAudio && window._padTomAtual && __extrairPadTom(acordeLimpo) === window._padTomAtual) {
+  try {
+    const v = Math.max(0, Math.min(1, window.__padVol ?? window.padAudio.volume));
+    window.padAudio.volume = v;
+  } catch(_) {}
+}
+
+
+// tocar pad/baixo usando o acorde sem asterisco
+tocarPadDoAcorde(acordeLimpo);
+iniciarBaixoDoAcorde(acordeLimpo);
+
+// atualizar estado para os próximos acordes
+if (trailing)      window.__volBoost = false;
+else if (leading)  window.__volBoost = true;
+
+
+// (se nenhum leading/trailing, mantém o estado atual)
   const raiz = (alvo.textContent.trim().match(/^[A-G](?:#|b)?/i) || ['?'])[0].toUpperCase();
 
   console.log(`[PAD] acorde="${alvo.textContent.trim()}" → raiz="${raiz}" (trocando PAD)`);
+
 }
 
 
@@ -5287,10 +5346,10 @@ if (ev.key.toLowerCase() === 'p' && !ev.repeat) {
 <script>
 (() => {
   window.__baixoLigado = (typeof window.__baixoLigado==='boolean') ? window.__baixoLigado : true;
-  window.__baixoVol = window.__baixoVol ?? 0.2;
+  window.__baixoVol = window.__baixoVol ?? 0.5;
   window.__baixoInicialFator = window.__baixoInicialFator ?? 0.60;
   window.__baixoSustain = window.__baixoSustain ?? 0.30;
-  window.__baixoEnvTempo = window.__baixoEnvTempo ?? 2.0;
+  window.__baixoEnvTempo = window.__baixoEnvTempo ?? 0.5;
 
   let state = { osc:null, gain:null, filt:null };
 
