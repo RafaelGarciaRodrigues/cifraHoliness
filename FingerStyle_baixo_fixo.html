@@ -752,43 +752,75 @@ Tão certo como eu te falo podes me ouvir
 	<categ>Holiness</categ>
 	<cifra>
 	<![CDATA[
-G              C                 G                  D
-Fico feliz em vir em Tua casa, erguer minha voz e cantar
-G              C                 G          D            G
-Fico feliz em vir em Tua casa, erguer minhas mãos e adorar
-G              C                 G                  D
-Fico feliz em vir em Tua casa, erguer minha voz e cantar
-G              C                 G          D            G
-Fico feliz em vir em Tua casa, erguer minhas mãos e adorar
+G              C              
+Fico feliz em vir em Tua casa
+   G                  D
+erguer minha voz e cantar
+G              C             
+Fico feliz em vir em Tua casa
+  G          D            G
+erguer minhas mãos e adorar
+G              C              
+Fico feliz em vir em Tua casa
+   G                  D
+erguer minha voz e cantar
+G              C             
+Fico feliz em vir em Tua casa
+  G          D            G
+erguer minhas mãos e adorar
 --
-G                        C  G                    D
-Bendito é o nome do Senhor bendito é o nome do Senhor
-G                       C       D   G   D
-Bendito é o nome do Senhor pra sempre
-G                        C  G                    D
-Bendito é o nome do Senhor. bendito é o nome do Senhor
-G                       C       D   G
-Bendito é o nome do Senhor pra sempre
+G                        C 
+Bendito é o nome do Senhor 
+ G                    D
+bendito é o nome do Senhor
+G                       C  
+Bendito é o nome do Senhor 
+     D   G   D
+pra sempre
+G                        C 
+Bendito é o nome do Senhor 
+ G                    D
+bendito é o nome do Senhor
+G                       C  
+Bendito é o nome do Senhor 
+     D   G   D
+pra sempre
 C       D   G
    Pra sempre
 --
-G              C                 G                  D
-Fico feliz em vir em Tua casa, erguer minha voz e cantar
-G              C                 G          D            G
-Fico feliz em vir em Tua casa, erguer minhas mãos e adorar
-G              C                 G                  D
-Fico feliz em vir em Tua casa, erguer minha voz e cantar
-G              C                 G          D            G
-Fico feliz em vir em Tua casa, erguer minhas mãos e adorar
+G              C              
+Fico feliz em vir em Tua casa
+   G                  D
+erguer minha voz e cantar
+G              C             
+Fico feliz em vir em Tua casa
+  G          D            G
+erguer minhas mãos e adorar
+G              C              
+Fico feliz em vir em Tua casa
+   G                  D
+erguer minha voz e cantar
+G              C             
+Fico feliz em vir em Tua casa
+  G          D            G
+erguer minhas mãos e adorar
 --
-G                        C  G                    D
-Bendito é o nome do Senhor bendito é o nome do Senhor
-G                       C       D   G   D
-Bendito é o nome do Senhor pra sempre
-G                        C  G                    D
-Bendito é o nome do Senhor. bendito é o nome do Senhor
-G                       C       D   G
-Bendito é o nome do Senhor pra sempre
+G                        C 
+Bendito é o nome do Senhor 
+ G                    D
+bendito é o nome do Senhor
+G                       C  
+Bendito é o nome do Senhor 
+     D   G   D
+pra sempre
+G                        C 
+Bendito é o nome do Senhor 
+ G                    D
+bendito é o nome do Senhor
+G                       C  
+Bendito é o nome do Senhor 
+     D   G   D
+pra sempre
 C       D   G
    Pra sempre
 	]]>
@@ -1802,7 +1834,7 @@ Que vivo está
 	<titulo>Chamamecero</titulo>
 	<tom>A</tom>
 	<bpm></bpm>
-	<categ></categ>
+	<categ>Rafael</categ>
 	<cifra>
 	<![CDATA[
 A7M
@@ -1895,6 +1927,7 @@ Que torce, pra vida melhorar
 	<titulo>I don't wanna miss a thing</titulo>
 	<tom>D</tom>
 	<bpm></bpm>
+	<categ>FingerStyle</categ>
 	<cifra><![CDATA[
           D6        D6/C#             D6/B
 I could stay awake just to hear you breathing
@@ -2027,10 +2060,28 @@ For all the rest of time
   /* menu esquerdo */
   #menuEsquerda{border-right:1px solid #1d2230;background:#0b0d12;overflow:auto}
   #menuEsquerda h2{margin:12px 12px 6px;font-size:14px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+  
   #listaMusicas{list-style:none;margin:0;padding:0}
-  #listaMusicas li{padding:10px 12px;border-bottom:1px solid #151925;cursor:pointer}
+#listaMusicas li{
+  position: relative;
+  padding: 10px;
+  overflow: hidden;             /* mantém ellipsis se você usar */
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#listaMusicas li .queue-badge{
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  float: none;
+  margin-left: 0;
+}
+
+
   #listaMusicas li:hover{background:#101521}
   #listaMusicas li.active{background:#111827;color:#e5f5ff;box-shadow:inset 3px 0 0 var(--acc)}
+  
   /* cifra centro */
   #cifraMeio{padding:18px 20px 80px;overflow:auto}
   #cifraMeio pre{white-space:pre-wrap;font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;background:#0b0f19;border:1px solid #161c2a;border-radius:12px;padding:16px}
@@ -2275,6 +2326,34 @@ font-size: 50px;
   scrollbar-color: #111 #0b0d12;   /* polegar / trilho */
 }
 
+/* ===== Painel de Knobs ===== */
+#knobs { padding: 8px 12px; display: grid; gap: 14px; }
+.knob-group { border: 1px solid #1f2937; border-radius: 10px; padding: 10px 12px; background:#0e1422; }
+.knob-group h3 { margin: 0 0 8px 0; font-size: 14px; font-weight: 600; color:#cbd5e1; }
+
+/* linha do slider */
+.knob-row { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 10px; margin: 6px 0; }
+.knob-row label { color:#e5e7eb; font-size: 13px; }
+
+/* display digital vermelho */
+@font-face{
+  font-family:"DS-Digital";
+  src: local("DS-Digital"), local("Digital-7"), local("Segment7Standard"); /* usa se existir no SO */
+}
+.digital {
+  font-family: "DS-Digital", "Digital-7", "Segment7Standard", monospace;
+  font-size: 14px;
+  background:#290000;
+  color:#ff3b3b;
+  padding: 2px 8px;
+  border-radius: 6px;
+  border: 1px solid #5b0000;
+  min-width: 64px;
+  text-align: right;
+}
+
+/* sliders */
+.knob-row input[type="range"] { width: 100%; }
 
 
 
@@ -2352,6 +2431,10 @@ font-size: 50px;
 <div id="menuEsquerda">
 <h2>Músicas</h2>
 <ul id="listaMusicas"></ul>
+<div id="escolheCategorias"></div>
+<div id="ajustaFonteTela"></div>
+<hr>
+<div id="knobs"></div>
 </div>
 <div id="cifraMeio">
 <pre id="cifra"></pre>
@@ -2423,6 +2506,10 @@ const PREV_KEYS = ['ArrowLeft','ArrowUp','PageUp'];      // retroceder
 let songsList = [];         // array com <musica> do XML (na ordem do menu)
 let currentSongIdx = -1;    // índice da música atual em songsList
 
+// MASTER (todas as músicas) + filtro atual
+let songsMaster = [];               // todas as <musica> do XML
+let currentCategory = 'Holiness';   // filtro padrão
+
 // Fila: array de índices inteiros de songsList, na ordem de execução
 let playlist = [];
 try { playlist = JSON.parse(localStorage.getItem('playlist') || '[]'); } catch { playlist = []; }
@@ -2441,9 +2528,9 @@ function toggleQueue(i){
 }
 
 function updatePlaylistUI(){
-  const lis = document.querySelectorAll('#listaMusicas li[data-idx]');
+  const lis = document.querySelectorAll('#listaMusicas li[data-mid]');
   lis.forEach(li=>{
-    const i = parseInt(li.dataset.idx,10);
+    const i = parseInt(li.dataset.mid,10); // índice GLOBAL
     li.classList.toggle('queued', isQueued(i));
     let badge = li.querySelector('.queue-badge');
     if (!badge){
@@ -2462,13 +2549,14 @@ function updatePlaylistUI(){
   });
 }
 
-function setActiveSongIdx(i){
-  currentSongIdx = i;
-  // marca ativo no menu
+
+function setActiveSongIdx(masterIdx){
+  currentSongIdx = masterIdx;
   document.querySelectorAll('#listaMusicas li').forEach(li=>li.classList.remove('active'));
-  const li = document.querySelector(`#listaMusicas li[data-idx="${i}"]`);
+  const li = document.querySelector(`#listaMusicas li[data-mid="${masterIdx}"]`);
   if (li) li.classList.add('active');
 }
+
 
 // Avança para próxima música da fila; retorna true se conseguiu
 function goToNextSongInPlaylist(){
@@ -2504,6 +2592,11 @@ function goToPrevSongInPlaylist(){
 }
 
 
+function getAllCategories(xml){
+  const xs = [...xml.getElementsByTagName('musica')];
+  const set = new Set(xs.map(x => (getText(x,'categ') || '').trim()).filter(Boolean));
+  return [...set].sort((a,b)=>a.localeCompare(b));
+}
 
 
 
@@ -2847,14 +2940,15 @@ function renderAll(chordNotesArr = [], bassNote = null){
 
 <script>
 // ===== ÁUDIO: STRINGS (violinos) — timbre suave, headroom e anti-clip =====
-const AudioCtx = window.AudioContext || window.webkitAudioContext;
+window.audioCtx = window.audioCtx || new (window.AudioContext || window.webkitAudioContext)();
 const AC = window.audioCtx || new AudioCtx();
 window.audioCtx = AC;
+const audioCtx = AC; // <- para este bloco usar SEMPRE o mesmo contexto já criado
 
 // KNOBS (ajuste fino)
-const STR_ATTACK  = 0.40; // s  — ataque mais macio
-const STR_SUSTAIN = 10.0; // s  — sustenta o acorde
-const STR_RELEASE = 4.00; // s  — cauda ao trocar/soltar
+let STR_ATTACK  = 0.40; // s  — ataque mais macio
+let STR_SUSTAIN = 10.0; // s  — sustenta o acorde
+let STR_RELEASE = 4.00; // s  — cauda ao trocar/soltar
 
 // --- Master bus: compressor + soft-clip + EQ (de-aresta) ---
 function makeSoftClipCurve(k = 0.6){
@@ -3013,7 +3107,9 @@ const STR_BUS = (() => {
   setChorus({enabled:true, rateHz:0.8, depthMs:7,  wet:0.22, width:0.75});
   setReverb({enabled:true, seconds:1.2, decay:0.8, wet:0.18});
 
-  return { input, setBrightnessHz, setAirDb, setChorus, setReverb };
+const bus = { input, setBrightnessHz, setAirDb, setChorus, setReverb };
+window.STR_BUS = bus;  // <-- ADICIONE ESTA LINHA
+return bus;
 })();
 
 // --- FIM DO BLOCO STR_BUS ---
@@ -3057,7 +3153,9 @@ function makeStringVoice(freq, t0, voiceGain=0.4){
 
   // envelope (ataque macio + sustain longo)
   const amp = AC.createGain();
-  const a = STR_ATTACK, s = STR_SUSTAIN, r = STR_RELEASE;
+  const a = window.STR_ATTACK || 0.40;
+  const s = STR_SUSTAIN;
+  const r = window.STR_RELEASE || 4.0;
   const sustainLvl = 0.65; // menos sustentação para headroom
 
   amp.gain.setValueAtTime(0.0001, t0);
@@ -3196,63 +3294,165 @@ function getText(el, tag){
 
 
 
-function buildMenu(xml){
+function buildMenu(xml, category = currentCategory){
   const ul = document.getElementById('listaMusicas');
   ul.innerHTML = '';
 
-// lista de músicas do XML (convertida em array)
-const musicas = [...xml.getElementsByTagName('musica')];
+  // MASTER: todas as músicas do XML
+  const all = [...xml.getElementsByTagName('musica')];
+  songsMaster = all;
 
-// ordenar alfabeticamente pelo título
-musicas.sort((a, b) => {
-  const tA = (getText(a, 'titulo') || '').toLowerCase();
-  const tB = (getText(b, 'titulo') || '').toLowerCase();
-  return tA.localeCompare(tB);
-});
+  // FILTRO por categoria
+  const filtered = all.filter(m => {
+    const c = (getText(m,'categ') || '').trim();
+    return (category === 'Todas') ? true : (c === category);
+  });
 
-// guarda globalmente para navegação/playlist
-songsList = musicas;
+  // Esta é a lista exibida no menu (apenas filtradas)
+  songsList = filtered;
 
   // monta itens do menu
-  musicas.forEach((m, idx)=>{
-    const titulo = getText(m,'titulo') || getText(m,'itulo') || `Música ${idx+1}`;
+  filtered.forEach((m)=>{
+    const titulo = getText(m,'titulo') || getText(m,'itulo') || 'Música';
     const li = document.createElement('li');
     li.textContent = titulo;
-    li.dataset.idx = String(idx);
+
+    // índice "GLOBAL" no vetor master (serve para playlist e navegação)
+    const masterIdx = songsMaster.indexOf(m);
+    li.dataset.mid = String(masterIdx);
 
     // Clique com Ctrl/⌘ => alterna na FILA GLOBAL (playlist)
     // Clique simples => abre a música
     li.addEventListener('click', (ev)=>{
       if (ev.ctrlKey || ev.metaKey){
         ev.preventDefault(); ev.stopPropagation();
-        toggleQueue(idx);      // usa a fila global "playlist"
+        toggleQueue(masterIdx); // mantém fila global
         return;
       }
       document.querySelectorAll('#listaMusicas li').forEach(x=>x.classList.remove('active'));
       li.classList.add('active');
 
-      setActiveSongIdx(idx);   // marca música ativa (global)
-      showCifra(m);            // carrega cifra
-      updatePlaylistUI();      // mantém badges da fila corretos
+      setActiveSongIdx(masterIdx); // usa índice global
+      showCifra(m);
+      updatePlaylistUI();
     });
 
     ul.appendChild(li);
   });
 
-  // aplica visual da fila global nos itens
   updatePlaylistUI();
 
-  // Seleção inicial: música ativa, ou 1ª da fila, ou 1ª da lista
+  // Seleção inicial: se já havia música ativa e ela está no filtro, mantém.
+  // Caso contrário, pega a 1ª do filtro, ou mostra mensagem.
   let startIdx = currentSongIdx;
-  if (startIdx < 0) startIdx = playlist.length ? playlist[0] : 0;
-  const startLi = ul.querySelector(`li[data-idx="${startIdx}"]`) || ul.firstChild;
+  const liMatch = ul.querySelector(`li[data-mid="${startIdx}"]`);
+  const startLi = liMatch || ul.firstChild;
   if (startLi) startLi.click();
+  else {
+    ul.innerHTML = '<li class="muted" style="padding:10px 12px">Sem músicas nesta categoria</li>';
+  }
 }
 
 
 
 
 
+function buildCategoryUI(xml){
+  const wrap = document.getElementById('escolheCategorias');
+  if (!wrap) return;
+
+  const cats = getAllCategories(xml);
+  // inclui opção "Todas" no topo
+  const options = ['Todas', ...cats];
+
+  wrap.innerHTML = '';
+  const label = document.createElement('label');
+  label.textContent = 'Categoria: ';
+  label.style.display = 'block';
+  label.style.margin = '8px 12px';
+
+  const sel = document.createElement('select');
+  sel.id = 'selCategoria';
+  sel.style.background = '#111827';
+  sel.style.color = '#e5e7eb';
+  sel.style.border = '1px solid #1f2937';
+  sel.style.borderRadius = '8px';
+  sel.style.padding = '6px 10px';
+
+  options.forEach(c=>{
+    const op = document.createElement('option');
+    op.value = c;
+    op.textContent = c;
+    sel.appendChild(op);
+  });
+
+  // define a seleção inicial (Holiness, se existir; senão "Todas")
+  if (cats.includes('Holiness')) currentCategory = 'Holiness';
+  else currentCategory = 'Todas';
+  sel.value = currentCategory;
+
+  sel.addEventListener('change', ()=>{
+    currentCategory = sel.value;
+    const xml2 = loadXML();
+    if (xml2) buildMenu(xml2, currentCategory);
+  });
+
+  label.appendChild(sel);
+  wrap.appendChild(label);
+}
+
+function buildFontUI(){
+  const wrap = document.getElementById('ajustaFonteTela');
+  if (!wrap) return;
+
+  // pega valor salvo ou default 45
+  let saved = parseInt(localStorage.getItem('fontSizeLinha') || '45', 10);
+  if (isNaN(saved)) saved = 45;
+
+  wrap.innerHTML = '';
+  const label = document.createElement('label');
+  label.textContent = 'Fonte cifra: ';
+  label.style.display = 'block';
+  label.style.margin = '8px 12px';
+
+  const sel = document.createElement('select');
+  sel.id = 'selFontSize';
+  sel.style.background = '#111827';
+  sel.style.color = '#e5e7eb';
+  sel.style.border = '1px solid #1f2937';
+  sel.style.borderRadius = '8px';
+  sel.style.padding = '6px 10px';
+
+  for (let i = 15; i <= 75; i++){
+    const op = document.createElement('option');
+    op.value = i;
+    op.textContent = i + ' px';
+    sel.appendChild(op);
+  }
+
+  sel.value = saved; // seleciona o que estava salvo
+
+  // aplica no CSS
+  function apply(size){
+    const css = document.querySelector('#dynamicFontSize') || (() => {
+      const st = document.createElement('style');
+      st.id = 'dynamicFontSize';
+      document.head.appendChild(st);
+      return st;
+    })();
+    css.textContent = `#cifraMeio .linha { font-size: ${size}px !important; }`;
+  }
+  apply(saved);
+
+  sel.addEventListener('change', ()=>{
+    const val = parseInt(sel.value, 10);
+    localStorage.setItem('fontSizeLinha', val);
+    apply(val);
+  });
+
+  label.appendChild(sel);
+  wrap.appendChild(label);
+}
 
 
 </script>
@@ -3260,31 +3460,43 @@ songsList = musicas;
 <script>
 // ===== Validação robusta de cifras =====
 
-// Aceita: D5(9), A9/C#, Em7(9), G5/F#, G7M, A4, Bm7(11), D7M/A, Ebº, E7(b9), etc.
+//AQUI IDENTIFICA AS CIFRAS PARA MONTAR O Acorde
+//SEMPRE QUE NÃO LER ALGUM ACORDE, DEVE-SE AJUSTAR AQUI
 // ===== SUBSTITUIR APENAS ESTE BLOCO =====
+// ===== SUBSTITUIR APENAS ESTE BLOCO =====
+// Aceita: D5(9), A9/C#, Em7(9), G5/F#, G7M, A4, Bm7(11), D7M/A, Ebº, E7(b9), A4(7/9), (6/9) etc.
 const CHORD_TOKEN_RE = (() => {
   const ROOT = '(?:[A-G](?:#|b)?)'; // nota raiz A..G com #/b
 
-  // Sufixos combináveis (zero ou mais)
+  // Sufixos combináveis (zero ou mais), ex.: m, maj7, 4, 5, 7, 9, 11, 13...
   const SUF  = '(?:m|maj7|M7|7M|maj|dim7|dim|º7|º|°7|°|aug|\\+|sus2|sus4|add9|add11|add13|2|4|5|6|7|9|11|13)';
-  const SUFS = `(?:${SUF})*`;
 
-  // >>> Aceita + e - como sinônimos de # e b nas extensões/alterações:
-  // 5+, +5, 5- | 9+, +9, 9- | 11+, +11 | 13+, +13, 13-
-  // (além de b5/#5, b9/#9, #11, b13 e 9/11/13 "limpos")
-const ALT_UNIT = '(?:b5|#5|5\\+|\\+5|5-|b9|#9|9\\+|\\+9|9-|#11|11\\+|\\+11|b13|13\\+|\\+13|13-|9|11|13)';
+  // >>> Itens aceitos dentro (e fora) de parênteses:
+  // inclui 6 e 7, além de 9/11/13 e alterações comuns
+  const ALT_UNIT =
+    '(?:'
+    + 'b5|#5|5\\+|\\+5|5-|'
+    + 'b6|#6|6|'            // 6
+    + 'b7|#7|7|'            // 7
+    + 'b9|#9|9\\+|\\+9|9-|' // 9 e variações
+    + '#11|11\\+|\\+11|'    // 11 e variações
+    + 'b13|13\\+|\\+13|13-' // 13 e variações
+    + '|9|11|13'
+    + ')';
 
-// Aceita múltiplos ALT_UNIT separados por / ou , dentro de parênteses
-const ALT_GROUP = `\\(\\s*${ALT_UNIT}(?:\\s*[/,]\\s*${ALT_UNIT})*\\s*\\)`;
+  // Vários ALT_UNIT entre parênteses, separados por / ou , (ex.: (7/9), (9,11))
+  const ALT_GROUP = `\\(\\s*${ALT_UNIT}(?:\\s*[/,]\\s*${ALT_UNIT})*\\s*\\)`;
 
-// ALT = ou um grupo ( ) com vários, ou um único solto
-const ALT = `(?:${ALT_GROUP}|${ALT_UNIT})*`;
+  // Pode aparecer como grupo (...) ou como item solto (ex.: b9)
+  const ALT = `(?:${ALT_GROUP}|${ALT_UNIT})*`;
 
   // Baixo /X opcional
   const BASS = `(?:/${ROOT})?`;
 
-  return new RegExp(`^(?:N\\.C\\.|${ROOT}${SUFS}${ALT}${BASS})$`);
+  // Permite qualquer combinação de SUF e ALT em qualquer ordem, depois o baixo
+  return new RegExp(`^(?:N\\.C\\.|${ROOT}(?:${SUF}|${ALT})*${BASS})$`);
 })();
+
 
 
 // remove apenas colchetes externos e pontuação comum; **NÃO remove parênteses**
@@ -3405,12 +3617,13 @@ function showCifra(mEl){
   chordIdx = -1;
   
 //DEPOIS — tenta por referência; se falhar, localiza pelo título
-let idx = songsList.indexOf(mEl);
+let idx = songsMaster.indexOf(mEl);
 if (idx === -1) {
   const tit = getText(mEl,'titulo') || getText(mEl,'itulo') || '';
-  idx = songsList.findIndex(x => (getText(x,'titulo') || getText(x,'itulo') || '') === tit);
+  idx = songsMaster.findIndex(x => (getText(x,'titulo') || getText(x,'itulo') || '') === tit);
 }
 if (idx !== -1) setActiveSongIdx(idx);
+
 
 
   // cliques → seleção/navegação unificada
@@ -3574,10 +3787,12 @@ if (selTransposeKey){
 /* ===== Start ===== */
 (function init(){
   buildFretboard(TOTAL_FRETS);
-  //drawCapo();
   const xml = loadXML();
   if(!xml){ document.getElementById('listaMusicas').innerHTML = '<li class="muted">Erro ao ler XML</li>'; return; }
-  buildMenu(xml);
+  buildCategoryUI(xml);
+  buildMenu(xml, currentCategory);
+  buildFontUI();
+  // buildKnobsUI(); <-- REMOVA esta linha daqui
 })();
 
 
@@ -3616,21 +3831,28 @@ function drawCapo(){
 <script>
 
 
-// Chorus mais sutil
-STR_BUS.setChorus({ wet: 0.16, rateHz: 0.7, depthMs: 5, width: 0.6 });
-// Reverb um pouco maior e mais seco
-STR_BUS.setReverb({ seconds: 1.4, decay: 0.75, wet: 0.16 });
-// (Mais aveludado geral)
-STR_BUS.setBrightnessHz(1500); // corta agudos agressivos
-STR_BUS.setAirDb(-8);          // reduz ainda mais o high-shelf
+// Apply presets ONLY if there is no saved knob state yet
+const _hasKnobState = !!localStorage.getItem('fs_knobs_v1');
+if (!_hasKnobState && window.STR_BUS) {
+  // Chorus mais sutil
+  window.STR_BUS.setChorus({ wet: 0.16, rateHz: 0.7, depthMs: 5, width: 0.6 });
+  // Reverb um pouco maior e mais seco
+  window.STR_BUS.setReverb({ seconds: 1.4, decay: 0.75, wet: 0.16 });
+  // (Mais aveludado geral)
+  window.STR_BUS.setBrightnessHz(1500); // corta agudos agressivos
+  window.STR_BUS.setAirDb(-8);          // reduz ainda mais o high-shelf
+}
+
 
 
 
 
 
 // === ÁUDIO (Web Audio) ===
-const AudioCtx = window.AudioContext || window.webkitAudioContext;
-const audioCtx = new AudioCtx();
+// Reusa/Cria UM único AudioContext global sem redeclarar 'AudioCtx'
+const audioCtx = window.audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+window.audioCtx = audioCtx;
+
 
 // MIDI das cordas soltas: E2 A2 D3 G3 B3 E4
 const OPEN_STRING_MIDI = [40, 45, 50, 55, 59, 64];
@@ -3646,10 +3868,10 @@ function freqFromMidi(m){
 // Pluck simples (oscilador + envelope + lowpass)
 function playGuitarPluck(stringIdx, fret){
   // Em alguns navegadores o áudio inicia suspenso até 1ª interação
-  if (audioCtx.state === 'suspended') audioCtx.resume();
+  if (window.audioCtx.state === 'suspended') window.audioCtx.resume();
 
   const freq = freqFromMidi(midiFromStringFret(stringIdx, fret));
-  const now  = audioCtx.currentTime;
+  const now = window.audioCtx.currentTime;
 
   const osc  = audioCtx.createOscillator();
   osc.type   = 'triangle';
@@ -3668,7 +3890,7 @@ function playGuitarPluck(stringIdx, fret){
   // encadeia e toca
   osc.connect(lp);
   lp.connect(gain);
-  gain.connect(audioCtx.destination);
+  gain.connect(window.audioCtx.destination);
 
   osc.start(now);
   osc.stop(now + 1.25);
@@ -3677,7 +3899,234 @@ function playGuitarPluck(stringIdx, fret){
 
 
 
+<script>
+//Knobs
 
+// ===== KNOBS PERSISTENTES (Envelope, Chorus, Reverb, Timbre) =====
+(function(){
+  const STORE_KEY = 'fs_knobs_v1';
+
+  // valores padrão (ajuste aqui se quiser outros defaults)
+  const defaults = {
+    // Envelope
+    attack: (typeof window.STR_ATTACK === 'number' ? window.STR_ATTACK : 0.40),
+    release: (typeof window.STR_RELEASE === 'number' ? window.STR_RELEASE : 4.0),
+
+    // Chorus
+    chorusWet: 0.35,
+    chorusRate: 5.0,     // Hz
+    chorusDepth: 8.0,    // ms
+    chorusWidth: 0.9,    // 0..1
+
+    // Reverb
+    reverbWet: 0.25,
+    reverbSeconds: 2.2,  // tamanho
+    reverbDecay: 0.6,
+
+    // Timbre
+    brightHz: 1800,      // low-pass tilt
+    airDb: -6            // high-shelf
+  };
+
+  function loadState(){
+    try {
+      const raw = localStorage.getItem(STORE_KEY);
+      return raw ? {...defaults, ...JSON.parse(raw)} : {...defaults};
+    } catch(_){ return {...defaults}; }
+  }
+  function saveState(s){ localStorage.setItem(STORE_KEY, JSON.stringify(s)); }
+
+  // Aplicadores (chamam seus setters/variáveis)
+  function applyEnvelope(s){
+    try { window.STR_ATTACK = s.attack; } catch(e){ console.warn('STR_ATTACK não pode ser alterado (const?)'); }
+    try { window.STR_RELEASE = s.release; } catch(e){ console.warn('STR_RELEASE não pode ser alterado (const?)'); }
+  }
+  function applyChorus(s){
+    if (window.STR_BUS && typeof window.STR_BUS.setChorus === 'function'){
+      window.STR_BUS.setChorus({
+        enabled: true,
+        rateHz: s.chorusRate,
+        depthMs: s.chorusDepth,
+        width: s.chorusWidth,
+        wet: s.chorusWet
+      });
+    }
+  }
+  function applyReverb(s){
+    if (window.STR_BUS && typeof window.STR_BUS.setReverb === 'function'){
+      window.STR_BUS.setReverb({
+        enabled: true,
+        seconds: s.reverbSeconds,
+        decay: s.reverbDecay,
+        wet: s.reverbWet
+      });
+    }
+  }
+  
+function applyTimbre(s){
+  if (window.STR_BUS && typeof window.STR_BUS.setBrightnessHz === 'function') {
+    window.STR_BUS.setBrightnessHz(s.brightHz);
+  }
+  if (window.STR_BUS && typeof window.STR_BUS.setAirDb === 'function') {
+    window.STR_BUS.setAirDb(s.airDb);
+  }
+}
+  function applyAll(s){
+    console.log('STR_BUS disponível?', !!window.STR_BUS);
+    applyEnvelope(s);
+    applyChorus(s);
+    applyReverb(s);
+    applyTimbre(s);
+  }
+
+  // fábrica de linha (slider + display digital)
+  function addSlider(parent, {id, label, min, max, step, value, format, onInput}){
+    const row = document.createElement('div'); row.className = 'knob-row';
+
+    const left = document.createElement('div');
+    const lab = document.createElement('label'); lab.htmlFor = id; lab.textContent = label;
+    const rng = document.createElement('input');
+    rng.type = 'range'; rng.id = id; rng.min = min; rng.max = max; rng.step = step; rng.value = value;
+
+    left.appendChild(lab);
+    left.appendChild(rng);
+
+    const dsp = document.createElement('span'); dsp.className = 'digital';
+    dsp.textContent = format(value);
+
+    rng.addEventListener('input', ()=>{
+      const v = parseFloat(rng.value);
+      dsp.textContent = format(v);
+      onInput(v);
+    });
+
+    row.appendChild(left);
+    row.appendChild(dsp);
+    parent.appendChild(row);
+  }
+
+  // cria um grupo visual
+  function makeGroup(title){
+    const g = document.createElement('div');
+    g.className = 'knob-group';
+    const h = document.createElement('h3'); h.textContent = title;
+    g.appendChild(h);
+    return g;
+  }
+
+  // === API pública
+  window.buildKnobsUI = function buildKnobsUI(){
+    const wrap = document.getElementById('knobs');
+    if (!wrap) return;
+    const state = loadState();
+    wrap.innerHTML = '';
+
+    // ------- ENVELOPE -------
+    const gEnv = makeGroup('Envelope');
+    addSlider(gEnv, {
+      id:'k_attack', label:'Attack (s)', min:0.05, max:2.0, step:0.01, value:state.attack,
+      format: v => v.toFixed(2), onInput: v => { console.log('Attack wet alterado para:', v);state.attack = v; saveState(state); applyEnvelope(state); }
+    });
+    addSlider(gEnv, {
+      id:'k_release', label:'Release (s)', min:0.5, max:10, step:0.1, value:state.release,
+      format: v => v.toFixed(1), onInput: v => { console.log('Release wet alterado para:', v);state.release = v; saveState(state); applyEnvelope(state); }
+    });
+    wrap.appendChild(gEnv);
+
+    // ------- CHORUS -------
+    const gCho = makeGroup('Chorus');
+    addSlider(gCho, {
+      id:'k_ch_wet', label:'Wet', min:0, max:1, step:0.01, value:state.chorusWet,
+      format: v => v.toFixed(2), onInput: v => { console.log('Wet wet alterado para:', v);state.chorusWet = v; saveState(state); applyChorus(state); }
+    });
+    addSlider(gCho, {
+      id:'k_ch_rate', label:'Rate (Hz)', min:0.1, max:8, step:0.1, value:state.chorusRate,
+      format: v => v.toFixed(1), onInput: v => { console.log('Rate wet alterado para:', v);state.chorusRate = v; saveState(state); applyChorus(state); }
+    });
+    addSlider(gCho, {
+      id:'k_ch_depth', label:'Depth (ms)', min:0, max:25, step:0.5, value:state.chorusDepth,
+      format: v => v.toFixed(1), onInput: v => { console.log('Depth wet alterado para:', v);state.chorusDepth = v; saveState(state); applyChorus(state); }
+    });
+    addSlider(gCho, {
+      id:'k_ch_width', label:'Width (0–1)', min:0, max:1, step:0.01, value:state.chorusWidth,
+      format: v => v.toFixed(2), onInput: v => { console.log('Width wet alterado para:', v);state.chorusWidth = v; saveState(state); applyChorus(state); }
+    });
+    wrap.appendChild(gCho);
+
+    // ------- REVERB -------
+    const gRev = makeGroup('Reverb');
+    addSlider(gRev, {
+      id:'k_rv_wet', label:'Wet', min:0, max:1, step:0.01, value:state.reverbWet,
+      format: v => v.toFixed(2), onInput: v => { state.reverbWet = v; saveState(state); applyReverb(state); }
+    });
+    addSlider(gRev, {
+      id:'k_rv_seconds', label:'Seconds', min:0.3, max:6, step:0.1, value:state.reverbSeconds,
+      format: v => v.toFixed(1), onInput: v => { state.reverbSeconds = v; saveState(state); applyReverb(state); }
+    });
+    addSlider(gRev, {
+      id:'k_rv_decay', label:'Decay', min:0.1, max:1.5, step:0.05, value:state.reverbDecay,
+      format: v => v.toFixed(2), onInput: v => { state.reverbDecay = v; saveState(state); applyReverb(state); }
+    });
+    wrap.appendChild(gRev);
+
+    // ------- TIMBRE -------
+    const gTim = makeGroup('Timbre');
+    addSlider(gTim, {
+      id:'k_br_hz', label:'Brilho (Hz)', min:800, max:6000, step:10, value:state.brightHz,
+      format: v => Math.round(v)+' Hz', onInput: v => { state.brightHz = v; saveState(state); applyTimbre(state); }
+    });
+    addSlider(gTim, {
+      id:'k_air_db', label:'Ar (dB)', min:-12, max:6, step:0.5, value:state.airDb,
+      format: v => (v>0?'+':'')+v.toFixed(1)+' dB', onInput: v => { state.airDb = v; saveState(state); applyTimbre(state); }
+    });
+    wrap.appendChild(gTim);
+
+
+
+// ------- RESET BUTTON -------
+const resetDiv = document.createElement('div');
+resetDiv.className = 'knob-row';
+resetDiv.style.marginTop = '20px';
+resetDiv.style.textAlign = 'center';
+
+const resetBtn = document.createElement('button');
+resetBtn.textContent = 'Reset para Padrão';
+resetBtn.style.padding = '8px 16px';
+resetBtn.style.backgroundColor = '#dc2626';
+resetBtn.style.color = 'white';
+resetBtn.style.border = 'none';
+resetBtn.style.borderRadius = '6px';
+resetBtn.style.cursor = 'pointer';
+resetBtn.style.fontSize = '14px';
+
+resetBtn.addEventListener('click', () => {
+  // Confirma antes de resetar
+  if (confirm('Resetar todos os knobs para valores padrão?')) {
+    // Limpa localStorage
+    localStorage.removeItem(STORE_KEY);
+    
+    // Reconstrói a interface com valores padrão
+    buildKnobsUI();
+    
+    console.log('Knobs resetados para configuração padrão');
+  }
+});
+
+resetDiv.appendChild(resetBtn);
+wrap.appendChild(resetDiv);
+
+
+
+
+
+    // aplica tudo ao carregar
+    applyAll(state);
+  };
+})();
+
+if (typeof buildKnobsUI === 'function') buildKnobsUI();
+
+</script>
 
 
 
