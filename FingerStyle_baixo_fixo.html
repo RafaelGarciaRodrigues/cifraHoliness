@@ -543,7 +543,6 @@ Do que ser amigo de Deus
 Caminhar seguro na luz
        Am     G/B   C
 Desfrutar do seu   amor
---
        Dm     C   G/B
 Ter a paz no coração
        Dm        C    G/B
@@ -554,9 +553,7 @@ E assim perceber
 A grandeza do  poder
       C/G      G
 De Jesus, meu Bom Pastor
---
 C  G/B  Am  Dm  C  G
---
 
       C     G/B       Am
 Não existe nada melhor
@@ -566,7 +563,6 @@ Do que ser amigo de Deus
 Caminhar seguro na luz
        Am     G/B   C
 Desfrutar do seu   amor
---
        Dm     C   G/B
 Ter a paz no coração
        Dm        C    G/B
@@ -577,7 +573,6 @@ E assim perceber
 A grandeza do  poder
       C/G      G      C  F/C  C
 De Jesus, meu Bom Pastor
---
        Dm     C   G/B
 Ter a paz no coração
        Dm        C    G/B
@@ -586,7 +581,6 @@ Viver sempre em comunhão
 E assim perceber
        C    C/E  F
 A grandeza do  poder
---
       C/G      G      C  F/C  C
 De Jesus, meu Bom Pastor
       C/G      G      F
@@ -620,9 +614,9 @@ Não existe nenhum Deus que seja   digno como Tu
 Nada vai me separar de Ti
    Dm7             G
 Tu  és  a própria vida em mim
---
+
 C  Am7  F
---
+
 
 C9      Am7          F7/E
 Tua é a glória e o poder
@@ -2356,6 +2350,7 @@ font-size: 50px;
 .knob-row input[type="range"] { width: 100%; }
 
 
+.vol-marker { opacity:.35; letter-spacing:1px; }
 
 
 
@@ -2484,6 +2479,9 @@ font-size: 50px;
 </div>
 </div>
 <div class="mobile-overlay" id="mobileOverlay"></div>
+
+
+
 <script>
 /* ===== Util Musical ===== */
 const NOTES = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
@@ -2662,6 +2660,19 @@ function setActiveChord(idx){
   centerInto(span, document.getElementById('cifraMeio'));
   // dispara a pintura do braço
   highlightChord(span.dataset.chord);
+// Aplica dinâmica do acorde selecionado (rampa 0.75s)
+
+const vol = parseFloat(span.dataset.vol || '1') || 1;
+console.log('Aplicando volume:', vol, 'STR_BUS disponível:', !!window.STR_BUS);
+if (typeof setPerformanceVol === 'function' && window.STR_BUS && window.STR_BUS.input) {
+  setPerformanceVol(vol, 0.75);
+setTimeout(() => {
+  console.log('Volume final após rampa:', STR_BUS.input.gain.value.toFixed(3));
+}, 800); // um pouco após os 0.75s da rampa
+} else {
+  console.warn('setPerformanceVol não disponível ou STR_BUS não inicializado');
+}
+
 }
 
 function gotoNextChord(){
@@ -3129,6 +3140,41 @@ return bus;
 })();
 
 // --- FIM DO BLOCO STR_BUS ---
+
+
+
+// Guarda o ganho base do bus na primeira vez
+window.BUS_BASE_GAIN = window.BUS_BASE_GAIN ?? (window.STR_BUS?.input?.gain?.value || 0.9);
+
+// Define volume de performance com rampa (segundos)
+function setPerformanceVol(f=1, rampSec=0.75){
+  try{
+    const base = window.BUS_BASE_GAIN || 0.9;
+    const AC   = window.audioCtx || new (window.AudioContext||window.webkitAudioContext)();
+    const g    = STR_BUS.input.gain;
+    const now  = AC.currentTime;
+    
+    // Force current value to avoid glitches
+    const targetVol = base * f;
+    
+    // Cancel any existing automations
+    g.cancelScheduledValues(now);
+    
+    // Set immediate value and ramp to target
+    g.setValueAtTime(g.value, now);
+    g.exponentialRampToValueAtTime(Math.max(0.001, targetVol), now + Math.max(0.01, rampSec));
+    
+    console.log(`Volume ajustado de ${g.value.toFixed(3)} para ${targetVol.toFixed(3)} em ${rampSec}s`);
+  }catch(e){ 
+    console.warn('setPerformanceVol falhou:', e); 
+  }
+}
+
+
+
+
+
+
 
 
 
@@ -3675,6 +3721,17 @@ function wrapChords(text, semis = 0){
         return `<span class="chord" data-chord="${disp}" data-chord-original="${sym}">${disp}</span>`;
       });
 
+	// 1.5) Linha de dinâmica: somente traços (>=2) -> marcador de volume
+	const only = String(processed).trim();
+	if (/^-{2,}$/.test(only)){
+	  const n = only.length;
+// fator: 50% por traço acima/abaixo de '---' (n=3); clamp 0.25..3.0
+const factor = Math.min(3.0, Math.max(0.25, 1 + 0.75*(n - 3)));
+	  return `<span class="linha vol-marker" data-vol="${factor}">${only}</span>`;
+	}
+
+
+
       // 2) Linha de letra: não marcar tokens soltos
       if (!isChordLine(line)){
         return `<span class="linha">${processed || '&nbsp;'}</span>`;
@@ -3742,6 +3799,28 @@ function showCifra(mEl){
   // coleta e zera seleção
   chordSpans = Array.from(pre.querySelectorAll('.chord'));
   chordIdx = -1;
+  
+  
+  
+// Atribui a cada acorde o volume vigente (último marcador acima dele)
+let currentVol = 1;
+pre.querySelectorAll('.linha, .chord, .vol-marker').forEach(el=>{
+  if (el.classList.contains('vol-marker')){
+    const v = parseFloat(el.dataset.vol);
+    if (!Number.isNaN(v)) currentVol = v;
+  }
+  if (el.classList.contains('chord')){
+    el.dataset.vol = String(currentVol);
+  }
+});
+
+// ao carregar uma música nova, volta para volume normal antes do 1º acorde
+if (typeof setPerformanceVol === 'function') setPerformanceVol(1, 0.01);
+
+  
+  
+  
+  
   
 //DEPOIS — tenta por referência; se falhar, localiza pelo título
 let idx = songsMaster.indexOf(mEl);
