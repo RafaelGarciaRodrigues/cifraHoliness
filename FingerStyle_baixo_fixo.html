@@ -3078,7 +3078,23 @@ const STR_BUS = (() => {
   out.connect(audioCtx.destination);
 
   // liga LFOs do chorus
-  lfoL.start(); lfoR.start();
+  //lfoL.start(); lfoR.start();
+
+// liga LFOs do chorus somente após gesto do usuário (evita autoplay block)
+let _lfoArmed = false;
+function armLFOs() {
+  if (_lfoArmed) return;
+  _lfoArmed = true;
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+  try { lfoL.start(); lfoR.start(); } catch(e) {}
+}
+// 1) qualquer toque/clique
+document.addEventListener('pointerdown', armLFOs, { once: true });
+// 2) garantia extra: quando tocar acorde
+window.armLFOs = armLFOs; // expõe p/ usar em playChord se quiser
+
+
+
 
   // ===== API =====
   function setBrightnessHz(hz){ tiltLP.frequency.value = hz; } // mais brilho ≤→ maior Hz
@@ -3183,20 +3199,107 @@ function makeStringVoice(freq, t0, voiceGain=0.4){
   return { stop };
 }
 
+
+
+
+
+
+
+function makeVoiceSound(freq, t0, voiceGain = 0.4){
+  const osc = audioCtx.createOscillator();
+  osc.type = 'triangle';
+  osc.frequency.setValueAtTime(freq, t0);
+  
+  // 3 filtros para simular formantes da voz "AHHH"
+  const f1 = audioCtx.createBiquadFilter();
+  f1.type = 'bandpass'; f1.frequency.value = 450; f1.Q.value = 3;
+  
+  const f2 = audioCtx.createBiquadFilter();
+  f2.type = 'bandpass'; f2.frequency.value = 750; f2.Q.value = 2;
+  
+  const f3 = audioCtx.createBiquadFilter();
+  f3.type = 'bandpass'; f3.frequency.value = 1200; f3.Q.value = 1.5;
+  
+  const mix = audioCtx.createGain(); mix.gain.value = voiceGain;
+  const smoother = audioCtx.createBiquadFilter();
+  smoother.type = 'lowpass';
+  smoother.frequency.value = 900;
+  smoother.Q.value = 0.5;
+  
+  const amp = audioCtx.createGain();
+  
+  // envelope igual ao strings
+  const a = window.STR_ATTACK || 0.40;
+  const s = STR_SUSTAIN;
+  const r = window.STR_RELEASE || 4.0;
+  const sustainLvl = 0.65;
+  
+  amp.gain.setValueAtTime(0.0001, t0);
+  amp.gain.linearRampToValueAtTime(0.80, t0 + a);
+  amp.gain.setValueAtTime(sustainLvl, t0 + a);
+  amp.gain.setValueAtTime(sustainLvl, t0 + a + s);
+  amp.gain.exponentialRampToValueAtTime(0.0001, t0 + a + s + r);
+  
+  // conecta: osc -> 3 filtros paralelos -> mix -> envelope -> STR_BUS
+  osc.connect(f1); osc.connect(f2); osc.connect(f3);
+  f1.connect(mix); f2.connect(mix); f3.connect(mix);
+  mix.connect(smoother);
+  smoother.connect(amp);
+  amp.connect(STR_BUS.input);
+  
+  osc.start(t0);
+  
+  const stop = (releaseOverride = 0.25) => {
+    const now = audioCtx.currentTime;
+    amp.gain.cancelScheduledValues(now);
+    amp.gain.setValueAtTime(Math.max(amp.gain.value, 0.0001), now);
+    amp.gain.exponentialRampToValueAtTime(0.0001, now + releaseOverride);
+    osc.stop(now + releaseOverride + 0.05);
+  };
+  
+  return { stop };
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 let stopCurrentChord = null;
 
+
+
 // Converte {root, notes, bass} -> MIDIs num voicing musical
-function chooseChordMIDIs(root, notes, bass){
-  const pc = (n)=> NOTES.indexOf(n);
+// Agora com opção de duplicar a tônica 1 oitava abaixo (default: true)
+function chooseChordMIDIs(root, notes, bass, { doubleRootLow = true } = {}) {
+  const pc = (n) => NOTES.indexOf(n);
   const rootPC = pc(root);
 
+  // intervalos do acorde a partir da tônica (0 = tônica)
   const uniq = [...new Set(notes)];
-  const ints = uniq.map(n => (pc(n) - rootPC + 12) % 12).sort((a,b)=>a-b);
+  const ints = uniq
+    .map(n => (pc(n) - rootPC + 12) % 12)
+    .sort((a, b) => a - b);
 
+  // tônica “média” (zona de 52..64 MIDI, pivô ~57) como âncora do voicing
   const mRoot = findMidiForPC(rootPC, 52, 64, 57);
   const mids = [mRoot];
 
-  for (const semi of ints.filter(x=>x!==0)){
+  // (novo) tônica 1 oitava abaixo em região grave 36..52 (pivô ~45)
+  let mRootLow = null;
+  if (doubleRootLow) {
+    mRootLow = findMidiForPC(rootPC, 36, 52, 45);
+  }
+
+  // demais notas do acorde, evitando colisão e mantendo em tessitura musical
+  for (const semi of ints.filter(x => x !== 0)) {
     let m = mRoot + semi;
     if (m > 76) m -= 12;
     if (m < 48) m += 12;
@@ -3204,33 +3307,47 @@ function chooseChordMIDIs(root, notes, bass){
     if (!mids.includes(m)) mids.push(m);
   }
 
-  if (bass){
-    const mBass = findMidiForPC(pc(bass), 36, 52, 45);
+  // nota de baixo (inversão), se houver
+  let mBass = null;
+  if (bass) {
+    mBass = findMidiForPC(pc(bass), 36, 52, 45);
     if (!mids.includes(mBass)) mids.unshift(mBass);
   }
+
+  // insere a tônica grave só se ainda não estiver presente (nem igual ao baixo)
+  if (doubleRootLow && mRootLow != null) {
+    if (!mids.includes(mRootLow) && mRootLow !== mBass) {
+      mids.unshift(mRootLow);
+    }
+  }
+
   return mids;
 }
 
+
+
+
 // Toca acorde como strings: ataque suave + sustain 10s + ganho normalizado
-function playStringsChord(root, notes, bass){
-  if (AC.state === 'suspended') AC.resume();
-
-  // interrompe o acorde anterior mesmo se o novo for igual
+function playChord(root, notes, bass, mode = 'strings'){
+  if (audioCtx.state === 'suspended') audioCtx.resume();
   if (typeof stopCurrentChord === 'function') stopCurrentChord(0.12);
-
+  
   const mids = chooseChordMIDIs(root, notes, bass);
-  const t0 = AC.currentTime + 0.01;
-
-  // Normalização por quantidade de vozes (evita somar volume e clipar)
+  const t0 = audioCtx.currentTime + 0.01;
   const perVoice = 0.55 / Math.sqrt(Math.max(1, mids.length));
-
-  const voices = mids.map((m, i)=>{
-    return makeStringVoice(midiToFreq(m), t0 + i*0.012, perVoice);
-  });
-
-  // handler para parar o acorde atual
-  stopCurrentChord = (rel=0.25)=> voices.forEach(v => v.stop(rel));
+  
+  let voices;
+  if (mode === 'voice') {
+    voices = mids.map((m, i) => makeVoiceSound(midiToFreq(m), t0 + i*0.012, perVoice));
+  } else {
+    voices = mids.map((m, i) => makeStringVoice(midiToFreq(m), t0 + i*0.012, perVoice));
+  }
+  
+  stopCurrentChord = (rel = 0.25) => voices.forEach(v => v.stop(rel));
 }
+
+
+
 </script>
 
 
@@ -3266,9 +3383,11 @@ function highlightChord(symbol){
   renderAll(notes, bass);
   
   // >>> NOVO: tocar strings se o checkbox estiver marcado
-  if (chkStrings && chkStrings.checked) {
-    playStringsChord(root, notes, bass);
-  }
+if (chkStrings && chkStrings.checked) {
+  const select = document.querySelector('#knobs select');
+  const mode = select ? select.value : 'strings';
+  playChord(root, notes, bass, mode);
+}
   
   
 }
@@ -3307,6 +3426,14 @@ function buildMenu(xml, category = currentCategory){
     const c = (getText(m,'categ') || '').trim();
     return (category === 'Todas') ? true : (c === category);
   });
+
+	filtered.sort((a, b) => {
+	  const A = (getText(a,'titulo') || getText(a,'itulo') || '').trim();
+	  const B = (getText(b,'titulo') || getText(b,'itulo') || '').trim();
+	  return A.localeCompare(B, 'pt-BR', { sensitivity: 'base' });
+	});
+
+
 
   // Esta é a lista exibida no menu (apenas filtradas)
   songsList = filtered;
@@ -3850,8 +3977,8 @@ if (!_hasKnobState && window.STR_BUS) {
 
 // === ÁUDIO (Web Audio) ===
 // Reusa/Cria UM único AudioContext global sem redeclarar 'AudioCtx'
-const audioCtx = window.audioCtx || new (window.AudioContext || window.webkitAudioContext)();
-window.audioCtx = audioCtx;
+//const audioCtx = window.audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+//window.audioCtx = audioCtx;
 
 
 // MIDI das cordas soltas: E2 A2 D3 G3 B3 E4
@@ -3909,7 +4036,7 @@ function playGuitarPluck(stringIdx, fret){
   // valores padrão (ajuste aqui se quiser outros defaults)
   const defaults = {
     // Envelope
-    attack: (typeof window.STR_ATTACK === 'number' ? window.STR_ATTACK : 0.40),
+    attack: (typeof window.STR_ATTACK === 'number' ? window.STR_ATTACK : 1.40),
     release: (typeof window.STR_RELEASE === 'number' ? window.STR_RELEASE : 4.0),
 
     // Chorus
@@ -3925,7 +4052,10 @@ function playGuitarPluck(stringIdx, fret){
 
     // Timbre
     brightHz: 1800,      // low-pass tilt
-    airDb: -6            // high-shelf
+    airDb: -6,            // high-shelf
+	
+	timbreMode: 'strings'
+	
   };
 
   function loadState(){
@@ -4080,6 +4210,49 @@ function applyTimbre(s){
       format: v => (v>0?'+':'')+v.toFixed(1)+' dB', onInput: v => { state.airDb = v; saveState(state); applyTimbre(state); }
     });
     wrap.appendChild(gTim);
+
+
+
+
+// ------- SELETOR DE TIMBRE -------
+const gSel = makeGroup('Som');
+const selRow = document.createElement('div');
+selRow.className = 'knob-row';
+
+const selLabel = document.createElement('label');
+selLabel.textContent = 'Timbre:';
+const timbreSelect = document.createElement('select');
+timbreSelect.innerHTML = `
+  <option value="strings">Strings</option>
+  <option value="voice">Voz Humana</option>
+`;
+timbreSelect.style.background = '#111827';
+timbreSelect.style.color = '#e5e7eb';
+timbreSelect.style.border = '1px solid #1f2937';
+timbreSelect.style.borderRadius = '8px';
+timbreSelect.style.padding = '6px 10px';
+
+// Carrega valor salvo
+timbreSelect.value = state.timbreMode || 'strings';
+
+// Salva quando muda
+timbreSelect.addEventListener('change', () => {
+  state.timbreMode = timbreSelect.value;
+  saveState(state);
+});
+
+selRow.appendChild(selLabel);
+selRow.appendChild(timbreSelect);
+gSel.appendChild(selRow);
+wrap.appendChild(gSel);
+
+
+
+
+
+
+
+
 
 
 
