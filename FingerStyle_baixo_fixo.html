@@ -379,9 +379,9 @@ Com esplendor de um Rei
 Em majestade e luz
                     G9
 Faz a Terra se alegrar
-
+                    Em
 Faz a Terra se alegrar
---
+
 D
 Ele é a própria luz
        Bm7
@@ -390,7 +390,7 @@ E as trevas vão fugir
 Tremer com sua voz
                 G/A
 Tremer com sua voz
---
+---
        D
 Quão grande é o meu Deus
       A/C#  Bm7
@@ -408,7 +408,7 @@ O tempo está em tuas mãos
 O começo e o fim
              G/A
 O começo e o fim
---
+
   D
 Três se formam em um
  Bm7
@@ -417,7 +417,7 @@ Filho, Espírito e Pai
 Cordeiro e leão
              G/A
 Cordeiro e leão
---
+---
        D
 Quão grande é o meu Deus
       A/C#  Bm7
@@ -426,7 +426,7 @@ Cantarei  quão grande é o meu Deus
 E todos hão de ver
        G/A           D   G/A
 Quão grande é o meu Deus
---
+----
        D
 Sobre todo nome é o seu
        Bm7
@@ -2498,7 +2498,11 @@ const NEXT_KEYS = ['ArrowRight','ArrowDown','PageDown']; // adiantar
 const PREV_KEYS = ['ArrowLeft','ArrowUp','PageUp'];      // retroceder
 
 
+</script>
 
+
+
+<script>
 
 // ======== PLAYLIST (fila) ========
 let songsList = [];         // array com <musica> do XML (na ordem do menu)
@@ -2675,6 +2679,16 @@ setTimeout(() => {
 
 }
 
+
+
+
+
+
+
+
+
+
+// HANDLER SIMPLES, APENAS AVANÇA E RETROCEDE
 function gotoNextChord(){
   if (!chordSpans.length){
     // sem acordes: tenta próxima música da fila
@@ -2705,8 +2719,266 @@ function gotoPrevChord(){
   }
 }
 
+// Vai para a PRIMEIRA música da sequência e posiciona no 1º acorde
+function goToFirstSongInPlaylist(){
+  try{
+    // (A) Se você tiver índice atual + setter, use isso:
+    if (typeof window.currentSongIndex === 'number'){
+      if (typeof setCurrentSongIndex === 'function'){
+        setCurrentSongIndex(0);
+      } else if (typeof selectSongByIndex === 'function'){
+        selectSongByIndex(0);
+      }
+      setTimeout(()=>{ try{ setActiveChord(0); }catch{} }, 0);
+      return true;
+    }
+
+    // (B) Se existir uma API direta:
+    if (typeof goToFirstSelectedSong === 'function'){
+      goToFirstSelectedSong();
+      setTimeout(()=>{ try{ setActiveChord(0); }catch{} }, 0);
+      return true;
+    }
+
+    // (C) Fallback genérico: volta enquanto houver "música anterior"
+    if (typeof goToPrevSongInPlaylist === 'function'){
+      let moved = false;
+      // proteção: no máximo 200 passos
+      for (let i=0; i<200; i++){
+        const ok = goToPrevSongInPlaylist();
+        if (!ok) break;
+        moved = true;
+      }
+      // garante o 1º acorde da primeira
+      setTimeout(()=>{ try{ setActiveChord(0); }catch{} }, 0);
+      return moved;
+    }
+
+  }catch(e){
+    console.warn('goToFirstSongInPlaylist falhou:', e);
+  }
+  return false;
+}
 
 
+
+
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+//BLOCO QUE CONTROLA O AVANÇO E O RETROCESSO SEGURANDO A TECLA POR 2 SEGUNDOS
+// ===== CONFIG =====
+const LONG_HOLD_KEYS = new Set(['PageDown', 'ArrowRight', 'ArrowDown']);
+const LONG_HOLD_MS   = 2000;
+
+let holdTimer = null;
+let longTriggered = false;
+let pressingKey = null;
+
+// ===== HELPERS =====
+function stopPadSafely(){
+  try {
+    if (typeof setPerformanceVol === 'function') setPerformanceVol(0.001, 0.2);
+    window.dispatchEvent?.(new CustomEvent('pad:stop'));
+  } catch (e) {}
+}
+function showHint(msg){
+  let el = document.getElementById('hint-longpress');
+  if (!el){
+    el = document.createElement('div');
+    el.id = 'hint-longpress';
+    Object.assign(el.style, {
+      position:'fixed', bottom:'16px', left:'50%', transform:'translateX(-50%)',
+      padding:'8px 12px', background:'rgba(0,0,0,.7)', color:'#fff',
+      borderRadius:'10px', fontSize:'14px', zIndex:99999, pointerEvents:'none',
+      transition:'opacity .25s', opacity:'0'
+    });
+    document.body.appendChild(el);
+  }
+  el.textContent = msg;
+  el.style.opacity = '1';
+  clearTimeout(el._t);
+  el._t = setTimeout(()=>{ el.style.opacity='0'; }, 1400);
+}
+function isAtFirstChord() {
+  if (typeof window.chordIdx === 'number') return window.chordIdx === 0;
+  const chords = document.querySelectorAll('#cifraMeio .chord');
+  if (!chords.length) return false;
+  const active = document.querySelector('#cifraMeio .chord.active');
+  if (!active) return false;
+  const idx = Array.prototype.indexOf.call(chords, active);
+  return idx === 0;
+}
+function isFirstSongInQueue() {
+  if (!Array.isArray(window.playlist) || typeof window.currentSongIdx !== 'number') return false;
+  // playlist pode ter números ou objetos
+  const first = window.playlist[0];
+  const firstIdx = (typeof first === 'number') ? first :
+                   (first && typeof first.idx === 'number') ? first.idx : null;
+  if (firstIdx == null) return false;
+  return firstIdx === window.currentSongIdx;
+}
+function clickFirstQueuedOrFirstListItem(){
+  const ul = document.getElementById('listaMusicas');
+  if (!ul) return false;
+  // tenta item da fila (li.queued)
+  let li = ul.querySelector('li.queued');
+  // senão, primeiro item da lista
+  if (!li) li = ul.querySelector('li');
+  if (!li) return false;
+  li.click?.();
+  return true;
+}
+/** Vai para a primeira música da fila (com vários fallbacks robustos) */
+function goToFirstSong() {
+  let done = false;
+
+  try {
+    if (Array.isArray(window.playlist) && window.playlist.length > 0) {
+      const first = window.playlist[0];
+      const firstIdx = (typeof first === 'number') ? first :
+                       (first && typeof first.idx === 'number') ? first.idx : null;
+
+      if (firstIdx != null) {
+        if (typeof setActiveSongIdx === 'function') { setActiveSongIdx(firstIdx); done = true; }
+        if (!done && typeof selectSongByIndex === 'function') { selectSongByIndex(firstIdx); done = true; }
+        if (!done && typeof setCurrentSongIndex === 'function') { setCurrentSongIndex(firstIdx); done = true; }
+
+        if (done) {
+          if (typeof songsMaster !== 'undefined' && songsMaster[firstIdx] && typeof showCifra === 'function') {
+            showCifra(songsMaster[firstIdx]);
+          }
+        }
+      }
+    }
+  } catch(e){ console.warn('playlist path falhou:', e); }
+
+  // Fallback por clique na UI
+  if (!done) done = clickFirstQueuedOrFirstListItem();
+
+  // Garante acorde 0 após navegar
+  setTimeout(()=>{ try { setActiveChord?.(0); } catch(_){} }, done ? 60 : 0);
+
+  return !!done;
+}
+
+// ===== LONG-PRESS CORE =====
+function handleLongPress() {
+  holdTimer = null;
+  longTriggered = true;
+  stopPadSafely();
+
+  const firstChord = isAtFirstChord();
+  const firstSong  = isFirstSongInQueue();
+
+  if (!firstChord) {
+    try { setActiveChord?.(0); } catch(_){}
+    showHint('Voltou ao 1º acorde desta música');
+    return;
+  }
+
+  if (firstChord && !firstSong) {
+    const ok = goToFirstSong();
+    if (!ok) showHint('Tentei ir para a 1ª música… ajuste sua fila');
+    else     showHint('Foi ao 1º acorde da 1ª música');
+    return;
+  }
+
+  showHint('Já está no 1º acorde da 1ª música');
+}
+
+// ===== EVENTOS =====
+function onKeyDown(e){
+  if (!LONG_HOLD_KEYS.has(e.key)) return;
+
+  // Intercepta SEMPRE para evitar duplo avanço pelos handlers originais
+  e.preventDefault();
+  e.stopPropagation();
+
+  if (pressingKey === e.key) return; // já está processando
+  pressingKey = e.key;
+  longTriggered = false;
+
+  if (holdTimer) clearTimeout(holdTimer);
+  holdTimer = setTimeout(handleLongPress, LONG_HOLD_MS);
+}
+
+function onKeyUp(e){
+  if (!LONG_HOLD_KEYS.has(e.key)) return;
+
+  // Bloqueia bubbling do keyup também (padronização)
+  e.preventDefault();
+  e.stopPropagation();
+
+  const hadTimer = !!holdTimer;
+  if (holdTimer) { clearTimeout(holdTimer); holdTimer = null; }
+
+  // Toque curto → avançar 1 acorde uma única vez (sem “pulinhos”)
+  if (!longTriggered && hadTimer) {
+    try { gotoNextChord?.(); } catch(err){ console.warn('Avançar 1 acorde falhou:', err); }
+  }
+
+  pressingKey = null;
+}
+
+// ===== REGISTRO (limpa duplicatas) =====
+if (window._lp_registered) {
+  window.removeEventListener('keydown', window._lp_onKeyDown, true);
+  window.removeEventListener('keyup',   window._lp_onKeyUp,   true);
+}
+window._lp_onKeyDown = onKeyDown;
+window._lp_onKeyUp   = onKeyUp;
+window.addEventListener('keydown', onKeyDown, true);
+window.addEventListener('keyup',   onKeyUp,   true);
+window._lp_registered = true;
+
+console.log('[LongPress] 3s ativo (sem pulinhos; fila robusta)');
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
 
 
 
@@ -2957,7 +3229,7 @@ window.audioCtx = AC;
 const audioCtx = AC; // <- para este bloco usar SEMPRE o mesmo contexto já criado
 
 // KNOBS (ajuste fino)
-let STR_ATTACK  = 0.40; // s  — ataque mais macio
+let STR_ATTACK  = 0.35; // s  — ataque mais macio
 let STR_SUSTAIN = 10.0; // s  — sustenta o acorde
 let STR_RELEASE = 4.00; // s  — cauda ao trocar/soltar
 
@@ -3862,6 +4134,9 @@ selCapo.addEventListener('change', ()=>{
 });
 
 
+
+/*
+//HANDLER SIMPLES DE AVANÇAR E RETROCEDER
 // ===== Teclado: ←/↓/PageDown = próximo | →/↑/PageUp = anterior
 document.addEventListener('keydown', (e)=>{
   if (e.altKey || e.ctrlKey || e.metaKey) return; // ignora atalhos do SO
@@ -3873,6 +4148,10 @@ document.addEventListener('keydown', (e)=>{
     gotoPrevChord();
   }
 });
+
+*/
+
+
 
 const selTransposeKey = document.getElementById('selTransposeKey');
 if (selTransposeKey){
@@ -4115,7 +4394,7 @@ function playGuitarPluck(stringIdx, fret){
   // valores padrão (ajuste aqui se quiser outros defaults)
   const defaults = {
     // Envelope
-    attack: (typeof window.STR_ATTACK === 'number' ? window.STR_ATTACK : 1.40),
+    attack: (typeof window.STR_ATTACK === 'number' ? window.STR_ATTACK : 0.35),
     release: (typeof window.STR_RELEASE === 'number' ? window.STR_RELEASE : 4.0),
 
     // Chorus
