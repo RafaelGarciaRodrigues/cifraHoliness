@@ -2266,6 +2266,8 @@ For all the rest of time
   grid-template-columns: 1fr;
 }
 
+
+
 /* Reposiciona elementos quando painéis são escondidos */
 #geral.hide-left #cifraMeio {
   grid-column: 1;
@@ -2355,13 +2357,15 @@ font-size: 50px;
 
 
 /* ===== Mobile drawer para #menuEsquerda ================================================================================================================================= */
+/* ===== Mobile drawer para #menuEsquerda ===== */
 @media (max-width: 900px){
   /* layout: só centro visível por padrão */
   #geral{ grid-template-columns: 1fr !important; }
 
   /* menu vira drawer */
   #menuEsquerda{
-    position: fixed; inset: 0 auto 0 0; /* top:0; right:auto; bottom:0; left:0 */
+    position: fixed; 
+    inset: 0 auto 0 0; /* top:0; right:auto; bottom:0; left:0 */
     width: min(82vw, 340px);
     max-width: 90vw;
     z-index: 1000;
@@ -2369,6 +2373,7 @@ font-size: 50px;
     transition: transform .25s ease;
     box-shadow: 2px 0 16px rgba(0,0,0,.4);
   }
+  
   /* quando #geral remove .hide-left → menu aparece */
   #geral:not(.hide-left) #menuEsquerda{
     transform: translateX(0);
@@ -2376,45 +2381,41 @@ font-size: 50px;
 
   /* overlay para fechar com toque */
   .mobile-overlay{
-    position: fixed; inset: 0;
+    position: fixed; 
+    inset: 0;
     background: rgba(0,0,0,.45);
     backdrop-filter: blur(1px);
     z-index: 900;
     display: none;
   }
+  
   /* overlay visível quando menu aberto */
-  #geral:not(.hide-left) ~ .mobile-overlay{ display:block; }
+  #geral:not(.hide-left) ~ .mobile-overlay{ 
+    display: block; 
+  }
 
   /* botão hambúrguer flutuante */
   #menuToggleBtn{
-    position: fixed; left: 12px; top: 12px;
+    position: fixed; 
+    left: 12px; 
+    top: 12px;
     z-index: 1100;
-    width: 42px; height: 42px; border-radius: 999px;
+    width: 42px; 
+    height: 42px; 
+    border-radius: 999px;
     border: 1px solid #1f2937;
-    background: #0f1626; color: #e6f3ff;
-    display: inline-flex; align-items: center; justify-content: center;
-    font-size: 20px; line-height: 1; cursor: pointer;
+    background: #0f1626; 
+    color: #e6f3ff;
+    display: inline-flex; 
+    align-items: center; 
+    justify-content: center;
+    font-size: 20px; 
+    line-height: 1; 
+    cursor: pointer;
     box-shadow: 0 2px 10px rgba(0,0,0,.35);
   }
-  /* empurra conteúdo para não ficar sob o botão */
-  #cifraMeio{ padding-top: 56px; }
-}
-/* Só em telas pequenas (ex.: até 768px de largura) */
-@media (max-width: 768px) {
-  #cifraMeio .linha {
-    display: inline-block;
-    margin: 0;
-    font-size: 16px;  /* menor fonte para caber no celular */
-  }
- #cifra {
-    font-size: 14px;
-}
-
-
-}
-
-/* BOTÃO FLUTUANTE DE NAVEGAÇÃO (estilo iPhone) - APENAS MOBILE */
-@media (max-width: 900px){
+  
+  /* BOTÃO FLUTUANTE DE NAVEGAÇÃO (estilo iPhone) */
   #mobileNavBtn{
     position: fixed;
     bottom: 20px;
@@ -2444,16 +2445,18 @@ font-size: 50px;
     box-shadow: 0 2px 10px rgba(0,0,0,.4), 0 0 0 1px rgba(255,255,255,.2);
   }
   
-  /* empurra conteúdo para não ficar sob o botão */
+  /* empurra conteúdo para não ficar sob os botões */
   #cifraMeio{ 
     padding-top: 56px; 
     padding-bottom: 100px; /* espaço para o botão de navegação */
   }
 }
 
-/* Esconde o botão em desktop */
+/* Esconde botões em desktop */
 @media (min-width: 901px){
-  #mobileNavBtn{ display: none !important; }
+  #mobileNavBtn, #menuToggleBtn{ 
+    display: none !important; 
+  }
 }
 
 
@@ -2521,6 +2524,7 @@ font-size: 50px;
 </div>
 <div class="mobile-overlay" id="mobileOverlay"></div>
 <!-- Botão flutuante de navegação (só mobile) -->
+<button id="menuToggleBtn" aria-label="Alternar menu">☰</button>
 <button id="mobileNavBtn" aria-label="Próximo acorde">▶</button>
 
 
@@ -4235,79 +4239,131 @@ if (selTransposeKey){
 
 
 // ===== Mobile: hambúrguer + overlay + gesto lateral =====
-(function mobileMenu(){
-  const geral   = document.getElementById('geral');
-  const overlay = document.getElementById('mobileOverlay') || (()=> {
-    const o = document.createElement('div');
-    o.className = 'mobile-overlay'; o.id = 'mobileOverlay';
-    document.body.appendChild(o);
-    return o;
-  })();
 
-  // cria botão hambúrguer
-  let btn = document.getElementById('menuToggleBtn');
-  if (!btn){
-    btn = document.createElement('button');
-    btn.id = 'menuToggleBtn';
-    btn.type = 'button';
-    btn.setAttribute('aria-label', 'Alternar menu');
-    btn.textContent = '☰';
-    document.body.appendChild(btn);
-  }
+
+// ===== Mobile: hambúrguer + overlay + gesto lateral + BOTÃO DE NAVEGAÇÃO =====
+(function mobileMenu(){
+  const geral = document.getElementById('geral');
+  const overlay = document.getElementById('mobileOverlay');
+  const menuBtn = document.getElementById('menuToggleBtn');
+  const navBtn = document.getElementById('mobileNavBtn');
 
   function isMobile(){ return window.matchMedia('(max-width: 900px)').matches; }
-  function ensureHiddenOnMobile(){
-    if (isMobile()) geral.classList.add('hide-left'); // padrão: fechado
+  
+  function toggleMenu(){ 
+    console.log('Toggle menu chamado'); // DEBUG
+    geral.classList.toggle('hide-left'); 
+  }
+  
+  function closeMenu(){ 
+    console.log('Close menu chamado'); // DEBUG
+    geral.classList.add('hide-left'); 
   }
 
-  // abre/fecha
-  function toggleMenu(){ geral.classList.toggle('hide-left'); }
-  function closeMenu(){ geral.classList.add('hide-left'); }
+  // Eventos do hambúrguer
+  if (menuBtn) {
+    menuBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      console.log('Hambúrguer clicado!'); // DEBUG
+      toggleMenu();
+    });
+  }
 
-  // eventos
-  btn.addEventListener('click', toggleMenu);
-  overlay.addEventListener('click', closeMenu);
+  // Fecha com overlay
+  if (overlay) {
+    overlay.addEventListener('click', closeMenu);
+  }
 
-  // gesto: swipe da borda esquerda para abrir
-  let x0 = null, y0 = null;
-  window.addEventListener('touchstart', (e)=>{
-    if (!isMobile()) return;
-    const t = e.touches[0];
-    x0 = t.clientX; y0 = t.clientY;
-  }, {passive:true});
-
-  window.addEventListener('touchmove', (e)=>{
-    if (!isMobile() || x0 === null) return;
-    const t = e.touches[0];
-    const dx = t.clientX - x0, dy = Math.abs(t.clientY - y0);
-    // gesto horizontal saindo da borda (<=24px) e movendo > 40px →
-    if (x0 <= 24 && dx > 40 && dy < 30){
-      geral.classList.remove('hide-left'); // abrir
-      x0 = null; // consome o gesto
+  // === BOTÃO DE NAVEGAÇÃO ===
+  let navHoldTimer = null;
+  let navLongTriggered = false;
+  
+  function handleNavLongPress() {
+    navHoldTimer = null;
+    navLongTriggered = true;
+    console.log('Long press detectado!'); // DEBUG
+    
+    try {
+      if (typeof setPerformanceVol === 'function') setPerformanceVol(0.001, 0.2);
+    } catch (e) {}
+    
+    // Lógica do long press (volta ao início)
+    try { setActiveChord?.(0); } catch(_){}
+    showMobileHint('Voltou ao 1º acorde');
+  }
+  
+  function showMobileHint(msg){
+    let el = document.getElementById('mobile-hint');
+    if (!el){
+      el = document.createElement('div');
+      el.id = 'mobile-hint';
+      Object.assign(el.style, {
+        position:'fixed', bottom:'100px', left:'50%', transform:'translateX(-50%)',
+        padding:'8px 12px', background:'rgba(0,0,0,.8)', color:'#fff',
+        borderRadius:'10px', fontSize:'14px', zIndex:99999, pointerEvents:'none',
+        transition:'opacity .25s', opacity:'0'
+      });
+      document.body.appendChild(el);
     }
-  }, {passive:true});
+    el.textContent = msg;
+    el.style.opacity = '1';
+    clearTimeout(el._t);
+    el._t = setTimeout(()=>{ el.style.opacity='0'; }, 2000);
+  }
+  
+  // Eventos do botão de navegação
+  if (navBtn) {
+    navBtn.addEventListener('touchstart', (e) => {
+      if (!isMobile()) return;
+      e.preventDefault();
+      
+      navLongTriggered = false;
+      if (navHoldTimer) clearTimeout(navHoldTimer);
+      navHoldTimer = setTimeout(handleNavLongPress, 2000);
+    }, {passive: false});
+    
+    navBtn.addEventListener('touchend', (e) => {
+      if (!isMobile()) return;
+      e.preventDefault();
+      
+      const hadTimer = !!navHoldTimer;
+      if (navHoldTimer) { clearTimeout(navHoldTimer); navHoldTimer = null; }
+      
+      // Toque curto = próximo acorde
+      if (!navLongTriggered && hadTimer) {
+        console.log('Próximo acorde!'); // DEBUG
+        try { 
+          gotoNextChord?.(); 
+        } catch(err){ 
+          console.warn('Erro:', err); 
+        }
+      }
+    }, {passive: false});
+    
+    navBtn.addEventListener('touchcancel', (e) => {
+      if (navHoldTimer) { clearTimeout(navHoldTimer); navHoldTimer = null; }
+    });
 
-  // fecha com "voltar" do Android (histórico) quando aberto
-  window.addEventListener('popstate', ()=>{
-    if (isMobile() && !geral.classList.contains('hide-left')){
-      closeMenu();
-      history.pushState(null, ''); // reequilibra histórico
-    }
-  });
+    // Fallback para desktop (click)
+    navBtn.addEventListener('click', (e) => {
+      if (isMobile()) return;
+      e.preventDefault();
+      try { gotoNextChord?.(); } catch(err){ console.warn('Erro:', err); }
+    });
+  }
 
-  // ao abrir o menu, empilha um state para permitir fechar com “voltar”
-  const obs = new MutationObserver(()=>{
-    if (isMobile()){
-      const aberto = !geral.classList.contains('hide-left');
-      if (aberto) history.pushState(null, '');
-    }
-  });
-  obs.observe(geral, { attributes:true, attributeFilter:['class'] });
-
-  // garante estado inicial correto no carregamento e em resize
+  // Garante menu fechado no mobile
+  function ensureHiddenOnMobile(){
+    if (isMobile()) geral.classList.add('hide-left');
+  }
+  
   ensureHiddenOnMobile();
   window.addEventListener('resize', ensureHiddenOnMobile);
+  
+  console.log('Mobile menu inicializado!'); // DEBUG
 })();
+
 
 
 
@@ -4703,175 +4759,7 @@ if (typeof buildKnobsUI === 'function') buildKnobsUI();
 
 
 
-<script>
 
-// ===== Mobile: hambÃºrguer + overlay + gesto lateral + BOTÃO DE NAVEGAÇÃO =====
-(function mobileMenu(){
-  const geral   = document.getElementById('geral');
-  const overlay = document.getElementById('mobileOverlay') || (()=> {
-    const o = document.createElement('div');
-    o.className = 'mobile-overlay'; o.id = 'mobileOverlay';
-    document.body.appendChild(o);
-    return o;
-  })();
-
-  // cria botÃ£o hambÃºrguer
-  let btn = document.getElementById('menuToggleBtn');
-  if (!btn){
-    btn = document.createElement('button');
-    btn.id = 'menuToggleBtn';
-    btn.type = 'button';
-    btn.setAttribute('aria-label', 'Alternar menu');
-    btn.textContent = 'â˜°';
-    document.body.appendChild(btn);
-  }
-
-  function isMobile(){ return window.matchMedia('(max-width: 900px)').matches; }
-  function ensureHiddenOnMobile(){
-    if (isMobile()) geral.classList.add('hide-left'); // padrÃ£o: fechado
-  }
-
-  // abre/fecha
-  function toggleMenu(){ geral.classList.toggle('hide-left'); }
-  function closeMenu(){ geral.classList.add('hide-left'); }
-
-  // eventos
-  btn.addEventListener('click', toggleMenu);
-  overlay.addEventListener('click', closeMenu);
-
-  // gesto: swipe da borda esquerda para abrir
-  let x0 = null, y0 = null;
-  window.addEventListener('touchstart', (e)=>{
-    if (!isMobile()) return;
-    const t = e.touches[0];
-    x0 = t.clientX; y0 = t.clientY;
-  }, {passive:true});
-
-  window.addEventListener('touchmove', (e)=>{
-    if (!isMobile() || x0 === null) return;
-    const t = e.touches[0];
-    const dx = t.clientX - x0, dy = Math.abs(t.clientY - y0);
-    // gesto horizontal saindo da borda (<=24px) e movendo > 40px â†'
-    if (x0 <= 24 && dx > 40 && dy < 30){
-      geral.classList.remove('hide-left'); // abrir
-      x0 = null; // consome o gesto
-    }
-  }, {passive:true});
-
-  // fecha com "voltar" do Android (histÃ³rico) quando aberto
-  window.addEventListener('popstate', ()=>{
-    if (isMobile() && !geral.classList.contains('hide-left')){
-      closeMenu();
-      history.pushState(null, ''); // reequilibra histÃ³rico
-    }
-  });
-
-  // ao abrir o menu, empilha um state para permitir fechar com â€œvoltarâ€
-  const obs = new MutationObserver(()=>{
-    if (isMobile()){
-      const aberto = !geral.classList.contains('hide-left');
-      if (aberto) history.pushState(null, '');
-    }
-  });
-  obs.observe(geral, { attributes:true, attributeFilter:['class'] });
-
-  // === BOTÃO FLUTUANTE DE NAVEGAÇÃO ===
-  let navBtn = document.getElementById('mobileNavBtn');
-  
-  // Controle do long-press (mesmo comportamento das teclas)
-  let navHoldTimer = null;
-  let navLongTriggered = false;
-  
-  function handleNavLongPress() {
-    navHoldTimer = null;
-    navLongTriggered = true;
-    
-    // Para o áudio atual
-    try {
-      if (typeof setPerformanceVol === 'function') setPerformanceVol(0.001, 0.2);
-      window.dispatchEvent?.(new CustomEvent('pad:stop'));
-    } catch (e) {}
-    
-    // Vai para primeiro acorde/primeira música (mesmo comportamento do long-press das teclas)
-    const firstChord = (typeof window.chordIdx === 'number') ? window.chordIdx === 0 : false;
-    const firstSong = (() => {
-      if (!Array.isArray(window.playlist) || typeof window.currentSongIdx !== 'number') return false;
-      const first = window.playlist[0];
-      const firstIdx = (typeof first === 'number') ? first : (first && typeof first.idx === 'number') ? first.idx : null;
-      return firstIdx != null && firstIdx === window.currentSongIdx;
-    })();
-    
-    if (!firstChord) {
-      try { setActiveChord?.(0); } catch(_){}
-      showMobileHint('Voltou ao 1º acorde desta música');
-    } else if (firstChord && !firstSong) {
-      const ok = goToFirstSong();
-      if (!ok) showMobileHint('Tentei ir para a 1ª música… ajuste sua fila');
-      else showMobileHint('Foi ao 1º acorde da 1ª música');
-    } else {
-      showMobileHint('Já está no 1º acorde da 1ª música');
-    }
-  }
-  
-  function showMobileHint(msg){
-    let el = document.getElementById('mobile-hint');
-    if (!el){
-      el = document.createElement('div');
-      el.id = 'mobile-hint';
-      Object.assign(el.style, {
-        position:'fixed', bottom:'100px', left:'50%', transform:'translateX(-50%)',
-        padding:'8px 12px', background:'rgba(0,0,0,.8)', color:'#fff',
-        borderRadius:'10px', fontSize:'14px', zIndex:99999, pointerEvents:'none',
-        transition:'opacity .25s', opacity:'0'
-      });
-      document.body.appendChild(el);
-    }
-    el.textContent = msg;
-    el.style.opacity = '1';
-    clearTimeout(el._t);
-    el._t = setTimeout(()=>{ el.style.opacity='0'; }, 2000);
-  }
-  
-  if (navBtn) {
-    // Touch events para o botão de navegação
-    navBtn.addEventListener('touchstart', (e) => {
-      if (!isMobile()) return;
-      e.preventDefault();
-      
-      navLongTriggered = false;
-      if (navHoldTimer) clearTimeout(navHoldTimer);
-      navHoldTimer = setTimeout(handleNavLongPress, 2000);
-    }, {passive: false});
-    
-    navBtn.addEventListener('touchend', (e) => {
-      if (!isMobile()) return;
-      e.preventDefault();
-      
-      const hadTimer = !!navHoldTimer;
-      if (navHoldTimer) { clearTimeout(navHoldTimer); navHoldTimer = null; }
-      
-      // Toque curto → avançar 1 acorde
-      if (!navLongTriggered && hadTimer) {
-        try { 
-          gotoNextChord?.(); 
-        } catch(err){ 
-          console.warn('Avançar 1 acorde falhou:', err); 
-        }
-      }
-    }, {passive: false});
-    
-    navBtn.addEventListener('touchcancel', (e) => {
-      if (navHoldTimer) { clearTimeout(navHoldTimer); navHoldTimer = null; }
-    });
-  }
-
-  // garante estado inicial correto no carregamento e em resize
-  ensureHiddenOnMobile();
-  window.addEventListener('resize', ensureHiddenOnMobile);
-})();
-
-
-</script>
 
 
 
