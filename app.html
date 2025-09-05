@@ -2505,7 +2505,23 @@ For all the rest of time
   #listaMusicas li.active{background:#111827;color:#e5f5ff;box-shadow:inset 3px 0 0 var(--acc)}
   
   /* cifra centro */
-  #cifraMeio{padding:18px 20px 80px;overflow:auto}
+  #cifraMeio{
+	padding:18px 20px 80px;
+	overflow:auto;
+	}
+	
+#cifraMeio {
+  scroll-behavior: smooth;
+  /* Controla a velocidade da animação de scroll */
+}
+
+/* Para navegadores webkit (Chrome, Safari) */
+#cifraMeio {
+  scroll-behavior: smooth;
+  scroll-snap-type: none;
+}
+	
+	
   #cifraMeio pre{white-space:pre-wrap;font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;background:#0b0f19;border:1px solid #161c2a;border-radius:12px;padding:16px}
   
 /* Base: nenhuma margem nas linhas (letra) */
@@ -2898,6 +2914,11 @@ font-size: 50px;
     padding-top: 56px; 
     padding-bottom: 100px; /* espaço para o botão de navegação */
   }
+  
+  #cifraMeio .linha {
+    font-size: 20px !important;
+  }
+  
 }
 
 /* Esconde botões em desktop */
@@ -4513,9 +4534,12 @@ function buildFontUI(){
   const wrap = document.getElementById('ajustaFonteTela');
   if (!wrap) return;
 
-  // pega valor salvo ou default 45
-  let saved = parseInt(localStorage.getItem('fontSizeLinha') || '45', 10);
-  if (isNaN(saved)) saved = 45;
+  // detecta se é mobile
+  const isMobile = () => window.matchMedia('(max-width: 900px)').matches;
+
+  // pega valor salvo ou default (45 para desktop, 20 para mobile)
+  let saved = parseInt(localStorage.getItem('fontSizeLinha') || (isMobile() ? '20' : '45'), 10);
+  if (isNaN(saved)) saved = isMobile() ? 20 : 45;
 
   wrap.innerHTML = '';
   const label = document.createElement('label');
@@ -4538,17 +4562,18 @@ function buildFontUI(){
     sel.appendChild(op);
   }
 
-  sel.value = saved; // seleciona o que estava salvo
+  sel.value = saved;
 
-  // aplica no CSS
+  // aplica no CSS com lógica para mobile
   function apply(size){
+    const finalSize = isMobile() ? 20 : size; // força 20px no mobile
     const css = document.querySelector('#dynamicFontSize') || (() => {
       const st = document.createElement('style');
       st.id = 'dynamicFontSize';
       document.head.appendChild(st);
       return st;
     })();
-    css.textContent = `#cifraMeio .linha { font-size: ${size}px !important; }`;
+    css.textContent = `#cifraMeio .linha { font-size: ${finalSize}px !important; }`;
   }
   apply(saved);
 
@@ -4557,6 +4582,9 @@ function buildFontUI(){
     localStorage.setItem('fontSizeLinha', val);
     apply(val);
   });
+
+  // reaplica quando muda orientação/tamanho
+  window.addEventListener('resize', () => apply(saved));
 
   label.appendChild(sel);
   wrap.appendChild(label);
@@ -5425,9 +5453,32 @@ function highlightCorrespondingLyric(chordSpan) {
   }
 }
 </script>
+<script>
+function centerInto(viewEl, container){
+  const c = container || document.getElementById('cifraMeio');
+  const targetTop = viewEl.offsetTop - c.clientHeight/2 + viewEl.offsetHeight/2;
+  const startTop = c.scrollTop;
+  const distance = targetTop - startTop;
+  const duration = 750; // 750ms
+  const startTime = performance.now();
 
-
-
+  function animate(currentTime) {
+    const elapsed = currentTime - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    
+    // Função de easing suave (ease-out)
+    const easeOut = 1 - Math.pow(1 - progress, 3);
+    
+    c.scrollTop = startTop + (distance * easeOut);
+    
+    if (progress < 1) {
+      requestAnimationFrame(animate);
+    }
+  }
+  
+  requestAnimationFrame(animate);
+}
+</script>
 
 </body>
 </html>
