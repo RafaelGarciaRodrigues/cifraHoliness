@@ -17,6 +17,143 @@ C C7 D D7 D Dm D/C# D/F#
 </musica>
 
 
+<musica>
+	<titulo>Hosana</titulo>
+	<tom>E</tom>
+	<bpm></bpm>
+	<categ>Holiness</categ>
+	<cifra>
+	<![CDATA[
+C#m  E  F#m7  G#m7
+
+E                        C#m7
+Eu vejo o rei da Gloria, vindo com o seu poder
+         F#m7       B     C#m7
+A Terra vai estremecer
+E                 C#m7
+Eu vejo sua graca os pecados perdoar
+          F#m             B
+A Terra vai então cantar
+
+E/G#  A    B  C#m
+Hosana,  Hosana
+A             C#m  B
+Hosana nas alturas
+E/G#  A    B  C#m
+Hosanna, Hosana
+A            B   C#m
+Hosana nas Alturas
+
+C#m   E
+
+E                    C#m7
+Eu vejo um povo eleito, assumindo o seu lugar
+         F#m         B
+Pra sua fé compartilhar
+
+E                    C#m
+Eu vejo avivamento, quando o Teu povo orar
+       F#m            B
+E Te buscar, e Te buscar
+
+E/G#  A    B  C#m
+Hosana,  Hosana
+A             C#m  B
+Hosana nas alturas
+E/G#  A    B  C#m
+Hosanna, Hosana
+A            B   C#m
+Hosana nas Alturas
+
+C#m  E  F#m  G#m
+
+A                B    
+Limpa o meu coração
+E                             C#m
+Abra os meus olhos pra que eu possa  ver
+A                         B         C#m
+Com o amor que Tens por mim, Te amo
+A                   B 
+Quero ser igual a Ti
+   E                C#m
+Tudo o que sou eh pro seu louvor
+A                      B              A7M
+Pois contigo eu vou viver pra sempre
+
+E/G#  A    B  C#m
+Hosana,  Hosana
+A             C#m  B
+Hosana nas alturas
+E/G#  A    B  C#m
+Hosanna, Hosana
+A            B   C#m
+Hosana nas Alturas
+
+A            B   E
+Hosana nas Alturas
+	]]>
+	</cifra>
+</musica>
+
+
+<musica>
+	<titulo>Toma Meu Coração</titulo>
+	<tom>E</tom>
+	<bpm></bpm>
+	<categ>Holiness</categ>
+	<cifra>
+	<![CDATA[
+
+E B/D# F#m A B
+
+E              C#m
+Este é o meu desejo
+   A    E/G# B
+Senhor Te honrar
+C#m    B/D#    E         D  A  B
+Com meu cora - ção te adorar
+
+E              C#m
+Tudo que há em mim
+     A  E/G#  B
+Te dá louvor 
+C#m  B/D#  E           D  A  B
+Só a Ti adoro meu Senhor
+
+----
+
+E               B/D#
+Toma o meu coração
+             F#m
+E toda a minha alma
+   A     B     E
+Eu vivo só pra Ti
+                   B/D#
+Sempre que eu respirar
+                    F#m
+Cada vez que eu acordar
+    A         B     E
+Faz o Teu querer em mim
+
+E               B/D#
+Toma o meu coração
+             F#m
+E toda a minha alma
+   A     B     E
+Eu vivo só pra Ti
+                   B/D#
+Sempre que eu respirar
+                    F#m
+Cada vez que eu acordar
+    A         B     E
+Faz o Teu querer em mim
+
+
+	]]>
+	</cifra>
+</musica>
+
+
 
 <musica>
 	<titulo>Meu Disfarce</titulo>
@@ -792,6 +929,9 @@ E    nos dá consolação
 	<categ>Holiness</categ>
 	<cifra>
 	<![CDATA[
+D A/C# Bm7
+Bm/A   G9
+G/A           D   G/A
        D
 Quão grande é o meu Deus
       A/C#  Bm7
@@ -807,7 +947,7 @@ Com esplendor de um Rei
 Em majestade e luz
                     G9
 Faz a Terra se alegrar
-                    Em
+                    G/A
 Faz a Terra se alegrar
 
 D
@@ -861,8 +1001,6 @@ Sobre todo nome é o seu
 Tu és digno do louvor
     G9             G/A           D
 Eu cantarei quão grande é o meu Deus
-         Ab/Bb
-É o meu Deus
 	]]>
 	</cifra>
 </musica>
@@ -3751,7 +3889,7 @@ window.audioCtx = AC;
 const audioCtx = AC; // <- para este bloco usar SEMPRE o mesmo contexto já criado
 
 // KNOBS (ajuste fino)
-let STR_ATTACK  = 0.35; // s  — ataque mais macio
+let STR_ATTACK  = 0.05; // s  — ataque mais macio
 let STR_SUSTAIN = 10.0; // s  — sustenta o acorde
 let STR_RELEASE = 4.00; // s  — cauda ao trocar/soltar
 
@@ -4009,7 +4147,7 @@ function makeStringVoice(freq, t0, voiceGain=0.4){
 
   // envelope (ataque macio + sustain longo)
   const amp = AC.createGain();
-  const a = window.STR_ATTACK || 0.40;
+  const a = window.STR_ATTACK || 0.05;
   const s = STR_SUSTAIN;
   const r = window.STR_RELEASE || 4.0;
   const sustainLvl = 0.65; // menos sustentação para headroom
@@ -4066,7 +4204,7 @@ function makeVoiceSound(freq, t0, voiceGain = 0.4){
   const amp = audioCtx.createGain();
   
   // envelope igual ao strings
-  const a = window.STR_ATTACK || 0.40;
+  const a = window.STR_ATTACK || 0.05;
   const s = STR_SUSTAIN;
   const r = window.STR_RELEASE || 4.0;
   const sustainLvl = 0.65;
@@ -4145,7 +4283,7 @@ function makePadVoice(freq, t0, voiceGain = 0.3){
   
   // Envelope típico de pad: ataque MUITO lento
   const amp = AC.createGain();
-  const a = window.STR_ATTACK || 0.40;
+  const a = window.STR_ATTACK || 0.05;
   const s = STR_SUSTAIN;
   const r = window.STR_RELEASE || 4.0;
   const sustainLvl = 0.4; // mais baixo para criar atmosfera
@@ -5137,7 +5275,7 @@ function playGuitarPluck(stringIdx, fret){
   // valores padrão (ajuste aqui se quiser outros defaults)
   const defaults = {
     // Envelope
-    attack: (typeof window.STR_ATTACK === 'number' ? window.STR_ATTACK : 0.35),
+    attack: (typeof window.STR_ATTACK === 'number' ? window.STR_ATTACK : 0.05),
     release: (typeof window.STR_RELEASE === 'number' ? window.STR_RELEASE : 4.0),
 
     // Chorus
