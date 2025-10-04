@@ -21,7 +21,103 @@
 </musica>
 
 
+<musica>
+	<titulo>Te Louvarei</titulo>
+	<tom>A</tom>
+	<bpm></bpm>
+	<categ>Holiness</categ>
+<bibli>
+	<texto><vers>João 15:15</vers>Já vos não chamarei servos, porque o servo não sabe o que faz o seu senhor; mas tenho-vos chamado amigos, porque tudo quanto ouvi de meu Pai vos tenho feito conhecer.</texto>
+	<texto><vers>Salmos 73:25</vers>Quem tenho eu no céu senão a ti? e na terra não há quem eu deseje além de ti.</texto>
+	<texto><vers>Salmos 63:3-4</vers>Porque a tua benignidade é melhor do que a vida; os meus lábios te louvarão. Assim eu te bendizerei em minha vida; em teu nome levantarei as minhas mãos.</texto>
+	<texto><vers>Filipenses 4:12</vers>Sei estar abatido, e sei também ter abundância; em toda a maneira, e em todas as coisas estou instruído, tanto a ter fartura, como a ter fome; tanto a ter abundância, como a padecer necessidade.</texto>
+	<texto><vers>Romanos 12:1</vers>Rogo-vos, pois, irmãos, pela compaixão de Deus, que apresenteis os vossos corpos em sacrifício vivo, santo e agradável a Deus, que é o vosso culto racional.</texto>
+	<texto><vers>Salmos 95:2</vers>Apresentemo-nos ante a sua face com louvores, e celebremo-lo com salmos.</texto>
+</bibli>
+	<cifra>
+	<![CDATA[
+A    E    D
+A     E/A       D      E      A
+E   D  F#m
 
+  
+ A             D  E/G#
+Perto quero estar
+                A  E/G#
+Junto aos teus pés
+               D         F#m
+Pois prazer maior não há
+     E           D        D/F#
+Que me render e Te adorar
+ A              D/A  E/G#
+Tudo que há em mim
+              A  E/G#
+Quero te ofertar
+             D/F#        F#m
+Mas ainda é pouco eu sei
+    E             D
+Se comparado ao que ganhei
+ A              D
+Não sou apenas servo
+      E/G#        D  D/E  E/G#
+Seu amigo me tornei
+
+[Refrão] 
+
+A    E    D
+ Te louvarei
+ A     E/A       D      E      A
+Não importam as circunstâncias
+  E   D  F#m
+Adorarei
+           E    A  D/F#  E/G#
+Somente a ti Jesus
+
+[Primeira Parte] 
+
+ A             D  E/G#
+Perto quero estar
+                A  E/G#
+Junto aos teus pés
+               D         F#m
+Pois prazer maior não há
+     E           D        D/F#
+Que me render e Te adorar
+ A              D/A  E/G#
+Tudo que há em mim
+              A  E/G#
+Quero te ofertar
+             D/F#        F#m
+Mas ainda é pouco eu sei
+    E             D
+Se comparado ao que ganhei
+ A              D
+Não sou apenas servo
+      E/G#       D  D/E  E/G#
+Seu amigo me tornei
+
+[Refrão] 
+
+A    E    D
+ Te louvarei
+ A     E/A       D      E      A
+Não importam as circunstâncias
+  E   D    F#m
+Adorarei
+           E    A  D/F#  E/G#
+Somente a ti Jesus
+A    E    D
+ Te louvarei
+ A     E/A       D      E      A
+Não importam as circunstâncias
+  E   D    F#m
+Adorarei
+           E    A  D/F#  E/G#
+Somente a ti Jesus
+
+	]]>
+	</cifra>
+</musica>
 
 
 
@@ -6762,7 +6858,28 @@ if (selTransposeKey){
   buildCategoryUI(xml);
   buildMenu(xml, currentCategory);
   buildFontUI();
-  // buildKnobsUI(); <-- REMOVA esta linha daqui
+  
+  // === NOVO: Se há playlist, carrega a primeira música da fila ===
+  if (playlist && playlist.length > 0) {
+    console.log('Playlist detectada, carregando primeira música da fila...');
+    const firstQueuedIdx = playlist[0];
+    
+    if (songsMaster[firstQueuedIdx]) {
+      setActiveSongIdx(firstQueuedIdx);
+      showCifra(songsMaster[firstQueuedIdx]);
+      
+      // Destaca visualmente no menu
+      setTimeout(() => {
+        const li = document.querySelector(`#listaMusicas li[data-mid="${firstQueuedIdx}"]`);
+        if (li) {
+          li.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 100);
+      
+      console.log('Primeira música da fila carregada:', getText(songsMaster[firstQueuedIdx], 'titulo'));
+    }
+  }
+  // === FIM DO NOVO BLOCO ===
 })();
 
 
@@ -7289,7 +7406,178 @@ function centerInto(viewEl, container) {
 })();
 </script>
 
+<script>
+// ===== SCROLL AUTOMÁTICO PARA PRÓXIMA MÚSICA =====
+(function setupScrollNavigation(){
+  const cifraMeio = document.getElementById('cifraMeio');
+  if (!cifraMeio) return;
 
+  let scrollTimeout = null;
+  let lastScrollTop = 0;
+
+  cifraMeio.addEventListener('scroll', function(e) {
+    // Limpa timeout anterior para evitar múltiplos triggers
+    if (scrollTimeout) clearTimeout(scrollTimeout);
+
+    const currentScrollTop = cifraMeio.scrollTop;
+    const scrollingDown = currentScrollTop > lastScrollTop;
+    lastScrollTop = currentScrollTop;
+
+    // Só processa se estiver rolando para BAIXO
+    if (!scrollingDown) return;
+
+    scrollTimeout = setTimeout(() => {
+      const scrollHeight = cifraMeio.scrollHeight;
+      const clientHeight = cifraMeio.clientHeight;
+      const scrollTop = cifraMeio.scrollTop;
+
+      // Margem de 50px do final (ajuste se quiser mais/menos sensibilidade)
+      const distanceFromBottom = scrollHeight - (scrollTop + clientHeight);
+
+      // Se está próximo do final (menos de 50px) e rolando para baixo
+      if (distanceFromBottom < 50) {
+        console.log('Final da página detectado, avançando...');
+        
+        // Tenta avançar para próxima música da fila
+        if (typeof goToNextSongInPlaylist === 'function') {
+          const advanced = goToNextSongInPlaylist();
+          
+          if (advanced) {
+            console.log('Avançou para próxima música via scroll');
+            // Volta para o topo da música
+            setTimeout(() => {
+              cifraMeio.scrollTo({ 
+                top: 0, 
+                behavior: 'smooth'
+              });
+            }, 100);
+          } else {
+            // Se não conseguiu avançar (está na última), mostra tela preta com versículo
+            console.log('Última música detectada, mostrando versículo...');
+            showBibleScreen();
+          }
+        }
+      }
+    }, 150);
+  });
+
+  console.log('[ScrollNav] Navegação por scroll ativada (com tela bíblica final)');
+})();
+
+
+
+// ===== TELA PRETA COM VERSÍCULO ALEATÓRIO =====
+let bibleScreenInterval = null; // controla o intervalo de rotação
+
+function showBibleScreen(){
+  const xml = loadXML();
+  if (!xml) return;
+
+  // Coleta TODOS os versículos de TODAS as músicas
+  const allVerses = [];
+  const musicasEls = xml.getElementsByTagName('musica');
+  
+  for (const musica of musicasEls) {
+    const bibliEls = musica.getElementsByTagName('bibli');
+    for (const bibli of bibliEls) {
+      const textos = bibli.getElementsByTagName('texto');
+      for (const texto of textos) {
+        const versEl = texto.getElementsByTagName('vers')[0];
+        const vers = versEl ? versEl.textContent.trim() : '';
+        const conteudo = texto.textContent.replace(vers, '').trim();
+        if (vers && conteudo) {
+          allVerses.push({ vers, conteudo });
+        }
+      }
+    }
+  }
+
+  if (allVerses.length === 0) {
+    console.warn('Nenhum versículo encontrado no XML');
+    return;
+  }
+
+  // Função para exibir versículo aleatório
+  function displayRandomVerse() {
+    const randomVerse = allVerses[Math.floor(Math.random() * allVerses.length)];
+    const pre = document.getElementById('cifra');
+    
+    pre.innerHTML = `
+      <div style="
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        min-height: 80vh;
+        text-align: center;
+        padding: 40px;
+        background: #000;
+        border-radius: 12px;
+      ">
+        <div style="
+          max-width: 800px;
+          color: #e6e6e6;
+        ">
+          <div style="
+            font-size: 1em;
+            font-style: italic;
+            color: #bfe7ff;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            margin-bottom: -10px;
+          ">
+            ${randomVerse.conteudo}
+          </div>
+          <div style="
+            font-size: 1em;
+            color: #9aa3af;
+            line-height: 1;
+            margin: 0;
+            padding: 0;
+            margin-top: -150px;
+			width: max-content;
+          ">
+            ${randomVerse.vers}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  // Exibe o primeiro versículo
+  displayRandomVerse();
+
+  // Limpa seleção de acordes
+  chordSpans = [];
+  chordIdx = -1;
+  clearMarkers();
+
+  // Rola para centralizar
+  setTimeout(() => {
+    const cifraMeio = document.getElementById('cifraMeio');
+    if (cifraMeio) {
+      cifraMeio.scrollTo({ 
+        top: 0, 
+        behavior: 'smooth'
+      });
+    }
+  }, 100);
+
+  // >>> NOVO: Rotação automática a cada 10 segundos
+  if (bibleScreenInterval) clearInterval(bibleScreenInterval);
+  bibleScreenInterval = setInterval(displayRandomVerse, 10000);
+}
+
+// Limpa o intervalo quando sair da tela bíblica
+function clearBibleScreen() {
+  if (bibleScreenInterval) {
+    clearInterval(bibleScreenInterval);
+    bibleScreenInterval = null;
+  }
+}
+
+</script>
 
 </body>
 </html>
