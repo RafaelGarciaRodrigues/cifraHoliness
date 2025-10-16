@@ -9481,6 +9481,26 @@ async function carregarBibliaExterna() {
 }
 
 
+
+
+// Verifica se livro tem versículos na fila
+function bookHasVerses(bookName) {
+  return playlist.some(p => 
+    p.type === 'verse' && p.book === bookName
+  );
+}
+
+// Verifica se capítulo tem versículos na fila
+function chapterHasVerses(bookName, chapterNum) {
+  return playlist.some(p => 
+    p.type === 'verse' && 
+    p.book === bookName && 
+    p.chapter === chapterNum
+  );
+}
+
+
+
 function buildBibleList() {
   const lista = document.getElementById('listaBiblia');
   if (!lista) return console.error('❌ #listaBiblia não existe');
@@ -9507,23 +9527,29 @@ function buildBibleList() {
     return;
   }
   
-	console.log(`🔨 Construindo ${books.length} livros...`);
+  console.log(`🔨 Construindo ${books.length} livros...`);
 
-	// Ordenação alfabética
-	const booksArray = Array.from(books);
-	booksArray.sort((a, b) => {
-	  const nomeA = (a.getAttribute('n') || a.getAttribute('name') || '').trim();
-	  const nomeB = (b.getAttribute('n') || b.getAttribute('name') || '').trim();
-	  return nomeA.localeCompare(nomeB, 'pt-BR', { sensitivity: 'base' });
-	});
+  // Ordenação alfabética
+  const booksArray = Array.from(books);
+  booksArray.sort((a, b) => {
+    const nomeA = (a.getAttribute('n') || a.getAttribute('name') || '').trim();
+    const nomeB = (b.getAttribute('n') || b.getAttribute('name') || '').trim();
+    return nomeA.localeCompare(nomeB, 'pt-BR', { sensitivity: 'base' });
+  });
 
-	booksArray.forEach(book => {
+  booksArray.forEach(book => {
     const nome = book.getAttribute('n') || book.getAttribute('name') || 'Sem nome';
     const caps = book.querySelectorAll('c, chapter');
     
     const li = document.createElement('li');
     li.className = 'book-item';
-    li.innerHTML = `<div style="cursor:pointer; padding:8px;">📖 ${nome} <span style="color:#64748b;">(${caps.length} cap.)</span></div>`;
+
+    // Badge do livro (se tiver versículos)
+    const bookBadge = bookHasVerses(nome) 
+      ? '<span class="queue-badge verse-badge" style="display:inline-flex; margin-left:8px;">📖</span>' 
+      : '';
+
+    li.innerHTML = `<div style="cursor:pointer; padding:8px;">📖 ${nome} <span style="color:#64748b;">(${caps.length} cap.)</span>${bookBadge}</div>`;
     
     const capsDiv = document.createElement('div');
     capsDiv.className = 'chapters-list';
@@ -9538,7 +9564,13 @@ function buildBibleList() {
       capDiv.className = 'chapter-item';
       capDiv.style.padding = '6px';
       capDiv.style.cursor = 'pointer';
-      capDiv.innerHTML = `📄 Cap. ${numCap} <span style="color:#64748b;">(${vers.length} vers.)</span>`;
+      
+      // Badge do capítulo (se tiver versículos)
+      const capBadge = chapterHasVerses(nome, numCap)
+        ? '<span class="queue-badge verse-badge" style="display:inline-flex; margin-left:8px;">📖</span>'
+        : '';
+
+      capDiv.innerHTML = `📄 Cap. ${numCap} <span style="color:#64748b;">(${vers.length} vers.)</span>${capBadge}`;
       
       const versDiv = document.createElement('div');
       versDiv.className = 'verses-list';
@@ -9546,46 +9578,44 @@ function buildBibleList() {
       versDiv.style.paddingLeft = '15px';
       versDiv.style.paddingTop = '8px';
       
-vers.forEach(v => {
-  const n = v.getAttribute('n') || v.getAttribute('number') || '?';
-  const texto = v.textContent.trim();
-  
-  const verseItem = document.createElement('div');
-  verseItem.className = 'verse-item'; // ADICIONADO
-  verseItem.dataset.book = nome;      // ADICIONADO
-  verseItem.dataset.chapter = numCap; // ADICIONADO
-  verseItem.dataset.verse = n;        // ADICIONADO
-  verseItem.style.padding = '4px 8px';
-  verseItem.style.margin = '2px 0';
-  verseItem.style.fontSize = '12px';
-  verseItem.style.cursor = 'pointer';
-  verseItem.style.color = '#cbd5e1';
-  verseItem.style.position = 'relative'; // ADICIONADO (para badge)
-  verseItem.innerHTML = `<span style="color:#9aa3af; font-weight:600;">Vers. ${n}</span>`;
-  
-  verseItem.onclick = (e) => {
-    // CTRL+CLIQUE = adiciona à fila
-    if (e.ctrlKey || e.metaKey) {
-      e.stopPropagation();
-      e.preventDefault();
-      
-      toggleQueueVerse({
-        book: nome,
-        chapter: numCap,
-        verse: n,
-        text: texto
+      vers.forEach(v => {
+        const n = v.getAttribute('n') || v.getAttribute('number') || '?';
+        const texto = v.textContent.trim();
+        
+        const verseItem = document.createElement('div');
+        verseItem.className = 'verse-item';
+        verseItem.dataset.book = nome;
+        verseItem.dataset.chapter = numCap;
+        verseItem.dataset.verse = n;
+        verseItem.style.padding = '4px 8px';
+        verseItem.style.margin = '2px 0';
+        verseItem.style.fontSize = '12px';
+        verseItem.style.cursor = 'pointer';
+        verseItem.style.color = '#cbd5e1';
+        verseItem.style.position = 'relative';
+        verseItem.innerHTML = `<span style="color:#9aa3af; font-weight:600;">Vers. ${n}</span>`;
+        
+        verseItem.onclick = (e) => {
+          if (e.ctrlKey || e.metaKey) {
+            e.stopPropagation();
+            e.preventDefault();
+            
+            toggleQueueVerse({
+              book: nome,
+              chapter: numCap,
+              verse: n,
+              text: texto
+            });
+            
+            return;
+          }
+          
+          e.stopPropagation();
+          showVerse(nome, numCap, n, texto);
+        };
+        
+        versDiv.appendChild(verseItem);
       });
-      
-      return;
-    }
-    
-    // CLIQUE SIMPLES = exibe direto
-    e.stopPropagation();
-    showVerse(nome, numCap, n, texto);
-  };
-  
-  versDiv.appendChild(verseItem);
-});
  
       capDiv.appendChild(versDiv);
       
@@ -9623,6 +9653,7 @@ vers.forEach(v => {
   });
   
   console.log('✅ Lista construída!');
+  updateBibleUI();
 }
 
 // Toggle M/B
