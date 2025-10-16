@@ -6081,9 +6081,9 @@ function goToPrevSongInPlaylist(){
 function showVerse(book, chapter, verse, text) {
   const pre = document.getElementById('cifra');
   
-  let html = `<h3 style="color:#6ee7ff; margin-bottom:20px;">${book} ${chapter}:${verse}</h3>\n\n`;
-  html += `<div style="font-size:50px; line-height:1.8; color:#e6f3ff;">${text}</div>`;
-  html += '\n\n\n<span style="display:block; text-align:center; color:#6ee7ff; margin-top:40px;">— Fim —</span>\n\n\n';
+  let html = `<div style="font-size:50px;color:#6ee7ff; margin-bottom:80px;">${book} ${chapter}:${verse}</div>`;
+  html += `<div style="font-size:50px; line-height:1.8; color:#e6f3ff;text-align: -webkit-center;">${text}</div>`;
+
   
   pre.innerHTML = html;
   
