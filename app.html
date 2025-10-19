@@ -5982,7 +5982,6 @@ function setActiveSongIdx(masterIdx){
   if (li) li.classList.add('active');
 }
 
-
 function goToNextSongInPlaylist(){
   if (!playlist.length) return false;
   
@@ -5994,6 +5993,7 @@ function goToNextSongInPlaylist(){
   // Se é música, busca pelo índice
   if (currentSongIdx !== -1) {
     currentPos = playlist.findIndex(p => p.type === 'song' && p.idx === currentSongIdx);
+    console.log('🎵 Posição atual (música):', currentPos, '- idx:', currentSongIdx);
   }
   
   // Se é versículo, busca pelo conteúdo exibido
@@ -6002,7 +6002,7 @@ function goToNextSongInPlaylist(){
     const html = cifraEl?.innerHTML || '';
     
     // Detecta se está exibindo versículo (tem estrutura específica)
-    const match = html.match(/<h3[^>]*>([^<]+)\s+(\d+):(\d+)<\/h3>/);
+    const match = html.match(/<div[^>]*>([^<]+)\s+(\d+):(\d+)<\/div>/);
     if (match) {
       const [, book, chapter, verse] = match;
       currentPos = playlist.findIndex(p => 
@@ -6011,23 +6011,35 @@ function goToNextSongInPlaylist(){
         p.chapter === chapter && 
         p.verse === verse
       );
+      console.log('📖 Posição atual (versículo):', currentPos, '-', book, chapter + ':' + verse);
     }
   }
   
-  console.log('Posição atual:', currentPos);
-  
-  if (currentPos === -1) return false;
+  if (currentPos === -1) {
+    console.log('⚠️ Item atual não encontrado na fila');
+    return false;
+  }
   
   const nextPos = currentPos + 1;
-  if (nextPos >= playlist.length) return false;
+  if (nextPos >= playlist.length) {
+    console.log('⚠️ Fim da fila');
+    return false;
+  }
   
   const nextItem = playlist[nextPos];
-  console.log('Próximo item:', nextItem);
+  console.log('➡️ Próximo item:', nextItem);
   
   if (nextItem.type === 'song') {
     if (!songsMaster[nextItem.idx]) return false;
     setActiveSongIdx(nextItem.idx);
     showCifra(songsMaster[nextItem.idx]);
+    
+    // Aguarda renderização e seleciona primeiro acorde
+    setTimeout(() => {
+      if (chordSpans && chordSpans.length > 0) {
+        setActiveChord(0);
+      }
+    }, 100);
   } else if (nextItem.type === 'verse') {
     showVerse(nextItem.book, nextItem.chapter, nextItem.verse, nextItem.text);
   }
@@ -6037,58 +6049,188 @@ function goToNextSongInPlaylist(){
 }
 
 
-
-
 function goToPrevSongInPlaylist(){
   if (!playlist.length) return false;
   
+  console.log('=== goToPrevSongInPlaylist ===');
+  
   let currentPos = -1;
   
-  // Busca posição atual (música ou versículo)
+  // Busca posição atual (música)
   if (currentSongIdx !== -1) {
     currentPos = playlist.findIndex(p => p.type === 'song' && p.idx === currentSongIdx);
+    console.log('🎵 Posição atual (música):', currentPos, '- idx:', currentSongIdx);
   }
   
+  // Busca posição atual (versículo) - MÉTODO MELHORADO
   if (currentPos === -1) {
     const cifraEl = document.getElementById('cifra');
-    const html = cifraEl?.innerHTML || '';
-    const match = html.match(/<h3[^>]*>([^<]+)\s+(\d+):(\d+)<\/h3>/);
     
-    if (match) {
-      const [, book, chapter, verse] = match;
+    // Método 1: usa dataset (mais confiável)
+    if (cifraEl.dataset.verseBook) {
+      const book = cifraEl.dataset.verseBook;
+      const chapter = cifraEl.dataset.verseChapter;
+      const verse = cifraEl.dataset.verseVerse;
+      
       currentPos = playlist.findIndex(p => 
         p.type === 'verse' && 
         p.book === book && 
         p.chapter === chapter && 
         p.verse === verse
       );
+      console.log('📖 Posição atual (versículo via dataset):', currentPos, '-', book, chapter + ':' + verse);
+    }
+    
+    // Método 2: parse do HTML (fallback)
+    if (currentPos === -1) {
+      const html = cifraEl?.innerHTML || '';
+      const match = html.match(/class="verse-header"[^>]*>([^<]+)\s+(\d+):(\d+)<\/div>/);
+      
+      if (match) {
+        const [, book, chapter, verse] = match;
+        currentPos = playlist.findIndex(p => 
+          p.type === 'verse' && 
+          p.book === book.trim() && 
+          p.chapter === chapter && 
+          p.verse === verse
+        );
+        console.log('📖 Posição atual (versículo via HTML):', currentPos, '-', book, chapter + ':' + verse);
+      }
     }
   }
   
-  if (currentPos <= 0) return false;
+  if (currentPos === -1) {
+    console.log('⚠️ Item atual não encontrado na fila');
+    console.log('currentSongIdx:', currentSongIdx);
+    console.log('Dataset:', document.getElementById('cifra')?.dataset);
+    return false;
+  }
+  
+  if (currentPos <= 0) {
+    console.log('⚠️ Já está no primeiro item da fila');
+    return false;
+  }
   
   const prevPos = currentPos - 1;
   const prevItem = playlist[prevPos];
+  console.log('⬅️ Item anterior (pos ' + prevPos + '):', prevItem);
   
   if (prevItem.type === 'song') {
-    if (!songsMaster[prevItem.idx]) return false;
+    if (!songsMaster[prevItem.idx]) {
+      console.log('⚠️ Música não encontrada no master');
+      return false;
+    }
     setActiveSongIdx(prevItem.idx);
     showCifra(songsMaster[prevItem.idx]);
+    
+    // Aguarda renderização e vai para ÚLTIMO acorde
+    setTimeout(() => {
+      if (chordSpans && chordSpans.length > 0) {
+        console.log('✅ Indo para último acorde:', chordSpans.length - 1);
+        setActiveChord(chordSpans.length - 1);
+      }
+    }, 150);
   } else if (prevItem.type === 'verse') {
+    console.log('✅ Mostrando versículo anterior');
     showVerse(prevItem.book, prevItem.chapter, prevItem.verse, prevItem.text);
   }
   
+  console.log('=== FIM goToPrevSongInPlaylist ===');
+  return true;
+}
+
+function goToNextSongInPlaylist(){
+  if (!playlist.length) return false;
+  
+  console.log('=== goToNextSongInPlaylist ===');
+  
+  let currentPos = -1;
+  
+  // Busca posição atual (música)
+  if (currentSongIdx !== -1) {
+    currentPos = playlist.findIndex(p => p.type === 'song' && p.idx === currentSongIdx);
+    console.log('🎵 Posição atual (música):', currentPos, '- idx:', currentSongIdx);
+  }
+  
+  // Busca posição atual (versículo) - MÉTODO MELHORADO
+  if (currentPos === -1) {
+    const cifraEl = document.getElementById('cifra');
+    
+    // Método 1: usa dataset (mais confiável)
+    if (cifraEl.dataset.verseBook) {
+      const book = cifraEl.dataset.verseBook;
+      const chapter = cifraEl.dataset.verseChapter;
+      const verse = cifraEl.dataset.verseVerse;
+      
+      currentPos = playlist.findIndex(p => 
+        p.type === 'verse' && 
+        p.book === book && 
+        p.chapter === chapter && 
+        p.verse === verse
+      );
+      console.log('📖 Posição atual (versículo via dataset):', currentPos, '-', book, chapter + ':' + verse);
+    }
+    
+    // Método 2: parse do HTML (fallback)
+    if (currentPos === -1) {
+      const html = cifraEl?.innerHTML || '';
+      const match = html.match(/class="verse-header"[^>]*>([^<]+)\s+(\d+):(\d+)<\/div>/);
+      
+      if (match) {
+        const [, book, chapter, verse] = match;
+        currentPos = playlist.findIndex(p => 
+          p.type === 'verse' && 
+          p.book === book.trim() && 
+          p.chapter === chapter && 
+          p.verse === verse
+        );
+        console.log('📖 Posição atual (versículo via HTML):', currentPos, '-', book, chapter + ':' + verse);
+      }
+    }
+  }
+  
+  if (currentPos === -1) {
+    console.log('⚠️ Item atual não encontrado na fila');
+    return false;
+  }
+  
+  const nextPos = currentPos + 1;
+  if (nextPos >= playlist.length) {
+    console.log('⚠️ Fim da fila');
+    return false;
+  }
+  
+  const nextItem = playlist[nextPos];
+  console.log('➡️ Próximo item (pos ' + nextPos + '):', nextItem);
+  
+  if (nextItem.type === 'song') {
+    if (!songsMaster[nextItem.idx]) return false;
+    setActiveSongIdx(nextItem.idx);
+    showCifra(songsMaster[nextItem.idx]);
+    
+    // Aguarda renderização e seleciona primeiro acorde
+    setTimeout(() => {
+      if (chordSpans && chordSpans.length > 0) {
+        console.log('✅ Indo para primeiro acorde');
+        setActiveChord(0);
+      }
+    }, 150);
+  } else if (nextItem.type === 'verse') {
+    console.log('✅ Mostrando próximo versículo');
+    showVerse(nextItem.book, nextItem.chapter, nextItem.verse, nextItem.text);
+  }
+  
+  console.log('=== FIM goToNextSongInPlaylist ===');
   return true;
 }
 
 
-// === NOVA: exibe versículo na área central ===
 function showVerse(book, chapter, verse, text) {
   const pre = document.getElementById('cifra');
   
-  let html = `<div style="font-size:50px;color:#6ee7ff; margin-bottom:80px;">${book} ${chapter}:${verse}</div>`;
+  // MUDANÇA: usar estrutura consistente para detecção posterior
+  let html = `<div class="verse-header" style="font-size:50px;color:#6ee7ff; margin-bottom:80px;">${book} ${chapter}:${verse}</div>`;
   html += `<div style="font-size:50px; line-height:1.8; color:#e6f3ff;text-align: -webkit-center;">${text}</div>`;
-
   
   pre.innerHTML = html;
   
@@ -6099,6 +6241,11 @@ function showVerse(book, chapter, verse, text) {
   // Limpa braço do violão
   clearMarkers();
   
+  // CRÍTICO: armazena metadados do versículo atual para navegação
+  pre.dataset.verseBook = book;
+  pre.dataset.verseChapter = chapter;
+  pre.dataset.verseVerse = verse;
+  
   // Marca que não é música (para navegação funcionar)
   currentSongIdx = -1;
   
@@ -6108,11 +6255,8 @@ function showVerse(book, chapter, verse, text) {
   // Scroll para o topo
   document.getElementById('cifraMeio').scrollTo({top: 0, behavior: 'smooth'});
   
-  console.log(`Versículo exibido: ${book} ${chapter}:${verse}`);
-  console.log('chordSpans.length:', chordSpans.length);
+  console.log(`📖 Versículo exibido: ${book} ${chapter}:${verse}`);
 }
-
-
 
 function getAllCategories(xml){
   const xs = [...xml.getElementsByTagName('musica')];
@@ -6209,48 +6353,51 @@ setTimeout(() => {
 
 
 
-
 function gotoNextChord(){
-  // Verifica se estamos em um VERSÍCULO (sem acordes)
-  if (!chordSpans.length || chordSpans.length === 0){
-    console.log('Sem acordes detectados - tentando próximo item da fila');
+  // Caso 1: Estamos em um VERSÍCULO (sem acordes)
+  if (!chordSpans || chordSpans.length === 0){
+    console.log('📖 Fim do versículo - avançando para próximo item da fila');
     if (goToNextSongInPlaylist()) return;
+    console.log('⚠️ Fim da fila');
     return;
   }
   
-  // Se tem acordes, navega normalmente
+  // Caso 2: Estamos em MÚSICA com acordes
   if (chordIdx < chordSpans.length - 1){
+    // Ainda há acordes nesta música
     setActiveChord(chordIdx + 1);
   } else {
-    // fim da música -> próxima da fila
-    if (goToNextSongInPlaylist()) return;
-    setActiveChord(chordIdx); // mantém no último acorde se não houver próxima
+    // Chegou no último acorde da música atual
+    console.log('🎵 Último acorde da música - avançando para próximo item');
+    if (!goToNextSongInPlaylist()) {
+      console.log('⚠️ Fim da fila - mantém no último acorde');
+      setActiveChord(chordIdx); // mantém no último
+    }
   }
 }
 
-
-
-
-
 function gotoPrevChord(){
-  // Verifica se estamos em um VERSÍCULO (sem acordes)
-  if (!chordSpans.length || chordSpans.length === 0){
-    console.log('Sem acordes detectados - tentando item anterior da fila');
+  // Caso 1: Estamos em um VERSÍCULO (sem acordes)
+  if (!chordSpans || chordSpans.length === 0){
+    console.log('📖 Início do versículo - voltando para item anterior da fila');
     if (goToPrevSongInPlaylist()) return;
+    console.log('⚠️ Já está no primeiro item');
     return;
   }
   
-  // Se tem acordes, navega normalmente
+  // Caso 2: Estamos em MÚSICA com acordes
   if (chordIdx > 0){
+    // Ainda há acordes anteriores nesta música
     setActiveChord(chordIdx - 1);
   } else {
-    // início da música -> volta música na fila
-    if (goToPrevSongInPlaylist()) return;
-    setActiveChord(0);
+    // Está no primeiro acorde da música atual
+    console.log('🎵 Primeiro acorde da música - voltando para item anterior');
+    if (!goToPrevSongInPlaylist()) {
+      console.log('⚠️ Já está no primeiro item - mantém no primeiro acorde');
+      setActiveChord(0);
+    }
   }
 }
-
-
 
 
 
@@ -6327,7 +6474,7 @@ function goToFirstSong() {
 <script>
 //BLOCO QUE CONTROLA O AVANÇO E O RETROCESSO SEGURANDO A TECLA POR 2 SEGUNDOS
 // ===== CONFIG =====
-const LONG_HOLD_KEYS = new Set(['PageDown', 'ArrowRight', 'ArrowDown']);
+const LONG_HOLD_KEYS = new Set(['PageDown', 'ArrowRight', 'ArrowDown', 'PageUp', 'ArrowLeft', 'ArrowUp']);
 const LONG_HOLD_MS   = 2000;
 
 let holdTimer = null;
@@ -6568,16 +6715,39 @@ function onKeyDown(e){
 function onKeyUp(e){
   if (!LONG_HOLD_KEYS.has(e.key)) return;
 
-  // Bloqueia bubbling do keyup também (padronização)
   e.preventDefault();
   e.stopPropagation();
 
   const hadTimer = !!holdTimer;
   if (holdTimer) { clearTimeout(holdTimer); holdTimer = null; }
 
-  // Toque curto → avançar 1 acorde uma única vez (sem “pulinhos”)
+  // Toque curto → detecta direção (avançar ou voltar)
   if (!longTriggered && hadTimer) {
-    try { gotoNextChord?.(); } catch(err){ console.warn('Avançar 1 acorde falhou:', err); }
+    try {
+      // DETECTA SE É TECLA DE AVANÇAR OU VOLTAR
+      const isNext = NEXT_KEYS.includes(e.key);
+      const isPrev = PREV_KEYS.includes(e.key);
+      
+      if (isNext) {
+        // Avançar
+        if (!chordSpans || chordSpans.length === 0) {
+          console.log('⏭️ Versículo: avançando');
+          goToNextSongInPlaylist?.();
+        } else {
+          gotoNextChord?.();
+        }
+      } else if (isPrev) {
+        // Voltar
+        if (!chordSpans || chordSpans.length === 0) {
+          console.log('⏮️ Versículo: voltando');
+          goToPrevSongInPlaylist?.();
+        } else {
+          gotoPrevChord?.();
+        }
+      }
+    } catch(err){ 
+      console.warn('Navegação falhou:', err); 
+    }
   }
 
   pressingKey = null;
@@ -9176,7 +9346,6 @@ function clearBibleScreen() {
 
 
 <script>
-// ===== MODO IMPRESSÃO =====
 function generatePrintMode() {
   // Verifica se há músicas na fila
   if (!playlist || playlist.length === 0) {
@@ -9184,21 +9353,35 @@ function generatePrintMode() {
     return;
   }
   
+  // FILTRA apenas músicas (ignora versículos)
+  const songItems = playlist.filter(item => item.type === 'song');
+  
+  if (songItems.length === 0) {
+    alert('Nenhuma música na fila. Só há versículos selecionados.');
+    return;
+  }
+  
   const printMode = document.getElementById('printMode');
   const printContent = document.getElementById('printContent');
   printContent.innerHTML = '';
   
-  console.log(`[PrintMode] Preparando ${playlist.length} música(s)...`);
+  console.log(`[PrintMode] Preparando ${songItems.length} música(s)...`);
   
   // Processa cada música da fila
-  playlist.forEach((globalIdx, queuePos) => {
+  songItems.forEach((item, queuePos) => {
+    const globalIdx = item.idx;  // ← CORREÇÃO: extrai o índice do objeto
     const musica = songsMaster[globalIdx];
-    if (!musica) return;
+    if (!musica) {
+      console.warn(`Música idx=${globalIdx} não encontrada`);
+      return;
+    }
     
     // Extrai dados da música
     const titulo = getText(musica, 'titulo') || getText(musica, 'itulo') || 'Música sem título';
     const tom = getText(musica, 'tom') || '';
     const cifraRaw = getText(musica, 'cifra') || '';
+    
+    console.log(`  → ${queuePos + 1}. ${titulo} (tom: ${tom})`);
     
     // Processa transposição (se houver)
     const origRoot = parseRoot(tom) || 'C';
@@ -9216,21 +9399,23 @@ function generatePrintMode() {
     // Gera HTML da cifra
     const cifraHtml = wrapChordsForPrint(cifraBody, semis);
     
+    console.log(`  → HTML gerado: ${cifraHtml.length} chars`);
+    
     // Cria página
     const page = document.createElement('div');
     page.className = 'print-page';
     
-page.innerHTML = `
-  <div style="page-break-inside: avoid; break-inside: avoid;">
-    <div class="print-header">
-      <h1>${titulo}</h1>
-      <div class="print-meta">Tom: ${displayKey} | ${queuePos + 1}ª da sequência</div>
-    </div>
-    <div class="print-columns">
-      ${cifraHtml}
-    </div>
-  </div>
-`;
+    page.innerHTML = `
+      <div style="page-break-inside: avoid; break-inside: avoid;">
+        <div class="print-header">
+          <h1>${titulo}</h1>
+          <div class="print-meta">Tom: ${displayKey} | ${queuePos + 1}ª da sequência</div>
+        </div>
+        <div class="print-columns">
+          ${cifraHtml}
+        </div>
+      </div>
+    `;
     
     printContent.appendChild(page);
   });
@@ -9249,7 +9434,7 @@ page.innerHTML = `
   printMode.classList.add('active');
   document.body.style.overflow = 'auto';
   
-  console.log(`[PrintMode] ${playlist.length} música(s) prontas. Use Ctrl+P para imprimir.`);
+  console.log(`[PrintMode] ${songItems.length} música(s) prontas. Use Ctrl+P para imprimir.`);
 }
 
 function closePrintMode() {
@@ -9266,16 +9451,23 @@ function closePrintMode() {
   if (navBtn) navBtn.style.display = '';
 }
 
-// Versão simplificada do wrapChords para impressão
+
 function wrapChordsForPrint(text, semis = 0) {
   return String(text)
     .replace(/\u00A0/g, ' ')
     .replace(/\r\n?/g, '\n')
     .split('\n')
     .map(line => {
-      // Remove linhas vazias excessivas
-      if (!line.trim()) {
-        return '<span class="linha">&nbsp;</span>';
+      const trimmed = line.trim();
+      
+      // Linha vazia - mantém espaçamento
+      if (!trimmed) {
+        return '<span class="linha" style="min-height:1em;">&nbsp;</span>';
+      }
+      
+      // Marcadores de dinâmica (---, ----, etc) - ignora
+      if (/^-{2,}$/.test(trimmed)) {
+        return '';
       }
       
       // Acordes entre colchetes
@@ -9286,12 +9478,7 @@ function wrapChordsForPrint(text, semis = 0) {
         return `<span class="chord">${disp}</span>`;
       });
       
-      // Ignora marcadores de dinâmica
-      if (/^-{2,}$/.test(processed.trim())) {
-        return '';
-      }
-      
-      // Linha de acordes
+      // Linha de acordes (detecta automaticamente)
       if (isChordLine(line)) {
         const parts = processed.split(/(\s+)/);
         const marked = parts.map(p => {
@@ -9300,14 +9487,13 @@ function wrapChordsForPrint(text, semis = 0) {
           const disp = semis ? transposeSymbol(t, semis) : t;
           return p.replace(t, `<span class="chord">${disp}</span>`);
         }).join('');
-        return `<span class="linha">${marked}</span>`;
+        return `<span class="linha">${marked || '&nbsp;'}</span>`;
       }
       
       // Linha de letra
-      return `<span class="linha">${processed}</span>`;
+      return `<span class="linha">${processed || '&nbsp;'}</span>`;
     })
-    .filter(l => l.length > 0)
-    .join('\n');
+    .join('\n'); // ← REMOVIDO O FILTER QUE ESTAVA CAUSANDO PROBLEMA
 }
 
 // Atalho Ctrl+I
