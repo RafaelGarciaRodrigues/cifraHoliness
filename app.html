@@ -9656,41 +9656,85 @@ console.log('[PrintSongList] Modo lista ativado - use Ctrl+L');
 let bibliaXML = null;
 
 async function carregarBibliaExterna() {
-  try {
-    console.log('📖 Carregando Bíblia...');
-	const response = await fetch('https://raw.githubusercontent.com/thiagobodruk/biblia/master/xml/aa.min.xml', {
-		  mode: 'cors',
-		  cache: 'force-cache'
-		});
-    const xmlText = await response.text();
-    console.log(`📦 ${xmlText.length} caracteres recebidos`);
-    
-    // FORÇA o parse como XML (não HTML)
-    const parser = new DOMParser();
-    bibliaXML = parser.parseFromString(xmlText, 'application/xml'); // ← MUDOU AQUI
-    
-    // Verifica se deu erro
-    const parseError = bibliaXML.querySelector('parsererror');
-    if (parseError) {
-      console.error('❌ Erro no parse:', parseError.textContent);
-      return false;
+  // URLs em ordem de prioridade (fallback automático)
+  const urls = [
+    'https://cdn.jsdelivr.net/gh/thiagobodruk/biblia/xml/aa.min.xml', // CDN sem rate limit
+    'https://raw.githubusercontent.com/thiagobodruk/biblia/master/xml/aa.min.xml'
+  ];
+  
+  const maxRetries = 2;
+  const timeout = 10000; // 10s
+  
+  for (const url of urls) {
+    for (let tentativa = 0; tentativa <= maxRetries; tentativa++) {
+      try {
+        console.log(`📖 Tentando: ${url} (${tentativa + 1}/${maxRetries + 1})`);
+        
+        // Fetch com timeout
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), timeout);
+        
+        const response = await fetch(url, {
+          signal: controller.signal,
+          mode: 'cors',
+          cache: 'force-cache'
+        });
+        
+        clearTimeout(timeoutId);
+        
+        // Verifica status
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        const xmlText = await response.text();
+        console.log(`📦 ${xmlText.length} caracteres recebidos`);
+        
+        // Validação básica antes do parse
+        if (xmlText.length < 1000 || !xmlText.includes('<bible>')) {
+          throw new Error('XML inválido ou incompleto');
+        }
+        
+        // Parse XML
+        const parser = new DOMParser();
+        bibliaXML = parser.parseFromString(xmlText, 'application/xml');
+        
+        // Verifica erro de parse
+        const parseError = bibliaXML.querySelector('parsererror');
+        if (parseError) {
+          throw new Error(`Erro no parse: ${parseError.textContent}`);
+        }
+        
+        // Valida estrutura
+        const books = bibliaXML.querySelectorAll('book');
+        if (books.length === 0) {
+          throw new Error('Nenhum livro encontrado no XML');
+        }
+        
+        console.log(`✅ ${books.length} livros carregados de ${url}`);
+        return true;
+        
+      } catch (error) {
+        const isLastTry = tentativa === maxRetries;
+        const isLastUrl = url === urls[urls.length - 1];
+        
+        console.warn(`⚠️ Erro (tentativa ${tentativa + 1}):`, error.message);
+        
+        // Se não é a última tentativa, aguarda antes de tentar novamente
+        if (!isLastTry) {
+          await new Promise(resolve => setTimeout(resolve, 1000 * (tentativa + 1))); // backoff
+        }
+        
+        // Se é a última tentativa da última URL, retorna false
+        if (isLastUrl && isLastTry) {
+          console.error('❌ Todas as tentativas falharam');
+          return false;
+        }
+      }
     }
-    
-    const books = bibliaXML.querySelectorAll('b');
-    console.log(`✅ ${books.length} livros carregados`);
-    
-    if (books.length === 0) {
-      console.error('❌ Nenhum livro encontrado. Estrutura do XML:');
-      console.log(bibliaXML.documentElement);
-      console.log('Root tag:', bibliaXML.documentElement?.tagName);
-      console.log('Children:', bibliaXML.documentElement?.children);
-    }
-    
-    return books.length > 0;
-  } catch (error) {
-    console.error('❌ Erro:', error);
-    return false;
   }
+  
+  return false;
 }
 
 
