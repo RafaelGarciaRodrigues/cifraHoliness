@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Letra da Música</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 40px;
+        }
+
+        #tela {
+            width: 100%;
+            max-width: 1200px;
+            text-align: center;
+        }
+
+        .info-musica {
+            margin-bottom: 40px;
+            opacity: 0.6;
+        }
+
+        .titulo {
+            font-size: 2em;
+            color: #60a5fa;
+            margin-bottom: 10px;
+        }
+
+        .tom {
+            font-size: 1.3em;
+            color: #94a3b8;
+        }
+
+        .letra-atual {
+            font-size: 5em;
+            font-weight: bold;
+            line-height: 1.4;
+            padding: 60px 40px;
+            color: #fff;
+            text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.9);
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .proximas {
+            margin-top: 40px;
+            opacity: 0.4;
+            font-size: 2.5em;
+            color: #94a3b8;
+        }
+
+        .proxima-linha {
+            margin: 15px 0;
+        }
+		
+		#proxima1{
+			font-size: 1.5em;
+		}
+
+        .aguardando {
+            font-size: 0.4em;
+            color: #64748b;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 24px;
+            background: #1e293b;
+            border-radius: 8px;
+            font-size: 0.9em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ef4444;
+        }
+
+        .status-dot.conectado {
+            background: #22c55e;
+        }
+
+        @media (max-width: 768px) {
+            .letra-atual {
+                font-size: 3em;
+                padding: 30px 20px;
+            }
+            .titulo {
+                font-size: 1.5em;
+            }
+            .proximas {
+                font-size: 1.3em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="status">
+        <div class="status-dot" id="statusDot"></div>
+        <span id="statusText">Aguardando...</span>
+    </div>
+
+    <div id="tela">
+        <div class="info-musica" id="infoMusica" style="display: none;">
+            <div class="titulo" id="titulo"></div>
+            <div class="tom" id="tom" style='display:none;'></div>
+        </div>
+
+        <div class="letra-atual" id="letraAtual">
+            <div class="aguardando">
+                Aguardando sincronização...<br>
+                <small style="font-size: 0.5em; margin-top: 20px; display: block;">
+                    Abra o app.html e navegue pelas músicas
+                </small>
+            </div>
+        </div>
+
+        <div class="proximas" id="proximas" style="display: none;">
+            <div class="proxima-linha" id="proxima1"></div>
+            <div class="proxima-linha" id="proxima2"></div>
+        </div>
+    </div>
+
+    <script>
+        const telaChannel = new BroadcastChannel('cifra_sync');
+        
+        const statusDot = document.getElementById('statusDot');
+        const statusText = document.getElementById('statusText');
+        const infoMusica = document.getElementById('infoMusica');
+        const titulo = document.getElementById('titulo');
+        const tom = document.getElementById('tom');
+        const letraAtual = document.getElementById('letraAtual');
+        const proximasDiv = document.getElementById('proximas');
+        const proxima1 = document.getElementById('proxima1');
+        const proxima2 = document.getElementById('proxima2');
+
+        let ultimaAtualizacao = Date.now();
+
+        telaChannel.onmessage = (event) => {
+            const dados = event.data;
+			console.log('MENSAGEM RECEBIDA:', dados.tipo, dados);
+            
+            if (dados.tipo === 'atualizacao') {
+                ultimaAtualizacao = Date.now();
+                atualizarTela(dados);
+                
+                statusDot.classList.add('conectado');
+                statusText.textContent = 'Conectado';
+            } else if (dados.tipo === 'versiculo') {
+                ultimaAtualizacao = Date.now();
+                atualizarVersiculo(dados);
+                
+                statusDot.classList.add('conectado');
+                statusText.textContent = 'Conectado';
+            } else if (dados.tipo === 'fullscreen') {
+                console.log('FULLSCREEN recebido! Ativo:', dados.ativo);
+                
+                if (!fullscreenPermitido) {
+                    console.log('AGUARDANDO permissao do usuario - clique no botao azul!');
+                    return;
+                }
+                
+                console.log('Documento em fullscreen antes:', !!document.fullscreenElement);
+                
+                if (dados.ativo) {
+                    // Entrar em tela cheia
+                    if (!document.fullscreenElement) {
+                        console.log('Tentando entrar em fullscreen...');
+                        document.documentElement.requestFullscreen().catch(err => {
+                            console.log('ERRO ao entrar em tela cheia:', err);
+                        }).then(() => {
+                            console.log('Fullscreen ativado com sucesso!');
+                        });
+                    } else {
+                        console.log('JA estava em fullscreen');
+                    }
+                } else {
+                    // Sair de tela cheia
+                    if (document.fullscreenElement) {
+                        console.log('Tentando sair de fullscreen...');
+                        document.exitFullscreen().catch(err => {
+                            console.log('ERRO ao sair de tela cheia:', err);
+                        });
+                    } else {
+                        console.log('JA estava fora de fullscreen');
+                    }
+                }
+            }
+        };
+
+        function atualizarTela(dados) {
+            // Informações da música
+            titulo.textContent = dados.musica;
+            tom.textContent = dados.tom ? `Tom: ${dados.tom}` : '';
+            infoMusica.style.display = 'block';
+
+            // Letra atual
+            if (dados.letraAtual) {
+                letraAtual.textContent = dados.letraAtual;
+            } else {
+                letraAtual.innerHTML = '<div class="aguardando">♪</div>';
+            }
+
+            // Próximas linhas
+            const letras = dados.todasLetras || [];
+            const indice = dados.indiceAtual;
+
+            if (indice >= 0 && letras.length > indice + 1) {
+                proxima1.textContent = letras[indice + 1] || '';
+                proxima2.textContent = letras[indice + 2] || '';
+                
+                if (proxima1.textContent || proxima2.textContent) {
+                    proximasDiv.style.display = 'block';
+                } else {
+                    proximasDiv.style.display = 'none';
+                }
+            } else {
+                proximasDiv.style.display = 'none';
+            }
+        }
+
+
+		function atualizarVersiculo(dados) {
+            // Esconde info de música
+            infoMusica.style.display = 'none';
+            proximasDiv.style.display = 'none';
+            
+            // Mostra referência bíblica
+            titulo.textContent = dados.referencia;
+            titulo.style.color = '#6ee7ff';
+            infoMusica.style.display = 'block';
+            
+            // Mostra o texto do versículo
+            letraAtual.textContent = dados.texto;
+            letraAtual.style.fontSize = '3em';
+        }
+
+
+        // Verifica conexão a cada segundo
+        setInterval(() => {
+            const tempoSemAtualizacao = Date.now() - ultimaAtualizacao;
+            
+            if (tempoSemAtualizacao > 5000) {
+                statusDot.classList.remove('conectado');
+                statusText.textContent = '';
+            }
+        }, 1000);
+
+        // Teclas úteis
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'F11') {
+                e.preventDefault();
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen();
+                } else {
+                    document.exitFullscreen();
+                }
+            }
+        });
+
+
+// Sistema de permissao para fullscreen
+        let fullscreenPermitido = false;
+        
+        // Ao clicar em qualquer lugar, libera fullscreen
+        document.body.addEventListener('click', function ativarPermissao() {
+            fullscreenPermitido = true;
+            console.log('Permissao de fullscreen ATIVADA! Agora sincroniza automaticamente.');
+            document.body.removeEventListener('click', ativarPermissao);
+        }, { once: true });
+        
+        // Cria botao de ativacao
+        const btnAtivar = document.createElement('div');
+        btnAtivar.id = 'btnAtivar';
+        btnAtivar.innerHTML = 'CLIQUE AQUI para ativar sincronia de tela cheia';
+        btnAtivar.style.cssText = `
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #4a9eff;
+            color: white;
+            padding: 20px 40px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.2em;
+            font-weight: bold;
+            box-shadow: 0 4px 20px rgba(74, 158, 255, 0.5);
+            animation: pulse 2s infinite;
+            z-index: 9999;
+        `;
+        btnAtivar.onclick = function() {
+            fullscreenPermitido = true;
+            btnAtivar.remove();
+            console.log('Permissao concedida! Fullscreen sincronizado.');
+        };
+        document.body.appendChild(btnAtivar);
+
+
+
+
+        console.log('✅ Tela pronta e aguardando dados...');
+    </script>
+</body>
+</html>

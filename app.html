@@ -7413,16 +7413,16 @@ function makePadVoice(freq, t0, voiceGain = 0.3){
   lfoGain.connect(osc3.frequency);
   
   // Ganhos individuais para balanço perfeito
-  const g1 = AC.createGain(); g1.gain.value = 0.35;  // fundamental dominante
-  const g2 = AC.createGain(); g2.gain.value = 0.30;  // fundamental 2
-  const g3 = AC.createGain(); g3.gain.value = 0.20;  // oitava
-  const g4 = AC.createGain(); g4.gain.value = 0.08;  // 2 oitavas (brilho sutil)
-  const g5 = AC.createGain(); g5.gain.value = 0.15;  // sub (corpo)
-  const g6 = AC.createGain(); g6.gain.value = 0.06;  // quinta (harmonia)
+const g1 = AC.createGain(); g1.gain.value = 0.18;  // fundamental dominante
+const g2 = AC.createGain(); g2.gain.value = 0.15;  // fundamental 2
+const g3 = AC.createGain(); g3.gain.value = 0.10;  // oitava
+const g4 = AC.createGain(); g4.gain.value = 0.04;  // 2 oitavas (brilho sutil)
+const g5 = AC.createGain(); g5.gain.value = 0.08;  // sub (corpo)
+const g6 = AC.createGain(); g6.gain.value = 0.03;  // quinta (harmonia)
   
   // Mix geral
   const mix = AC.createGain();
-  mix.gain.setValueAtTime(voiceGain * 0.8, t0); // reduz um pouco
+mix.gain.setValueAtTime(voiceGain * 0.5, t0);
   
   // Filtro lowpass MUITO suave para remover arestas
   const filter = AC.createBiquadFilter();
@@ -7462,19 +7462,77 @@ function makePadVoice(freq, t0, voiceGain = 0.3){
   osc4.start(t0); osc5.start(t0); osc6.start(t0);
   lfo.start(t0);
   
-  const stop = (releaseOverride = 0.5) => {
+const stop = (releaseOverride = 1.2) => {
+  const now = AC.currentTime;
+  amp.gain.cancelScheduledValues(now);
+  amp.gain.setValueAtTime(Math.max(amp.gain.value, 0.001), now);
+  amp.gain.linearRampToValueAtTime(0.001, now + releaseOverride);
+  const off = releaseOverride + 0.15;
+  osc1.stop(now + off); osc2.stop(now + off); osc3.stop(now + off);
+  osc4.stop(now + off); osc5.stop(now + off); osc6.stop(now + off);
+  lfo.stop(now + off);
+};
+  
+  return { stop };
+}
+
+
+function makeWorshipVoice(freq, t0, voiceGain = 0.15){
+  const osc1 = AC.createOscillator();
+  const osc2 = AC.createOscillator();
+  
+  osc1.type = 'sine';
+  osc2.type = 'sine';
+  
+  osc1.frequency.setValueAtTime(freq, t0);
+  osc2.frequency.setValueAtTime(freq, t0);
+  
+  osc1.detune.setValueAtTime(0, t0);
+  osc2.detune.setValueAtTime(0, t0);
+  
+  const g1 = AC.createGain(); g1.gain.value = 0.12;
+  const g2 = AC.createGain(); g2.gain.value = 0.12;
+  
+  const mix = AC.createGain();
+  mix.gain.setValueAtTime(voiceGain * 0.25, t0);
+  
+  const filter = AC.createBiquadFilter();
+  filter.type = 'lowpass';
+  filter.frequency.setValueAtTime(1800, t0);
+  filter.Q.value = 0.4;
+  
+  const amp = AC.createGain();
+  const s = STR_SUSTAIN;
+  const r = window.STR_RELEASE || 4.0;
+  
+  // Rampa de 5ms = imperceptível mas evita clique digital
+  amp.gain.setValueAtTime(0.0001, t0);
+  amp.gain.linearRampToValueAtTime(0.25, t0 + 0.005);
+  amp.gain.setValueAtTime(0.25, t0 + 0.005 + s);
+  amp.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.005 + s + r);
+  
+  osc1.connect(g1); g1.connect(mix);
+  osc2.connect(g2); g2.connect(mix);
+  mix.connect(filter);
+  filter.connect(amp);
+  amp.connect(STR_BUS.input);
+  
+  osc1.start(t0); osc2.start(t0);
+  
+  const stop = (releaseOverride = 6.0) => {
     const now = AC.currentTime;
     amp.gain.cancelScheduledValues(now);
     amp.gain.setValueAtTime(Math.max(amp.gain.value, 0.0001), now);
-    amp.gain.exponentialRampToValueAtTime(0.0001, now + releaseOverride);
-    const off = releaseOverride + 0.1;
-    osc1.stop(now + off); osc2.stop(now + off); osc3.stop(now + off);
-    osc4.stop(now + off); osc5.stop(now + off); osc6.stop(now + off);
-    lfo.stop(now + off);
+    amp.gain.linearRampToValueAtTime(0.0001, now + releaseOverride);
+    const off = releaseOverride + 0.3;
+    osc1.stop(now + off); osc2.stop(now + off);
   };
   
   return { stop };
 }
+
+
+
 
 
 function makeBassVoice(freq, t0, voiceGain = 0.5){
@@ -7639,6 +7697,8 @@ function playChord(root, notes, bass, mode = 'pad'){
     voices = mids.map((m, i) => makePadVoice(midiToFreq(m), t0 + i*0.025, perVoice * 0.8));
   } else if (mode === 'bass') {
     voices = mids.map((m, i) => makeBassVoice(midiToFreq(m), t0 + i*0.008, perVoice));
+  } else if (mode === 'worship') {
+    voices = mids.map((m, i) => makeWorshipVoice(midiToFreq(m), t0 + i*0.035, perVoice * 0.7));
   } else {
     voices = mids.map((m, i) => makeStringVoice(midiToFreq(m), t0 + i*0.012, perVoice));
   }
@@ -7997,7 +8057,7 @@ function wrapChords(text, semis = 0){
 	if (/^-{2,}$/.test(only)){
 	  const n = only.length;
 // fator: 50% por traço acima/abaixo de '---' (n=3); clamp 0.25..3.0
-const factor = Math.min(3.0, Math.max(0.25, 1 + 0.75*(n - 3)));
+const factor = Math.min(1.3, Math.max(0.25, 1 + 0.15*(n - 3)));
 	  return `<span class="linha vol-marker" data-vol="${factor}">${only}</span>`;
 	}
 
@@ -8794,6 +8854,7 @@ const selLabel = document.createElement('label');
 selLabel.textContent = 'Timbre:';
 const timbreSelect = document.createElement('select');
 timbreSelect.innerHTML = `
+  <option value="worship">Worship</option>
   <option value="strings">Strings</option>
   <option value="voice">Voz Humana</option>
   <option value="pad">Pad Atmosférico</option>
@@ -8806,7 +8867,7 @@ timbreSelect.style.borderRadius = '8px';
 timbreSelect.style.padding = '6px 10px';
 
 // Carrega valor salvo
-timbreSelect.value = state.timbreMode || 'strings';
+timbreSelect.value = state.timbreMode || 'worship';
 
 // Salva quando muda
 timbreSelect.addEventListener('change', () => {
@@ -9984,6 +10045,126 @@ function buildBibleList() {
 })();
 </script>
 
+
+
+<script>
+// SINCRONIZACAO COM TELA.HTML
+(function() {
+  console.log('Iniciando sincronizacao...');
+  
+  const telaChannel = new BroadcastChannel('cifra_sync');
+  console.log('BroadcastChannel criado');
+  
+  function extrairTextoLetra(elemento) {
+    if (!elemento) return '';
+    const clone = elemento.cloneNode(true);
+    clone.querySelectorAll('.chord').forEach(el => el.remove());
+    return clone.textContent.trim();
+  }
+  
+  function coletarTodasLetras() {
+    const linhas = document.querySelectorAll('#cifraMeio .linha');
+    const letras = [];
+    
+    linhas.forEach(linha => {
+      const hasChords = linha.querySelector('.chord');
+      if (!hasChords) {
+        const texto = extrairTextoLetra(linha);
+        if (texto) {
+          letras.push(texto);
+        }
+      }
+    });
+    
+    return letras;
+  }
+  
+  function enviarAtualizacao() {
+    const letraDestacada = document.querySelector('#cifraMeio .linha.highlighted-lyric');
+    const letraAtual = extrairTextoLetra(letraDestacada);
+    const todasLetras = coletarTodasLetras();
+    const indiceAtual = todasLetras.indexOf(letraAtual);
+    
+    const dados = {
+      tipo: 'atualizacao',
+      musica: currentSongTitle || 'Sem titulo',
+      tom: currentKey || '',
+      letraAtual: letraAtual,
+      todasLetras: todasLetras,
+      indiceAtual: indiceAtual
+    };
+    
+    console.log('Enviando:', dados.musica, '-', dados.letraAtual.substring(0, 30) + '...');
+    telaChannel.postMessage(dados);
+  }
+  
+  function enviarVersiculo(book, chapter, verse, text) {
+    const dados = {
+      tipo: 'versiculo',
+      livro: book,
+      capitulo: chapter,
+      versiculo: verse,
+      texto: text,
+      referencia: `${book} ${chapter}:${verse}`
+    };
+    
+    console.log('Enviando versiculo:', dados.referencia);
+    telaChannel.postMessage(dados);
+  }
+  
+  const originalSetActiveChord = window.setActiveChord;
+  if (originalSetActiveChord) {
+    window.setActiveChord = function(idx) {
+      originalSetActiveChord.call(this, idx);
+      setTimeout(enviarAtualizacao, 150);
+    };
+    console.log('setActiveChord interceptado!');
+  } else {
+    console.warn('setActiveChord nao encontrado ainda');
+  }
+  
+  const originalShowVerse = window.showVerse;
+  if (originalShowVerse) {
+    window.showVerse = function(book, chapter, verse, text) {
+      originalShowVerse.call(this, book, chapter, verse, text);
+      setTimeout(() => enviarVersiculo(book, chapter, verse, text), 100);
+    };
+    console.log('showVerse interceptado!');
+  }
+  
+  // INTERCEPTA A FUNCAO QUE ATIVA TELA CHEIA
+  const originalHideMenuAndFullscreen = window.hideMenuAndFullscreen;
+  if (originalHideMenuAndFullscreen) {
+    window.hideMenuAndFullscreen = function() {
+      originalHideMenuAndFullscreen.call(this);
+      
+      setTimeout(() => {
+        const dados = {
+          tipo: 'fullscreen',
+          ativo: true
+        };
+        console.log('Fullscreen ATIVADO via hideMenuAndFullscreen');
+        telaChannel.postMessage(dados);
+      }, 500);
+    };
+    console.log('hideMenuAndFullscreen interceptado!');
+  }
+  
+  // DETECTA QUANDO SAI DE TELA CHEIA (ESC)
+  document.addEventListener('fullscreenchange', function() {
+    if (!document.fullscreenElement) {
+      const dados = {
+        tipo: 'fullscreen',
+        ativo: false
+      };
+      console.log('Fullscreen DESATIVADO');
+      telaChannel.postMessage(dados);
+    }
+  });
+  
+  console.log('Sincronizacao ativada!');
+})();
+</script>
 
 
 
