@@ -691,7 +691,7 @@ D
 <musica>
 	<titulo>Poderoso Deus</titulo>
 	<tom>C</tom>
-	<bpm></bpm>
+	<bpm>125</bpm>
 	<categ>Holiness</categ>
 	<youtube>https://youtu.be/_L6a96-XOyI</youtube>
 <bibli>
@@ -1693,7 +1693,7 @@ O tesouro maior terá
 <musica>
 	<titulo>Em Espírito, Em Verdade</titulo>
 	<tom>A</tom>
-	<bpm></bpm>
+	<bpm>120</bpm>
 	<categ>Holiness</categ>
 <bibli>
 	<texto><vers>João 4:23-24</vers>Mas a hora vem, e agora é, em que os verdadeiros adoradores adorarão o Pai em espírito e em verdade; porque o Pai procura a tais que assim o adorem. Deus é Espírito, e importa que os que o adoram o adorem em espírito e em verdade.</texto>
@@ -2776,7 +2776,7 @@ E nos dá conso..la..ção
 <musica>
 	<titulo>Quão Grande É o Meu Deus</titulo>
 	<tom>D</tom>
-	<bpm></bpm>
+	<bpm>75</bpm>
 	<categ>Holiness</categ>
 	<bibli>
 		<texto><vers>Salmos 96:4</vers>Porque grande é o Senhor e mui digno de louvor; mais temível é do que todos os deuses.</texto>
@@ -3231,7 +3231,7 @@ Tão certo como eu te falo podes me ouvir
 <musica>
 	<titulo>Fico Feliz Em Vir Em Tua Casa</titulo>
 	<tom>G</tom>
-	<bpm></bpm>
+	<bpm>130</bpm>
 	<categ>Holiness</categ>
 	<bibli>
 		<texto><vers>Salmos 122:1</vers>Alegrei-me quando me disseram: Vamos à casa do Senhor.</texto>
@@ -3326,7 +3326,7 @@ C       D   G
 <musica>
 	<titulo>Te Agradeço</titulo>
 	<tom>A</tom>
-	<bpm></bpm>
+	<bpm>125</bpm>
 	<categ>Holiness</categ>
 	<bibli>
 		<texto><vers>Tessalonicenses 5:18</vers>Em tudo dai graças, porque esta é a vontade de Deus em Cristo Jesus para convosco.</texto>
@@ -9421,6 +9421,7 @@ function generatePrintMode() {
     const titulo = getText(musica, 'titulo') || getText(musica, 'itulo') || 'Música sem título';
     const tom = getText(musica, 'tom') || '';
     const cifraRaw = getText(musica, 'cifra') || '';
+	const bpm = getText(musica, 'bpm') || '';
     
     console.log(`  → ${queuePos + 1}. ${titulo} (tom: ${tom})`);
     
@@ -9450,7 +9451,7 @@ function generatePrintMode() {
       <div style="page-break-inside: avoid; break-inside: avoid;">
         <div class="print-header">
           <h1>${titulo}</h1>
-          <div class="print-meta">Tom: ${displayKey} | ${queuePos + 1}ª da sequência</div>
+          <div class="print-meta">Tom: ${displayKey}${bpm ? ' | BPM: ' + bpm : ''} | ${queuePos + 1}ª da sequência</div>
         </div>
         <div class="print-columns">
           ${cifraHtml}
