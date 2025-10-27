@@ -7404,57 +7404,79 @@ function makeVoiceSound(freq, t0, voiceGain = 0.4){
 }
 
 
-
 function makePadVoice(freq, t0, voiceGain = 0.3){
-  // 3 osciladores para riqueza harmônica
+  // 6 osciladores para som rico e orgânico (worship style)
   const osc1 = AC.createOscillator();
   const osc2 = AC.createOscillator();
   const osc3 = AC.createOscillator();
+  const osc4 = AC.createOscillator();
+  const osc5 = AC.createOscillator();
+  const osc6 = AC.createOscillator();
   
-  osc1.type = 'sawtooth';
-  osc2.type = 'triangle';
+  // Apenas ondas senoidais = som mais suave e puro
+  osc1.type = 'sine';
+  osc2.type = 'sine';
   osc3.type = 'sine';
+  osc4.type = 'sine';
+  osc5.type = 'sine';
+  osc6.type = 'sine';
   
-  osc1.frequency.setValueAtTime(freq, t0);
-  osc2.frequency.setValueAtTime(freq, t0);
-  osc3.frequency.setValueAtTime(freq * 2, t0); // oitava acima
+  // Fundamental + oitavas para riqueza harmônica
+  osc1.frequency.setValueAtTime(freq, t0);         // fundamental
+  osc2.frequency.setValueAtTime(freq, t0);         // fundamental duplicado
+  osc3.frequency.setValueAtTime(freq * 2, t0);     // oitava acima
+  osc4.frequency.setValueAtTime(freq * 4, t0);     // 2 oitavas acima
+  osc5.frequency.setValueAtTime(freq * 0.5, t0);   // oitava abaixo (suave)
+  osc6.frequency.setValueAtTime(freq * 3, t0);     // quinta + oitava (harmonia)
   
-  // Desafinação sutil para chorus natural
+  // Desafinação micro para espessura natural
   osc1.detune.setValueAtTime(0, t0);
-  osc2.detune.setValueAtTime(-7, t0);   // -7 cents
-  osc3.detune.setValueAtTime(12, t0);   // +12 cents
+  osc2.detune.setValueAtTime(-4, t0);    // -4 cents
+  osc3.detune.setValueAtTime(6, t0);     // +6 cents
+  osc4.detune.setValueAtTime(-8, t0);    // -8 cents
+  osc5.detune.setValueAtTime(3, t0);     // +3 cents
+  osc6.detune.setValueAtTime(-2, t0);    // -2 cents
   
-  // LFO para vibrato muito lento
+  // LFO ultra-lento para movimento orgânico
   const lfo = AC.createOscillator();
   lfo.type = 'sine';
-  lfo.frequency.setValueAtTime(0.3, t0); // muito lento
+  lfo.frequency.setValueAtTime(0.15, t0); // ultra lento = mais natural
   const lfoGain = AC.createGain();
-  lfoGain.gain.setValueAtTime(freq * 0.002, t0);
+  lfoGain.gain.setValueAtTime(freq * 0.001, t0); // vibrato quase imperceptível
   lfo.connect(lfoGain);
   lfoGain.connect(osc1.frequency);
   lfoGain.connect(osc2.frequency);
+  lfoGain.connect(osc3.frequency);
   
-  // Mix dos osciladores
+  // Ganhos individuais para balanço perfeito
+  const g1 = AC.createGain(); g1.gain.value = 0.35;  // fundamental dominante
+  const g2 = AC.createGain(); g2.gain.value = 0.30;  // fundamental 2
+  const g3 = AC.createGain(); g3.gain.value = 0.20;  // oitava
+  const g4 = AC.createGain(); g4.gain.value = 0.08;  // 2 oitavas (brilho sutil)
+  const g5 = AC.createGain(); g5.gain.value = 0.15;  // sub (corpo)
+  const g6 = AC.createGain(); g6.gain.value = 0.06;  // quinta (harmonia)
+  
+  // Mix geral
   const mix = AC.createGain();
-  mix.gain.setValueAtTime(voiceGain, t0);
+  mix.gain.setValueAtTime(voiceGain * 0.8, t0); // reduz um pouco
   
-  // Filtro lowpass com sweep lento
+  // Filtro lowpass MUITO suave para remover arestas
   const filter = AC.createBiquadFilter();
   filter.type = 'lowpass';
-  filter.Q.value = 1.5; // um pouco de ressonância
+  filter.Q.value = 0.7; // Q baixo = transição suave
   
-  // Sweep do filtro: começa fechado e abre devagar
-  const startFreq = 800;
-  const endFreq = 2500;
+  // Sweep do filtro: abre bem devagar para som atmosférico
+  const startFreq = 600;   // começa mais fechado
+  const endFreq = 3200;    // abre moderadamente
   filter.frequency.setValueAtTime(startFreq, t0);
-  filter.frequency.linearRampToValueAtTime(endFreq, t0 + 8); // 8s para abrir
+  filter.frequency.linearRampToValueAtTime(endFreq, t0 + 12); // 12s = bem lento
   
-  // Envelope típico de pad: ataque MUITO lento
+  // Envelope worship: ataque MUITO lento, sustain longo
   const amp = AC.createGain();
-  const a = window.STR_ATTACK || 0.75;
+  const a = (window.STR_ATTACK || 0.75) * 1.5; // 50% mais lento
   const s = STR_SUSTAIN;
-  const r = window.STR_RELEASE || 4.0;
-  const sustainLvl = 0.4; // mais baixo para criar atmosfera
+  const r = (window.STR_RELEASE || 4.0) * 1.2; // release mais longo
+  const sustainLvl = 0.5;
   
   amp.gain.setValueAtTime(0.0001, t0);
   amp.gain.linearRampToValueAtTime(sustainLvl, t0 + a);
@@ -7462,14 +7484,19 @@ function makePadVoice(freq, t0, voiceGain = 0.3){
   amp.gain.exponentialRampToValueAtTime(0.0001, t0 + a + s + r);
   
   // Cadeia de áudio
-  osc1.connect(mix);
-  osc2.connect(mix);
-  osc3.connect(mix);
+  osc1.connect(g1); g1.connect(mix);
+  osc2.connect(g2); g2.connect(mix);
+  osc3.connect(g3); g3.connect(mix);
+  osc4.connect(g4); g4.connect(mix);
+  osc5.connect(g5); g5.connect(mix);
+  osc6.connect(g6); g6.connect(mix);
   mix.connect(filter);
   filter.connect(amp);
   amp.connect(STR_BUS.input);
   
-  osc1.start(t0); osc2.start(t0); osc3.start(t0); lfo.start(t0);
+  osc1.start(t0); osc2.start(t0); osc3.start(t0);
+  osc4.start(t0); osc5.start(t0); osc6.start(t0);
+  lfo.start(t0);
   
   const stop = (releaseOverride = 0.5) => {
     const now = AC.currentTime;
@@ -7477,13 +7504,13 @@ function makePadVoice(freq, t0, voiceGain = 0.3){
     amp.gain.setValueAtTime(Math.max(amp.gain.value, 0.0001), now);
     amp.gain.exponentialRampToValueAtTime(0.0001, now + releaseOverride);
     const off = releaseOverride + 0.1;
-    osc1.stop(now + off); osc2.stop(now + off); osc3.stop(now + off); lfo.stop(now + off);
+    osc1.stop(now + off); osc2.stop(now + off); osc3.stop(now + off);
+    osc4.stop(now + off); osc5.stop(now + off); osc6.stop(now + off);
+    lfo.stop(now + off);
   };
   
   return { stop };
 }
-
-
 
 
 function makeBassVoice(freq, t0, voiceGain = 0.5){
@@ -8589,21 +8616,21 @@ function playGuitarPluck(stringIdx, fret){
     release: (typeof window.STR_RELEASE === 'number' ? window.STR_RELEASE : 4.0),
 
     // Chorus
-    chorusWet: 0.35,
-    chorusRate: 5.0,     // Hz
-    chorusDepth: 8.0,    // ms
-    chorusWidth: 0.9,    // 0..1
+    chorusWet: 0.45,      // mais chorus = mais espessura
+    chorusRate: 3.5,      // mais lento = mais orgânico
+    chorusDepth: 12.0,    // mais profundidade
+    chorusWidth: 0.95,    // mais largura estéreo
 
     // Reverb
-    reverbWet: 0.25,
-    reverbSeconds: 2.2,  // tamanho
-    reverbDecay: 0.6,
+    reverbWet: 0.45,      // MUITO mais reverb para atmosfera
+    reverbSeconds: 4.5,   // cauda longa tipo igreja
+    reverbDecay: 0.8,     // decay natural
 
     // Timbre
-    brightHz: 1800,      // low-pass tilt
-    airDb: -6,            // high-shelf
-	
-	timbreMode: 'pad'
+    brightHz: 2800,       // um pouco mais de brilho
+    airDb: -3,        // high-shelf
+    timbreMode: 'pad',
+    volume: 0.9
 	
   };
 
@@ -8650,12 +8677,29 @@ function applyTimbre(s){
     window.STR_BUS.setAirDb(s.airDb);
   }
 }
+  
+function applyVolume(s){
+  if (window.STR_BUS && window.STR_BUS.input && window.STR_BUS.input.gain) {
+    const AC = window.audioCtx || new (window.AudioContext||window.webkitAudioContext)();
+    const g = window.STR_BUS.input.gain;
+    const now = AC.currentTime;
+    g.cancelScheduledValues(now);
+    g.setValueAtTime(s.volume, now);
+    
+    // CRÍTICO: atualiza o BUS_BASE_GAIN para que setPerformanceVol use o novo volume
+    window.BUS_BASE_GAIN = s.volume;
+    
+    console.log('Volume ajustado para:', s.volume, '(BUS_BASE_GAIN atualizado)');
+  }
+}
+  
   function applyAll(s){
     console.log('STR_BUS disponível?', !!window.STR_BUS);
     applyEnvelope(s);
     applyChorus(s);
     applyReverb(s);
     applyTimbre(s);
+    applyVolume(s);
   }
 
   // fábrica de linha (slider + display digital)
@@ -8699,6 +8743,20 @@ function applyTimbre(s){
     if (!wrap) return;
     const state = loadState();
     wrap.innerHTML = '';
+
+
+    // ------- VOLUME -------
+    const gVol = makeGroup('Volume');
+    addSlider(gVol, {
+      id:'k_volume', label:'Volume', min:0.0, max:1.0, step:0.01, value:state.volume,
+      format: v => Math.round(v * 100) + '%', 
+      onInput: v => { 
+        state.volume = v; 
+        saveState(state); 
+        applyVolume(state); 
+      }
+    });
+    wrap.appendChild(gVol);
 
     // ------- ENVELOPE -------
     const gEnv = makeGroup('Envelope');
