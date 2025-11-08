@@ -167,52 +167,25 @@
         telaChannel.onmessage = (event) => {
             const dados = event.data;
 			console.log('MENSAGEM RECEBIDA:', dados.tipo, dados);
-            
+
             if (dados.tipo === 'atualizacao') {
                 ultimaAtualizacao = Date.now();
                 atualizarTela(dados);
-                
+
                 statusDot.classList.add('conectado');
                 statusText.textContent = 'Conectado';
+
+                // Entra em tela cheia automaticamente se já tiver permissão
+                entrarEmTelaCheia();
             } else if (dados.tipo === 'versiculo') {
                 ultimaAtualizacao = Date.now();
                 atualizarVersiculo(dados);
-                
+
                 statusDot.classList.add('conectado');
                 statusText.textContent = 'Conectado';
-            } else if (dados.tipo === 'fullscreen') {
-                console.log('FULLSCREEN recebido! Ativo:', dados.ativo);
-                
-                if (!fullscreenPermitido) {
-                    console.log('AGUARDANDO permissao do usuario - clique no botao azul!');
-                    return;
-                }
-                
-                console.log('Documento em fullscreen antes:', !!document.fullscreenElement);
-                
-                if (dados.ativo) {
-                    // Entrar em tela cheia
-                    if (!document.fullscreenElement) {
-                        console.log('Tentando entrar em fullscreen...');
-                        document.documentElement.requestFullscreen().catch(err => {
-                            console.log('ERRO ao entrar em tela cheia:', err);
-                        }).then(() => {
-                            console.log('Fullscreen ativado com sucesso!');
-                        });
-                    } else {
-                        console.log('JA estava em fullscreen');
-                    }
-                } else {
-                    // Sair de tela cheia
-                    if (document.fullscreenElement) {
-                        console.log('Tentando sair de fullscreen...');
-                        document.exitFullscreen().catch(err => {
-                            console.log('ERRO ao sair de tela cheia:', err);
-                        });
-                    } else {
-                        console.log('JA estava fora de fullscreen');
-                    }
-                }
+
+                // Entra em tela cheia automaticamente se já tiver permissão
+                entrarEmTelaCheia();
             }
         };
 
@@ -286,46 +259,25 @@
             }
         });
 
+        // Sistema de tela cheia automática
+        let permissaoFullscreen = false;
 
-// Sistema de permissao para fullscreen
-        let fullscreenPermitido = false;
-        
-        // Ao clicar em qualquer lugar, libera fullscreen
-        document.body.addEventListener('click', function ativarPermissao() {
-            fullscreenPermitido = true;
-            console.log('Permissao de fullscreen ATIVADA! Agora sincroniza automaticamente.');
-            document.body.removeEventListener('click', ativarPermissao);
+        function entrarEmTelaCheia() {
+            if (!permissaoFullscreen) {
+                return;
+            }
+
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log('Erro ao entrar em tela cheia:', err);
+                });
+            }
+        }
+
+        // Ativa permissão no primeiro clique (invisível, sem aviso)
+        document.addEventListener('click', function() {
+            permissaoFullscreen = true;
         }, { once: true });
-        
-        // Cria botao de ativacao
-        const btnAtivar = document.createElement('div');
-        btnAtivar.id = 'btnAtivar';
-        btnAtivar.innerHTML = 'CLIQUE AQUI para ativar sincronia de tela cheia';
-        btnAtivar.style.cssText = `
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #4a9eff;
-            color: white;
-            padding: 20px 40px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 1.2em;
-            font-weight: bold;
-            box-shadow: 0 4px 20px rgba(74, 158, 255, 0.5);
-            animation: pulse 2s infinite;
-            z-index: 9999;
-        `;
-        btnAtivar.onclick = function() {
-            fullscreenPermitido = true;
-            btnAtivar.remove();
-            console.log('Permissao concedida! Fullscreen sincronizado.');
-        };
-        document.body.appendChild(btnAtivar);
-
-
-
 
         console.log('✅ Tela pronta e aguardando dados...');
     </script>
