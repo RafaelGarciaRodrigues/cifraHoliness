@@ -84,6 +84,22 @@
             50% { opacity: 0.5; }
         }
 
+        #qrcode {
+            display: none;
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        #qrcode.mostrar {
+            display: block;
+        }
+
+        #qrcode img {
+            max-width: 300px;
+            border: 3px solid #60a5fa;
+            border-radius: 10px;
+        }
+
         .status {
             position: fixed;
             top: 20px;
@@ -133,6 +149,20 @@
             <div class="titulo" id="titulo"></div>
             <div class="tom" id="tom" style='display:none;'></div>
         </div>
+		
+		<!--
+			nova implementação
+			id='qrcode' deve aparecer somente na última música selecionada na lista criada em app.html
+			um ponto de atenção é que pode ser selecionada músicas e também versículos
+			o qrcode deve aparecer somente na última música e não nos versículos
+			em todos os outros caso, a div deve estar oculta sem ocupar lugar na tela
+			
+			e deve aparecer sometese existir o arquivo qrcode-pix.png na pasta
+		-->
+		
+		<div id='qrcode'>
+			<img src='qrcode-pix.png'>
+		</div>
 
         <div class="letra-atual" id="letraAtual">
             <div class="aguardando">
@@ -151,7 +181,7 @@
 
     <script>
         const telaChannel = new BroadcastChannel('cifra_sync');
-        
+
         const statusDot = document.getElementById('statusDot');
         const statusText = document.getElementById('statusText');
         const infoMusica = document.getElementById('infoMusica');
@@ -161,8 +191,26 @@
         const proximasDiv = document.getElementById('proximas');
         const proxima1 = document.getElementById('proxima1');
         const proxima2 = document.getElementById('proxima2');
+        const qrcodeDiv = document.getElementById('qrcode');
 
         let ultimaAtualizacao = Date.now();
+        let qrcodeExists = false;
+
+        // Verifica se a imagem qrcode-pix.png existe
+        function verificarQRCode() {
+            const img = new Image();
+            img.onload = function() {
+                qrcodeExists = true;
+                console.log('✅ QR Code encontrado: qrcode-pix.png');
+            };
+            img.onerror = function() {
+                qrcodeExists = false;
+                console.log('❌ QR Code não encontrado: qrcode-pix.png');
+            };
+            img.src = 'qrcode-pix.png';
+        }
+
+        verificarQRCode();
 
         telaChannel.onmessage = (event) => {
             const dados = event.data;
@@ -209,7 +257,7 @@
             if (indice >= 0 && letras.length > indice + 1) {
                 proxima1.textContent = letras[indice + 1] || '';
                 proxima2.textContent = letras[indice + 2] || '';
-                
+
                 if (proxima1.textContent || proxima2.textContent) {
                     proximasDiv.style.display = 'block';
                 } else {
@@ -218,6 +266,17 @@
             } else {
                 proximasDiv.style.display = 'none';
             }
+
+            // Controla visibilidade do QR Code
+            // Mostra apenas se for a última música da playlist E o arquivo existir
+            console.log('🔍 QR Code - isUltimaMusicaPlaylist:', dados.isUltimaMusicaPlaylist, 'qrcodeExists:', qrcodeExists);
+            if (dados.isUltimaMusicaPlaylist && qrcodeExists) {
+                qrcodeDiv.classList.add('mostrar');
+                console.log('✅ Mostrando QR Code - Última música da playlist');
+            } else {
+                qrcodeDiv.classList.remove('mostrar');
+                console.log('❌ QR Code oculto');
+            }
         }
 
 
@@ -225,15 +284,19 @@
             // Esconde info de música
             infoMusica.style.display = 'none';
             proximasDiv.style.display = 'none';
-            
+
             // Mostra referência bíblica
             titulo.textContent = dados.referencia;
             titulo.style.color = '#6ee7ff';
             infoMusica.style.display = 'block';
-            
+
             // Mostra o texto do versículo
             letraAtual.textContent = dados.texto;
             letraAtual.style.fontSize = '3em';
+
+            // Sempre oculta o QR Code quando for versículo
+            qrcodeDiv.classList.remove('mostrar');
+            console.log('📖 QR Code oculto - Exibindo versículo');
         }
 
 
