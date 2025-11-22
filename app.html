@@ -509,6 +509,9 @@ Vem com teu rio    Senhor Jesus
      Am  F          G9
 Inundar  o meu coração
 
+[D] 
+
+A9
 
         Bm  G     D     A9
 Faz chover,    Senhor Jesus
@@ -591,6 +594,32 @@ Até mil gerações
 Tua família e teus filhos
       D
 E os filhos dos teus filhos
+
+        Em
+Sua presença te acompanhe
+        C
+Por detrás e por diante
+        G/B
+Do teu lado e em ti
+      D
+É contigo, é por ti
+      Em
+E de dia, e de noite
+        C
+Tua entrada e saída
+        G/B
+Em teu riso, em teu choro
+      D
+É contigo, é por ti
+      Em
+É contigo, é por ti
+
+
+Em  C7M  G/D   D4
+Am__ém, amém,  amém
+Em  C7M  G/D   D4
+Am__ém, amém,  amém
+
        Em
 Que a bênção se derrame
      C
@@ -616,68 +645,9 @@ Tua entrada e saída
 Em teu riso, em teu choro
       D
 É contigo, é por ti
-
-      Em
-É contigo, é por ti
-      C
-É contigo, é por ti
-      G/B
-É contigo, é por ti
-      D
+      G
 É contigo, é por ti
 
-Em  C7M  G/D   D4
-Am__ém, amém,  amém
-Em  C7M  G/D   D4
-Am__ém, amém,  amém
-
-       Em
-Que a bênção se derrame
-     C
-Até mil gerações
-       G/B
-Tua família e teus filhos
-      D
-E os filhos dos teus filhos
-       Em
-Que a bênção se derrame
-     C
-Até mil gerações
-       G/B
-Tua família e teus filhos
-      D
-E os filhos dos teus filhos
-
-        Em
-Sua presença te acompanhe
-        C
-Por detrás e por diante
-        G/B
-Do teu lado e em ti
-      D
-É contigo, é por ti
-      Em
-E de dia, e de noite
-        C
-Tua entrada e saída
-        G/B
-Em teu riso, em teu choro
-      D
-É contigo, é por ti
-
-      Em
-É contigo, é por ti
-      C
-É contigo, é por ti
-      G/B
-É contigo, é por ti
-      D
-É contigo, é por ti
-
-Em  C7M  G/D   D4
-Am__ém, amém,  amém
-Em  C7M  G/D   D4
-Am__ém, amém,  amém
 
 
 	]]>
@@ -5825,6 +5795,29 @@ For all the rest of time
   cursor:pointer
   }
   .chord:hover{outline:1px dashed #2b3b59}
+
+  /* Marcadores de mudança de tom [Acorde] - ocultos por padrão */
+  .key-change-marker {
+    display: none !important;
+  }
+
+  /* Quando PAD CONTÍNUO está ativo, mostra os marcadores com estilo especial */
+  body.continuous-pad-active .key-change-marker {
+    display: inline-block !important;
+    background: linear-gradient(135deg, #1a2744 0%, #2d1f4e 100%);
+    border: 1px dashed #6366f1;
+    color: #a5b4fc;
+    font-style: italic;
+  }
+  body.continuous-pad-active .key-change-marker:hover {
+    outline: 1px dashed #818cf8;
+  }
+  body.continuous-pad-active .key-change-marker.active {
+    background: linear-gradient(135deg, #312e81 0%, #4c1d95 100%);
+    border-color: #a78bfa;
+    color: #e0e7ff;
+  }
+
   .meta{color:var(--muted);font-size:12px;margin:6px 0 10px}
   
   /* braço do violão */
@@ -6719,6 +6712,11 @@ font-size: 50px;
 	<ul id="listaBiblia"></ul>
 	
 	
+	
+	
+
+	
+	
 	<div class="controls">
 	<label title="Transpor a música para o tom selecionado">
 	  <select id="selTransposeKey">
@@ -6736,7 +6734,172 @@ font-size: 50px;
 		<option value="B">B</option>
 	  </select>
 	</label>
+
+	<label title="Ativa pad contínuo no tom da música (apenas tônica + quinta)" style="display: inline-flex; align-items: center; gap: 8px; margin-left: 15px;">
+	  <span style="font-size: 0.9em;">Pad Contínuo</span>
+	  <input type="checkbox" id="chkContinuousPad" style="width: auto;">
+	</label>
 	</div>
+	
+	
+
+	
+	<div id='knobPadContinuo' style='display: none; padding: 10px; background: #1f2937; border-radius: 8px; margin: 10px 0;'>
+		<div style="font-weight: bold; margin-bottom: 10px; color: #6ee7ff;">Controles Pad Contínuo</div>
+		<div id="knobPadContinuoContent"></div>
+	</div>
+
+	<script>
+	// === KNOBS PAD CONTÍNUO ===
+
+	(function(){
+		const STORE_KEY = 'continuousPad_knobs_v1';
+
+		const defaults = {
+			attack: 5.0,
+			decay: 1.0,
+			sustain: 75,
+			release: 2.0,
+			rootOctave: 3,
+			fifthOctave: 4
+		};
+
+		function loadState(){
+			try {
+				const raw = localStorage.getItem(STORE_KEY);
+				return raw ? {...defaults, ...JSON.parse(raw)} : {...defaults};
+			} catch(_){ return {...defaults}; }
+		}
+
+		function saveState(s){
+			localStorage.setItem(STORE_KEY, JSON.stringify(s));
+		}
+
+		function applyState(s){
+			window.CONTINUOUS_PAD_ATTACK = s.attack;
+			window.CONTINUOUS_PAD_DECAY = s.decay;
+			window.CONTINUOUS_PAD_SUSTAIN = s.sustain / 100;
+			window.CONTINUOUS_PAD_RELEASE = s.release;
+			window.CONTINUOUS_PAD_ROOT_OCTAVE = s.rootOctave;
+			window.CONTINUOUS_PAD_FIFTH_OCTAVE = s.fifthOctave;
+		}
+
+		function buildUI(){
+			const state = loadState();
+			applyState(state);
+
+			const container = document.getElementById('knobPadContinuoContent');
+			if (!container) return;
+
+			container.innerHTML = '';
+			container.style.display = 'grid';
+			container.style.gridTemplateColumns = '1fr 1fr';
+			container.style.gap = '8px';
+
+			function addSlider(label, min, max, step, value, unit, onChange){
+				const row = document.createElement('div');
+				row.style.display = 'flex';
+				row.style.flexDirection = 'column';
+				row.style.gap = '4px';
+
+				const lbl = document.createElement('label');
+				lbl.style.fontSize = '0.8em';
+				lbl.style.color = '#9ca3af';
+				lbl.textContent = label;
+
+				const valSpan = document.createElement('span');
+				valSpan.style.fontSize = '0.75em';
+				valSpan.style.color = '#6ee7ff';
+				valSpan.textContent = value + unit;
+
+				const slider = document.createElement('input');
+				slider.type = 'range';
+				slider.min = min;
+				slider.max = max;
+				slider.step = step;
+				slider.value = value;
+				slider.style.width = '100%';
+
+				slider.addEventListener('input', () => {
+					const v = parseFloat(slider.value);
+					valSpan.textContent = v + unit;
+					onChange(v);
+				});
+
+				row.appendChild(lbl);
+				row.appendChild(slider);
+				row.appendChild(valSpan);
+				container.appendChild(row);
+			}
+
+			addSlider('Attack (s)', 0.1, 15, 0.1, state.attack, 's', v => {
+				state.attack = v;
+				saveState(state);
+				applyState(state);
+			});
+
+			addSlider('Decay (s)', 0.1, 5, 0.1, state.decay, 's', v => {
+				state.decay = v;
+				saveState(state);
+				applyState(state);
+			});
+
+			addSlider('Sustain (%)', 0, 100, 1, state.sustain, '%', v => {
+				state.sustain = v;
+				saveState(state);
+				applyState(state);
+			});
+
+			addSlider('Release (s)', 0.1, 10, 0.1, state.release, 's', v => {
+				state.release = v;
+				saveState(state);
+				applyState(state);
+			});
+
+			addSlider('Tônica (oitava)', 1, 5, 1, state.rootOctave, '', v => {
+				state.rootOctave = v;
+				saveState(state);
+				applyState(state);
+			});
+
+			addSlider('Quinta (oitava)', 1, 6, 1, state.fifthOctave, '', v => {
+				state.fifthOctave = v;
+				saveState(state);
+				applyState(state);
+			});
+		}
+
+		// Constrói a UI quando o DOM estiver pronto
+		if (document.readyState === 'loading') {
+			document.addEventListener('DOMContentLoaded', buildUI);
+		} else {
+			buildUI();
+		}
+
+		// Toggle visibilidade com checkbox
+		function setupToggle(){
+			const chk = document.getElementById('chkContinuousPad');
+			const div = document.getElementById('knobPadContinuo');
+			if (!chk || !div) return;
+
+			// Estado inicial
+			div.style.display = chk.checked ? 'block' : 'none';
+
+			chk.addEventListener('change', () => {
+				div.style.display = chk.checked ? 'block' : 'none';
+			});
+		}
+
+		if (document.readyState === 'loading') {
+			document.addEventListener('DOMContentLoaded', setupToggle);
+		} else {
+			setupToggle();
+		}
+	})();
+	</script>
+	
+	
+	
 	<div id="escolheCategorias"></div>
 	<div id="ajustaFonteTela"></div>
 	<hr>
@@ -7420,33 +7583,45 @@ function setActiveChord(idx){
   chordSpans.forEach(s=>s.classList.remove('active'));
   const span = chordSpans[idx];
   chordIdx = idx;
-  
+
   // === NOVO: Oculta menu e entra em tela cheia ao tocar primeiro acorde ===
   hideMenuAndFullscreen();
-  
+
   span.classList.add('active');
   highlightCorrespondingLyric(span);
   centerInto(span, document.getElementById('cifraMeio'));
   // dispara a pintura do braço
   highlightChord(span.dataset.chord);
-  span.classList.add('active');
-  highlightCorrespondingLyric(span);
-  centerInto(span, document.getElementById('cifraMeio'));
-  // dispara a pintura do braço
-  highlightChord(span.dataset.chord);
-// Aplica dinâmica do acorde selecionado (rampa 0.75s)
 
-const vol = parseFloat(span.dataset.vol || '1') || 1;
-console.log('Aplicando volume:', vol, 'STR_BUS disponível:', !!window.STR_BUS);
-if (typeof setPerformanceVol === 'function' && window.STR_BUS && window.STR_BUS.input) {
-  setPerformanceVol(vol, 0.75);
-setTimeout(() => {
-  console.log('Volume final após rampa:', STR_BUS.input.gain.value.toFixed(3));
-}, 800); // um pouco após os 0.75s da rampa
-} else {
-  console.warn('setPerformanceVol não disponível ou STR_BUS não inicializado');
-}
+  // === PAD CONTÍNUO: inicia quando seleciona primeiro acorde (idx === 0) ===
+  if (idx === 0) {
+    const chkContinuousPad = document.getElementById('chkContinuousPad');
+    if (chkContinuousPad && chkContinuousPad.checked && currentKey) {
+      const keyRoot = parseRoot(currentKey) || currentKey.replace(/m.*/, '');
+      playContinuousPad(keyRoot);
+    }
+  }
 
+  // === PAD CONTÍNUO: Mudança de tom quando encontra marcador [Acorde] ===
+  const keyChangeTarget = span.dataset.keyChange;
+  if (keyChangeTarget && typeof changePadKey === 'function') {
+    const chkContinuousPad = document.getElementById('chkContinuousPad');
+    if (chkContinuousPad && chkContinuousPad.checked) {
+      changePadKey(keyChangeTarget);
+    }
+  }
+
+  // Aplica dinâmica do acorde selecionado (rampa 0.75s)
+  const vol = parseFloat(span.dataset.vol || '1') || 1;
+  console.log('Aplicando volume:', vol, 'STR_BUS disponível:', !!window.STR_BUS);
+  if (typeof setPerformanceVol === 'function' && window.STR_BUS && window.STR_BUS.input) {
+    setPerformanceVol(vol, 0.75);
+    setTimeout(() => {
+      console.log('Volume final após rampa:', STR_BUS.input.gain.value.toFixed(3));
+    }, 800); // um pouco após os 0.75s da rampa
+  } else {
+    console.warn('setPerformanceVol não disponível ou STR_BUS não inicializado');
+  }
 }
 
 
@@ -8832,6 +9007,228 @@ function playChord(root, notes, bass, mode = 'pad'){
 }
 
 
+// === PAD CONTÍNUO (tônica + quinta) ===
+let stopContinuousPad = null; // controle global para parar o pad contínuo
+
+// Parâmetros ADSR do pad contínuo
+window.CONTINUOUS_PAD_ATTACK = 5.0;   // Attack em segundos
+window.CONTINUOUS_PAD_DECAY = 1.0;    // Decay em segundos
+window.CONTINUOUS_PAD_SUSTAIN = 0.75; // Sustain (0-1)
+window.CONTINUOUS_PAD_RELEASE = 2.0;  // Release em segundos
+
+// Oitavas das notas
+window.CONTINUOUS_PAD_ROOT_OCTAVE = 3;  // Oitava da tônica
+window.CONTINUOUS_PAD_FIFTH_OCTAVE = 4; // Oitava da quinta
+
+// Cria uma voz que sustenta INDEFINIDAMENTE - usa o timbre do Pad Atmosférico
+function makeContinuousVoice(freq, t0, voiceGain = 0.35){
+  // 6 osciladores para som rico e orgânico (igual ao Pad Atmosférico)
+  const osc1 = AC.createOscillator();
+  const osc2 = AC.createOscillator();
+  const osc3 = AC.createOscillator();
+  const osc4 = AC.createOscillator();
+  const osc5 = AC.createOscillator();
+  const osc6 = AC.createOscillator();
+
+  // Apenas ondas senoidais = som mais suave e puro
+  osc1.type = 'sine';
+  osc2.type = 'sine';
+  osc3.type = 'sine';
+  osc4.type = 'sine';
+  osc5.type = 'sine';
+  osc6.type = 'sine';
+
+  // Fundamental + oitavas para riqueza harmônica
+  osc1.frequency.setValueAtTime(freq, t0);         // fundamental
+  osc2.frequency.setValueAtTime(freq, t0);         // fundamental duplicado
+  osc3.frequency.setValueAtTime(freq * 2, t0);     // oitava acima
+  osc4.frequency.setValueAtTime(freq * 4, t0);     // 2 oitavas acima
+  osc5.frequency.setValueAtTime(freq * 0.5, t0);   // oitava abaixo (suave)
+  osc6.frequency.setValueAtTime(freq * 3, t0);     // quinta + oitava (harmonia)
+
+  // Desafinação micro para espessura natural
+  osc1.detune.setValueAtTime(0, t0);
+  osc2.detune.setValueAtTime(-4, t0);
+  osc3.detune.setValueAtTime(6, t0);
+  osc4.detune.setValueAtTime(-8, t0);
+  osc5.detune.setValueAtTime(3, t0);
+  osc6.detune.setValueAtTime(-2, t0);
+
+  // LFO ultra-lento para movimento orgânico
+  const lfo = AC.createOscillator();
+  lfo.type = 'sine';
+  lfo.frequency.setValueAtTime(0.15, t0);
+  const lfoGain = AC.createGain();
+  lfoGain.gain.setValueAtTime(freq * 0.001, t0);
+  lfo.connect(lfoGain);
+  lfoGain.connect(osc1.frequency);
+  lfoGain.connect(osc2.frequency);
+  lfoGain.connect(osc3.frequency);
+
+  // Ganhos individuais para balanço perfeito
+  const g1 = AC.createGain(); g1.gain.value = 0.18;
+  const g2 = AC.createGain(); g2.gain.value = 0.15;
+  const g3 = AC.createGain(); g3.gain.value = 0.10;
+  const g4 = AC.createGain(); g4.gain.value = 0.04;
+  const g5 = AC.createGain(); g5.gain.value = 0.08;
+  const g6 = AC.createGain(); g6.gain.value = 0.03;
+
+  // Mix geral
+  const mix = AC.createGain();
+  mix.gain.setValueAtTime(voiceGain * 0.5, t0);
+
+  // Filtro lowpass MUITO suave para remover arestas
+  const filter = AC.createBiquadFilter();
+  filter.type = 'lowpass';
+  filter.Q.value = 0.7;
+
+  // Sweep do filtro: abre bem devagar para som atmosférico
+  filter.frequency.setValueAtTime(600, t0);
+  filter.frequency.linearRampToValueAtTime(3200, t0 + 12);
+
+  // Envelope ADSR com sustain INFINITO
+  const amp = AC.createGain();
+  const attack = window.CONTINUOUS_PAD_ATTACK || 5.0;
+  const decay = window.CONTINUOUS_PAD_DECAY || 1.0;
+  const sustainLevel = (window.CONTINUOUS_PAD_SUSTAIN || 0.75) * 0.5;
+
+  amp.gain.setValueAtTime(0.0001, t0);
+  amp.gain.linearRampToValueAtTime(0.5, t0 + attack); // Attack até pico
+  amp.gain.linearRampToValueAtTime(sustainLevel, t0 + attack + decay); // Decay até sustain
+  // Sustenta indefinidamente no nível de sustain
+
+  // Cadeia de áudio
+  osc1.connect(g1); g1.connect(mix);
+  osc2.connect(g2); g2.connect(mix);
+  osc3.connect(g3); g3.connect(mix);
+  osc4.connect(g4); g4.connect(mix);
+  osc5.connect(g5); g5.connect(mix);
+  osc6.connect(g6); g6.connect(mix);
+  mix.connect(filter);
+  filter.connect(amp);
+  amp.connect(STR_BUS.input);
+
+  osc1.start(t0); osc2.start(t0); osc3.start(t0);
+  osc4.start(t0); osc5.start(t0); osc6.start(t0);
+  lfo.start(t0);
+
+  const stop = () => {
+    const now = AC.currentTime;
+    const releaseTime = window.CONTINUOUS_PAD_RELEASE || 2.0;
+    amp.gain.cancelScheduledValues(now);
+    amp.gain.setValueAtTime(Math.max(amp.gain.value, 0.001), now);
+    amp.gain.linearRampToValueAtTime(0.001, now + releaseTime);
+    const off = releaseTime + 0.15;
+    try {
+      osc1.stop(now + off); osc2.stop(now + off); osc3.stop(now + off);
+      osc4.stop(now + off); osc5.stop(now + off); osc6.stop(now + off);
+      lfo.stop(now + off);
+    } catch(e) {}
+  };
+
+  return { stop };
+}
+
+function playContinuousPad(key){
+  if (!key) return;
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+
+  // Para qualquer pad anterior antes de iniciar novo
+  if (typeof stopContinuousPad === 'function') {
+    stopContinuousPad();
+    stopContinuousPad = null;
+  }
+
+  const rootPC = NOTES.indexOf(key);
+  if (rootPC === -1) return;
+
+  // Calcula MIDI baseado nas oitavas configuradas
+  const rootOctave = window.CONTINUOUS_PAD_ROOT_OCTAVE || 3;
+  const fifthOctave = window.CONTINUOUS_PAD_FIFTH_OCTAVE || 4;
+
+  // MIDI = (oitava + 1) * 12 + nota
+  const midiRoot = (rootOctave + 1) * 12 + rootPC;
+  const midiFifth = (fifthOctave + 1) * 12 + ((rootPC + 7) % 12); // quinta = tônica + 7 semitons
+
+  const freqRoot = midiToFreq(midiRoot);
+  const freqFifth = midiToFreq(midiFifth);
+
+  const t0 = audioCtx.currentTime + 0.01;
+  const perVoice = 0.45;
+
+  // Cria vozes contínuas para tônica e quinta
+  const voices = [
+    makeContinuousVoice(freqRoot, t0, perVoice),
+    makeContinuousVoice(freqFifth, t0 + 0.02, perVoice)
+  ];
+
+  stopContinuousPad = () => {
+    voices.forEach(v => v.stop());
+    stopContinuousPad = null;
+  };
+}
+
+// === TRANSIÇÃO SUAVE DE TOM DO PAD CONTÍNUO ===
+// Faz crossfade entre o tom atual e o novo tom (attack 250ms no novo, release 250ms no anterior)
+function changePadKey(newKey) {
+  if (!newKey) return;
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+
+  const chkContinuousPad = document.getElementById('chkContinuousPad');
+  if (!chkContinuousPad || !chkContinuousPad.checked) return;
+
+  const rootPC = NOTES.indexOf(newKey);
+  if (rootPC === -1) return;
+
+  // Configuração de transição rápida (250ms)
+  const TRANSITION_TIME = 0.25; // 250ms
+
+  const rootOctave = window.CONTINUOUS_PAD_ROOT_OCTAVE || 3;
+  const fifthOctave = window.CONTINUOUS_PAD_FIFTH_OCTAVE || 4;
+
+  const midiRoot = (rootOctave + 1) * 12 + rootPC;
+  const midiFifth = (fifthOctave + 1) * 12 + ((rootPC + 7) % 12);
+
+  const freqRoot = midiToFreq(midiRoot);
+  const freqFifth = midiToFreq(midiFifth);
+
+  const t0 = audioCtx.currentTime + 0.01;
+  const perVoice = 0.45;
+
+  // Para o pad anterior com release rápido (250ms)
+  if (typeof stopContinuousPad === 'function') {
+    // Guarda referência antes de parar
+    const oldStop = stopContinuousPad;
+    // Modifica o release temporariamente para transição rápida
+    const savedRelease = window.CONTINUOUS_PAD_RELEASE;
+    window.CONTINUOUS_PAD_RELEASE = TRANSITION_TIME;
+    oldStop();
+    window.CONTINUOUS_PAD_RELEASE = savedRelease;
+  }
+
+  // Cria novas vozes com attack rápido (250ms)
+  const savedAttack = window.CONTINUOUS_PAD_ATTACK;
+  const savedDecay = window.CONTINUOUS_PAD_DECAY;
+  window.CONTINUOUS_PAD_ATTACK = TRANSITION_TIME;
+  window.CONTINUOUS_PAD_DECAY = 0.1;
+
+  const voices = [
+    makeContinuousVoice(freqRoot, t0, perVoice),
+    makeContinuousVoice(freqFifth, t0 + 0.02, perVoice)
+  ];
+
+  // Restaura os valores originais
+  window.CONTINUOUS_PAD_ATTACK = savedAttack;
+  window.CONTINUOUS_PAD_DECAY = savedDecay;
+
+  stopContinuousPad = () => {
+    voices.forEach(v => v.stop());
+    stopContinuousPad = null;
+  };
+
+  console.log('🎹 PAD CONTÍNUO: Mudança de tom para', newKey);
+}
+
 
 </script>
 
@@ -8866,15 +9263,19 @@ function highlightChord(symbol){
 
   // desenha escala (azul), acorde (verde) e baixo (anel laranja) em uma passada
   renderAll(notes, bass);
-  
+
   // >>> NOVO: tocar strings se o checkbox estiver marcado
-if (chkStrings && chkStrings.checked) {
-  const select = document.querySelector('#knobs select');
-  const mode = select ? select.value : 'strings';
-  playChord(root, notes, bass, mode);
-}
-  
-  
+  // MAS: se pad contínuo estiver ativo, não toca os acordes individuais
+  const chkContinuousPad = document.getElementById('chkContinuousPad');
+  const isContinuousPadActive = chkContinuousPad && chkContinuousPad.checked;
+
+  if (chkStrings && chkStrings.checked && !isContinuousPadActive) {
+    const select = document.querySelector('#knobs select');
+    const mode = select ? select.value : 'strings';
+    playChord(root, notes, bass, mode);
+  }
+
+
 }
 
 
@@ -9169,12 +9570,14 @@ function wrapChords(text, semis = 0){
     .replace(/\r\n?/g,'\n')
     .split('\n')
     .map(line=>{
-      // 1) Acordes entre [colchetes]
+      // 1) Acordes entre [colchetes] = marcadores de mudança de tom para PAD CONTÍNUO
       let processed = line.replace(/\[([^\]]+)\]/g, (m, inside)=>{
         const sym = inside.trim();
         if (!isChordToken(sym)) return m;
         const disp = semis ? transposeSymbol(sym, semis) : sym;
-        return `<span class="chord" data-chord="${disp}" data-chord-original="${sym}">${disp}</span>`;
+        // Extrai a raiz do acorde para mudança de tom do PAD
+        const keyRoot = parseRoot(disp) || disp.replace(/m.*/, '');
+        return `<span class="chord key-change-marker" data-chord="${disp}" data-chord-original="${sym}" data-key-change="${keyRoot}">[${disp}]</span>`;
       });
 
 	// 1.5) Linha de dinâmica: somente traços (>=2) -> marcador de volume
@@ -9219,6 +9622,12 @@ const factor = Math.min(1.3, Math.max(0.25, 1 + 0.15*(n - 3)));
 function showCifra(mEl){
   console.log('=== INÍCIO showCifra ===');
   console.log('currentSongIdx ao entrar:', currentSongIdx);
+
+  // === PAD CONTÍNUO: para o pad da música anterior ao carregar nova música ===
+  if (typeof stopContinuousPad === 'function') {
+    stopContinuousPad();
+  }
+
   // lê dados
   const cifra  = getText(mEl,'cifra')  || '';
   const tom    = getText(mEl,'tom')    || '';
@@ -9372,10 +9781,10 @@ if (idx !== -1) setActiveSongIdx(idx);
       setActiveChord(i);
     });
   });
-  
+
   console.log('currentSongIdx ao sair de showCifra:', currentSongIdx);
   console.log('=== FIM showCifra ===');
-  
+
 }
 
 
@@ -9432,6 +9841,46 @@ if (selTransposeKey){
     const all = [...xml.getElementsByTagName('musica')];
     const mEl = all.find(m => (getText(m,'titulo') || getText(m,'itulo') || '') === currentSongTitle) || all[0];
     if (mEl) showCifra(mEl);
+  });
+}
+
+// === Event listener para o checkbox de Pad Contínuo ===
+const chkContinuousPad = document.getElementById('chkContinuousPad');
+if (chkContinuousPad) {
+  // Carrega estado persistido do localStorage
+  const CONTINUOUS_PAD_KEY = 'continuousPad_enabled';
+  try {
+    const savedState = localStorage.getItem(CONTINUOUS_PAD_KEY);
+    if (savedState !== null) {
+      chkContinuousPad.checked = savedState === 'true';
+      // Aplica classe no body conforme estado salvo
+      if (savedState === 'true') {
+        document.body.classList.add('continuous-pad-active');
+      }
+    }
+  } catch(e) {
+    console.warn('Erro ao carregar estado do pad contínuo:', e);
+  }
+
+  chkContinuousPad.addEventListener('change', () => {
+    // Salva estado no localStorage
+    try {
+      localStorage.setItem(CONTINUOUS_PAD_KEY, chkContinuousPad.checked.toString());
+    } catch(e) {
+      console.warn('Erro ao salvar estado do pad contínuo:', e);
+    }
+
+    // Adiciona/remove classe para mostrar/ocultar marcadores de mudança de tom
+    if (chkContinuousPad.checked) {
+      document.body.classList.add('continuous-pad-active');
+    } else {
+      document.body.classList.remove('continuous-pad-active');
+      // Para o pad imediatamente
+      if (typeof stopContinuousPad === 'function') {
+        stopContinuousPad();
+      }
+    }
+    // Se marcou, NÃO inicia ainda - só vai iniciar quando tocar o primeiro acorde
   });
 }
 
@@ -9911,11 +10360,21 @@ function applyVolume(s){
     const gEnv = makeGroup('Envelope');
     addSlider(gEnv, {
       id:'k_attack', label:'Attack (s)', min:0.05, max:2.0, step:0.01, value:state.attack,
-      format: v => v.toFixed(2), onInput: v => { console.log('Attack wet alterado para:', v);state.attack = v; saveState(state); applyEnvelope(state); }
+      format: v => v.toFixed(2), onInput: v => {
+        console.log('Attack alterado para:', v);
+        state.attack = v;
+        saveState(state);
+        applyEnvelope(state);
+      }
     });
     addSlider(gEnv, {
       id:'k_release', label:'Release (s)', min:0.5, max:10, step:0.1, value:state.release,
-      format: v => v.toFixed(1), onInput: v => { console.log('Release wet alterado para:', v);state.release = v; saveState(state); applyEnvelope(state); }
+      format: v => v.toFixed(1), onInput: v => {
+        console.log('Release alterado para:', v);
+        state.release = v;
+        saveState(state);
+        applyEnvelope(state);
+      }
     });
     wrap.appendChild(gEnv);
 
