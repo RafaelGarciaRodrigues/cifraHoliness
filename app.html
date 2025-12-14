@@ -227,8 +227,10 @@ Sim, vinde a Belém, já movidos de amor.
      D         G   D       E7       A7
 Nasceu vosso Rei, lá dos céus prometido.
 
-     D   G    D  A        D   G    D  A
-Oh, vinde, adoremos! Oh, vinde, adoremos!
+     D   G    D  A 
+Oh, vinde, adoremos!
+     D   G    D  A 
+Oh, vinde, adoremos!
      G        A  D    D/A A7    D
 Oh, vinde, adoremos a nosso Senhor!
 
@@ -240,9 +242,11 @@ Betsure hemu ni Shu wa are nu
     D     G   D   E7      A7
 Kare koso wa Shu no Shu ni mase
 
-     D         G   D      A
-Yukite haise yo yukite haise yo
-     D         G   D      A
+  D   G    D  A 
+Yukite haise yo
+  D   G    D  A 
+Yukite haise yo
+   G     A  D    D/A A7    D
 Yukite haise yo Kami no ko wo
 
 
@@ -253,8 +257,10 @@ Os anjos o louvam com grande fervor,
       D      G  D      E7       A7
 Pois veio conosco habitar, encarnado.
 
-     D   G    D  A        D   G    D  A
-Oh, vinde, adoremos! Oh, vinde, adoremos!
+     D   G    D  A 
+Oh, vinde, adoremos!
+     D   G    D  A 
+Oh, vinde, adoremos!
      G        A  D    D/A A7    D
 Oh, vinde, adoremos a nosso Senhor!
 
@@ -266,9 +272,11 @@ Warera uta wan Iesu kimi wo
     D     G   D   E7      A7
 Gueni kotoba hi to tonarinu
 
-     D         G   D      A
-Yukite haise yo yukite haise yo
-     D         G   D      A
+  D   G    D  A 
+Yukite haise yo
+  D   G    D  A 
+Yukite haise yo
+   G     A  D    D/A A7    D
 Yukite haise yo Kami no ko wo
 
 	]]>
@@ -5355,12 +5363,8 @@ Meus filhos, são teus
 	</bibli>
 	<cifra>
 	<![CDATA[
-Em  Em/D    A/C#
-        D        D/F#      G
- Em  Em/D  A/C#
-      D         D/C  B4  B/D#
-Em7        Em/D  
-   C        A        D   A7
+
+D
 	
 	
 D                   
@@ -6858,6 +6862,10 @@ font-size: 50px;
 	  </select>
 	</label>
 
+
+
+
+
 	<label title="Ativa pad contínuo no tom da música (apenas tônica + quinta)" style="display: inline-flex; align-items: center; gap: 8px; margin-left: 15px;">
 	  <span style="font-size: 0.9em;">Pad Contínuo</span>
 	  <input type="checkbox" id="chkContinuousPad" style="width: auto;">
@@ -7717,6 +7725,17 @@ function setActiveChord(idx){
   highlightChord(span.dataset.chord);
 
   // === PAD CONTÍNUO: inicia quando seleciona primeiro acorde (idx === 0) ===
+  
+  
+  /*
+  
+	QUANDO PAD CONTINUO ESTIVER HABILITADO:
+	- CONSIDERE APENAS O PRIMEIRO ACORDE DE CADA LINHA
+	- A CADA PAGEDOWN OU LEFT NAVEGE PULE SOMENTE PARA O PRIMEIRO ACORDE DE CADA LINHA
+  
+  */
+  
+  
   if (idx === 0) {
     const chkContinuousPad = document.getElementById('chkContinuousPad');
     if (chkContinuousPad && chkContinuousPad.checked && currentKey) {
@@ -7755,6 +7774,71 @@ function setActiveChord(idx){
 
 
 
+// === PAD CONTÍNUO: Funções auxiliares para navegar apenas pelos primeiros acordes de cada linha ===
+function getFirstChordOfNextLine(currentIdx) {
+  console.log('🔍 getFirstChordOfNextLine - currentIdx:', currentIdx, 'total:', chordSpans?.length);
+
+  if (!chordSpans || chordSpans.length === 0 || currentIdx >= chordSpans.length - 1) {
+    console.log('🔍 Retornando -1: sem acordes ou último acorde');
+    return -1; // Não há próxima linha
+  }
+
+  const currentChord = chordSpans[currentIdx];
+  const currentTop = currentChord.offsetTop;
+  console.log('🔍 Acorde atual offsetTop:', currentTop);
+
+  // Procura o primeiro acorde que está em uma linha diferente (offsetTop diferente)
+  for (let i = currentIdx + 1; i < chordSpans.length; i++) {
+    const nextChord = chordSpans[i];
+    const nextTop = nextChord.offsetTop;
+    const diff = Math.abs(nextTop - currentTop);
+
+    console.log(`🔍 Verificando acorde ${i}: offsetTop=${nextTop}, diff=${diff}`);
+
+    // Se encontrou acorde em linha diferente, esse é o primeiro da nova linha
+    if (diff > 5) { // 5px de tolerância
+      console.log(`🔍 ✓ Encontrou próxima linha no índice ${i}`);
+      return i;
+    }
+  }
+
+  console.log('🔍 Não encontrou próxima linha');
+  return -1; // Não há mais linhas
+}
+
+function getFirstChordOfPrevLine(currentIdx) {
+  if (!chordSpans || chordSpans.length === 0 || currentIdx <= 0) {
+    return -1; // Não há linha anterior
+  }
+
+  const currentChord = chordSpans[currentIdx];
+  const currentTop = currentChord.offsetTop;
+
+  // Primeiro, volta para encontrar uma linha diferente
+  let prevLineTop = -1;
+  for (let i = currentIdx - 1; i >= 0; i--) {
+    const prevChord = chordSpans[i];
+    const prevTop = prevChord.offsetTop;
+
+    if (Math.abs(prevTop - currentTop) > 5) { // Encontrou linha diferente
+      prevLineTop = prevTop;
+      break;
+    }
+  }
+
+  if (prevLineTop === -1) return -1; // Não há linha anterior
+
+  // Agora encontra o PRIMEIRO acorde dessa linha anterior
+  for (let i = 0; i < currentIdx; i++) {
+    const chord = chordSpans[i];
+    if (Math.abs(chord.offsetTop - prevLineTop) <= 5) {
+      return i; // Primeiro acorde da linha anterior
+    }
+  }
+
+  return -1;
+}
+
 function gotoNextChord(){
   // Caso 1: Estamos em um VERSÍCULO (sem acordes)
   if (!chordSpans || chordSpans.length === 0){
@@ -7763,8 +7847,38 @@ function gotoNextChord(){
     console.log('⚠️ Fim da fila');
     return;
   }
-  
-  // Caso 2: Estamos em MÚSICA com acordes
+
+  // === PAD CONTÍNUO: Navega apenas para o primeiro acorde da próxima linha ===
+  const chkContinuousPad = document.getElementById('chkContinuousPad');
+  if (chkContinuousPad && chkContinuousPad.checked) {
+    console.log('🎹 PAD Contínuo ATIVO - chordIdx atual:', chordIdx, 'total acordes:', chordSpans.length);
+
+    // Se ainda não está em nenhum acorde, vai para o primeiro
+    if (chordIdx === -1) {
+      console.log('🎹 Nenhum acorde ativo, indo para o primeiro (idx 0)');
+      setActiveChord(0);
+      return;
+    }
+
+    const nextLineFirstChordIdx = getFirstChordOfNextLine(chordIdx);
+    console.log('🎹 Próximo acorde encontrado no índice:', nextLineFirstChordIdx);
+
+    if (nextLineFirstChordIdx !== -1) {
+      // Há próxima linha - vai para o primeiro acorde dela
+      setActiveChord(nextLineFirstChordIdx);
+      console.log('🎹 PAD Contínuo: pulando para primeiro acorde da próxima linha');
+    } else {
+      // Não há mais linhas - avança para próxima música
+      console.log('🎵 Última linha da música - avançando para próximo item');
+      if (!goToNextSongInPlaylist()) {
+        console.log('⚠️ Fim da fila - mantém no último acorde');
+        setActiveChord(chordIdx);
+      }
+    }
+    return;
+  }
+
+  // Caso 2: Estamos em MÚSICA com acordes (comportamento normal)
   if (chordIdx < chordSpans.length - 1){
     // Ainda há acordes nesta música
     setActiveChord(chordIdx + 1);
@@ -7786,8 +7900,28 @@ function gotoPrevChord(){
     console.log('⚠️ Já está no primeiro item');
     return;
   }
-  
-  // Caso 2: Estamos em MÚSICA com acordes
+
+  // === PAD CONTÍNUO: Navega apenas para o primeiro acorde da linha anterior ===
+  const chkContinuousPad = document.getElementById('chkContinuousPad');
+  if (chkContinuousPad && chkContinuousPad.checked) {
+    const prevLineFirstChordIdx = getFirstChordOfPrevLine(chordIdx);
+
+    if (prevLineFirstChordIdx !== -1) {
+      // Há linha anterior - vai para o primeiro acorde dela
+      setActiveChord(prevLineFirstChordIdx);
+      console.log('🎹 PAD Contínuo: voltando para primeiro acorde da linha anterior');
+    } else {
+      // Não há linha anterior - volta para música anterior
+      console.log('🎵 Primeira linha da música - voltando para item anterior');
+      if (!goToPrevSongInPlaylist()) {
+        console.log('⚠️ Já está no primeiro item - mantém no primeiro acorde');
+        setActiveChord(0);
+      }
+    }
+    return;
+  }
+
+  // Caso 2: Estamos em MÚSICA com acordes (comportamento normal)
   if (chordIdx > 0){
     // Ainda há acordes anteriores nesta música
     setActiveChord(chordIdx - 1);
