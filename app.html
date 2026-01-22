@@ -3304,6 +3304,7 @@ O tesouro maior terá
 	<![CDATA[
 
 A
+
       A       E/G#      F#m      E
 Em Espírito, em verdade
        D       E       A       Bm7     A/C#
@@ -6164,6 +6165,7 @@ For all the rest of time
 	--fretH:42px; --nutH:10px;
   }
   html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font:15px/1.4 system-ui,Segoe UI,Roboto,Inter,sans-serif}
+  .api-chord-container{display:none;}
   #geral{display:grid;grid-template-columns:var(--colL) 1fr var(--colR);height:100vh}
   /* menu esquerdo */
   #menuEsquerda{border-right:1px solid #1d2230;background:#0b0d12;overflow:auto}
@@ -7134,6 +7136,7 @@ font-size: 50px;
 
 </style>
 
+<script async type="text/javascript" src="https://www.scales-chords.com/api/scales-chords-api.js"></script>
 
 
 </head>
@@ -7356,32 +7359,354 @@ font-size: 50px;
 	</div>
 
 	<div id="bracoViolaoDireita">
-	<div class="controls">
-	<label>
-	  <select id="capoPos">
-		<option value="0">0 (sem capo)</option>
-		<option value="1">1ª casa</option>
-		<option value="2">2ª casa</option>
-		<option value="3">3ª casa</option>
-		<option value="4">4ª casa</option>
-		<option value="5">5ª casa</option>
-		<option value="6">6ª casa</option>
-		<option value="7">7ª casa</option>
-	  </select>
-	</label>
+
+		<div id='apiAcorde' style='padding: 15px;'>
+			<div id='apiAcordeViolao' style='padding: 15px;'>
+				<div class="api-chord-container" data-chord="C"><ins class="scales_chords_api" chord="C"></ins></div>
+				<div class="api-chord-container" data-chord="C#"><ins class="scales_chords_api" chord="C#"></ins></div>
+				<div class="api-chord-container" data-chord="Db"><ins class="scales_chords_api" chord="Db"></ins></div>
+				<div class="api-chord-container" data-chord="D"><ins class="scales_chords_api" chord="D"></ins></div>
+				<div class="api-chord-container" data-chord="D#"><ins class="scales_chords_api" chord="D#"></ins></div>
+				<div class="api-chord-container" data-chord="Eb"><ins class="scales_chords_api" chord="Eb"></ins></div>
+				<div class="api-chord-container" data-chord="E"><ins class="scales_chords_api" chord="E"></ins></div>
+				<div class="api-chord-container" data-chord="F"><ins class="scales_chords_api" chord="F"></ins></div>
+				<div class="api-chord-container" data-chord="F#"><ins class="scales_chords_api" chord="F#"></ins></div>
+				<div class="api-chord-container" data-chord="Gb"><ins class="scales_chords_api" chord="Gb"></ins></div>
+				<div class="api-chord-container" data-chord="G"><ins class="scales_chords_api" chord="G"></ins></div>
+				<div class="api-chord-container" data-chord="G#"><ins class="scales_chords_api" chord="G#"></ins></div>
+				<div class="api-chord-container" data-chord="Ab"><ins class="scales_chords_api" chord="Ab"></ins></div>
+				<div class="api-chord-container" data-chord="A"><ins class="scales_chords_api" chord="A"></ins></div>
+				<div class="api-chord-container" data-chord="A#"><ins class="scales_chords_api" chord="A#"></ins></div>
+				<div class="api-chord-container" data-chord="Bb"><ins class="scales_chords_api" chord="Bb"></ins></div>
+				<div class="api-chord-container" data-chord="B"><ins class="scales_chords_api" chord="B"></ins></div>
+				<div class="api-chord-container" data-chord="Cm"><ins class="scales_chords_api" chord="Cm"></ins></div>
+				<div class="api-chord-container" data-chord="C#m"><ins class="scales_chords_api" chord="C#m"></ins></div>
+				<div class="api-chord-container" data-chord="Dbm"><ins class="scales_chords_api" chord="Dbm"></ins></div>
+				<div class="api-chord-container" data-chord="Dm"><ins class="scales_chords_api" chord="Dm"></ins></div>
+				<div class="api-chord-container" data-chord="D#m"><ins class="scales_chords_api" chord="D#m"></ins></div>
+				<div class="api-chord-container" data-chord="Ebm"><ins class="scales_chords_api" chord="Ebm"></ins></div>
+				<div class="api-chord-container" data-chord="Em"><ins class="scales_chords_api" chord="Em"></ins></div>
+				<div class="api-chord-container" data-chord="Fm"><ins class="scales_chords_api" chord="Fm"></ins></div>
+				<div class="api-chord-container" data-chord="F#m"><ins class="scales_chords_api" chord="F#m"></ins></div>
+				<div class="api-chord-container" data-chord="Gbm"><ins class="scales_chords_api" chord="Gbm"></ins></div>
+				<div class="api-chord-container" data-chord="Gm"><ins class="scales_chords_api" chord="Gm"></ins></div>
+				<div class="api-chord-container" data-chord="G#m"><ins class="scales_chords_api" chord="G#m"></ins></div>
+				<div class="api-chord-container" data-chord="Abm"><ins class="scales_chords_api" chord="Abm"></ins></div>
+				<div class="api-chord-container" data-chord="Am"><ins class="scales_chords_api" chord="Am"></ins></div>
+				<div class="api-chord-container" data-chord="A#m"><ins class="scales_chords_api" chord="A#m"></ins></div>
+				<div class="api-chord-container" data-chord="Bbm"><ins class="scales_chords_api" chord="Bbm"></ins></div>
+				<div class="api-chord-container" data-chord="Bm"><ins class="scales_chords_api" chord="Bm"></ins></div>
+				<div class="api-chord-container" data-chord="C7"><ins class="scales_chords_api" chord="C7"></ins></div>
+				<div class="api-chord-container" data-chord="C#7"><ins class="scales_chords_api" chord="C#7"></ins></div>
+				<div class="api-chord-container" data-chord="Db7"><ins class="scales_chords_api" chord="Db7"></ins></div>
+				<div class="api-chord-container" data-chord="D7"><ins class="scales_chords_api" chord="D7"></ins></div>
+				<div class="api-chord-container" data-chord="D#7"><ins class="scales_chords_api" chord="D#7"></ins></div>
+				<div class="api-chord-container" data-chord="Eb7"><ins class="scales_chords_api" chord="Eb7"></ins></div>
+				<div class="api-chord-container" data-chord="E7"><ins class="scales_chords_api" chord="E7"></ins></div>
+				<div class="api-chord-container" data-chord="F7"><ins class="scales_chords_api" chord="F7"></ins></div>
+				<div class="api-chord-container" data-chord="F#7"><ins class="scales_chords_api" chord="F#7"></ins></div>
+				<div class="api-chord-container" data-chord="Gb7"><ins class="scales_chords_api" chord="Gb7"></ins></div>
+				<div class="api-chord-container" data-chord="G7"><ins class="scales_chords_api" chord="G7"></ins></div>
+				<div class="api-chord-container" data-chord="G#7"><ins class="scales_chords_api" chord="G#7"></ins></div>
+				<div class="api-chord-container" data-chord="Ab7"><ins class="scales_chords_api" chord="Ab7"></ins></div>
+				<div class="api-chord-container" data-chord="A7"><ins class="scales_chords_api" chord="A7"></ins></div>
+				<div class="api-chord-container" data-chord="A#7"><ins class="scales_chords_api" chord="A#7"></ins></div>
+				<div class="api-chord-container" data-chord="Bb7"><ins class="scales_chords_api" chord="Bb7"></ins></div>
+				<div class="api-chord-container" data-chord="B7"><ins class="scales_chords_api" chord="B7"></ins></div>
+				<div class="api-chord-container" data-chord="Cm7"><ins class="scales_chords_api" chord="Cm7"></ins></div>
+				<div class="api-chord-container" data-chord="C#m7"><ins class="scales_chords_api" chord="C#m7"></ins></div>
+				<div class="api-chord-container" data-chord="Dm7"><ins class="scales_chords_api" chord="Dm7"></ins></div>
+				<div class="api-chord-container" data-chord="D#m7"><ins class="scales_chords_api" chord="D#m7"></ins></div>
+				<div class="api-chord-container" data-chord="Ebm7"><ins class="scales_chords_api" chord="Ebm7"></ins></div>
+				<div class="api-chord-container" data-chord="Em7"><ins class="scales_chords_api" chord="Em7"></ins></div>
+				<div class="api-chord-container" data-chord="Fm7"><ins class="scales_chords_api" chord="Fm7"></ins></div>
+				<div class="api-chord-container" data-chord="F#m7"><ins class="scales_chords_api" chord="F#m7"></ins></div>
+				<div class="api-chord-container" data-chord="Gm7"><ins class="scales_chords_api" chord="Gm7"></ins></div>
+				<div class="api-chord-container" data-chord="G#m7"><ins class="scales_chords_api" chord="G#m7"></ins></div>
+				<div class="api-chord-container" data-chord="Am7"><ins class="scales_chords_api" chord="Am7"></ins></div>
+				<div class="api-chord-container" data-chord="A#m7"><ins class="scales_chords_api" chord="A#m7"></ins></div>
+				<div class="api-chord-container" data-chord="Bbm7"><ins class="scales_chords_api" chord="Bbm7"></ins></div>
+				<div class="api-chord-container" data-chord="Bm7"><ins class="scales_chords_api" chord="Bm7"></ins></div>
+				<div class="api-chord-container" data-chord="Cmaj7"><ins class="scales_chords_api" chord="Cmaj7"></ins></div>
+				<div class="api-chord-container" data-chord="Dmaj7"><ins class="scales_chords_api" chord="Dmaj7"></ins></div>
+				<div class="api-chord-container" data-chord="Emaj7"><ins class="scales_chords_api" chord="Emaj7"></ins></div>
+				<div class="api-chord-container" data-chord="Fmaj7"><ins class="scales_chords_api" chord="Fmaj7"></ins></div>
+				<div class="api-chord-container" data-chord="Gmaj7"><ins class="scales_chords_api" chord="Gmaj7"></ins></div>
+				<div class="api-chord-container" data-chord="Amaj7"><ins class="scales_chords_api" chord="Amaj7"></ins></div>
+				<div class="api-chord-container" data-chord="Bmaj7"><ins class="scales_chords_api" chord="Bmaj7"></ins></div>
+				<div class="api-chord-container" data-chord="Cdim"><ins class="scales_chords_api" chord="Cdim"></ins></div>
+				<div class="api-chord-container" data-chord="C#dim"><ins class="scales_chords_api" chord="C#dim"></ins></div>
+				<div class="api-chord-container" data-chord="Ddim"><ins class="scales_chords_api" chord="Ddim"></ins></div>
+				<div class="api-chord-container" data-chord="D#dim"><ins class="scales_chords_api" chord="D#dim"></ins></div>
+				<div class="api-chord-container" data-chord="Edim"><ins class="scales_chords_api" chord="Edim"></ins></div>
+				<div class="api-chord-container" data-chord="Fdim"><ins class="scales_chords_api" chord="Fdim"></ins></div>
+				<div class="api-chord-container" data-chord="F#dim"><ins class="scales_chords_api" chord="F#dim"></ins></div>
+				<div class="api-chord-container" data-chord="Gdim"><ins class="scales_chords_api" chord="Gdim"></ins></div>
+				<div class="api-chord-container" data-chord="G#dim"><ins class="scales_chords_api" chord="G#dim"></ins></div>
+				<div class="api-chord-container" data-chord="Adim"><ins class="scales_chords_api" chord="Adim"></ins></div>
+				<div class="api-chord-container" data-chord="A#dim"><ins class="scales_chords_api" chord="A#dim"></ins></div>
+				<div class="api-chord-container" data-chord="Bdim"><ins class="scales_chords_api" chord="Bdim"></ins></div>
+				<div class="api-chord-container" data-chord="Csus4"><ins class="scales_chords_api" chord="Csus4"></ins></div>
+				<div class="api-chord-container" data-chord="Dsus4"><ins class="scales_chords_api" chord="Dsus4"></ins></div>
+				<div class="api-chord-container" data-chord="Esus4"><ins class="scales_chords_api" chord="Esus4"></ins></div>
+				<div class="api-chord-container" data-chord="Fsus4"><ins class="scales_chords_api" chord="Fsus4"></ins></div>
+				<div class="api-chord-container" data-chord="Gsus4"><ins class="scales_chords_api" chord="Gsus4"></ins></div>
+				<div class="api-chord-container" data-chord="Asus4"><ins class="scales_chords_api" chord="Asus4"></ins></div>
+				<div class="api-chord-container" data-chord="Bsus4"><ins class="scales_chords_api" chord="Bsus4"></ins></div>
+				<div class="api-chord-container" data-chord="Csus2"><ins class="scales_chords_api" chord="Csus2"></ins></div>
+				<div class="api-chord-container" data-chord="Dsus2"><ins class="scales_chords_api" chord="Dsus2"></ins></div>
+				<div class="api-chord-container" data-chord="Esus2"><ins class="scales_chords_api" chord="Esus2"></ins></div>
+				<div class="api-chord-container" data-chord="Fsus2"><ins class="scales_chords_api" chord="Fsus2"></ins></div>
+				<div class="api-chord-container" data-chord="Gsus2"><ins class="scales_chords_api" chord="Gsus2"></ins></div>
+				<div class="api-chord-container" data-chord="Asus2"><ins class="scales_chords_api" chord="Asus2"></ins></div>
+				<div class="api-chord-container" data-chord="Bsus2"><ins class="scales_chords_api" chord="Bsus2"></ins></div>
+				<!-- Acordes diminutos com ° -->
+				<div class="api-chord-container" data-chord="C°"><ins class="scales_chords_api" chord="Cdim"></ins></div>
+				<div class="api-chord-container" data-chord="C#°"><ins class="scales_chords_api" chord="C#dim"></ins></div>
+				<div class="api-chord-container" data-chord="D°"><ins class="scales_chords_api" chord="Ddim"></ins></div>
+				<div class="api-chord-container" data-chord="D#°"><ins class="scales_chords_api" chord="D#dim"></ins></div>
+				<div class="api-chord-container" data-chord="E°"><ins class="scales_chords_api" chord="Edim"></ins></div>
+				<div class="api-chord-container" data-chord="F°"><ins class="scales_chords_api" chord="Fdim"></ins></div>
+				<div class="api-chord-container" data-chord="F#°"><ins class="scales_chords_api" chord="F#dim"></ins></div>
+				<div class="api-chord-container" data-chord="G°"><ins class="scales_chords_api" chord="Gdim"></ins></div>
+				<div class="api-chord-container" data-chord="G#°"><ins class="scales_chords_api" chord="G#dim"></ins></div>
+				<div class="api-chord-container" data-chord="A°"><ins class="scales_chords_api" chord="Adim"></ins></div>
+				<div class="api-chord-container" data-chord="A#°"><ins class="scales_chords_api" chord="A#dim"></ins></div>
+				<div class="api-chord-container" data-chord="B°"><ins class="scales_chords_api" chord="Bdim"></ins></div>
+				<div class="api-chord-container" data-chord="Bb°"><ins class="scales_chords_api" chord="Bbdim"></ins></div>
+				<div class="api-chord-container" data-chord="Eb°"><ins class="scales_chords_api" chord="Ebdim"></ins></div>
+				<div class="api-chord-container" data-chord="Ab°"><ins class="scales_chords_api" chord="Abdim"></ins></div>
+				<div class="api-chord-container" data-chord="Db°"><ins class="scales_chords_api" chord="Dbdim"></ins></div>
+				<div class="api-chord-container" data-chord="Gb°"><ins class="scales_chords_api" chord="Gbdim"></ins></div>
+				<!-- Acordes com baixo alterado / -->
+				<div class="api-chord-container" data-chord="C/E"><ins class="scales_chords_api" chord="C/E"></ins></div>
+				<div class="api-chord-container" data-chord="C/G"><ins class="scales_chords_api" chord="C/G"></ins></div>
+				<div class="api-chord-container" data-chord="C/B"><ins class="scales_chords_api" chord="C/B"></ins></div>
+				<div class="api-chord-container" data-chord="D/F#"><ins class="scales_chords_api" chord="D/F#"></ins></div>
+				<div class="api-chord-container" data-chord="D/A"><ins class="scales_chords_api" chord="D/A"></ins></div>
+				<div class="api-chord-container" data-chord="E/G#"><ins class="scales_chords_api" chord="E/G#"></ins></div>
+				<div class="api-chord-container" data-chord="E/B"><ins class="scales_chords_api" chord="E/B"></ins></div>
+				<div class="api-chord-container" data-chord="F/A"><ins class="scales_chords_api" chord="F/A"></ins></div>
+				<div class="api-chord-container" data-chord="F/C"><ins class="scales_chords_api" chord="F/C"></ins></div>
+				<div class="api-chord-container" data-chord="G/B"><ins class="scales_chords_api" chord="G/B"></ins></div>
+				<div class="api-chord-container" data-chord="G/D"><ins class="scales_chords_api" chord="G/D"></ins></div>
+				<div class="api-chord-container" data-chord="G/F#"><ins class="scales_chords_api" chord="G/F#"></ins></div>
+				<div class="api-chord-container" data-chord="A/C#"><ins class="scales_chords_api" chord="A/C#"></ins></div>
+				<div class="api-chord-container" data-chord="A/E"><ins class="scales_chords_api" chord="A/E"></ins></div>
+				<div class="api-chord-container" data-chord="A/G"><ins class="scales_chords_api" chord="A/G"></ins></div>
+				<div class="api-chord-container" data-chord="B/D#"><ins class="scales_chords_api" chord="B/D#"></ins></div>
+				<div class="api-chord-container" data-chord="B/F#"><ins class="scales_chords_api" chord="B/F#"></ins></div>
+				<div class="api-chord-container" data-chord="Am/G"><ins class="scales_chords_api" chord="Am/G"></ins></div>
+				<div class="api-chord-container" data-chord="Am/E"><ins class="scales_chords_api" chord="Am/E"></ins></div>
+				<div class="api-chord-container" data-chord="Am/C"><ins class="scales_chords_api" chord="Am/C"></ins></div>
+				<div class="api-chord-container" data-chord="Em/D"><ins class="scales_chords_api" chord="Em/D"></ins></div>
+				<div class="api-chord-container" data-chord="Em/G"><ins class="scales_chords_api" chord="Em/G"></ins></div>
+				<div class="api-chord-container" data-chord="Em/B"><ins class="scales_chords_api" chord="Em/B"></ins></div>
+				<div class="api-chord-container" data-chord="Dm/C"><ins class="scales_chords_api" chord="Dm/C"></ins></div>
+				<div class="api-chord-container" data-chord="Dm/F"><ins class="scales_chords_api" chord="Dm/F"></ins></div>
+				<div class="api-chord-container" data-chord="Dm/A"><ins class="scales_chords_api" chord="Dm/A"></ins></div>
+				<div class="api-chord-container" data-chord="Gm/Bb"><ins class="scales_chords_api" chord="Gm/Bb"></ins></div>
+				<div class="api-chord-container" data-chord="Gm/D"><ins class="scales_chords_api" chord="Gm/D"></ins></div>
+				<div class="api-chord-container" data-chord="Gm/F"><ins class="scales_chords_api" chord="Gm/F"></ins></div>
+				<div class="api-chord-container" data-chord="Fm/Ab"><ins class="scales_chords_api" chord="Fm/Ab"></ins></div>
+				<div class="api-chord-container" data-chord="Fm/C"><ins class="scales_chords_api" chord="Fm/C"></ins></div>
+				<div class="api-chord-container" data-chord="Bm/D"><ins class="scales_chords_api" chord="Bm/D"></ins></div>
+				<div class="api-chord-container" data-chord="Bm/F#"><ins class="scales_chords_api" chord="Bm/F#"></ins></div>
+				<div class="api-chord-container" data-chord="F#m/E"><ins class="scales_chords_api" chord="F#m/E"></ins></div>
+				<div class="api-chord-container" data-chord="F#m/A"><ins class="scales_chords_api" chord="F#m/A"></ins></div>
+				<div class="api-chord-container" data-chord="C#m/E"><ins class="scales_chords_api" chord="C#m/E"></ins></div>
+				<div class="api-chord-container" data-chord="C#m/B"><ins class="scales_chords_api" chord="C#m/B"></ins></div>
+			</div>
+
+			<div id='apiAcordePiano' style='padding: 15px;'>
+				<div class="api-chord-container" data-chord="C"><ins class="scales_chords_api" chord="C" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="C#"><ins class="scales_chords_api" chord="C#" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Db"><ins class="scales_chords_api" chord="Db" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="D"><ins class="scales_chords_api" chord="D" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="D#"><ins class="scales_chords_api" chord="D#" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Eb"><ins class="scales_chords_api" chord="Eb" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="E"><ins class="scales_chords_api" chord="E" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="F"><ins class="scales_chords_api" chord="F" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="F#"><ins class="scales_chords_api" chord="F#" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Gb"><ins class="scales_chords_api" chord="Gb" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="G"><ins class="scales_chords_api" chord="G" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="G#"><ins class="scales_chords_api" chord="G#" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Ab"><ins class="scales_chords_api" chord="Ab" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="A"><ins class="scales_chords_api" chord="A" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="A#"><ins class="scales_chords_api" chord="A#" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Bb"><ins class="scales_chords_api" chord="Bb" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="B"><ins class="scales_chords_api" chord="B" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Cm"><ins class="scales_chords_api" chord="Cm" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="C#m"><ins class="scales_chords_api" chord="C#m" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Dbm"><ins class="scales_chords_api" chord="Dbm" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Dm"><ins class="scales_chords_api" chord="Dm" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="D#m"><ins class="scales_chords_api" chord="D#m" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Ebm"><ins class="scales_chords_api" chord="Ebm" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Em"><ins class="scales_chords_api" chord="Em" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Fm"><ins class="scales_chords_api" chord="Fm" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="F#m"><ins class="scales_chords_api" chord="F#m" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Gbm"><ins class="scales_chords_api" chord="Gbm" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Gm"><ins class="scales_chords_api" chord="Gm" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="G#m"><ins class="scales_chords_api" chord="G#m" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Abm"><ins class="scales_chords_api" chord="Abm" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Am"><ins class="scales_chords_api" chord="Am" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="A#m"><ins class="scales_chords_api" chord="A#m" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Bbm"><ins class="scales_chords_api" chord="Bbm" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Bm"><ins class="scales_chords_api" chord="Bm" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="C7"><ins class="scales_chords_api" chord="C7" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="C#7"><ins class="scales_chords_api" chord="C#7" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Db7"><ins class="scales_chords_api" chord="Db7" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="D7"><ins class="scales_chords_api" chord="D7" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="D#7"><ins class="scales_chords_api" chord="D#7" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Eb7"><ins class="scales_chords_api" chord="Eb7" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="E7"><ins class="scales_chords_api" chord="E7" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="F7"><ins class="scales_chords_api" chord="F7" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="F#7"><ins class="scales_chords_api" chord="F#7" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Gb7"><ins class="scales_chords_api" chord="Gb7" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="G7"><ins class="scales_chords_api" chord="G7" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="G#7"><ins class="scales_chords_api" chord="G#7" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Ab7"><ins class="scales_chords_api" chord="Ab7" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="A7"><ins class="scales_chords_api" chord="A7" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="A#7"><ins class="scales_chords_api" chord="A#7" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Bb7"><ins class="scales_chords_api" chord="Bb7" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="B7"><ins class="scales_chords_api" chord="B7" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Cm7"><ins class="scales_chords_api" chord="Cm7" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="C#m7"><ins class="scales_chords_api" chord="C#m7" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Dm7"><ins class="scales_chords_api" chord="Dm7" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="D#m7"><ins class="scales_chords_api" chord="D#m7" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Ebm7"><ins class="scales_chords_api" chord="Ebm7" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Em7"><ins class="scales_chords_api" chord="Em7" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Fm7"><ins class="scales_chords_api" chord="Fm7" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="F#m7"><ins class="scales_chords_api" chord="F#m7" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Gm7"><ins class="scales_chords_api" chord="Gm7" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="G#m7"><ins class="scales_chords_api" chord="G#m7" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Am7"><ins class="scales_chords_api" chord="Am7" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="A#m7"><ins class="scales_chords_api" chord="A#m7" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Bbm7"><ins class="scales_chords_api" chord="Bbm7" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Bm7"><ins class="scales_chords_api" chord="Bm7" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Cmaj7"><ins class="scales_chords_api" chord="Cmaj7" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Dmaj7"><ins class="scales_chords_api" chord="Dmaj7" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Emaj7"><ins class="scales_chords_api" chord="Emaj7" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Fmaj7"><ins class="scales_chords_api" chord="Fmaj7" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Gmaj7"><ins class="scales_chords_api" chord="Gmaj7" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Amaj7"><ins class="scales_chords_api" chord="Amaj7" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Bmaj7"><ins class="scales_chords_api" chord="Bmaj7" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Cdim"><ins class="scales_chords_api" chord="Cdim" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="C#dim"><ins class="scales_chords_api" chord="C#dim" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Ddim"><ins class="scales_chords_api" chord="Ddim" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="D#dim"><ins class="scales_chords_api" chord="D#dim" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Edim"><ins class="scales_chords_api" chord="Edim" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Fdim"><ins class="scales_chords_api" chord="Fdim" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="F#dim"><ins class="scales_chords_api" chord="F#dim" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Gdim"><ins class="scales_chords_api" chord="Gdim" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="G#dim"><ins class="scales_chords_api" chord="G#dim" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Adim"><ins class="scales_chords_api" chord="Adim" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="A#dim"><ins class="scales_chords_api" chord="A#dim" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Bdim"><ins class="scales_chords_api" chord="Bdim" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Csus4"><ins class="scales_chords_api" chord="Csus4" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Dsus4"><ins class="scales_chords_api" chord="Dsus4" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Esus4"><ins class="scales_chords_api" chord="Esus4" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Fsus4"><ins class="scales_chords_api" chord="Fsus4" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Gsus4"><ins class="scales_chords_api" chord="Gsus4" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Asus4"><ins class="scales_chords_api" chord="Asus4" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Bsus4"><ins class="scales_chords_api" chord="Bsus4" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Csus2"><ins class="scales_chords_api" chord="Csus2" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Dsus2"><ins class="scales_chords_api" chord="Dsus2" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Esus2"><ins class="scales_chords_api" chord="Esus2" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Fsus2"><ins class="scales_chords_api" chord="Fsus2" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Gsus2"><ins class="scales_chords_api" chord="Gsus2" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Asus2"><ins class="scales_chords_api" chord="Asus2" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Bsus2"><ins class="scales_chords_api" chord="Bsus2" instrument="piano"></ins></div>
+				<!-- Acordes diminutos com ° -->
+				<div class="api-chord-container" data-chord="C°"><ins class="scales_chords_api" chord="Cdim" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="C#°"><ins class="scales_chords_api" chord="C#dim" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="D°"><ins class="scales_chords_api" chord="Ddim" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="D#°"><ins class="scales_chords_api" chord="D#dim" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="E°"><ins class="scales_chords_api" chord="Edim" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="F°"><ins class="scales_chords_api" chord="Fdim" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="F#°"><ins class="scales_chords_api" chord="F#dim" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="G°"><ins class="scales_chords_api" chord="Gdim" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="G#°"><ins class="scales_chords_api" chord="G#dim" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="A°"><ins class="scales_chords_api" chord="Adim" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="A#°"><ins class="scales_chords_api" chord="A#dim" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="B°"><ins class="scales_chords_api" chord="Bdim" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Bb°"><ins class="scales_chords_api" chord="Bbdim" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Eb°"><ins class="scales_chords_api" chord="Ebdim" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Ab°"><ins class="scales_chords_api" chord="Abdim" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Db°"><ins class="scales_chords_api" chord="Dbdim" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Gb°"><ins class="scales_chords_api" chord="Gbdim" instrument="piano"></ins></div>
+				<!-- Acordes com baixo alterado / -->
+				<div class="api-chord-container" data-chord="C/E"><ins class="scales_chords_api" chord="C/E" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="C/G"><ins class="scales_chords_api" chord="C/G" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="C/B"><ins class="scales_chords_api" chord="C/B" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="D/F#"><ins class="scales_chords_api" chord="D/F#" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="D/A"><ins class="scales_chords_api" chord="D/A" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="E/G#"><ins class="scales_chords_api" chord="E/G#" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="E/B"><ins class="scales_chords_api" chord="E/B" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="F/A"><ins class="scales_chords_api" chord="F/A" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="F/C"><ins class="scales_chords_api" chord="F/C" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="G/B"><ins class="scales_chords_api" chord="G/B" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="G/D"><ins class="scales_chords_api" chord="G/D" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="G/F#"><ins class="scales_chords_api" chord="G/F#" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="A/C#"><ins class="scales_chords_api" chord="A/C#" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="A/E"><ins class="scales_chords_api" chord="A/E" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="A/G"><ins class="scales_chords_api" chord="A/G" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="B/D#"><ins class="scales_chords_api" chord="B/D#" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="B/F#"><ins class="scales_chords_api" chord="B/F#" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Am/G"><ins class="scales_chords_api" chord="Am/G" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Am/E"><ins class="scales_chords_api" chord="Am/E" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Am/C"><ins class="scales_chords_api" chord="Am/C" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Em/D"><ins class="scales_chords_api" chord="Em/D" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Em/G"><ins class="scales_chords_api" chord="Em/G" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Em/B"><ins class="scales_chords_api" chord="Em/B" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Dm/C"><ins class="scales_chords_api" chord="Dm/C" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Dm/F"><ins class="scales_chords_api" chord="Dm/F" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Dm/A"><ins class="scales_chords_api" chord="Dm/A" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Gm/Bb"><ins class="scales_chords_api" chord="Gm/Bb" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Gm/D"><ins class="scales_chords_api" chord="Gm/D" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Gm/F"><ins class="scales_chords_api" chord="Gm/F" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Fm/Ab"><ins class="scales_chords_api" chord="Fm/Ab" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Fm/C"><ins class="scales_chords_api" chord="Fm/C" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Bm/D"><ins class="scales_chords_api" chord="Bm/D" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="Bm/F#"><ins class="scales_chords_api" chord="Bm/F#" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="F#m/E"><ins class="scales_chords_api" chord="F#m/E" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="F#m/A"><ins class="scales_chords_api" chord="F#m/A" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="C#m/E"><ins class="scales_chords_api" chord="C#m/E" instrument="piano"></ins></div>
+				<div class="api-chord-container" data-chord="C#m/B"><ins class="scales_chords_api" chord="C#m/B" instrument="piano"></ins></div>
+			</div>
+		</div>
 
 
 
-	<label class="chk" title="Ao selecionar um acorde, tocar as notas em strings">
-	  <input type="checkbox" id="chkStrings" checked>
-	  Tocar acorde (strings)
-	</label>
-	<span class="muted" id="chordLabel">—</span>
-	</div>
-	<div class="legend" id="legend"></div>
-	<div class="fretboardWrap">
-	<div class="fretboard" id="fretboard"><div class="nut"></div></div>
-	</div>
+		<div class="controls">
+		<label>
+		  <select id="capoPos">
+			<option value="0">0 (sem capo)</option>
+			<option value="1">1ª casa</option>
+			<option value="2">2ª casa</option>
+			<option value="3">3ª casa</option>
+			<option value="4">4ª casa</option>
+			<option value="5">5ª casa</option>
+			<option value="6">6ª casa</option>
+			<option value="7">7ª casa</option>
+		  </select>
+		</label>
+
+
+
+		<label class="chk" title="Ao selecionar um acorde, tocar as notas em strings">
+		  <input type="checkbox" id="chkStrings" checked>
+		  Tocar acorde (strings)
+		</label>
+		<span class="muted" id="chordLabel">—</span>
+		</div>
+		<div class="legend" id="legend"></div>
+		<div class="fretboardWrap">
+		<div class="fretboard" id="fretboard"><div class="nut"></div></div>
+		</div>
+		
+		
+		
 	</div>
 	
 	<div id="versiculosDoFinal">
@@ -8022,6 +8347,23 @@ function transposeSymbol(sym, semis){
 
 
 
+// === FUNÇÃO PARA MOSTRAR ACORDE INICIAL (TOM DA MÚSICA) ===
+function mostrarAcordeInicial(tomMusica) {
+  if (tomMusica) {
+    mostrarAcordeAPI(tomMusica);
+  }
+}
+
+// === FUNÇÃO PARA MOSTRAR ACORDE NA API ===
+function mostrarAcordeAPI(acorde) {
+  if (!acorde) return;
+
+  // Oculta todos e mostra apenas o acorde selecionado
+  document.querySelectorAll('.api-chord-container').forEach(div => {
+    div.style.display = div.dataset.chord === acorde ? 'block' : 'none';
+  });
+}
+
 function setActiveChord(idx){
   if (!chordSpans.length) return;
   idx = Math.max(0, Math.min(idx, chordSpans.length-1));
@@ -8037,6 +8379,10 @@ function setActiveChord(idx){
   centerInto(span, document.getElementById('cifraMeio'));
   // dispara a pintura do braço
   highlightChord(span.dataset.chord);
+
+  // === MOSTRA ACORDE NA API ===
+  const acordeAtual = span.dataset.chord;
+  mostrarAcordeAPI(acordeAtual);
 
   // === PAD CONTÍNUO: inicia quando seleciona primeiro acorde (idx === 0) ===
   
@@ -10312,9 +10658,10 @@ pre.innerHTML = `# ${titulo}${tom ? (' — Tom: ' + displayKey) : ''}\n\n${bibli
   // coleta e zera seleção
   chordSpans = Array.from(pre.querySelectorAll('.chord'));
   chordIdx = -1;
-  
-  
-  
+
+  // === MOSTRA ACORDE INICIAL (TOM DA MÚSICA) NA API ===
+  mostrarAcordeInicial(displayKey);
+
 // Atribui a cada acorde o volume vigente (último marcador acima dele)
 let currentVol = 1;
 pre.querySelectorAll('.linha, .chord, .vol-marker').forEach(el=>{
