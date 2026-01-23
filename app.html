@@ -12552,6 +12552,19 @@ function buildBibleList() {
 
 <script>
 // SINCRONIZACAO COM TELA.HTML
+
+
+/*
+
+	QUANDO ESTIVER  SELECIONADO ACORDES DA INTRODUÇÃO, MOSTRA EM tela.html O VERSÍCULO QUE ESTÁ SENDO MOSTRADO EM: <div class="verse-text"> EM app.html 
+	NÃO ALTERE MAIS NENHUMA FUNCIONALIDADE JÁ EXISTENTE
+
+*/
+
+
+
+
+
 (function() {
   console.log('Iniciando sincronizacao...');
   
@@ -12644,11 +12657,39 @@ function buildBibleList() {
     telaChannel.postMessage(dados);
   }
   
+  function enviarVersiculoIntro() {
+    // Verifica se o acorde ativo está dentro de .intro-chords
+    const acordeAtivo = document.querySelector('#cifraMeio .chord.active');
+    if (!acordeAtivo) return;
+
+    const introChords = acordeAtivo.closest('.intro-chords');
+    if (introChords) {
+      // Está na intro - busca o versículo correspondente
+      const biblicalQuote = introChords.closest('.biblical-quote');
+      if (biblicalQuote) {
+        const verseText = biblicalQuote.querySelector('.verse-text');
+        const verseRef = biblicalQuote.querySelector('.verse-ref');
+
+        if (verseText) {
+          const dados = {
+            tipo: 'versiculo_intro',
+            texto: verseText.textContent.trim(),
+            referencia: verseRef ? verseRef.textContent.trim() : ''
+          };
+
+          console.log('Enviando versículo da intro:', dados.referencia);
+          telaChannel.postMessage(dados);
+        }
+      }
+    }
+  }
+
   const originalSetActiveChord = window.setActiveChord;
   if (originalSetActiveChord) {
     window.setActiveChord = function(idx) {
       originalSetActiveChord.call(this, idx);
       setTimeout(enviarAtualizacao, 150);
+      setTimeout(enviarVersiculoIntro, 160);
     };
     console.log('setActiveChord interceptado!');
   } else {

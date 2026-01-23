@@ -234,6 +234,15 @@
 
                 // Entra em tela cheia automaticamente se já tiver permissão
                 entrarEmTelaCheia();
+            } else if (dados.tipo === 'versiculo_intro') {
+                // Versículo da introdução - mostra enquanto navega nos acordes da intro
+                ultimaAtualizacao = Date.now();
+                atualizarVersiculoIntro(dados);
+
+                statusDot.classList.add('conectado');
+                statusText.textContent = 'Conectado';
+
+                entrarEmTelaCheia();
             }
         };
 
@@ -297,6 +306,30 @@
             // Sempre oculta o QR Code quando for versículo
             qrcodeDiv.classList.remove('mostrar');
             console.log('📖 QR Code oculto - Exibindo versículo');
+        }
+
+        function atualizarVersiculoIntro(dados) {
+            // Versículo da introdução - mostra enquanto navega nos acordes da intro
+            // Esconde info de música e próximas linhas
+            proximasDiv.style.display = 'none';
+
+            // Mostra referência bíblica (se existir)
+            if (dados.referencia) {
+                titulo.textContent = dados.referencia;
+                titulo.style.color = '#6ee7ff';
+                tom.textContent = '';
+                infoMusica.style.display = 'block';
+            } else {
+                infoMusica.style.display = 'none';
+            }
+
+            // Mostra o texto do versículo
+            letraAtual.textContent = dados.texto;
+            letraAtual.style.fontSize = '3em';
+
+            // Sempre oculta o QR Code
+            qrcodeDiv.classList.remove('mostrar');
+            console.log('📖 QR Code oculto - Exibindo versículo da intro');
         }
 
 
