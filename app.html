@@ -14173,6 +14173,19 @@ function clearBibleScreen() {
 <script>
 
 
+/*
+
+	NO MODO ATUAL, QUANDO PRECIONA CTRL + I ARE O MODO IMPRESSÃO MOSTRANDO AS MÚSICAS SELECIONADAS NA SEQUENCIA DA SELEÇÃO
+	
+	QUERO QUE CONTINUE EXATAMENTE ASSIM, MAS QUERO ADICIONAR UMA FUNCIONALIDADE SIMILAR
+	
+	QUANDO PRESSIONAR SHIFT + I DEVE:
+	
+	- ABRIR TODAS AS MÚSICAS NO MODO IMPRESSÃO EM ORDEM ALFABÉTICA PELO NOME NA MESMA FORMATAÇÃO DE QUANDO SE PRESSIONA CTRL + I
+
+*/
+
+
 
 function generatePrintMode() {
   // Verifica se há músicas na fila
@@ -14345,13 +14358,109 @@ function wrapChordsForPrint(text, semis = 0) {
     .join('\n'); // ← REMOVIDO O FILTER QUE ESTAVA CAUSANDO PROBLEMA
 }
 
+function generatePrintModeAll() {
+  if (!songsMaster || songsMaster.length === 0) {
+    alert('Nenhuma música encontrada.');
+    return;
+  }
+
+  const printMode = document.getElementById('printMode');
+  const printContent = document.getElementById('printContent');
+  printContent.innerHTML = '';
+
+  // Cria lista de todas as músicas com índice original, ordenadas alfabeticamente
+  const allSongs = songsMaster
+    .map((musica, idx) => ({ musica, idx }))
+    .filter(({ musica }) => musica)
+    .sort((a, b) => {
+      const ta = getText(a.musica, 'titulo') || getText(a.musica, 'itulo') || '';
+      const tb = getText(b.musica, 'titulo') || getText(b.musica, 'itulo') || '';
+      return ta.localeCompare(tb, 'pt-BR', { sensitivity: 'base' });
+    });
+
+  console.log(`[PrintModeAll] Preparando ${allSongs.length} música(s) em ordem alfabética...`);
+
+  allSongs.forEach(({ musica, idx }, pos) => {
+    const titulo = getText(musica, 'titulo') || getText(musica, 'itulo') || 'Música sem título';
+    const tom = getText(musica, 'tom') || '';
+    const cifraRaw = getText(musica, 'cifra') || '';
+    const bpm = getText(musica, 'bpm') || '';
+    const youtube = getText(musica, 'youtube') || '';
+
+    const origRoot = parseRoot(tom) || 'C';
+    const targetRoot = transposeMap[titulo] || origRoot;
+    const semis = semisBetween(origRoot, targetRoot);
+    const displayKey = targetRoot + (/m(?!aj)/i.test(tom) ? 'm' : '');
+
+    const introMatch = cifraRaw.match(/<intro>([\s\S]*?)<\/intro>/i);
+    const introContent = introMatch ? introMatch[1] : '';
+    const cifraWithoutIntro = cifraRaw.replace(/<intro>[\s\S]*?<\/intro>/i, '');
+
+    const linhas = cifraWithoutIntro.replace(/\r\n?/g, '\n').split('\n');
+    const starIdx = linhas.findIndex(l => l.trim().startsWith('*'));
+    const cifraBody = starIdx !== -1
+      ? linhas.slice(starIdx + 1).join('\n')
+      : cifraWithoutIntro;
+
+    let introHtml = '';
+    if (introContent.trim()) {
+      const apenasAcordes = introContent
+        .replace(/\r\n?/g, '\n')
+        .split('\n')
+        .filter(l => isChordLine(l))
+        .join('\n');
+      if (apenasAcordes.trim()) {
+        introHtml = `<div class="print-intro-section"><span class="print-intro-label">INTRO</span>${wrapChordsForPrint(apenasAcordes, semis)}<hr class="print-intro-hr"></div>`;
+      }
+    }
+
+    const cifraHtml = introHtml + wrapChordsForPrint(cifraBody, semis);
+
+    const page = document.createElement('div');
+    page.className = 'print-page';
+    page.innerHTML = `
+      <div style="page-break-inside: avoid; break-inside: avoid;">
+        <div class="print-header">
+          <h1>${titulo}</h1>
+          <div class="print-meta">Tom: ${displayKey}${bpm ? ' | BPM: ' + bpm : ''} | ${pos + 1}ª (alfabética)</div>
+          ${youtube.trim() ? `<div class="print-meta"><a href="${youtube.trim()}" target="_blank" rel="noopener">${youtube.trim()}</a></div>` : ''}
+        </div>
+        <div class="print-columns">
+          ${cifraHtml}
+        </div>
+      </div>
+    `;
+    printContent.appendChild(page);
+  });
+
+  document.getElementById('geral').style.display = 'none';
+  document.getElementById('mobileOverlay').style.display = 'none';
+  if (document.getElementById('menuToggleBtn')) {
+    document.getElementById('menuToggleBtn').style.display = 'none';
+  }
+  if (document.getElementById('mobileNavBtn')) {
+    document.getElementById('mobileNavBtn').style.display = 'none';
+  }
+
+  printMode.classList.add('active');
+  document.body.style.overflow = 'auto';
+
+  console.log(`[PrintModeAll] ${allSongs.length} música(s) prontas em ordem alfabética.`);
+}
+
 // Atalho Ctrl+I
 document.addEventListener('keydown', function(e) {
   if ((e.ctrlKey || e.metaKey) && (e.key === 'i' || e.key === 'I')) {
     e.preventDefault();
     generatePrintMode();
   }
-  
+
+  // Shift+I — todas as músicas em ordem alfabética
+  if (e.shiftKey && !e.ctrlKey && !e.metaKey && !e.altKey && (e.key === 'I')) {
+    e.preventDefault();
+    generatePrintModeAll();
+  }
+
   // ESC para fechar
   if (e.key === 'Escape') {
     const printMode = document.getElementById('printMode');
@@ -14361,7 +14470,7 @@ document.addEventListener('keydown', function(e) {
   }
 });
 
-console.log('[PrintMode] Modo impressão ativado - use Ctrl+I');
+console.log('[PrintMode] Modo impressão ativado - use Ctrl+I | Shift+I (todas alfabética)');
 </script>
 
 
