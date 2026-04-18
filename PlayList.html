@@ -21063,34 +21063,46 @@ function buildAlphaMenu() {
 }
 
 function buildPrintPageContent(pageEl, musica, idx, posLabel) {
-  const titulo = getText(musica, 'titulo') || getText(musica, 'itulo') || 'Música sem título';
-  const tom = getText(musica, 'tom') || '';
-  const cifraRaw = getText(musica, 'cifra') || '';
-  const bpm = getText(musica, 'bpm') || '';
-  const youtube = getText(musica, 'youtube') || '';
+  var titulo = getText(musica, 'titulo') || getText(musica, 'itulo') || 'Música sem título';
+  var tom = getText(musica, 'tom') || '';
+  var cifraRaw = getText(musica, 'cifra') || '';
+  var bpm = getText(musica, 'bpm') || '';
+  var youtube = getText(musica, 'youtube') || '';
 
-  const origRoot = parseRoot(tom) || 'C';
-  const targetRoot = transposeMap[titulo] || origRoot;
-  const semis = semisBetween(origRoot, targetRoot);
-  const displayKey = targetRoot + (/m(?!aj)/i.test(tom) ? 'm' : '');
+  var origRoot = parseRoot(tom) || 'C';
+  var extraSemis = parseInt(pageEl.getAttribute('data-extra-semis') || '0') || 0;
+  var semis = extraSemis % 12;
+  var NOTES_LOCAL = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+  var origIdx = NOTES_LOCAL.indexOf(origRoot);
+  var dispIdx = (origIdx < 0 ? 0 : origIdx) + semis;
+  var displayRoot = NOTES_LOCAL[((dispIdx % 12) + 12) % 12];
+  var isMinor = /m(?!aj)/i.test(tom);
+  var displayKey = displayRoot + (isMinor ? 'm' : '');
 
-  const introMatch = cifraRaw.match(/<intro>([\s\S]*?)<\/intro>/i);
-  const introContent = introMatch ? introMatch[1] : '';
-  const cifraWithoutIntro = cifraRaw.replace(/<intro>[\s\S]*?<\/intro>/i, '');
+  var introMatch = cifraRaw.match(/<intro>([\s\S]*?)<\/intro>/i);
+  var introContent = introMatch ? introMatch[1] : '';
+  var cifraWithoutIntro = cifraRaw.replace(/<intro>[\s\S]*?<\/intro>/i, '');
 
-  const linhas = cifraWithoutIntro.replace(/\r\n?/g, '\n').split('\n');
-  const starIdx = linhas.findIndex(l => l.trim().startsWith('*'));
-  const cifraBody = starIdx !== -1 ? linhas.slice(starIdx + 1).join('\n') : cifraWithoutIntro;
+  var linhas = cifraWithoutIntro.replace(/\r\n?/g, '\n').split('\n');
+  var starIdx = -1;
+  for (var si = 0; si < linhas.length; si++) {
+    if (linhas[si].trim().indexOf('*') === 0) { starIdx = si; break; }
+  }
+  var cifraBody = starIdx !== -1 ? linhas.slice(starIdx + 1).join('\n') : cifraWithoutIntro;
 
-  let introHtml = '';
+  var introHtml = '';
   if (introContent.trim()) {
-    const apenasAcordes = introContent.replace(/\r\n?/g, '\n').split('\n').filter(l => isChordLine(l)).join('\n');
-    if (apenasAcordes.trim()) {
-      introHtml = `<div class="print-intro-section"><span class="print-intro-label">INTRO</span>${wrapChordsForPrint(apenasAcordes, semis)}<hr class="print-intro-hr"></div>`;
+    var introLinhas = introContent.replace(/\r\n?/g, '\n').split('\n');
+    var apenasAcordes = [];
+    for (var ai = 0; ai < introLinhas.length; ai++) {
+      if (isChordLine(introLinhas[ai])) apenasAcordes.push(introLinhas[ai]);
+    }
+    if (apenasAcordes.length > 0) {
+      introHtml = '<div class="print-intro-section"><span class="print-intro-label">INTRO</span>' + wrapChordsForPrint(apenasAcordes.join('\n'), semis) + '<hr class="print-intro-hr"></div>';
     }
   }
 
-  const cifraHtml = introHtml + wrapChordsForPrint(cifraBody, semis);
+  var cifraHtml = introHtml + wrapChordsForPrint(cifraBody, semis);
 
   var youtubeHtml = youtube.trim()
     ? '<div class="print-meta"><a href="' + youtube.trim() + '" target="_blank" rel="noopener">' + youtube.trim() + '</a></div>'
@@ -21116,20 +21128,16 @@ function buildPrintPageContent(pageEl, musica, idx, posLabel) {
 
 function transposePrintSong(pageEl) {
   if (!pageEl) return;
-  var idx = parseInt(pageEl.dataset ? pageEl.dataset.songIdx : pageEl.getAttribute('data-song-idx'));
+  var idx = parseInt(pageEl.getAttribute('data-song-idx'));
+  if (isNaN(idx)) return;
   var musica = songsMaster[idx];
   if (!musica) return;
 
-  var titulo = getText(musica, 'titulo') || getText(musica, 'itulo') || '';
-  var tom = getText(musica, 'tom') || '';
-  var origRoot = parseRoot(tom) || 'C';
-  var currentTarget = transposeMap[titulo] || origRoot;
-  var newTarget = i2n((n2i(currentTarget) + 1 + 12) % 12);
+  var extra = parseInt(pageEl.getAttribute('data-extra-semis') || '0') || 0;
+  extra = (extra + 1) % 12;
+  pageEl.setAttribute('data-extra-semis', String(extra));
 
-  transposeMap[titulo] = newTarget;
-  saveTransposeMap();
-
-  var posLabel = pageEl.dataset ? pageEl.dataset.posLabel : pageEl.getAttribute('data-pos-label');
+  var posLabel = pageEl.getAttribute('data-pos-label') || '';
   buildPrintPageContent(pageEl, musica, idx, posLabel);
 }
 
