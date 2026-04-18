@@ -14432,14 +14432,11 @@ function buildPrintPageContent(pageEl, musica, idx, posLabel) {
   var youtube = getText(musica, 'youtube') || '';
 
   var origRoot = parseRoot(tom) || 'C';
-  var extraSemis = parseInt(pageEl.getAttribute('data-extra-semis') || '0') || 0;
-  var semis = extraSemis % 12;
-  var NOTES_LOCAL = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
-  var origIdx = NOTES_LOCAL.indexOf(origRoot);
-  var dispIdx = (origIdx < 0 ? 0 : origIdx) + semis;
-  var displayRoot = NOTES_LOCAL[((dispIdx % 12) + 12) % 12];
   var isMinor = /m(?!aj)/i.test(tom);
-  var displayKey = displayRoot + (isMinor ? 'm' : '');
+  var displayKey = origRoot + (isMinor ? 'm' : '');
+
+  pageEl.setAttribute('data-orig-key', displayKey);
+  pageEl.setAttribute('data-extra-semis', '0');
 
   var introMatch = cifraRaw.match(/<intro>([\s\S]*?)<\/intro>/i);
   var introContent = introMatch ? introMatch[1] : '';
@@ -14460,11 +14457,11 @@ function buildPrintPageContent(pageEl, musica, idx, posLabel) {
       if (isChordLine(introLinhas[ai])) apenasAcordes.push(introLinhas[ai]);
     }
     if (apenasAcordes.length > 0) {
-      introHtml = '<div class="print-intro-section"><span class="print-intro-label">INTRO</span>' + wrapChordsForPrint(apenasAcordes.join('\n'), semis) + '<hr class="print-intro-hr"></div>';
+      introHtml = '<div class="print-intro-section"><span class="print-intro-label">INTRO</span>' + wrapChordsForPrint(apenasAcordes.join('\n'), 0) + '<hr class="print-intro-hr"></div>';
     }
   }
 
-  var cifraHtml = introHtml + wrapChordsForPrint(cifraBody, semis);
+  var cifraHtml = introHtml + wrapChordsForPrint(cifraBody, 0);
 
   var youtubeHtml = youtube.trim()
     ? '<div class="print-meta"><a href="' + youtube.trim() + '" target="_blank" rel="noopener">' + youtube.trim() + '</a></div>'
@@ -14476,7 +14473,7 @@ function buildPrintPageContent(pageEl, musica, idx, posLabel) {
       '<div class="print-header">' +
         '<h1>' + titulo + '</h1>' +
         '<div class="print-meta">' +
-          'Tom: ' + displayKey +
+          'Tom: <span class="print-key-display">' + displayKey + '</span>' +
           ' <button class="print-transpose-btn" onclick="transposePrintSong(getParentPage(this))" title="Transpor +\u00BD tom">+\u00BD</button>' +
           bpmHtml + ' | ' + posLabel +
         '</div>' +
@@ -14488,19 +14485,52 @@ function buildPrintPageContent(pageEl, musica, idx, posLabel) {
     '</div>';
 }
 
+function transposeOneChord(text, semis) {
+  var SHARP = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+  var FLAT  = ['C','Db','D','Eb','E','F','Gb','G','Ab','A','Bb','B'];
+  function noteIdx(n) { var i = SHARP.indexOf(n); return i >= 0 ? i : FLAT.indexOf(n); }
+  function transRoot(root) {
+    var idx = noteIdx(root);
+    return idx < 0 ? root : SHARP[((idx + semis) % 12 + 12) % 12];
+  }
+  function transPart(part) {
+    if (!part) return '';
+    if (noteIdx(part.slice(0, 2)) >= 0) return transRoot(part.slice(0, 2)) + part.slice(2);
+    if (noteIdx(part.slice(0, 1)) >= 0) return transRoot(part.slice(0, 1)) + part.slice(1);
+    return part;
+  }
+  var slash = text.indexOf('/');
+  return slash >= 0
+    ? transPart(text.slice(0, slash)) + '/' + transPart(text.slice(slash + 1))
+    : transPart(text);
+}
+
 function transposePrintSong(pageEl) {
   if (!pageEl) return;
-  var idx = parseInt(pageEl.getAttribute('data-song-idx'));
-  if (isNaN(idx)) return;
-  var musica = songsMaster[idx];
-  if (!musica) return;
 
   var extra = parseInt(pageEl.getAttribute('data-extra-semis') || '0') || 0;
   extra = (extra + 1) % 12;
   pageEl.setAttribute('data-extra-semis', String(extra));
 
-  var posLabel = pageEl.getAttribute('data-pos-label') || '';
-  buildPrintPageContent(pageEl, musica, idx, posLabel);
+  // Transpõe cada span.chord in-place (sem reconstruir o HTML)
+  var chords = pageEl.querySelectorAll('.chord');
+  for (var i = 0; i < chords.length; i++) {
+    var t = (chords[i].textContent !== undefined ? chords[i].textContent : chords[i].innerText) || '';
+    chords[i].textContent = transposeOneChord(t.trim(), 1);
+  }
+
+  // Atualiza o display do tom
+  var SHARP = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+  var FLAT  = ['C','Db','D','Eb','E','F','Gb','G','Ab','A','Bb','B'];
+  var origKey = pageEl.getAttribute('data-orig-key') || '';
+  function ni(n) { var i = SHARP.indexOf(n); return i >= 0 ? i : FLAT.indexOf(n); }
+  var rootNote = ni(origKey.slice(0, 2)) >= 0 ? origKey.slice(0, 2) : (ni(origKey.slice(0, 1)) >= 0 ? origKey.slice(0, 1) : '');
+  if (rootNote) {
+    var suffix = origKey.slice(rootNote.length);
+    var newRoot = SHARP[((ni(rootNote) + extra) % 12 + 12) % 12];
+    var keySpan = pageEl.querySelector('.print-key-display');
+    if (keySpan) keySpan.textContent = newRoot + suffix;
+  }
 }
 
 function generatePrintMode() {
