@@ -8952,25 +8952,30 @@ font-size: 50px;
   position: fixed;
   right: 0;
   top: 50%;
+  -webkit-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
   transform: translateY(-50%);
   z-index: 100001;
   background: rgba(255,255,255,0.97);
   border-radius: 12px 0 0 12px;
+  -webkit-box-shadow: -3px 0 14px rgba(0,0,0,0.18);
   box-shadow: -3px 0 14px rgba(0,0,0,0.18);
   padding: 6px 4px;
   max-height: 90vh;
   overflow-y: auto;
+  -webkit-flex-direction: column;
   flex-direction: column;
-  gap: 2px;
   scrollbar-width: none;
 }
 #printAlphaMenu::-webkit-scrollbar { display: none; }
 #printMode.active #printAlphaMenu {
+  display: -webkit-flex;
   display: flex;
 }
 .alpha-btn {
   width: 44px;
   height: 36px;
+  margin-bottom: 2px;
   background: none;
   border: none;
   border-radius: 8px;
@@ -8978,15 +8983,18 @@ font-size: 50px;
   font-size: 15px;
   font-weight: 700;
   color: #1e3a5f;
+  display: -webkit-flex;
   display: flex;
+  -webkit-align-items: center;
   align-items: center;
+  -webkit-justify-content: center;
   justify-content: center;
   touch-action: manipulation;
-  user-select: none;
   -webkit-user-select: none;
-  transition: background 0.12s;
+  -moz-user-select: none;
+  user-select: none;
 }
-.alpha-btn:hover, .alpha-btn:active {
+.alpha-btn:active {
   background: #2563eb;
   color: white;
 }
@@ -14254,49 +14262,70 @@ function clearBibleScreen() {
 
 	NO PRINT MODE
 	
-	COLADO NA MARGEM DIREITA DA TELA FICARÁ UM MENU SUSPENSO QUE SEMPRE ESTARÁ NA TELA, INDEPENDENTE DA ROLAGEM
-	ESSE MENU TERÁ O ALFABETO ORGANIZADO VERTICALMENTE
-	QUANDO CLICAR EM UMA LETRA, A PÁGINA IRÁ ROLAR PARA A PRIMEIRA MÚSICA DA LISTA QUE COMEÇA COM A LETRA CLICADA
+	AS FUNCIONALIDADES RECENTEMENTE CONSTRUIDAS PARA O MODO PRINT MODE:
+	- TRANSPOR TOM DAS MÚSICAS 
+	- INDICE AO LADO DIREITO DA TELA QUE DICIOA PARA A PRIMEIRA MÚSICA COM A INICIAL 
 	
-	LETRAS QUE NÃO POSSUEM MÚSICAS COM A MESMA INICIAL NÃO IRÃO APARECER, PULANDO NO ALFABETO
+	ESTÃO FUNCIONANDO NO CHROME NO COMPUTADOR
 	
-	ESSA FUNCIONALIDADE SERÁ USADA EM TABLET, POR ISSO DEVE TER TAMANHO IDEAL
+	MAS NÃO ESTÃO FUNCIONANDO NO TABLET, USANDO FIREFOX FAST & PRIVATE BROWSER 68.11.0 PARA ANDROID 4.4.4
 	
+	GOSTARIA QUE FUNCIONASSE PARA AMBOS OS navegadores
+	
+	NÃO AFETAR NENHUMA FUNCIONALIDADE JÁ EXISTENTE
 	
 */
 
 
 
+function scrollToPrintPage(target) {
+  var top = target.getBoundingClientRect().top +
+    (window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0);
+  window.scrollTo(0, top - 10);
+}
+
+function getParentPage(el) {
+  while (el && el.nodeType === 1) {
+    if (el.className && el.className.indexOf('print-page') !== -1) return el;
+    el = el.parentNode;
+  }
+  return null;
+}
+
 function buildAlphaMenu() {
-  const menu = document.getElementById('printAlphaMenu');
+  var menu = document.getElementById('printAlphaMenu');
   if (!menu) return;
   menu.innerHTML = '';
 
-  const pages = [...document.querySelectorAll('#printContent .print-page')];
-  const letterMap = new Map(); // letra → primeiro pageEl com aquela inicial
+  var pages = document.querySelectorAll('#printContent .print-page');
+  var letterMap = {}; // letra → primeiro pageEl com aquela inicial
 
-  pages.forEach(page => {
-    const idx = parseInt(page.dataset.songIdx);
-    const musica = songsMaster[idx];
-    if (!musica) return;
-    const titulo = getText(musica, 'titulo') || getText(musica, 'itulo') || '';
-    const letra = titulo.trim().toUpperCase()[0];
-    if (letra && !letterMap.has(letra)) {
-      letterMap.set(letra, page);
+  for (var i = 0; i < pages.length; i++) {
+    var page = pages[i];
+    var idx = parseInt(page.dataset ? page.dataset.songIdx : page.getAttribute('data-song-idx'));
+    var musica = songsMaster[idx];
+    if (!musica) continue;
+    var titulo = getText(musica, 'titulo') || getText(musica, 'itulo') || '';
+    var letra = titulo.trim().toUpperCase().charAt(0);
+    if (letra && !letterMap[letra]) {
+      letterMap[letra] = page;
     }
-  });
+  }
 
-  [...letterMap.keys()].sort().forEach(letra => {
-    const btn = document.createElement('button');
-    btn.className = 'alpha-btn';
-    btn.textContent = letra;
-    btn.title = letra;
-    btn.addEventListener('click', () => {
-      const target = letterMap.get(letra);
-      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
-    menu.appendChild(btn);
-  });
+  var letras = Object.keys(letterMap).sort();
+  for (var j = 0; j < letras.length; j++) {
+    (function(l) {
+      var btn = document.createElement('button');
+      btn.className = 'alpha-btn';
+      btn.textContent = l;
+      btn.title = l;
+      btn.onclick = function() {
+        var target = letterMap[l];
+        if (target) scrollToPrintPage(target);
+      };
+      menu.appendChild(btn);
+    })(letras[j]);
+  }
 }
 
 function buildPrintPageContent(pageEl, musica, idx, posLabel) {
@@ -14335,7 +14364,7 @@ function buildPrintPageContent(pageEl, musica, idx, posLabel) {
         <h1>${titulo}</h1>
         <div class="print-meta">
           Tom: ${displayKey}
-          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest('.print-page'))" title="Transpor +½ tom">+½</button>
+          <button class="print-transpose-btn" onclick="transposePrintSong(getParentPage(this))" title="Transpor +½ tom">+½</button>
           ${bpm ? ' | BPM: ' + bpm : ''} | ${posLabel}
         </div>
         ${youtube.trim() ? `<div class="print-meta"><a href="${youtube.trim()}" target="_blank" rel="noopener">${youtube.trim()}</a></div>` : ''}
@@ -14348,20 +14377,22 @@ function buildPrintPageContent(pageEl, musica, idx, posLabel) {
 }
 
 function transposePrintSong(pageEl) {
-  const idx = parseInt(pageEl.dataset.songIdx);
-  const musica = songsMaster[idx];
+  if (!pageEl) return;
+  var idx = parseInt(pageEl.dataset ? pageEl.dataset.songIdx : pageEl.getAttribute('data-song-idx'));
+  var musica = songsMaster[idx];
   if (!musica) return;
 
-  const titulo = getText(musica, 'titulo') || getText(musica, 'itulo') || '';
-  const tom = getText(musica, 'tom') || '';
-  const origRoot = parseRoot(tom) || 'C';
-  const currentTarget = transposeMap[titulo] || origRoot;
-  const newTarget = i2n((n2i(currentTarget) + 1 + 12) % 12);
+  var titulo = getText(musica, 'titulo') || getText(musica, 'itulo') || '';
+  var tom = getText(musica, 'tom') || '';
+  var origRoot = parseRoot(tom) || 'C';
+  var currentTarget = transposeMap[titulo] || origRoot;
+  var newTarget = i2n((n2i(currentTarget) + 1 + 12) % 12);
 
   transposeMap[titulo] = newTarget;
   saveTransposeMap();
 
-  buildPrintPageContent(pageEl, musica, idx, pageEl.dataset.posLabel);
+  var posLabel = pageEl.dataset ? pageEl.dataset.posLabel : pageEl.getAttribute('data-pos-label');
+  buildPrintPageContent(pageEl, musica, idx, posLabel);
 }
 
 function generatePrintMode() {
