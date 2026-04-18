@@ -32,6 +32,117 @@
 
 
 <musica>
+	<titulo>My sacrifice</titulo>
+	<tom>D</tom>
+	<bpm></bpm>
+	<categ>Rafael</categ>
+	<youtube></youtube>
+	<cifra>
+	<![CDATA[
+
+<intro>
+</intro>
+
+
+
+    D5
+Hello my friend we meet again
+
+It's been a while where should
+      Bm7(9)            G5(9)
+We begin  Feels like forever
+ D5
+Within my heart are memories
+                                  Bm7(9)
+Of perfect love that you gave to me
+     G5(9)
+I remember
+
+
+              D
+When you are with me
+      A11/C#   Bm7(9)        G5(9)
+I'm free, I'm careless, I believe
+              D              A11/C#
+Above all the others we'll fly
+             Bm7(9)     G5(9)
+This brings tears to my eyes
+
+My sacrifice
+
+
+D5  Bm7(9)  G5(9)
+
+
+ D5
+We've seen our share of ups and downs
+                               Bm7(9)
+Oh how quickly life can turn around in
+       G5(9)
+an instant
+D5
+It feels so good to reunite
+                                 Bm7(9)
+Within yourself and within your mind
+            G5(9)
+Let's find peace there
+
+
+              D
+When you are with me
+      A11/C#   Bm7(9)        G5(9)
+I'm free, I'm careless, I believe
+              D              D/C#
+Above all the others we'll fly
+             Bm7(9)     G5(9)
+This brings tears to my eyes
+             D5
+My sacrifice
+
+
+D5
+I just want to say hello again
+                               D5+  D5(9)
+I just want to say hello again
+
+
+              D
+When you are with me
+      A11/C#   Bm7(9)        G5(9)
+I'm free, I'm careless, I believe
+              D              D/C#
+Above all the others we'll fly
+             Bm7(9)     G5(9)
+This brings tears to my eyes
+
+              D
+When you are with me
+      A11/C#   Bm7(9)        G5(9)
+I'm free, I'm careless, I believe
+              D              D/C#
+Above all the others we'll fly
+             Bm7(9)     G5(9)
+This brings tears to my eyes
+             D5
+My sacrifice
+
+My sacrifice
+
+D5
+I just want to say hello again
+                               D5+  
+I just want to say hello again
+         D5(9)    
+My sacrifice
+
+
+	]]>
+	</cifra>
+</musica>
+
+
+
+<musica>
 	<titulo>Todas as Coisas</titulo>
 	<tom>D</tom>
 	<bpm></bpm>
@@ -8951,28 +9062,20 @@ font-size: 50px;
   display: none;
   position: fixed;
   right: 0;
-  top: 50%;
-  -webkit-transform: translateY(-50%);
-  -ms-transform: translateY(-50%);
-  transform: translateY(-50%);
+  top: 10px;
+  bottom: 10px;
   z-index: 100001;
   background: rgba(255,255,255,0.97);
   border-radius: 12px 0 0 12px;
   -webkit-box-shadow: -3px 0 14px rgba(0,0,0,0.18);
   box-shadow: -3px 0 14px rgba(0,0,0,0.18);
   padding: 6px 4px;
-  max-height: 90vh;
   overflow-y: auto;
-  -webkit-flex-direction: column;
-  flex-direction: column;
   scrollbar-width: none;
 }
 #printAlphaMenu::-webkit-scrollbar { display: none; }
-#printMode.active #printAlphaMenu {
-  display: -webkit-flex;
-  display: flex;
-}
 .alpha-btn {
+  display: block;
   width: 44px;
   height: 36px;
   margin-bottom: 2px;
@@ -8983,16 +9086,14 @@ font-size: 50px;
   font-size: 15px;
   font-weight: 700;
   color: #1e3a5f;
-  display: -webkit-flex;
-  display: flex;
-  -webkit-align-items: center;
-  align-items: center;
-  -webkit-justify-content: center;
-  justify-content: center;
+  text-align: center;
+  line-height: 36px;
+  padding: 0;
   touch-action: manipulation;
   -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
+  box-sizing: border-box;
 }
 .alpha-btn:active {
   background: #2563eb;
@@ -14258,23 +14359,7 @@ function clearBibleScreen() {
 <script>
 
 
-/*
 
-	NO PRINT MODE
-	
-	AS FUNCIONALIDADES RECENTEMENTE CONSTRUIDAS PARA O MODO PRINT MODE:
-	- TRANSPOR TOM DAS MÚSICAS 
-	- INDICE AO LADO DIREITO DA TELA QUE DICIOA PARA A PRIMEIRA MÚSICA COM A INICIAL 
-	
-	ESTÃO FUNCIONANDO NO CHROME NO COMPUTADOR
-	
-	MAS NÃO ESTÃO FUNCIONANDO NO TABLET, USANDO FIREFOX FAST & PRIVATE BROWSER 68.11.0 PARA ANDROID 4.4.4
-	
-	GOSTARIA QUE FUNCIONASSE PARA AMBOS OS navegadores
-	
-	NÃO AFETAR NENHUMA FUNCIONALIDADE JÁ EXISTENTE
-	
-*/
 
 
 
@@ -14326,6 +14411,8 @@ function buildAlphaMenu() {
       menu.appendChild(btn);
     })(letras[j]);
   }
+
+  menu.style.display = letras.length > 0 ? 'block' : 'none';
 }
 
 function buildPrintPageContent(pageEl, musica, idx, posLabel) {
@@ -14358,22 +14445,26 @@ function buildPrintPageContent(pageEl, musica, idx, posLabel) {
 
   const cifraHtml = introHtml + wrapChordsForPrint(cifraBody, semis);
 
-  pageEl.innerHTML = `
-    <div style="page-break-inside: avoid; break-inside: avoid;">
-      <div class="print-header">
-        <h1>${titulo}</h1>
-        <div class="print-meta">
-          Tom: ${displayKey}
-          <button class="print-transpose-btn" onclick="transposePrintSong(getParentPage(this))" title="Transpor +½ tom">+½</button>
-          ${bpm ? ' | BPM: ' + bpm : ''} | ${posLabel}
-        </div>
-        ${youtube.trim() ? `<div class="print-meta"><a href="${youtube.trim()}" target="_blank" rel="noopener">${youtube.trim()}</a></div>` : ''}
-      </div>
-      <div class="print-columns">
-        ${cifraHtml}
-      </div>
-    </div>
-  `;
+  var youtubeHtml = youtube.trim()
+    ? '<div class="print-meta"><a href="' + youtube.trim() + '" target="_blank" rel="noopener">' + youtube.trim() + '</a></div>'
+    : '';
+  var bpmHtml = bpm ? ' | BPM: ' + bpm : '';
+
+  pageEl.innerHTML =
+    '<div style="page-break-inside: avoid; break-inside: avoid;">' +
+      '<div class="print-header">' +
+        '<h1>' + titulo + '</h1>' +
+        '<div class="print-meta">' +
+          'Tom: ' + displayKey +
+          ' <button class="print-transpose-btn" onclick="transposePrintSong(getParentPage(this))" title="Transpor +\u00BD tom">+\u00BD</button>' +
+          bpmHtml + ' | ' + posLabel +
+        '</div>' +
+        youtubeHtml +
+      '</div>' +
+      '<div class="print-columns">' +
+        cifraHtml +
+      '</div>' +
+    '</div>';
 }
 
 function transposePrintSong(pageEl) {
@@ -14499,15 +14590,18 @@ function generatePrintMode() {
 }
 
 function closePrintMode() {
-  const printMode = document.getElementById('printMode');
+  var printMode = document.getElementById('printMode');
   printMode.classList.remove('active');
-  
+
+  var alphaMenu = document.getElementById('printAlphaMenu');
+  if (alphaMenu) alphaMenu.style.display = 'none';
+
   // Restaura interface principal
   document.getElementById('geral').style.display = 'grid';
   document.body.style.overflow = '';
-  
-  const menuBtn = document.getElementById('menuToggleBtn');
-  const navBtn = document.getElementById('mobileNavBtn');
+
+  var menuBtn = document.getElementById('menuToggleBtn');
+  var navBtn = document.getElementById('mobileNavBtn');
   if (menuBtn) menuBtn.style.display = '';
   if (navBtn) navBtn.style.display = '';
 }
