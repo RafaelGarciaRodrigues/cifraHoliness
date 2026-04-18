@@ -10142,12 +10142,12 @@ try {
     playlist = playlist.map(idx => ({type: 'song', idx}));
     localStorage.setItem('playlist', JSON.stringify(playlist));
   }
-} catch { 
-  playlist = []; 
+} catch(e) {
+  playlist = [];
 }
 
 function savePlaylist(){
-  try { localStorage.setItem('playlist', JSON.stringify(playlist)); } catch {}
+  try { localStorage.setItem('playlist', JSON.stringify(playlist)); } catch(e) {}
 }
 
 // Verifica se item está na fila (música ou versículo)
@@ -10593,13 +10593,13 @@ function getAllCategories(xml){
 let transposeMap = {};
 try {
   transposeMap = JSON.parse(localStorage.getItem('transposeMap') || '{}');
-} catch { transposeMap = {}; }
+} catch(e) { transposeMap = {}; }
 
 let currentSongTitle = '';   // título da música atual (chave no map)
 let currentSongOrigKey = ''; // tom original do XML da música atual (ex.: "A" ou "Am")
 
 function saveTransposeMap(){
-  try { localStorage.setItem('transposeMap', JSON.stringify(transposeMap)); } catch {}
+  try { localStorage.setItem('transposeMap', JSON.stringify(transposeMap)); } catch(e) {}
 }
 
 // distância em semitons entre dois roots (0..11), resultado 0..11
