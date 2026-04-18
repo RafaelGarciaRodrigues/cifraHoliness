@@ -14369,6 +14369,19 @@ function scrollToPrintPage(target) {
   window.scrollTo(0, top - 10);
 }
 
+function alphaMenuClick(btn) {
+  var letter = btn.getAttribute('data-letter');
+  if (!letter) return;
+  var pages = document.querySelectorAll('#printContent .print-page');
+  for (var i = 0; i < pages.length; i++) {
+    var h1 = pages[i].querySelector('h1');
+    if (h1 && h1.textContent.trim().toUpperCase().charAt(0) === letter) {
+      scrollToPrintPage(pages[i]);
+      return;
+    }
+  }
+}
+
 function getParentPage(el) {
   while (el && el.nodeType === 1) {
     if (el.className && el.className.indexOf('print-page') !== -1) return el;
@@ -14399,17 +14412,13 @@ function buildAlphaMenu() {
 
   var letras = Object.keys(letterMap).sort();
   for (var j = 0; j < letras.length; j++) {
-    (function(l) {
-      var btn = document.createElement('button');
-      btn.className = 'alpha-btn';
-      btn.textContent = l;
-      btn.title = l;
-      btn.onclick = function() {
-        var target = letterMap[l];
-        if (target) scrollToPrintPage(target);
-      };
-      menu.appendChild(btn);
-    })(letras[j]);
+    var btn = document.createElement('button');
+    btn.className = 'alpha-btn';
+    btn.textContent = letras[j];
+    btn.title = letras[j];
+    btn.setAttribute('data-letter', letras[j]);
+    btn.setAttribute('onclick', 'alphaMenuClick(this)');
+    menu.appendChild(btn);
   }
 
   menu.style.display = letras.length > 0 ? 'block' : 'none';
