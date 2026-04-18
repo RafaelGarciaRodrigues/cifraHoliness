@@ -8359,7 +8359,7 @@ For all the rest of time
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>::MÚSICAS::</title>
+<title>PlayList</title>
 
 
 
@@ -8947,6 +8947,53 @@ font-size: 50px;
   padding: 20px;
 }
 
+#printAlphaMenu {
+  display: none;
+  position: fixed;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 100001;
+  background: rgba(255,255,255,0.97);
+  border-radius: 12px 0 0 12px;
+  box-shadow: -3px 0 14px rgba(0,0,0,0.18);
+  padding: 6px 4px;
+  max-height: 90vh;
+  overflow-y: auto;
+  flex-direction: column;
+  gap: 2px;
+  scrollbar-width: none;
+}
+#printAlphaMenu::-webkit-scrollbar { display: none; }
+#printMode.active #printAlphaMenu {
+  display: flex;
+}
+.alpha-btn {
+  width: 44px;
+  height: 36px;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 700;
+  color: #1e3a5f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: background 0.12s;
+}
+.alpha-btn:hover, .alpha-btn:active {
+  background: #2563eb;
+  color: white;
+}
+@media print {
+  #printAlphaMenu { display: none !important; }
+}
+
 .print-page {
   background: white;
   padding: 30px;
@@ -9040,6 +9087,35 @@ font-size: 50px;
   border: none;
   border-top: 1px solid #000;
   margin: 6px 0 10px 0;
+}
+
+.print-transpose-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  margin-left: 10px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 17px;
+  font-weight: bold;
+  vertical-align: middle;
+  touch-action: manipulation;
+  box-shadow: 0 2px 8px rgba(37,99,235,0.4);
+  line-height: 1;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.print-transpose-btn:active {
+  background: #1d4ed8;
+  transform: scale(0.93);
+}
+@media print {
+  .print-transpose-btn { display: none !important; }
 }
 
 .print-close-btn {
@@ -14165,6 +14241,7 @@ function clearBibleScreen() {
 
 <div id="printMode">
   <button class="print-close-btn" onclick="closePrintMode()">✕ Fechar (ESC)</button>
+  <div id="printAlphaMenu"></div>
   <div id="printContent"></div>
 </div>
 
@@ -14175,17 +14252,117 @@ function clearBibleScreen() {
 
 /*
 
-	NO MODO ATUAL, QUANDO PRECIONA CTRL + I ARE O MODO IMPRESSÃO MOSTRANDO AS MÚSICAS SELECIONADAS NA SEQUENCIA DA SELEÇÃO
+	NO PRINT MODE
 	
-	QUERO QUE CONTINUE EXATAMENTE ASSIM, MAS QUERO ADICIONAR UMA FUNCIONALIDADE SIMILAR
+	COLADO NA MARGEM DIREITA DA TELA FICARÁ UM MENU SUSPENSO QUE SEMPRE ESTARÁ NA TELA, INDEPENDENTE DA ROLAGEM
+	ESSE MENU TERÁ O ALFABETO ORGANIZADO VERTICALMENTE
+	QUANDO CLICAR EM UMA LETRA, A PÁGINA IRÁ ROLAR PARA A PRIMEIRA MÚSICA DA LISTA QUE COMEÇA COM A LETRA CLICADA
 	
-	QUANDO PRESSIONAR SHIFT + I DEVE:
+	LETRAS QUE NÃO POSSUEM MÚSICAS COM A MESMA INICIAL NÃO IRÃO APARECER, PULANDO NO ALFABETO
 	
-	- ABRIR TODAS AS MÚSICAS NO MODO IMPRESSÃO EM ORDEM ALFABÉTICA PELO NOME NA MESMA FORMATAÇÃO DE QUANDO SE PRESSIONA CTRL + I
-
+	ESSA FUNCIONALIDADE SERÁ USADA EM TABLET, POR ISSO DEVE TER TAMANHO IDEAL
+	
+	
 */
 
 
+
+function buildAlphaMenu() {
+  const menu = document.getElementById('printAlphaMenu');
+  if (!menu) return;
+  menu.innerHTML = '';
+
+  const pages = [...document.querySelectorAll('#printContent .print-page')];
+  const letterMap = new Map(); // letra → primeiro pageEl com aquela inicial
+
+  pages.forEach(page => {
+    const idx = parseInt(page.dataset.songIdx);
+    const musica = songsMaster[idx];
+    if (!musica) return;
+    const titulo = getText(musica, 'titulo') || getText(musica, 'itulo') || '';
+    const letra = titulo.trim().toUpperCase()[0];
+    if (letra && !letterMap.has(letra)) {
+      letterMap.set(letra, page);
+    }
+  });
+
+  [...letterMap.keys()].sort().forEach(letra => {
+    const btn = document.createElement('button');
+    btn.className = 'alpha-btn';
+    btn.textContent = letra;
+    btn.title = letra;
+    btn.addEventListener('click', () => {
+      const target = letterMap.get(letra);
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    menu.appendChild(btn);
+  });
+}
+
+function buildPrintPageContent(pageEl, musica, idx, posLabel) {
+  const titulo = getText(musica, 'titulo') || getText(musica, 'itulo') || 'Música sem título';
+  const tom = getText(musica, 'tom') || '';
+  const cifraRaw = getText(musica, 'cifra') || '';
+  const bpm = getText(musica, 'bpm') || '';
+  const youtube = getText(musica, 'youtube') || '';
+
+  const origRoot = parseRoot(tom) || 'C';
+  const targetRoot = transposeMap[titulo] || origRoot;
+  const semis = semisBetween(origRoot, targetRoot);
+  const displayKey = targetRoot + (/m(?!aj)/i.test(tom) ? 'm' : '');
+
+  const introMatch = cifraRaw.match(/<intro>([\s\S]*?)<\/intro>/i);
+  const introContent = introMatch ? introMatch[1] : '';
+  const cifraWithoutIntro = cifraRaw.replace(/<intro>[\s\S]*?<\/intro>/i, '');
+
+  const linhas = cifraWithoutIntro.replace(/\r\n?/g, '\n').split('\n');
+  const starIdx = linhas.findIndex(l => l.trim().startsWith('*'));
+  const cifraBody = starIdx !== -1 ? linhas.slice(starIdx + 1).join('\n') : cifraWithoutIntro;
+
+  let introHtml = '';
+  if (introContent.trim()) {
+    const apenasAcordes = introContent.replace(/\r\n?/g, '\n').split('\n').filter(l => isChordLine(l)).join('\n');
+    if (apenasAcordes.trim()) {
+      introHtml = `<div class="print-intro-section"><span class="print-intro-label">INTRO</span>${wrapChordsForPrint(apenasAcordes, semis)}<hr class="print-intro-hr"></div>`;
+    }
+  }
+
+  const cifraHtml = introHtml + wrapChordsForPrint(cifraBody, semis);
+
+  pageEl.innerHTML = `
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>${titulo}</h1>
+        <div class="print-meta">
+          Tom: ${displayKey}
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest('.print-page'))" title="Transpor +½ tom">+½</button>
+          ${bpm ? ' | BPM: ' + bpm : ''} | ${posLabel}
+        </div>
+        ${youtube.trim() ? `<div class="print-meta"><a href="${youtube.trim()}" target="_blank" rel="noopener">${youtube.trim()}</a></div>` : ''}
+      </div>
+      <div class="print-columns">
+        ${cifraHtml}
+      </div>
+    </div>
+  `;
+}
+
+function transposePrintSong(pageEl) {
+  const idx = parseInt(pageEl.dataset.songIdx);
+  const musica = songsMaster[idx];
+  if (!musica) return;
+
+  const titulo = getText(musica, 'titulo') || getText(musica, 'itulo') || '';
+  const tom = getText(musica, 'tom') || '';
+  const origRoot = parseRoot(tom) || 'C';
+  const currentTarget = transposeMap[titulo] || origRoot;
+  const newTarget = i2n((n2i(currentTarget) + 1 + 12) % 12);
+
+  transposeMap[titulo] = newTarget;
+  saveTransposeMap();
+
+  buildPrintPageContent(pageEl, musica, idx, pageEl.dataset.posLabel);
+}
 
 function generatePrintMode() {
   // Verifica se há músicas na fila
@@ -14265,20 +14442,10 @@ function generatePrintMode() {
     // Cria página
     const page = document.createElement('div');
     page.className = 'print-page';
-    
-    page.innerHTML = `
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>${titulo}</h1>
-          <div class="print-meta">Tom: ${displayKey}${bpm ? ' | BPM: ' + bpm : ''} | ${queuePos + 1}ª da sequência</div>
-          ${youtube.trim() ? `<div class="print-meta"><a href="${youtube.trim()}" target="_blank" rel="noopener">${youtube.trim()}</a></div>` : ''}
-        </div>
-        <div class="print-columns">
-          ${cifraHtml}
-        </div>
-      </div>
-    `;
-    
+    page.dataset.songIdx = globalIdx;
+    page.dataset.posLabel = `${queuePos + 1}ª da sequência`;
+    buildPrintPageContent(page, musica, globalIdx, page.dataset.posLabel);
+
     printContent.appendChild(page);
   });
   
@@ -14295,7 +14462,8 @@ function generatePrintMode() {
   // Mostra modo impressão
   printMode.classList.add('active');
   document.body.style.overflow = 'auto';
-  
+  buildAlphaMenu();
+
   console.log(`[PrintMode] ${songItems.length} música(s) prontas. Use Ctrl+P para imprimir.`);
 }
 
@@ -14418,18 +14586,9 @@ function generatePrintModeAll() {
 
     const page = document.createElement('div');
     page.className = 'print-page';
-    page.innerHTML = `
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>${titulo}</h1>
-          <div class="print-meta">Tom: ${displayKey}${bpm ? ' | BPM: ' + bpm : ''} | ${pos + 1}ª (alfabética)</div>
-          ${youtube.trim() ? `<div class="print-meta"><a href="${youtube.trim()}" target="_blank" rel="noopener">${youtube.trim()}</a></div>` : ''}
-        </div>
-        <div class="print-columns">
-          ${cifraHtml}
-        </div>
-      </div>
-    `;
+    page.dataset.songIdx = idx;
+    page.dataset.posLabel = `${pos + 1}ª (alfabética)`;
+    buildPrintPageContent(page, musica, idx, page.dataset.posLabel);
     printContent.appendChild(page);
   });
 
@@ -14444,6 +14603,7 @@ function generatePrintModeAll() {
 
   printMode.classList.add('active');
   document.body.style.overflow = 'auto';
+  buildAlphaMenu();
 
   console.log(`[PrintModeAll] ${allSongs.length} música(s) prontas em ordem alfabética.`);
 }

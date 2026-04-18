@@ -8359,7 +8359,7 @@ For all the rest of time
 
 
 <meta content="width=device-width, initial-scale=1" name="viewport">
-<title>::MÚSICAS::</title>
+<title>PlayList</title>
 
 
 
@@ -8947,6 +8947,53 @@ font-size: 50px;
   padding: 20px;
 }
 
+#printAlphaMenu {
+  display: none;
+  position: fixed;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 100001;
+  background: rgba(255,255,255,0.97);
+  border-radius: 12px 0 0 12px;
+  box-shadow: -3px 0 14px rgba(0,0,0,0.18);
+  padding: 6px 4px;
+  max-height: 90vh;
+  overflow-y: auto;
+  flex-direction: column;
+  gap: 2px;
+  scrollbar-width: none;
+}
+#printAlphaMenu::-webkit-scrollbar { display: none; }
+#printMode.active #printAlphaMenu {
+  display: flex;
+}
+.alpha-btn {
+  width: 44px;
+  height: 36px;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 700;
+  color: #1e3a5f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: background 0.12s;
+}
+.alpha-btn:hover, .alpha-btn:active {
+  background: #2563eb;
+  color: white;
+}
+@media print {
+  #printAlphaMenu { display: none !important; }
+}
+
 .print-page {
   background: white;
   padding: 30px;
@@ -9040,6 +9087,35 @@ font-size: 50px;
   border: none;
   border-top: 1px solid #000;
   margin: 6px 0 10px 0;
+}
+
+.print-transpose-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  margin-left: 10px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 17px;
+  font-weight: bold;
+  vertical-align: middle;
+  touch-action: manipulation;
+  box-shadow: 0 2px 8px rgba(37,99,235,0.4);
+  line-height: 1;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.print-transpose-btn:active {
+  background: #1d4ed8;
+  transform: scale(0.93);
+}
+@media print {
+  .print-transpose-btn { display: none !important; }
 }
 
 .print-close-btn {
@@ -14288,26 +14364,35 @@ function clearBibleScreen() {
 
 <div id="printMode" class="active">
   <button class="print-close-btn" onclick="closePrintMode()">✕ Fechar (ESC)</button>
-  <div id="printContent"><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>...</h1>
-          <div class="print-meta">Tom: A | 1ª (alfabética)</div>
-          
+  <div id="printAlphaMenu"><button class="alpha-btn" title=".">.</button><button class="alpha-btn" title="A">A</button><button class="alpha-btn" title="B">B</button><button class="alpha-btn" title="C">C</button><button class="alpha-btn" title="D">D</button><button class="alpha-btn" title="E">E</button><button class="alpha-btn" title="F">F</button><button class="alpha-btn" title="G">G</button><button class="alpha-btn" title="H">H</button><button class="alpha-btn" title="I">I</button><button class="alpha-btn" title="L">L</button><button class="alpha-btn" title="M">M</button><button class="alpha-btn" title="N">N</button><button class="alpha-btn" title="O">O</button><button class="alpha-btn" title="P">P</button><button class="alpha-btn" title="Q">Q</button><button class="alpha-btn" title="R">R</button><button class="alpha-btn" title="S">S</button><button class="alpha-btn" title="T">T</button><button class="alpha-btn" title="U">U</button><button class="alpha-btn" title="V">V</button><button class="alpha-btn" title="Ó">Ó</button></div>
+  <div id="printContent"><div class="print-page" data-song-idx="0" data-pos-label="1ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>...</h1>
+        <div class="print-meta">
+          Tom: A
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 1ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha" style="min-height:1em;">&nbsp;</span>
-        </div>
+        
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>A Alegria Está No Coração</h1>
-          <div class="print-meta">Tom: D | 2ª (alfabética)</div>
-          
+      <div class="print-columns">
+        <span class="linha" style="min-height:1em;">&nbsp;</span>
+      </div>
+    </div>
+  </div><div class="print-page" data-song-idx="75" data-pos-label="2ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>A Alegria Está No Coração</h1>
+        <div class="print-meta">
+          Tom: D
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 2ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">D</span></span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">D</span></span>
 
 <span class="linha"><span class="chord">D</span></span>
 <span class="linha">A alegria está no coração</span>
@@ -14395,17 +14480,21 @@ function clearBibleScreen() {
 <span class="linha">É o amor que só tem quem</span>
 <span class="linha">                <span class="chord">D</span></span>
 <span class="linha">Já conhece a Jesus</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>A Benção</h1>
-          <div class="print-meta">Tom: G | 3ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="29" data-pos-label="3ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>A Benção</h1>
+        <div class="print-meta">
+          Tom: G
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 3ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">G</span></span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">G</span></span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha"><span class="chord">G</span>                 <span class="chord">C/E</span></span>
 <span class="linha">   Que o Senhor te      abençoe</span>
@@ -14530,17 +14619,21 @@ function clearBibleScreen() {
 <span class="linha">Am__ém, amém,  amém</span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha"><span class="chord">G</span></span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>A Ele a Glória</h1>
-          <div class="print-meta">Tom: Bm | 4ª (alfabética)</div>
-          <div class="print-meta"><a href="https://www.youtube.com/watch?v=zC9B_v6fJCs" target="_blank" rel="noopener">https://www.youtube.com/watch?v=zC9B_v6fJCs</a></div>
+    </div>
+  </div><div class="print-page" data-song-idx="49" data-pos-label="4ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>A Ele a Glória</h1>
+        <div class="print-meta">
+          Tom: Bm
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 4ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">Bm</span></span>
+        <div class="print-meta"><a href="https://www.youtube.com/watch?v=zC9B_v6fJCs" target="_blank" rel="noopener">https://www.youtube.com/watch?v=zC9B_v6fJCs</a></div>
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">Bm</span></span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha"><span class="chord">Bm</span>                   <span class="chord">G</span>   </span>
 <span class="linha">   Porque dEle e por Ele </span>
@@ -14602,17 +14695,21 @@ function clearBibleScreen() {
 <span class="linha">A Ele a Gló______ria</span>
 <span class="linha">        <span class="chord">G</span>  <span class="chord">F#m7</span>            <span class="chord">Bm</span></span>
 <span class="linha">Ele a Glória, pra sempre amém</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>A Lua Que Eu Te Dei</h1>
-          <div class="print-meta">Tom: F | 5ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="58" data-pos-label="5ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>A Lua Que Eu Te Dei</h1>
+        <div class="print-meta">
+          Tom: F
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 5ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">A9</span>                 <span class="chord">A/G</span>                  <span class="chord">F#m7</span>            <span class="chord">D9</span></span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">A9</span>                 <span class="chord">A/G</span>                  <span class="chord">F#m7</span>            <span class="chord">D9</span></span>
 <span class="linha">Posso te falar dos sonhos das flores de como a cidade mudou</span>
 <span class="linha"><span class="chord">A9</span>                <span class="chord">A/G</span>            <span class="chord">F#m7</span>          <span class="chord">D9</span></span>
 <span class="linha">Posso te falar do medo  do meu desejo  do meu amor</span>
@@ -14652,17 +14749,21 @@ function clearBibleScreen() {
 <span class="linha">Meu amor</span>
 <span class="linha">      <span class="chord">D9</span>            <span class="chord">Dm6</span>         <span class="chord">Dm6</span></span>
 <span class="linha">Durma bem me queira bem meu amor</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Acalma o Meu Coração</h1>
-          <div class="print-meta">Tom: D | 6ª (alfabética)</div>
-          <div class="print-meta"><a href="https://www.youtube.com/watch?v=9yuLbxchNZQ" target="_blank" rel="noopener">https://www.youtube.com/watch?v=9yuLbxchNZQ</a></div>
+    </div>
+  </div><div class="print-page" data-song-idx="7" data-pos-label="6ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Acalma o Meu Coração</h1>
+        <div class="print-meta">
+          Tom: D
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 6ª (alfabética)
         </div>
-        <div class="print-columns">
-          <div class="print-intro-section"><span class="print-intro-label">INTRO</span><span class="linha"><span class="chord">D</span>          <span class="chord">Bm7</span>       <span class="chord">Em7</span></span>
+        <div class="print-meta"><a href="https://www.youtube.com/watch?v=9yuLbxchNZQ" target="_blank" rel="noopener">https://www.youtube.com/watch?v=9yuLbxchNZQ</a></div>
+      </div>
+      <div class="print-columns">
+        <div class="print-intro-section"><span class="print-intro-label">INTRO</span><span class="linha"><span class="chord">D</span>          <span class="chord">Bm7</span>       <span class="chord">Em7</span></span>
 <span class="linha">        <span class="chord">Em</span>           <span class="chord">A7</span></span>
 <span class="linha">           <span class="chord">F#m</span>        <span class="chord">D/F#</span>         <span class="chord">B7</span></span>
 <span class="linha">           <span class="chord">A7</span>   <span class="chord">Em7</span>                    <span class="chord">A</span></span>
@@ -14807,17 +14908,21 @@ function clearBibleScreen() {
 <span class="linha">Se for em tua presença</span>
 <span class="linha">          <span class="chord">Bm7</span>   <span class="chord">G</span>   <span class="chord">D</span></span>
 <span class="linha">Acalma o meu coração</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Aclame Ao Senhor</h1>
-          <div class="print-meta">Tom: A | 7ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="45" data-pos-label="7ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Aclame Ao Senhor</h1>
+        <div class="print-meta">
+          Tom: A
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 7ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">A7M</span>  <span class="chord">D9</span>  <span class="chord">A7M</span>  <span class="chord">D9</span></span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">A7M</span>  <span class="chord">D9</span>  <span class="chord">A7M</span>  <span class="chord">D9</span></span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
@@ -14934,17 +15039,21 @@ function clearBibleScreen() {
 <span class="linha">Incomparáveis são tuas promessas</span>
 <span class="linha"><span class="chord">G#m7</span>    <span class="chord">B/F#</span>       <span class="chord">E</span>                  <span class="chord">B4</span>  <span class="chord">B</span></span>
 <span class="linha">Incomparáveis são tuas promessas pra mim</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Acorrentado Em Você</h1>
-          <div class="print-meta">Tom: C | 8ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="8" data-pos-label="8ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Acorrentado Em Você</h1>
+        <div class="print-meta">
+          Tom: C
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 8ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">C</span></span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">C</span></span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha">       <span class="chord">Dm</span></span>
 <span class="linha">Eu não sei o que é que eu faço</span>
@@ -14995,17 +15104,21 @@ function clearBibleScreen() {
 <span class="linha">E não consigo te esquecer</span>
 <span class="linha">      <span class="chord">D</span>            <span class="chord">Em</span>   <span class="chord">A</span>    <span class="chord">D</span></span>
 <span class="linha">Eu me sinto acorrentado em você</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Amigo de Deus</h1>
-          <div class="print-meta">Tom: C | 9ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="66" data-pos-label="9ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Amigo de Deus</h1>
+        <div class="print-meta">
+          Tom: C
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 9ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">C</span></span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">C</span></span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha">      <span class="chord">C</span>     <span class="chord">G/B</span>       <span class="chord">Am</span></span>
@@ -15059,17 +15172,21 @@ function clearBibleScreen() {
 <span class="linha">De Jesus, meu Bom Pastor</span>
 <span class="linha">      <span class="chord">C/G</span>      <span class="chord">G</span>      <span class="chord">F</span>    <span class="chord">Fm</span></span>
 <span class="linha">De Jesus, meu Bom Pastor</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Apenas Mais Uma de Amor</h1>
-          <div class="print-meta">Tom: Em | 10ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="55" data-pos-label="10ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Apenas Mais Uma de Amor</h1>
+        <div class="print-meta">
+          Tom: Em
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 10ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">G</span></span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">G</span></span>
 <span class="linha">    <span class="chord">G</span></span>
 <span class="linha">Eu gosto tanto de você</span>
 <span class="linha">      <span class="chord">C9</span></span>
@@ -15123,17 +15240,21 @@ function clearBibleScreen() {
 <span class="linha">    O que eu ganho, o que eu perco</span>
 <span class="linha">     <span class="chord">D</span>  <span class="chord">G</span>     <span class="chord">C9</span>     <span class="chord">G</span>  <span class="chord">C9</span>  <span class="chord">G</span></span>
 <span class="linha">Ninguém   precisa saber</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Atos 2</h1>
-          <div class="print-meta">Tom: Em | 11ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="46" data-pos-label="11ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Atos 2</h1>
+        <div class="print-meta">
+          Tom: Em
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 11ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">Em7</span>  <span class="chord">C9</span>  <span class="chord">G</span>  <span class="chord">G9/B</span></span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">Em7</span>  <span class="chord">C9</span>  <span class="chord">G</span>  <span class="chord">G9/B</span></span>
 <span class="linha"><span class="chord">Em7</span>  <span class="chord">C9</span>  <span class="chord">G</span>  <span class="chord">G9/B</span></span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
@@ -15270,17 +15391,21 @@ function clearBibleScreen() {
 <span class="linha">Quero ouvir o som do céu</span>
 <span class="linha">      <span class="chord">G</span>     <span class="chord">C9</span>     <span class="chord">D4</span>  <span class="chord">C9</span></span>
 <span class="linha">Tua glória contemplar</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Bondade de Deus</h1>
-          <div class="print-meta">Tom: G | 12ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="74" data-pos-label="12ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Bondade de Deus</h1>
+        <div class="print-meta">
+          Tom: G
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 12ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">G</span></span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">G</span></span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha">           <span class="chord">G</span></span>
 <span class="linha">Te amo, Deus</span>
@@ -15378,17 +15503,21 @@ function clearBibleScreen() {
 <span class="linha">Eu cantarei da bondade de Deus</span>
 <span class="linha">         <span class="chord">C/G</span>     <span class="chord">D6</span>      <span class="chord">G</span></span>
 <span class="linha">Eu cantarei da bondade de Deus</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Cantarei Teu Amor Pra Sempre</h1>
-          <div class="print-meta">Tom: G | 13ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="65" data-pos-label="13ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Cantarei Teu Amor Pra Sempre</h1>
+        <div class="print-meta">
+          Tom: G
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 13ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">G</span></span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">G</span></span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 
 <span class="linha" style="min-height:1em;">&nbsp;</span>
@@ -15483,17 +15612,21 @@ function clearBibleScreen() {
 <span class="linha">  Cantarei Teu amor pra sempre</span>
 <span class="linha"><span class="chord">C9</span>            <span class="chord">D</span></span>
 <span class="linha">  Cantarei Teu amor pra sempre.</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Chamamecero</h1>
-          <div class="print-meta">Tom: A | 14ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="80" data-pos-label="14ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Chamamecero</h1>
+        <div class="print-meta">
+          Tom: A
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 14ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">A7M</span></span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">A7M</span></span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha"><span class="chord">A7M</span></span>
 <span class="linha">Como se a escuridão trouxesse luz</span>
@@ -15578,17 +15711,21 @@ function clearBibleScreen() {
 <span class="linha">   E quase arrebenta o fole</span>
 <span class="linha">  <span class="chord">Bm4/G#</span>    <span class="chord">E</span>            <span class="chord">A7M</span></span>
 <span class="linha">Que torce, pra vida melhorar</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Consagração</h1>
-          <div class="print-meta">Tom: G | 15ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="36" data-pos-label="15ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Consagração</h1>
+        <div class="print-meta">
+          Tom: G
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 15ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">G2</span>  <span class="chord">G4</span>  <span class="chord">G2</span>  <span class="chord">G4</span></span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">G2</span>  <span class="chord">G4</span>  <span class="chord">G2</span>  <span class="chord">G4</span></span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 
 <span class="linha" style="min-height:1em;">&nbsp;</span>
@@ -15709,17 +15846,21 @@ function clearBibleScreen() {
 <span class="linha">Ao rei Jesus</span>
 <span class="linha">        <span class="chord">Am</span>  <span class="chord">G</span>     <span class="chord">F</span>   <span class="chord">C/E</span>    <span class="chord">D</span>  <span class="chord">G</span></span>
 <span class="linha">E o louvor,   ao rei,      Jesus</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Deus de Amor</h1>
-          <div class="print-meta">Tom: G | 16ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="15" data-pos-label="16ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Deus de Amor</h1>
+        <div class="print-meta">
+          Tom: G
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 16ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">G</span></span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">G</span></span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha"><span class="chord">G</span>                    <span class="chord">C/G</span></span>
 <span class="linha">Tanto amor por mim</span>
@@ -15825,17 +15966,21 @@ function clearBibleScreen() {
 <span class="linha">Graças te dou pois,</span>
 <span class="linha">     <span class="chord">Am</span>             <span class="chord">D</span></span>
 <span class="linha">Tu és Deus de Amor!</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Deus Está Aqui</h1>
-          <div class="print-meta">Tom: A | 17ª (alfabética)</div>
-          <div class="print-meta"><a href="https://www.youtube.com/watch?v=Nf0_7oYbTGE" target="_blank" rel="noopener">https://www.youtube.com/watch?v=Nf0_7oYbTGE</a></div>
+    </div>
+  </div><div class="print-page" data-song-idx="68" data-pos-label="17ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Deus Está Aqui</h1>
+        <div class="print-meta">
+          Tom: A
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 17ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">A</span></span>
+        <div class="print-meta"><a href="https://www.youtube.com/watch?v=Nf0_7oYbTGE" target="_blank" rel="noopener">https://www.youtube.com/watch?v=Nf0_7oYbTGE</a></div>
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">A</span></span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha"> <span class="chord">A</span>   <span class="chord">E/G#</span>  <span class="chord">F#m7</span>  <span class="chord">F#4(7/9)</span>  <span class="chord">F#m7</span></span>
 <span class="linha">Deus está aqui</span>
@@ -15886,17 +16031,21 @@ function clearBibleScreen() {
 <span class="linha">Tão certo como eu te falo</span>
 <span class="linha">     <span class="chord">Bm7</span>              <span class="chord">E</span>               <span class="chord">A4</span></span>
 <span class="linha">Tão certo como eu te falo podes me ouvir</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Diante do Rei</h1>
-          <div class="print-meta">Tom: G | 18ª (alfabética)</div>
-          <div class="print-meta"><a href="https://www.youtube.com/watch?v=Z10HcH00l8I" target="_blank" rel="noopener">https://www.youtube.com/watch?v=Z10HcH00l8I</a></div>
+    </div>
+  </div><div class="print-page" data-song-idx="5" data-pos-label="18ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Diante do Rei</h1>
+        <div class="print-meta">
+          Tom: G
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 18ª (alfabética)
         </div>
-        <div class="print-columns">
-          <div class="print-intro-section"><span class="print-intro-label">INTRO</span><span class="linha"> <span class="chord">G</span>          <span class="chord">D/F#</span></span>
+        <div class="print-meta"><a href="https://www.youtube.com/watch?v=Z10HcH00l8I" target="_blank" rel="noopener">https://www.youtube.com/watch?v=Z10HcH00l8I</a></div>
+      </div>
+      <div class="print-columns">
+        <div class="print-intro-section"><span class="print-intro-label">INTRO</span><span class="linha"> <span class="chord">G</span>          <span class="chord">D/F#</span></span>
 <span class="linha">      <span class="chord">Em</span>                     <span class="chord">Bm</span></span>
 <span class="linha">       <span class="chord">C</span>                     <span class="chord">Bm</span></span>
 <span class="linha">     <span class="chord">Am</span>                   <span class="chord">C</span>     <span class="chord">D7</span>   <span class="chord">D4</span>  <span class="chord">D7</span></span><hr class="print-intro-hr"></div><span class="linha" style="min-height:1em;">&nbsp;</span>
@@ -15960,17 +16109,21 @@ function clearBibleScreen() {
 <span class="linha">Diante do rei dos reis todo joelho se dobrará</span>
 <span class="linha">       <span class="chord">C</span>         <span class="chord">Bm7</span>          <span class="chord">Am7</span>    <span class="chord">D7</span>   <span class="chord">G</span></span>
 <span class="linha">Diante do rei dos reis todo joelho se dobrará</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Doxologia</h1>
-          <div class="print-meta">Tom: G | 19ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="59" data-pos-label="19ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Doxologia</h1>
+        <div class="print-meta">
+          Tom: G
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 19ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">G</span></span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">G</span></span>
 <span class="linha"><span class="chord">G</span>       <span class="chord">D</span> <span class="chord">Em</span> <span class="chord">G</span>  </span>
 <span class="linha"><span class="chord">Em</span> <span class="chord">D</span>  <span class="chord">G</span>  </span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
@@ -15988,17 +16141,21 @@ function clearBibleScreen() {
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha"><span class="chord">G</span>   <span class="chord">G</span></span>
 <span class="linha">Amém</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Ele É Exaltado</h1>
-          <div class="print-meta">Tom: A | 20ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="77" data-pos-label="20ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Ele É Exaltado</h1>
+        <div class="print-meta">
+          Tom: A
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 20ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">A</span> </span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">A</span> </span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 
 <span class="linha" style="min-height:1em;">&nbsp;</span>
@@ -16092,17 +16249,21 @@ function clearBibleScreen() {
 <span class="linha">Ele é exaltado</span>
 <span class="linha">   <span class="chord">G2</span>        <span class="chord">E/G#</span>    <span class="chord">D9</span></span>
 <span class="linha">O rei é exaltado nos céus</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Ele Vem Pra Te Salvar</h1>
-          <div class="print-meta">Tom: D | 21ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="30" data-pos-label="21ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Ele Vem Pra Te Salvar</h1>
+        <div class="print-meta">
+          Tom: D
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 21ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">D</span></span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">D</span></span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha"><span class="chord">D</span>     <span class="chord">A</span>      <span class="chord">Bm</span>   <span class="chord">G</span></span>
 <span class="linha">   Diga para os temerosos</span>
@@ -16204,17 +16365,21 @@ function clearBibleScreen() {
 <span class="linha">Contempla ao Senhor e te levantarás</span>
 <span class="linha">        <span class="chord">G</span>    <span class="chord">A</span>     <span class="chord">D</span>   <span class="chord">A/Db</span>  <span class="chord">G</span></span>
 <span class="linha">Ele vem para te salvar</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Em Espírito, Em Verdade</h1>
-          <div class="print-meta">Tom: A | BPM: 120 | 22ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="51" data-pos-label="22ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Em Espírito, Em Verdade</h1>
+        <div class="print-meta">
+          Tom: A
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | BPM: 120 | 22ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">A</span></span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">A</span></span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha">      <span class="chord">A</span>             <span class="chord">E</span></span>
 <span class="linha">Em Espírito, em verdade</span>
@@ -16297,17 +16462,21 @@ function clearBibleScreen() {
 <span class="linha">Ministrando o louvor</span>
 <span class="linha">       <span class="chord">E</span>          <span class="chord">A</span>  <span class="chord">A/C#</span>  <span class="chord">Bm7</span></span>
 <span class="linha">Ministrando o louvor</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Em Jesus Amigo Temos</h1>
-          <div class="print-meta">Tom: G | 23ª (alfabética)</div>
-          <div class="print-meta"><a href="https://www.youtube.com/watch?v=a3M13WBdc54" target="_blank" rel="noopener">https://www.youtube.com/watch?v=a3M13WBdc54</a></div>
+    </div>
+  </div><div class="print-page" data-song-idx="63" data-pos-label="23ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Em Jesus Amigo Temos</h1>
+        <div class="print-meta">
+          Tom: G
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 23ª (alfabética)
         </div>
-        <div class="print-columns">
-          <div class="print-intro-section"><span class="print-intro-label">INTRO</span><span class="linha"><span class="chord">D</span>       <span class="chord">D7</span>           <span class="chord">G</span>    <span class="chord">G7</span></span>
+        <div class="print-meta"><a href="https://www.youtube.com/watch?v=a3M13WBdc54" target="_blank" rel="noopener">https://www.youtube.com/watch?v=a3M13WBdc54</a></div>
+      </div>
+      <div class="print-columns">
+        <div class="print-intro-section"><span class="print-intro-label">INTRO</span><span class="linha"><span class="chord">D</span>       <span class="chord">D7</span>           <span class="chord">G</span>    <span class="chord">G7</span></span>
 <span class="linha"><span class="chord">C</span>       <span class="chord">G/B</span>    <span class="chord">Am</span>  <span class="chord">D</span>   <span class="chord">G</span></span>
 <span class="linha"><span class="chord">G</span>      <span class="chord">G7</span>           <span class="chord">C</span>   <span class="chord">C9/C#</span></span>
 <span class="linha"><span class="chord">G</span>      <span class="chord">Em</span>      <span class="chord">Am</span>  <span class="chord">D</span>   <span class="chord">G</span></span><hr class="print-intro-hr"></div><span class="linha" style="min-height:1em;">&nbsp;</span>
@@ -16372,17 +16541,21 @@ function clearBibleScreen() {
 <span class="linha">Em Seus braços nos aco..lhe</span>
 <span class="linha"><span class="chord">G</span>     <span class="chord">Em</span>    <span class="chord">Am</span>  <span class="chord">D</span>   <span class="chord">G</span></span>
 <span class="linha">E nos dá conso..la..ção</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Emaús</h1>
-          <div class="print-meta">Tom: C | 24ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="16" data-pos-label="24ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Emaús</h1>
+        <div class="print-meta">
+          Tom: C
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 24ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">C5</span></span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">C5</span></span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 
 <span class="linha">       <span class="chord">F</span>                      <span class="chord">C5</span></span>
@@ -16541,17 +16714,21 @@ function clearBibleScreen() {
 <span class="linha">E reconhecemos quem Tu      és</span>
 <span class="linha">                 <span class="chord">C</span></span>
 <span class="linha">Tome o lugar de honra</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Esperando Na Janela</h1>
-          <div class="print-meta">Tom: D | 25ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="12" data-pos-label="25ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Esperando Na Janela</h1>
+        <div class="print-meta">
+          Tom: D
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 25ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">D</span></span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">D</span></span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 
 <span class="linha">        <span class="chord">D</span>     <span class="chord">G</span>     <span class="chord">A7</span>      <span class="chord">D2</span></span>
@@ -16642,17 +16819,21 @@ function clearBibleScreen() {
 <span class="linha">     Do que é o amor,    do que é o amor</span>
 <span class="linha"><span class="chord">D/F#</span>              <span class="chord">G</span>  <span class="chord">A7</span>  <span class="chord">D</span></span>
 <span class="linha">     Do que é o amor</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Espirito Santo Ore Por Mim</h1>
-          <div class="print-meta">Tom: D | 26ª (alfabética)</div>
-          <div class="print-meta"><a href="https://www.youtube.com/watch?v=Q3MX5FSN7Cs" target="_blank" rel="noopener">https://www.youtube.com/watch?v=Q3MX5FSN7Cs</a></div>
+    </div>
+  </div><div class="print-page" data-song-idx="6" data-pos-label="26ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Espirito Santo Ore Por Mim</h1>
+        <div class="print-meta">
+          Tom: D
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 26ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">D</span>     <span class="chord">D/F#</span>       <span class="chord">G9</span>  <span class="chord">D/F#</span></span>
+        <div class="print-meta"><a href="https://www.youtube.com/watch?v=Q3MX5FSN7Cs" target="_blank" rel="noopener">https://www.youtube.com/watch?v=Q3MX5FSN7Cs</a></div>
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">D</span>     <span class="chord">D/F#</span>       <span class="chord">G9</span>  <span class="chord">D/F#</span></span>
 <span class="linha">Espírito Santo, ore por mim</span>
 <span class="linha">    <span class="chord">Em7</span>            <span class="chord">A7</span>            <span class="chord">D4</span>  <span class="chord">D</span>     <span class="chord">G/A</span></span>
 <span class="linha">Leve pra Deus tudo aquilo que eu preciso</span>
@@ -16682,17 +16863,21 @@ function clearBibleScreen() {
 <span class="linha">Meu coração está ferido                 </span>
 <span class="linha">           <span class="chord">Em7</span>   <span class="chord">G/A</span>     <span class="chord">D9</span>            </span>
 <span class="linha">Mas o meu clamor está subindo</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Eu Navegarei</h1>
-          <div class="print-meta">Tom: Am | 27ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="9" data-pos-label="27ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Eu Navegarei</h1>
+        <div class="print-meta">
+          Tom: Am
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 27ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">Am</span></span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">Am</span></span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha">          <span class="chord">Am</span></span>
 <span class="linha">Eu navegarei</span>
@@ -16776,17 +16961,21 @@ function clearBibleScreen() {
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha">         <span class="chord">F7M</span>  <span class="chord">F</span>  <span class="chord">G</span>  <span class="chord">Am</span></span>
 <span class="linha">Eu servirei</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Eu Vejo a Glória</h1>
-          <div class="print-meta">Tom: G | 28ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="71" data-pos-label="28ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Eu Vejo a Glória</h1>
+        <div class="print-meta">
+          Tom: G
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 28ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">G</span> </span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">G</span> </span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha"><span class="chord">G</span>         <span class="chord">C</span>             <span class="chord">Em</span>         <span class="chord">D</span></span>
 <span class="linha">Eu vejo a glória do Senhor hoje aqui</span>
@@ -16861,17 +17050,21 @@ function clearBibleScreen() {
 <span class="linha">Vou levantar as mãos e vou receber</span>
 <span class="linha">      <span class="chord">Am</span>           <span class="chord">C</span>             <span class="chord">D</span>                    <span class="chord">G</span></span>
 <span class="linha">Vou louvando o Teu nome, porque sinto o Senhor me tocar</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Faz Chover</h1>
-          <div class="print-meta">Tom: C | 29ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="28" data-pos-label="29ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Faz Chover</h1>
+        <div class="print-meta">
+          Tom: C
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 29ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">C</span></span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">C</span></span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha">   <span class="chord">C</span>                  <span class="chord">G9</span>      <span class="chord">Am</span></span>
 <span class="linha">Assim como a corça anseia por água</span>
@@ -16932,17 +17125,21 @@ function clearBibleScreen() {
 <span class="linha">Inundar   o meu coração</span>
 <span class="linha">        <span class="chord">Bm</span></span>
 <span class="linha">Faz Chover</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Fico Feliz Em Vir Em Tua Casa</h1>
-          <div class="print-meta">Tom: G | BPM: 130 | 30ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="69" data-pos-label="30ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Fico Feliz Em Vir Em Tua Casa</h1>
+        <div class="print-meta">
+          Tom: G
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | BPM: 130 | 30ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">G</span> </span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">G</span> </span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha"><span class="chord">G</span>              <span class="chord">C</span>              </span>
 <span class="linha">Fico feliz em vir em Tua casa</span>
@@ -17015,17 +17212,21 @@ function clearBibleScreen() {
 <span class="linha">pra sempre</span>
 <span class="linha"><span class="chord">C</span>       <span class="chord">D</span>   <span class="chord">G</span></span>
 <span class="linha">   Pra sempre</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Grande É o Senhor</h1>
-          <div class="print-meta">Tom: C | 31ª (alfabética)</div>
-          <div class="print-meta"><a href="https://youtu.be/aLXSNkZ8TXs?si=WwEB4YSz4US6iVxA" target="_blank" rel="noopener">https://youtu.be/aLXSNkZ8TXs?si=WwEB4YSz4US6iVxA</a></div>
+    </div>
+  </div><div class="print-page" data-song-idx="73" data-pos-label="31ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Grande É o Senhor</h1>
+        <div class="print-meta">
+          Tom: C
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 31ª (alfabética)
         </div>
-        <div class="print-columns">
-          <div class="print-intro-section"><span class="print-intro-label">INTRO</span><span class="linha">    <span class="chord">C</span></span>
+        <div class="print-meta"><a href="https://youtu.be/aLXSNkZ8TXs?si=WwEB4YSz4US6iVxA" target="_blank" rel="noopener">https://youtu.be/aLXSNkZ8TXs?si=WwEB4YSz4US6iVxA</a></div>
+      </div>
+      <div class="print-columns">
+        <div class="print-intro-section"><span class="print-intro-label">INTRO</span><span class="linha">    <span class="chord">C</span></span>
 <span class="linha">             <span class="chord">C7M</span></span>
 <span class="linha"><span class="chord">F7M</span>           </span>
 <span class="linha">         <span class="chord">Dm7</span>             <span class="chord">G/B</span></span>
@@ -17116,17 +17317,21 @@ function clearBibleScreen() {
 <span class="linha">Pois só Tu és o Deus eterno</span>
 <span class="linha"> <span class="chord">Dm7</span>        <span class="chord">G4</span>      <span class="chord">Fm</span>  <span class="chord">C</span></span>
 <span class="linha">Sobre toda terra e céus</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Grandioso És Tu</h1>
-          <div class="print-meta">Tom: D | 32ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="26" data-pos-label="32ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Grandioso És Tu</h1>
+        <div class="print-meta">
+          Tom: D
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 32ª (alfabética)
         </div>
-        <div class="print-columns">
-          <div class="print-intro-section"><span class="print-intro-label">INTRO</span><span class="linha">            <span class="chord">D</span>     <span class="chord">G</span>              <span class="chord">D</span>  <span class="chord">D4</span>  <span class="chord">D</span></span>
+        
+      </div>
+      <div class="print-columns">
+        <div class="print-intro-section"><span class="print-intro-label">INTRO</span><span class="linha">            <span class="chord">D</span>     <span class="chord">G</span>              <span class="chord">D</span>  <span class="chord">D4</span>  <span class="chord">D</span></span>
 <span class="linha">               <span class="chord">Em7</span></span>
 <span class="linha"><span class="chord">A/C#</span>               <span class="chord">Bm</span>  <span class="chord">A</span></span>
 <span class="linha">            <span class="chord">D</span>     <span class="chord">G</span>              <span class="chord">D</span>  <span class="chord">D4</span>  <span class="chord">D</span></span>
@@ -17206,17 +17411,21 @@ function clearBibleScreen() {
 <span class="linha">Grandioso és Tu! Grandioso és Tu!</span>
 <span class="linha">               <span class="chord">Em7</span>      <span class="chord">A/C#</span>    <span class="chord">D</span></span>
 <span class="linha">Grandioso és Tu! Grandioso és Tu!</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Há um doce Espírito aqui</h1>
-          <div class="print-meta">Tom: C | 33ª (alfabética)</div>
-          <div class="print-meta"><a href="https://www.youtube.com/watch?v=wlQPJfPQGAo" target="_blank" rel="noopener">https://www.youtube.com/watch?v=wlQPJfPQGAo</a></div>
+    </div>
+  </div><div class="print-page" data-song-idx="33" data-pos-label="33ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Há um doce Espírito aqui</h1>
+        <div class="print-meta">
+          Tom: C
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 33ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">C</span></span>
+        <div class="print-meta"><a href="https://www.youtube.com/watch?v=wlQPJfPQGAo" target="_blank" rel="noopener">https://www.youtube.com/watch?v=wlQPJfPQGAo</a></div>
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">C</span></span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha"><span class="chord">C</span>                  <span class="chord">Dm</span>         <span class="chord">G</span> </span>
 <span class="linha">Há um doce Espírito aqui </span>
@@ -17239,17 +17448,21 @@ function clearBibleScreen() {
 <span class="linha">Transformando corações </span>
 <span class="linha"><span class="chord">F</span>         <span class="chord">Dm</span>                  <span class="chord">Em</span> </span>
 <span class="linha">Sopra Santo Espírito de Deus</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Hallelujah</h1>
-          <div class="print-meta">Tom: F | 34ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="13" data-pos-label="34ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Hallelujah</h1>
+        <div class="print-meta">
+          Tom: F
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 34ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">F</span>  <span class="chord">Dm</span>  <span class="chord">F</span>  <span class="chord">Dm</span></span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">F</span>  <span class="chord">Dm</span>  <span class="chord">F</span>  <span class="chord">Dm</span></span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 
 <span class="linha" style="min-height:1em;">&nbsp;</span>
@@ -17333,17 +17546,21 @@ function clearBibleScreen() {
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha">    <span class="chord">C</span>        <span class="chord">Em</span>  <span class="chord">D</span>  <span class="chord">G</span></span>
 <span class="linha">Aleluia, Alelu_____ia</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Hosana</h1>
-          <div class="print-meta">Tom: E | 35ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="52" data-pos-label="35ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Hosana</h1>
+        <div class="print-meta">
+          Tom: E
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 35ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">E/G#</span>  <span class="chord">A</span></span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">E/G#</span>  <span class="chord">A</span></span>
 <span class="linha"><span class="chord">B</span>  <span class="chord">C#m</span></span>
 <span class="linha"><span class="chord">A</span>             <span class="chord">C#m</span>  <span class="chord">B</span></span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
@@ -17412,17 +17629,21 @@ function clearBibleScreen() {
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha"><span class="chord">A</span>            <span class="chord">B</span>   <span class="chord">E</span></span>
 <span class="linha">Hosana nas Alturas</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>I don't wanna miss a thing</h1>
-          <div class="print-meta">Tom: D | 36ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="81" data-pos-label="36ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>I don't wanna miss a thing</h1>
+        <div class="print-meta">
+          Tom: D
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 36ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">D6</span>        <span class="chord">D6/C#</span>             <span class="chord">D6/B</span></span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">D6</span>        <span class="chord">D6/C#</span>             <span class="chord">D6/B</span></span>
 <span class="linha">I could stay awake just to hear you breathing</span>
 <span class="linha">            <span class="chord">D6/G</span>                <span class="chord">D6/F#</span></span>
 <span class="linha">Watch you smile while you are sleeping</span>
@@ -17516,17 +17737,21 @@ function clearBibleScreen() {
 <span class="linha">For all the rest of time</span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha">[Refrão] (…)</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Infinitamente Mais</h1>
-          <div class="print-meta">Tom: C | 37ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="20" data-pos-label="37ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Infinitamente Mais</h1>
+        <div class="print-meta">
+          Tom: C
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 37ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">C</span></span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">C</span></span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha"><span class="chord">G9</span>                  <span class="chord">Cm6</span></span>
 <span class="linha">Sim, eu sei Senhor, que Tu és soberano</span>
@@ -17567,17 +17792,21 @@ function clearBibleScreen() {
 <span class="linha">Do que tudo que pensamos, infinitamente mais</span>
 <span class="linha"><span class="chord">Am7</span>     <span class="chord">Bm7</span>      <span class="chord">E7</span></span>
 <span class="linha">Do que tudo o que nós cremos, infinitamente mais</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Louvamos</h1>
-          <div class="print-meta">Tom: A | 38ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="22" data-pos-label="38ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Louvamos</h1>
+        <div class="print-meta">
+          Tom: A
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 38ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">A</span> </span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">A</span> </span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha">      <span class="chord">A</span>                     <span class="chord">E</span>              <span class="chord">A</span></span>
 <span class="linha">Lou-va-mos, lou-va-mos, Se-nhor, e a-do-ra-mos,</span>
@@ -17625,17 +17854,21 @@ function clearBibleScreen() {
 <span class="linha">E e-xi-me de cul-pas o réu pe-ca-dor.</span>
 <span class="linha">        <span class="chord">E</span>                        <span class="chord">A</span></span>
 <span class="linha">E e-xi-me de cul-pas o réu pe-ca-dor.</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Maranata</h1>
-          <div class="print-meta">Tom: Bm | 39ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="27" data-pos-label="39ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Maranata</h1>
+        <div class="print-meta">
+          Tom: Bm
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 39ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">Bm</span></span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">Bm</span></span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha"><span class="chord">Bm7</span></span>
 <span class="linha">    Tu és a minha luz</span>
@@ -17728,17 +17961,21 @@ function clearBibleScreen() {
 <span class="linha">Vem Jesus, vem Jesus</span>
 <span class="linha">     <span class="chord">D</span>                      <span class="chord">A4</span></span>
 <span class="linha">Maranata ora, vem Senhor Jesus</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Me Derramar</h1>
-          <div class="print-meta">Tom: G | 40ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="78" data-pos-label="40ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Me Derramar</h1>
+        <div class="print-meta">
+          Tom: G
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 40ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">G</span></span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">G</span></span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha"><span class="chord">C</span>      <span class="chord">G</span>    <span class="chord">D/F#</span></span>
@@ -17809,17 +18046,21 @@ function clearBibleScreen() {
 <span class="linha">Me derramar, dizer que sou grato</span>
 <span class="linha"> <span class="chord">Em</span>             <span class="chord">C</span></span>
 <span class="linha">Me derramar, dizer que és formoso</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Meu Coração</h1>
-          <div class="print-meta">Tom: D | 41ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="38" data-pos-label="41ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Meu Coração</h1>
+        <div class="print-meta">
+          Tom: D
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 41ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">D</span>  <span class="chord">A</span></span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">D</span>  <span class="chord">A</span></span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha"><span class="chord">D</span>                 <span class="chord">G</span>         <span class="chord">D</span>  <span class="chord">Bm</span></span>
 <span class="linha">Meu coração transborda de amor</span>
@@ -17860,17 +18101,21 @@ function clearBibleScreen() {
 <span class="linha">Eu digo aleluia,   aleluia, aleluia</span>
 <span class="linha"><span class="chord">Em</span>      <span class="chord">A</span>            <span class="chord">D</span></span>
 <span class="linha">Aleluia,  aleluia, amém</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Meu Deus É Bom Pra Mim</h1>
-          <div class="print-meta">Tom: C | 42ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="39" data-pos-label="42ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Meu Deus É Bom Pra Mim</h1>
+        <div class="print-meta">
+          Tom: C
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 42ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">F</span>  <span class="chord">G</span>  <span class="chord">C</span>  <span class="chord">Am</span></span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">F</span>  <span class="chord">G</span>  <span class="chord">C</span>  <span class="chord">Am</span></span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha">           <span class="chord">C</span></span>
@@ -17947,17 +18192,21 @@ function clearBibleScreen() {
 <span class="linha">Feliz estou, cantando eu vou</span>
 <span class="linha"><span class="chord">A</span>       <span class="chord">B</span>       <span class="chord">E</span></span>
 <span class="linha">Deus é bom pra mim</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Meu Disfarce</h1>
-          <div class="print-meta">Tom: D | 43ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="54" data-pos-label="43ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Meu Disfarce</h1>
+        <div class="print-meta">
+          Tom: D
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 43ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">Cm</span>  <span class="chord">Fm</span>  </span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">Cm</span>  <span class="chord">Fm</span>  </span>
 <span class="linha"><span class="chord">G7</span>  <span class="chord">Cm</span></span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha"> <span class="chord">Cm</span></span>
@@ -18051,17 +18300,21 @@ function clearBibleScreen() {
 <span class="linha">Não dá mais pra fugir do seu contato</span>
 <span class="linha">   <span class="chord">G7</span>                  <span class="chord">Cm</span>  <span class="chord">G7</span></span>
 <span class="linha">Estou apaixonado por você</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Meu Rancho</h1>
-          <div class="print-meta">Tom: E | 44ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="17" data-pos-label="44ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Meu Rancho</h1>
+        <div class="print-meta">
+          Tom: E
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 44ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">E</span></span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">E</span></span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha"><span class="chord">E</span>                      <span class="chord">G#m7</span></span>
 <span class="linha">Que alma tem o meu rancho por isso deixá-lo, como?</span>
@@ -18105,17 +18358,21 @@ function clearBibleScreen() {
 <span class="linha">Mangueira de pedra-moura que nunca mais vai ter fim</span>
 <span class="linha"><span class="chord">B7</span>                              <span class="chord">E</span></span>
 <span class="linha">Um restingal de vassoura pôr-do-sol perto de mim</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Meus Filhos São Teus</h1>
-          <div class="print-meta">Tom: G | 45ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="76" data-pos-label="45ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Meus Filhos São Teus</h1>
+        <div class="print-meta">
+          Tom: G
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 45ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">G</span></span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">G</span></span>
 <span class="linha">   <span class="chord">C7/B</span>                 <span class="chord">A7</span></span>
 <span class="linha">       <span class="chord">G</span></span>
 <span class="linha">   <span class="chord">C7</span>               <span class="chord">A7</span></span>
@@ -18233,17 +18490,21 @@ function clearBibleScreen() {
 <span class="linha">Meus fi___lhos</span>
 <span class="linha"><span class="chord">C</span>     <span class="chord">Am</span>          <span class="chord">G</span></span>
 <span class="linha">Meus filhos, são teus</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Ninguém Te Ama Como Eu</h1>
-          <div class="print-meta">Tom: A | 46ª (alfabética)</div>
-          <div class="print-meta"><a href="https://www.youtube.com/watch?v=2n0h6DUKcTU" target="_blank" rel="noopener">https://www.youtube.com/watch?v=2n0h6DUKcTU</a></div>
+    </div>
+  </div><div class="print-page" data-song-idx="3" data-pos-label="46ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Ninguém Te Ama Como Eu</h1>
+        <div class="print-meta">
+          Tom: A
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 46ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">A</span>        <span class="chord">E</span>          <span class="chord">F#m</span>     <span class="chord">Bm</span>          <span class="chord">D</span>      </span>
+        <div class="print-meta"><a href="https://www.youtube.com/watch?v=2n0h6DUKcTU" target="_blank" rel="noopener">https://www.youtube.com/watch?v=2n0h6DUKcTU</a></div>
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">A</span>        <span class="chord">E</span>          <span class="chord">F#m</span>     <span class="chord">Bm</span>          <span class="chord">D</span>      </span>
 <span class="linha">Tenho esperado este momento,  tenho esperado que </span>
 <span class="linha">    <span class="chord">E</span>       <span class="chord">E7</span></span>
 <span class="linha">viesses a mim</span>
@@ -18306,17 +18567,21 @@ function clearBibleScreen() {
 <span class="linha">Olhe pra cruz, foi por ti, porque te amo, ninguém te </span>
 <span class="linha"><span class="chord">D</span>       <span class="chord">E</span>  <span class="chord">E7</span></span>
 <span class="linha">ama como eu</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Noites Traiçoeiras</h1>
-          <div class="print-meta">Tom: A | 47ª (alfabética)</div>
-          <div class="print-meta"><a href="https://youtu.be/dQfJhzC7ixY?si=aKKoSE1gzGljknil" target="_blank" rel="noopener">https://youtu.be/dQfJhzC7ixY?si=aKKoSE1gzGljknil</a></div>
+    </div>
+  </div><div class="print-page" data-song-idx="2" data-pos-label="47ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Noites Traiçoeiras</h1>
+        <div class="print-meta">
+          Tom: A
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 47ª (alfabética)
         </div>
-        <div class="print-columns">
-          <div class="print-intro-section"><span class="print-intro-label">INTRO</span><span class="linha"><span class="chord">A</span>            <span class="chord">D</span>               <span class="chord">E7</span></span>
+        <div class="print-meta"><a href="https://youtu.be/dQfJhzC7ixY?si=aKKoSE1gzGljknil" target="_blank" rel="noopener">https://youtu.be/dQfJhzC7ixY?si=aKKoSE1gzGljknil</a></div>
+      </div>
+      <div class="print-columns">
+        <div class="print-intro-section"><span class="print-intro-label">INTRO</span><span class="linha"><span class="chord">A</span>            <span class="chord">D</span>               <span class="chord">E7</span></span>
 <span class="linha">                  <span class="chord">C#m7</span>                  <span class="chord">F#m7</span></span>
 <span class="linha">               <span class="chord">Bm7</span>              <span class="chord">E</span></span>
 <span class="linha">                  <span class="chord">A</span>     <span class="chord">A4</span>  <span class="chord">A</span>  <span class="chord">A4</span></span><hr class="print-intro-hr"></div><span class="linha" style="min-height:1em;">&nbsp;</span>
@@ -18397,17 +18662,21 @@ function clearBibleScreen() {
 <span class="linha">O mundo pode até fazer você chorar</span>
 <span class="linha">                  <span class="chord">A</span></span>
 <span class="linha">Mas Deus te quer sorrindo</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Nome Sobre Todo Nome</h1>
-          <div class="print-meta">Tom: G | 48ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="21" data-pos-label="48ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Nome Sobre Todo Nome</h1>
+        <div class="print-meta">
+          Tom: G
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 48ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">G</span></span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">G</span></span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 
 <span class="linha" style="min-height:1em;">&nbsp;</span>
@@ -18472,17 +18741,21 @@ function clearBibleScreen() {
 <span class="linha">Seu nome é    Maravilhoso, Conselheiro, Deus Forte</span>
 <span class="linha"><span class="chord">Em7</span>                  <span class="chord">C9</span></span>
 <span class="linha">Pai da Eternidade, e Príncipe da Paz</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Nosso Xote</h1>
-          <div class="print-meta">Tom: F | 49ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="56" data-pos-label="49ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Nosso Xote</h1>
+        <div class="print-meta">
+          Tom: F
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 49ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">F</span>  <span class="chord">Em7(5-)</span>  <span class="chord">A7</span>  <span class="chord">Dm</span>  <span class="chord">Dbm</span>  <span class="chord">Cm</span>  <span class="chord">F</span> </span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">F</span>  <span class="chord">Em7(5-)</span>  <span class="chord">A7</span>  <span class="chord">Dm</span>  <span class="chord">Dbm</span>  <span class="chord">Cm</span>  <span class="chord">F</span> </span>
 <span class="linha"><span class="chord">Bb</span>  <span class="chord">C7</span>  <span class="chord">F</span>  <span class="chord">C</span>  <span class="chord">Bb</span>  <span class="chord">Am7</span>  <span class="chord">Gm7</span>  <span class="chord">F</span></span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha">  <span class="chord">F</span>            <span class="chord">Em7(5-)</span>    <span class="chord">A7</span>      <span class="chord">Dm</span></span>
@@ -18510,17 +18783,21 @@ function clearBibleScreen() {
 <span class="linha">O corpo inteiro Faz meu coração bater</span>
 <span class="linha">            <span class="chord">C7</span>                   <span class="chord">F</span>       <span class="chord">C</span> <span class="chord">Bb</span> <span class="chord">Am7</span>  <span class="chord">Gm7</span>  <span class="chord">F</span></span>
 <span class="linha"> Ligeiro assim eu vou me apaixonar</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>O Amor de Deus</h1>
-          <div class="print-meta">Tom: G | 50ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="14" data-pos-label="50ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>O Amor de Deus</h1>
+        <div class="print-meta">
+          Tom: G
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 50ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">G</span></span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">G</span></span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha"><span class="chord">G</span>                    <span class="chord">D/F#</span></span>
 <span class="linha">Graça sob Graça recebi</span>
@@ -18630,17 +18907,21 @@ function clearBibleScreen() {
 <span class="linha">O amor de Deus</span>
 <span class="linha">          <span class="chord">G</span></span>
 <span class="linha">O amor de Deus</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>O Amor do Nosso Deus</h1>
-          <div class="print-meta">Tom: C | 51ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="37" data-pos-label="51ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>O Amor do Nosso Deus</h1>
+        <div class="print-meta">
+          Tom: C
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 51ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">C</span>  <span class="chord">C/A#</span>  <span class="chord">F/A</span>  <span class="chord">G#</span></span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">C</span>  <span class="chord">C/A#</span>  <span class="chord">F/A</span>  <span class="chord">G#</span></span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha">   <span class="chord">C</span>         <span class="chord">G/B</span>     <span class="chord">Am7</span></span>
@@ -18710,17 +18991,21 @@ function clearBibleScreen() {
 <span class="linha">Nenhum vale tão profundo como o amor do </span>
 <span class="linha">  <span class="chord">A</span> <span class="chord">A4</span> <span class="chord">A</span> <span class="chord">D</span></span>
 <span class="linha">nosso Deus!</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>O Escudo</h1>
-          <div class="print-meta">Tom: C | 52ª (alfabética)</div>
-          <div class="print-meta"><a href="https://www.youtube.com/watch?v=9It9irbLMnU" target="_blank" rel="noopener">https://www.youtube.com/watch?v=9It9irbLMnU</a></div>
+    </div>
+  </div><div class="print-page" data-song-idx="18" data-pos-label="52ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>O Escudo</h1>
+        <div class="print-meta">
+          Tom: C
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 52ª (alfabética)
         </div>
-        <div class="print-columns">
-          <div class="print-intro-section"><span class="print-intro-label">INTRO</span><span class="linha"><span class="chord">C</span>           <span class="chord">Am</span>          <span class="chord">Em</span></span>
+        <div class="print-meta"><a href="https://www.youtube.com/watch?v=9It9irbLMnU" target="_blank" rel="noopener">https://www.youtube.com/watch?v=9It9irbLMnU</a></div>
+      </div>
+      <div class="print-columns">
+        <div class="print-intro-section"><span class="print-intro-label">INTRO</span><span class="linha"><span class="chord">C</span>           <span class="chord">Am</span>          <span class="chord">Em</span></span>
 <span class="linha">        <span class="chord">F</span>        <span class="chord">G2</span>           <span class="chord">C2</span></span>
 <span class="linha">        <span class="chord">G/B</span> <span class="chord">Am</span>          <span class="chord">Em</span></span>
 <span class="linha">     <span class="chord">F</span>         <span class="chord">G2</span>           <span class="chord">C2</span></span><hr class="print-intro-hr"></div><span class="linha" style="min-height:1em;">&nbsp;</span>
@@ -18800,17 +19085,21 @@ function clearBibleScreen() {
 <span class="linha">Escudo para os que nele creem</span>
 <span class="linha">        <span class="chord">F</span>        <span class="chord">G2</span>       <span class="chord">C2</span></span>
 <span class="linha">Escudo para os que nele creem</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>O Sabão</h1>
-          <div class="print-meta">Tom: C | 53ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="40" data-pos-label="53ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>O Sabão</h1>
+        <div class="print-meta">
+          Tom: C
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 53ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">C</span>  <span class="chord">G</span>  <span class="chord">C</span></span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">C</span>  <span class="chord">G</span>  <span class="chord">C</span></span>
 <span class="linha"><span class="chord">C</span>  <span class="chord">G</span>  <span class="chord">C</span></span>
 <span class="linha"><span class="chord">C</span>  <span class="chord">G</span>  <span class="chord">C</span>  <span class="chord">G</span></span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
@@ -18873,17 +19162,21 @@ function clearBibleScreen() {
 <span class="linha">É Jesus, Dele eu não escondo nada</span>
 <span class="linha"> <span class="chord">C</span>            <span class="chord">G</span>   <span class="chord">C</span>  </span>
 <span class="linha">Tudo Ele pode apagar</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Ó Vinde Fiéis - Iza Morotomo Shu o</h1>
-          <div class="print-meta">Tom: D | 54ª (alfabética)</div>
-          <div class="print-meta"><a href="https://www.youtube.com/watch?v=9Us44dx-3j4" target="_blank" rel="noopener">https://www.youtube.com/watch?v=9Us44dx-3j4</a></div>
+    </div>
+  </div><div class="print-page" data-song-idx="23" data-pos-label="54ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Ó Vinde Fiéis - Iza Morotomo Shu o</h1>
+        <div class="print-meta">
+          Tom: D
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 54ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">D</span></span>
+        <div class="print-meta"><a href="https://www.youtube.com/watch?v=9Us44dx-3j4" target="_blank" rel="noopener">https://www.youtube.com/watch?v=9Us44dx-3j4</a></div>
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">D</span></span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha">      <span class="chord">D</span>       <span class="chord">A</span>          <span class="chord">D</span>        <span class="chord">A</span></span>
@@ -18944,17 +19237,21 @@ function clearBibleScreen() {
 <span class="linha">Yukite haise yo</span>
 <span class="linha">   <span class="chord">G</span>     <span class="chord">A</span>  <span class="chord">D</span>    <span class="chord">D/A</span> <span class="chord">A7</span>    <span class="chord">D</span></span>
 <span class="linha">Yukite haise yo Kami no ko wo</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Oceanos</h1>
-          <div class="print-meta">Tom: Bm | 55ª (alfabética)</div>
-          <div class="print-meta"><a href="https://www.youtube.com/watch?v=kZeONNYvp_s" target="_blank" rel="noopener">https://www.youtube.com/watch?v=kZeONNYvp_s</a></div>
+    </div>
+  </div><div class="print-page" data-song-idx="4" data-pos-label="55ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Oceanos</h1>
+        <div class="print-meta">
+          Tom: Bm
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 55ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">Bm</span></span>
+        <div class="print-meta"><a href="https://www.youtube.com/watch?v=kZeONNYvp_s" target="_blank" rel="noopener">https://www.youtube.com/watch?v=kZeONNYvp_s</a></div>
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">Bm</span></span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha"><span class="chord">Bm</span>                   <span class="chord">A/C#</span>    <span class="chord">D</span></span>
 <span class="linha">   Tua voz me chama sobre as águas</span>
@@ -19098,17 +19395,21 @@ function clearBibleScreen() {
 <span class="linha">  Somente em Ti descansarei</span>
 <span class="linha">             <span class="chord">G</span>     <span class="chord">A</span>  <span class="chord">Bm</span></span>
 <span class="linha">Pois eu sou Teu e Tu  és meu</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Poder para Salvar</h1>
-          <div class="print-meta">Tom: C | 56ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="60" data-pos-label="56ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Poder para Salvar</h1>
+        <div class="print-meta">
+          Tom: C
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 56ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">C</span></span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">C</span></span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha"><span class="chord">F2</span>            <span class="chord">C</span>                   <span class="chord">Am7</span></span>
@@ -19193,17 +19494,21 @@ function clearBibleScreen() {
 <span class="linha">Jesus a morte venceu</span>
 <span class="linha">        <span class="chord">Am7</span>      <span class="chord">G4</span></span>
 <span class="linha">Sobre a morte venceu</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Poderoso Deus</h1>
-          <div class="print-meta">Tom: E | BPM: 125 | 57ª (alfabética)</div>
-          <div class="print-meta"><a href="https://youtu.be/_L6a96-XOyI" target="_blank" rel="noopener">https://youtu.be/_L6a96-XOyI</a></div>
+    </div>
+  </div><div class="print-page" data-song-idx="42" data-pos-label="57ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Poderoso Deus</h1>
+        <div class="print-meta">
+          Tom: E
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | BPM: 125 | 57ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">E</span> </span>
+        <div class="print-meta"><a href="https://youtu.be/_L6a96-XOyI" target="_blank" rel="noopener">https://youtu.be/_L6a96-XOyI</a></div>
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">E</span> </span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 
 <span class="linha" style="min-height:1em;">&nbsp;</span>
@@ -19274,17 +19579,21 @@ function clearBibleScreen() {
 <span class="linha">  E ao cordeiro</span>
 <span class="linha"><span class="chord">F#m7</span>            <span class="chord">B</span>   </span>
 <span class="linha">   Seja o louvor</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Porque Ele Vive</h1>
-          <div class="print-meta">Tom: C | 58ª (alfabética)</div>
-          <div class="print-meta"><a href="https://www.youtube.com/watch?v=jmqJxxGdtNQ" target="_blank" rel="noopener">https://www.youtube.com/watch?v=jmqJxxGdtNQ</a></div>
+    </div>
+  </div><div class="print-page" data-song-idx="79" data-pos-label="58ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Porque Ele Vive</h1>
+        <div class="print-meta">
+          Tom: C
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 58ª (alfabética)
         </div>
-        <div class="print-columns">
-          <div class="print-intro-section"><span class="print-intro-label">INTRO</span><span class="linha"><span class="chord">C</span>            <span class="chord">C9</span>  <span class="chord">C9/E</span></span>
+        <div class="print-meta"><a href="https://www.youtube.com/watch?v=jmqJxxGdtNQ" target="_blank" rel="noopener">https://www.youtube.com/watch?v=jmqJxxGdtNQ</a></div>
+      </div>
+      <div class="print-columns">
+        <div class="print-intro-section"><span class="print-intro-label">INTRO</span><span class="linha"><span class="chord">C</span>            <span class="chord">C9</span>  <span class="chord">C9/E</span></span>
 <span class="linha">              <span class="chord">F</span></span>
 <span class="linha">            <span class="chord">C9</span></span>
 <span class="linha">           <span class="chord">G</span></span>
@@ -19372,17 +19681,21 @@ function clearBibleScreen() {
 <span class="linha">   Está nas mãos do meu Jesus</span>
 <span class="linha">            <span class="chord">C</span></span>
 <span class="linha">Que vivo está</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Quão Grande É o Meu Deus</h1>
-          <div class="print-meta">Tom: D | BPM: 75 | 59ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="64" data-pos-label="59ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Quão Grande É o Meu Deus</h1>
+        <div class="print-meta">
+          Tom: D
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | BPM: 75 | 59ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">D</span></span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">D</span></span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha">     <span class="chord">D/F#</span></span>
@@ -19464,17 +19777,21 @@ function clearBibleScreen() {
 <span class="linha">Quão grande é o meu Deus</span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha"><span class="chord">D</span></span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Quão Grande És Tu</h1>
-          <div class="print-meta">Tom: A | 60ª (alfabética)</div>
-          <div class="print-meta"><a href="https://www.youtube.com/watch?v=4yfnHLGLAvI" target="_blank" rel="noopener">https://www.youtube.com/watch?v=4yfnHLGLAvI</a></div>
+    </div>
+  </div><div class="print-page" data-song-idx="25" data-pos-label="60ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Quão Grande És Tu</h1>
+        <div class="print-meta">
+          Tom: A
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 60ª (alfabética)
         </div>
-        <div class="print-columns">
-          <div class="print-intro-section"><span class="print-intro-label">INTRO</span><span class="linha">           <span class="chord">A7</span>    <span class="chord">D</span>              <span class="chord">A</span></span>
+        <div class="print-meta"><a href="https://www.youtube.com/watch?v=4yfnHLGLAvI" target="_blank" rel="noopener">https://www.youtube.com/watch?v=4yfnHLGLAvI</a></div>
+      </div>
+      <div class="print-columns">
+        <div class="print-intro-section"><span class="print-intro-label">INTRO</span><span class="linha">           <span class="chord">A7</span>    <span class="chord">D</span>              <span class="chord">A</span></span>
 <span class="linha">                <span class="chord">E7</span>                 <span class="chord">A</span></span>
 <span class="linha">           <span class="chord">A7</span>    <span class="chord">D</span>              <span class="chord">A</span></span>
 <span class="linha">                <span class="chord">Bm</span>        <span class="chord">E7</span>       <span class="chord">A</span></span><hr class="print-intro-hr"></div><span class="linha" style="min-height:1em;">&nbsp;</span>
@@ -19557,17 +19874,21 @@ function clearBibleScreen() {
 <span class="linha">Então minh'alma canta a Ti, Senhor</span>
 <span class="linha">                <span class="chord">Bm</span>        <span class="chord">E7</span>       <span class="chord">A</span></span>
 <span class="linha">Quão grande és Tu! Quão grande és Tu!</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Quebrantado</h1>
-          <div class="print-meta">Tom: C | 61ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="48" data-pos-label="61ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Quebrantado</h1>
+        <div class="print-meta">
+          Tom: C
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 61ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">C</span>  <span class="chord">G</span>  <span class="chord">Am</span>  <span class="chord">F</span></span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">C</span>  <span class="chord">G</span>  <span class="chord">Am</span>  <span class="chord">F</span></span>
 <span class="linha"><span class="chord">C</span>  <span class="chord">G</span>  <span class="chord">Am</span>  <span class="chord">F</span></span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
@@ -19666,17 +19987,21 @@ function clearBibleScreen() {
 <span class="linha"><span class="chord">F</span></span>
 <span class="linha">  Quebrantado por seu amor</span>
 <span class="linha"><span class="chord">C</span></span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Renova-me</h1>
-          <div class="print-meta">Tom: D | 62ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="10" data-pos-label="62ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Renova-me</h1>
+        <div class="print-meta">
+          Tom: D
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 62ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">D</span></span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">D</span></span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 
 <span class="linha" style="min-height:1em;">&nbsp;</span>
@@ -19736,17 +20061,21 @@ function clearBibleScreen() {
 <span class="linha">Necessita mais</span>
 <span class="linha">    <span class="chord">D9</span>  <span class="chord">D4</span>  <span class="chord">D9</span></span>
 <span class="linha">De Ti</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Rompendo em Fé</h1>
-          <div class="print-meta">Tom: C | 63ª (alfabética)</div>
-          <div class="print-meta"><a href="https://www.youtube.com/watch?v=oEr8txgyLxw" target="_blank" rel="noopener">https://www.youtube.com/watch?v=oEr8txgyLxw</a></div>
+    </div>
+  </div><div class="print-page" data-song-idx="72" data-pos-label="63ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Rompendo em Fé</h1>
+        <div class="print-meta">
+          Tom: C
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 63ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">C</span></span>
+        <div class="print-meta"><a href="https://www.youtube.com/watch?v=oEr8txgyLxw" target="_blank" rel="noopener">https://www.youtube.com/watch?v=oEr8txgyLxw</a></div>
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">C</span></span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha">      <span class="chord">C</span>                       <span class="chord">F</span></span>
 <span class="linha">Cada vez que a minha fé é provada</span>
@@ -19823,17 +20152,21 @@ function clearBibleScreen() {
 <span class="linha">A cada dia vou viver</span>
 <span class="linha">             <span class="chord">C</span></span>
 <span class="linha">Rompendo em fé</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Salmo 23</h1>
-          <div class="print-meta">Tom: G | 64ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="11" data-pos-label="64ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Salmo 23</h1>
+        <div class="print-meta">
+          Tom: G
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 64ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">G7</span> <span class="chord">C</span>  <span class="chord">D/C</span>  <span class="chord">Bm</span>  <span class="chord">Em</span> <span class="chord">Am7</span>  <span class="chord">D</span>  <span class="chord">C</span>  <span class="chord">D7</span></span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">G7</span> <span class="chord">C</span>  <span class="chord">D/C</span>  <span class="chord">Bm</span>  <span class="chord">Em</span> <span class="chord">Am7</span>  <span class="chord">D</span>  <span class="chord">C</span>  <span class="chord">D7</span></span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 
 <span class="linha" style="min-height:1em;">&nbsp;</span>
@@ -19981,17 +20314,21 @@ function clearBibleScreen() {
 <span class="linha">Em minha vida faltará</span>
 <span class="linha"><span class="chord">Cm</span>          <span class="chord">G</span></span>
 <span class="linha">Nada Faltará</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Salmo 96</h1>
-          <div class="print-meta">Tom: G | 65ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="32" data-pos-label="65ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Salmo 96</h1>
+        <div class="print-meta">
+          Tom: G
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 65ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">G9</span> </span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">G9</span> </span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha"> <span class="chord">G9</span>       <span class="chord">C/G</span>     <span class="chord">G9</span>        <span class="chord">C/G</span></span>
 <span class="linha">Cantai ao senhor um cântico novo</span>
@@ -20047,17 +20384,21 @@ function clearBibleScreen() {
 <span class="linha">Glória e majestade estão diante dele</span>
 <span class="linha"><span class="chord">Bm</span>          <span class="chord">Em7</span>        <span class="chord">D</span></span>
 <span class="linha">Força e formosura no seu santuário</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Santo Pra Sempre</h1>
-          <div class="print-meta">Tom: F | 66ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="44" data-pos-label="66ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Santo Pra Sempre</h1>
+        <div class="print-meta">
+          Tom: F
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 66ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">Bb</span>  <span class="chord">C</span>  <span class="chord">Am</span>  <span class="chord">Dm</span></span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">Bb</span>  <span class="chord">C</span>  <span class="chord">Am</span>  <span class="chord">Dm</span></span>
 <span class="linha"><span class="chord">Bb</span>  <span class="chord">C</span>  <span class="chord">Am</span>  <span class="chord">Dm</span>  <span class="chord">C</span></span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha"><span class="chord">F</span></span>
@@ -20168,91 +20509,99 @@ function clearBibleScreen() {
 <span class="linha">Tu sempre serás, Santo</span>
 <span class="linha">           <span class="chord">F</span></span>
 <span class="linha">Santo pra sempre</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Santo, Santo, Santo</h1>
-          <div class="print-meta">Tom: G | 67ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="35" data-pos-label="67ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Santo, Santo, Santo</h1>
+        <div class="print-meta">
+          Tom: G
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 67ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">G</span></span>
-<span class="linha" style="min-height:1em;">&nbsp;</span>
-<span class="linha"><span class="chord">G</span>             <span class="chord">C/G</span> <span class="chord">G</span></span>
-<span class="linha">Santo, Santo, San_to</span>
-<span class="linha"><span class="chord">G</span>             <span class="chord">C/G</span> <span class="chord">G</span></span>
-<span class="linha">Santo, Santo, San_to</span>
-<span class="linha"><span class="chord">Em</span>      <span class="chord">Em/D</span> <span class="chord">C</span>   <span class="chord">G/B</span> <span class="chord">Am</span> <span class="chord">G/B</span> <span class="chord">C/D</span></span>
-<span class="linha">Santo é o    Senhor,  Po_de___roso</span>
-<span class="linha" style="min-height:1em;">&nbsp;</span>
-<span class="linha" style="min-height:1em;">&nbsp;</span>
-<span class="linha"><span class="chord">G</span>             <span class="chord">C/G</span>  <span class="chord">G</span></span>
-<span class="linha">Digno de toda glória</span>
-<span class="linha"><span class="chord">G</span>             <span class="chord">C/G</span> <span class="chord">G</span></span>
-<span class="linha">Digno de toda hon_ra</span>
-<span class="linha"><span class="chord">Em</span>       <span class="chord">Em/D</span> <span class="chord">C</span>  <span class="chord">G/B</span> <span class="chord">Am</span> <span class="chord">G/B</span>  <span class="chord">D7</span>    <span class="chord">G</span></span>
-<span class="linha">Digno de re___ce_ber  ho_je    o  louvor</span>
-<span class="linha" style="min-height:1em;">&nbsp;</span>
-<span class="linha" style="min-height:1em;">&nbsp;</span>
-<span class="linha"><span class="chord">F/G</span> <span class="chord">C/G</span>  <span class="chord">F/G</span>   <span class="chord">C/G</span>  <span class="chord">G</span></span>
-<span class="linha">Lou_ve, exalte ao Senhor</span>
-<span class="linha"><span class="chord">F/G</span> <span class="chord">C/G</span>    <span class="chord">F/G</span>  <span class="chord">C/G</span>     <span class="chord">G</span></span>
-<span class="linha">Lou_ve seu nome para sempre</span>
-<span class="linha" style="min-height:1em;">&nbsp;</span>
-<span class="linha"><span class="chord">G</span>             <span class="chord">C/G</span> <span class="chord">G</span></span>
-<span class="linha">Santo, Santo, San_to</span>
-<span class="linha"><span class="chord">G</span>             <span class="chord">C/G</span> <span class="chord">G</span></span>
-<span class="linha">Santo, Santo, San_to</span>
-<span class="linha"><span class="chord">Em</span>      <span class="chord">Em/D</span> <span class="chord">C</span>   <span class="chord">G/B</span> <span class="chord">Am</span> <span class="chord">G/B</span> <span class="chord">C/D</span></span>
-<span class="linha">Santo é o    Senhor,  Po_de___roso</span>
-<span class="linha" style="min-height:1em;">&nbsp;</span>
-<span class="linha" style="min-height:1em;">&nbsp;</span>
-<span class="linha"><span class="chord">G</span>             <span class="chord">C/G</span>  <span class="chord">G</span></span>
-<span class="linha">Digno de toda glória</span>
-<span class="linha"><span class="chord">G</span>             <span class="chord">C/G</span> <span class="chord">G</span></span>
-<span class="linha">Digno de toda hon_ra</span>
-<span class="linha"><span class="chord">Em</span>       <span class="chord">Em/D</span> <span class="chord">C</span>  <span class="chord">G/B</span> <span class="chord">Am</span> <span class="chord">G/B</span>  <span class="chord">D7</span>    <span class="chord">G</span></span>
-<span class="linha">Digno de re___ce_ber  ho_je    o  louvor</span>
-<span class="linha" style="min-height:1em;">&nbsp;</span>
-<span class="linha" style="min-height:1em;">&nbsp;</span>
-<span class="linha"><span class="chord">F/G</span> <span class="chord">C/G</span>  <span class="chord">F/G</span>   <span class="chord">C/G</span>  <span class="chord">G</span></span>
-<span class="linha">Lou_ve, exalte ao Senhor</span>
-<span class="linha"><span class="chord">F/G</span> <span class="chord">C/G</span>    <span class="chord">F/G</span>  <span class="chord">C/G</span>     <span class="chord">G</span></span>
-<span class="linha">Lou_ve seu nome para sempre</span>
-<span class="linha" style="min-height:1em;">&nbsp;</span>
-<span class="linha"><span class="chord">G</span>             <span class="chord">C/G</span> <span class="chord">G</span></span>
-<span class="linha">Santo, Santo, San_to</span>
-<span class="linha"><span class="chord">G</span>             <span class="chord">C/G</span> <span class="chord">G</span></span>
-<span class="linha">Santo, Santo, San_to</span>
-<span class="linha"><span class="chord">Em</span>      <span class="chord">Em/D</span> <span class="chord">C</span>   <span class="chord">G/B</span> <span class="chord">Am</span> <span class="chord">G/B</span> <span class="chord">C/D</span></span>
-<span class="linha">Santo é o    Senhor,  Po_de___roso</span>
-<span class="linha" style="min-height:1em;">&nbsp;</span>
-<span class="linha" style="min-height:1em;">&nbsp;</span>
-<span class="linha"><span class="chord">G</span>             <span class="chord">C/G</span>  <span class="chord">G</span></span>
-<span class="linha">Digno de toda glória</span>
-<span class="linha"><span class="chord">G</span>             <span class="chord">C/G</span> <span class="chord">G</span></span>
-<span class="linha">Digno de toda hon_ra</span>
-<span class="linha"><span class="chord">Em</span>       <span class="chord">Em/D</span> <span class="chord">C</span>  <span class="chord">G/B</span> <span class="chord">Am</span> <span class="chord">G/B</span>  <span class="chord">D7</span>    <span class="chord">G</span></span>
-<span class="linha">Digno de re___ce_ber  ho_je    o  louvor</span>
-<span class="linha" style="min-height:1em;">&nbsp;</span>
-<span class="linha" style="min-height:1em;">&nbsp;</span>
-<span class="linha"><span class="chord">F/G</span> <span class="chord">C/G</span>  <span class="chord">F/G</span>   <span class="chord">C/G</span>  <span class="chord">G</span></span>
-<span class="linha">Lou_ve, exalte ao Senhor</span>
-<span class="linha"><span class="chord">F/G</span> <span class="chord">C/G</span>    <span class="chord">F/G</span>  <span class="chord">C/G</span>     <span class="chord">G</span></span>
-<span class="linha">Lou_ve seu nome para sempre</span>
-        </div>
+        
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Seja o Centro</h1>
-          <div class="print-meta">Tom: D | 68ª (alfabética)</div>
-          
+      <div class="print-columns">
+        <span class="linha"><span class="chord">G</span></span>
+<span class="linha" style="min-height:1em;">&nbsp;</span>
+<span class="linha"><span class="chord">G</span>             <span class="chord">C/G</span> <span class="chord">G</span></span>
+<span class="linha">Santo, Santo, San_to</span>
+<span class="linha"><span class="chord">G</span>             <span class="chord">C/G</span> <span class="chord">G</span></span>
+<span class="linha">Santo, Santo, San_to</span>
+<span class="linha"><span class="chord">Em</span>      <span class="chord">Em/D</span> <span class="chord">C</span>   <span class="chord">G/B</span> <span class="chord">Am</span> <span class="chord">G/B</span> <span class="chord">C/D</span></span>
+<span class="linha">Santo é o    Senhor,  Po_de___roso</span>
+<span class="linha" style="min-height:1em;">&nbsp;</span>
+<span class="linha" style="min-height:1em;">&nbsp;</span>
+<span class="linha"><span class="chord">G</span>             <span class="chord">C/G</span>  <span class="chord">G</span></span>
+<span class="linha">Digno de toda glória</span>
+<span class="linha"><span class="chord">G</span>             <span class="chord">C/G</span> <span class="chord">G</span></span>
+<span class="linha">Digno de toda hon_ra</span>
+<span class="linha"><span class="chord">Em</span>       <span class="chord">Em/D</span> <span class="chord">C</span>  <span class="chord">G/B</span> <span class="chord">Am</span> <span class="chord">G/B</span>  <span class="chord">D7</span>    <span class="chord">G</span></span>
+<span class="linha">Digno de re___ce_ber  ho_je    o  louvor</span>
+<span class="linha" style="min-height:1em;">&nbsp;</span>
+<span class="linha" style="min-height:1em;">&nbsp;</span>
+<span class="linha"><span class="chord">F/G</span> <span class="chord">C/G</span>  <span class="chord">F/G</span>   <span class="chord">C/G</span>  <span class="chord">G</span></span>
+<span class="linha">Lou_ve, exalte ao Senhor</span>
+<span class="linha"><span class="chord">F/G</span> <span class="chord">C/G</span>    <span class="chord">F/G</span>  <span class="chord">C/G</span>     <span class="chord">G</span></span>
+<span class="linha">Lou_ve seu nome para sempre</span>
+<span class="linha" style="min-height:1em;">&nbsp;</span>
+<span class="linha"><span class="chord">G</span>             <span class="chord">C/G</span> <span class="chord">G</span></span>
+<span class="linha">Santo, Santo, San_to</span>
+<span class="linha"><span class="chord">G</span>             <span class="chord">C/G</span> <span class="chord">G</span></span>
+<span class="linha">Santo, Santo, San_to</span>
+<span class="linha"><span class="chord">Em</span>      <span class="chord">Em/D</span> <span class="chord">C</span>   <span class="chord">G/B</span> <span class="chord">Am</span> <span class="chord">G/B</span> <span class="chord">C/D</span></span>
+<span class="linha">Santo é o    Senhor,  Po_de___roso</span>
+<span class="linha" style="min-height:1em;">&nbsp;</span>
+<span class="linha" style="min-height:1em;">&nbsp;</span>
+<span class="linha"><span class="chord">G</span>             <span class="chord">C/G</span>  <span class="chord">G</span></span>
+<span class="linha">Digno de toda glória</span>
+<span class="linha"><span class="chord">G</span>             <span class="chord">C/G</span> <span class="chord">G</span></span>
+<span class="linha">Digno de toda hon_ra</span>
+<span class="linha"><span class="chord">Em</span>       <span class="chord">Em/D</span> <span class="chord">C</span>  <span class="chord">G/B</span> <span class="chord">Am</span> <span class="chord">G/B</span>  <span class="chord">D7</span>    <span class="chord">G</span></span>
+<span class="linha">Digno de re___ce_ber  ho_je    o  louvor</span>
+<span class="linha" style="min-height:1em;">&nbsp;</span>
+<span class="linha" style="min-height:1em;">&nbsp;</span>
+<span class="linha"><span class="chord">F/G</span> <span class="chord">C/G</span>  <span class="chord">F/G</span>   <span class="chord">C/G</span>  <span class="chord">G</span></span>
+<span class="linha">Lou_ve, exalte ao Senhor</span>
+<span class="linha"><span class="chord">F/G</span> <span class="chord">C/G</span>    <span class="chord">F/G</span>  <span class="chord">C/G</span>     <span class="chord">G</span></span>
+<span class="linha">Lou_ve seu nome para sempre</span>
+<span class="linha" style="min-height:1em;">&nbsp;</span>
+<span class="linha"><span class="chord">G</span>             <span class="chord">C/G</span> <span class="chord">G</span></span>
+<span class="linha">Santo, Santo, San_to</span>
+<span class="linha"><span class="chord">G</span>             <span class="chord">C/G</span> <span class="chord">G</span></span>
+<span class="linha">Santo, Santo, San_to</span>
+<span class="linha"><span class="chord">Em</span>      <span class="chord">Em/D</span> <span class="chord">C</span>   <span class="chord">G/B</span> <span class="chord">Am</span> <span class="chord">G/B</span> <span class="chord">C/D</span></span>
+<span class="linha">Santo é o    Senhor,  Po_de___roso</span>
+<span class="linha" style="min-height:1em;">&nbsp;</span>
+<span class="linha" style="min-height:1em;">&nbsp;</span>
+<span class="linha"><span class="chord">G</span>             <span class="chord">C/G</span>  <span class="chord">G</span></span>
+<span class="linha">Digno de toda glória</span>
+<span class="linha"><span class="chord">G</span>             <span class="chord">C/G</span> <span class="chord">G</span></span>
+<span class="linha">Digno de toda hon_ra</span>
+<span class="linha"><span class="chord">Em</span>       <span class="chord">Em/D</span> <span class="chord">C</span>  <span class="chord">G/B</span> <span class="chord">Am</span> <span class="chord">G/B</span>  <span class="chord">D7</span>    <span class="chord">G</span></span>
+<span class="linha">Digno de re___ce_ber  ho_je    o  louvor</span>
+<span class="linha" style="min-height:1em;">&nbsp;</span>
+<span class="linha" style="min-height:1em;">&nbsp;</span>
+<span class="linha"><span class="chord">F/G</span> <span class="chord">C/G</span>  <span class="chord">F/G</span>   <span class="chord">C/G</span>  <span class="chord">G</span></span>
+<span class="linha">Lou_ve, exalte ao Senhor</span>
+<span class="linha"><span class="chord">F/G</span> <span class="chord">C/G</span>    <span class="chord">F/G</span>  <span class="chord">C/G</span>     <span class="chord">G</span></span>
+<span class="linha">Lou_ve seu nome para sempre</span>
+      </div>
+    </div>
+  </div><div class="print-page" data-song-idx="47" data-pos-label="68ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Seja o Centro</h1>
+        <div class="print-meta">
+          Tom: D
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 68ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">D9</span>  <span class="chord">Bm7</span>  <span class="chord">G</span>  <span class="chord">D9</span></span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">D9</span>  <span class="chord">Bm7</span>  <span class="chord">G</span>  <span class="chord">D9</span></span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha">        <span class="chord">A4</span>  <span class="chord">A</span>        <span class="chord">D4</span>  <span class="chord">D</span></span>
@@ -20325,17 +20674,21 @@ function clearBibleScreen() {
 <span class="linha">Jesus,       Jesus</span>
 <span class="linha">   <span class="chord">D</span>   <span class="chord">C#m7</span>   <span class="chord">B</span> <span class="chord">B4</span>   <span class="chord">B</span></span>
 <span class="linha">Jesus,       Jesus</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Senhor, Te Quero</h1>
-          <div class="print-meta">Tom: C | 69ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="61" data-pos-label="69ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Senhor, Te Quero</h1>
+        <div class="print-meta">
+          Tom: C
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 69ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">C</span></span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">C</span></span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 
 <span class="linha" style="min-height:1em;">&nbsp;</span>
@@ -20410,17 +20763,21 @@ function clearBibleScreen() {
 <span class="linha"> Tua face eu quero ver</span>
 <span class="linha"><span class="chord">C</span>             <span class="chord">G</span>    <span class="chord">F</span></span>
 <span class="linha"> Senhor, te quero mais</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Só Hoje</h1>
-          <div class="print-meta">Tom: E | 70ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="57" data-pos-label="70ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Só Hoje</h1>
+        <div class="print-meta">
+          Tom: E
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 70ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">E</span>                           </span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">E</span>                           </span>
 <span class="linha">Hoje eu preciso te encontrar </span>
 <span class="linha">             <span class="chord">B5(9)</span></span>
 <span class="linha">De qualquer jeito</span>
@@ -20542,17 +20899,21 @@ function clearBibleScreen() {
 <span class="linha">Vai me deixar feliz, feliz</span>
 <span class="linha">    <span class="chord">Cm</span>  <span class="chord">G</span></span>
 <span class="linha">Só hoje</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Só Tu És Santo</h1>
-          <div class="print-meta">Tom: A | 71ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="43" data-pos-label="71ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Só Tu És Santo</h1>
+        <div class="print-meta">
+          Tom: A
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 71ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">A9</span>  <span class="chord">D6(9)</span> </span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">A9</span>  <span class="chord">D6(9)</span> </span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha"><span class="chord">A9</span> </span>
@@ -20619,17 +20980,21 @@ function clearBibleScreen() {
 <span class="linha">Não há outro como tu</span>
 <span class="linha">                   <span class="chord">D6(9)</span></span>
 <span class="linha">Não há outro como Jesus</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Tami Mina Yorokobe</h1>
-          <div class="print-meta">Tom: D | 72ª (alfabética)</div>
-          <div class="print-meta"><a href="https://youtu.be/-0XuK68DedU" target="_blank" rel="noopener">https://youtu.be/-0XuK68DedU</a></div>
+    </div>
+  </div><div class="print-page" data-song-idx="24" data-pos-label="72ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Tami Mina Yorokobe</h1>
+        <div class="print-meta">
+          Tom: D
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 72ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">D</span></span>
+        <div class="print-meta"><a href="https://youtu.be/-0XuK68DedU" target="_blank" rel="noopener">https://youtu.be/-0XuK68DedU</a></div>
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">D</span></span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha"><span class="chord">D</span>                     <span class="chord">G</span>        <span class="chord">D</span></span>
 <span class="linha">Tami mina yorokobe     kimi wa kitareri</span>
@@ -20668,17 +21033,21 @@ function clearBibleScreen() {
 <span class="linha">Shu Iesu wa      sukuinushi</span>
 <span class="linha"><span class="chord">D</span>      <span class="chord">G</span>        <span class="chord">A</span>        <span class="chord">D</span></span>
 <span class="linha">Shu Iesu wa      sukuinushi</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Te Agradeço</h1>
-          <div class="print-meta">Tom: A | BPM: 125 | 73ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="70" data-pos-label="73ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Te Agradeço</h1>
+        <div class="print-meta">
+          Tom: A
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | BPM: 125 | 73ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">A</span></span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">A</span></span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha"><span class="chord">A2</span>                       <span class="chord">D</span></span>
 <span class="linha">Por tudo o que tens feito</span>
@@ -20746,17 +21115,21 @@ function clearBibleScreen() {
 <span class="linha">Eu te agrade___ço</span>
 <span class="linha">        <span class="chord">Bm</span>   <span class="chord">A2</span></span>
 <span class="linha">Te agrade___ço</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Te Louvarei</h1>
-          <div class="print-meta">Tom: D | 74ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="41" data-pos-label="74ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Te Louvarei</h1>
+        <div class="print-meta">
+          Tom: D
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 74ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">D</span></span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">D</span></span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha"><span class="chord">D</span>                <span class="chord">G/D</span></span>
@@ -20852,17 +21225,21 @@ function clearBibleScreen() {
 <span class="linha">     Somente a ti Jesus</span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha"><span class="chord">D</span></span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Todas as Coisas</h1>
-          <div class="print-meta">Tom: C | 75ª (alfabética)</div>
-          <div class="print-meta"><a href="https://www.youtube.com/watch?v=HrdDc0no4Jw" target="_blank" rel="noopener">https://www.youtube.com/watch?v=HrdDc0no4Jw</a></div>
+    </div>
+  </div><div class="print-page" data-song-idx="1" data-pos-label="75ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Todas as Coisas</h1>
+        <div class="print-meta">
+          Tom: C
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 75ª (alfabética)
         </div>
-        <div class="print-columns">
-          <div class="print-intro-section"><span class="print-intro-label">INTRO</span><span class="linha"><span class="chord">C9</span>           <span class="chord">G4/B</span>                  <span class="chord">Am7</span></span>
+        <div class="print-meta"><a href="https://www.youtube.com/watch?v=HrdDc0no4Jw" target="_blank" rel="noopener">https://www.youtube.com/watch?v=HrdDc0no4Jw</a></div>
+      </div>
+      <div class="print-columns">
+        <div class="print-intro-section"><span class="print-intro-label">INTRO</span><span class="linha"><span class="chord">C9</span>           <span class="chord">G4/B</span>                  <span class="chord">Am7</span></span>
 <span class="linha">                <span class="chord">F9</span></span>
 <span class="linha"><span class="chord">C9</span>           <span class="chord">G4/B</span>                  <span class="chord">Am7</span></span>
 <span class="linha">                <span class="chord">F9</span></span><hr class="print-intro-hr"></div><span class="linha" style="min-height:1em;">&nbsp;</span>
@@ -20951,17 +21328,21 @@ function clearBibleScreen() {
 <span class="linha">Sim, por Ti Jesus bendito</span>
 <span class="linha"> <span class="chord">Dm7</span>     <span class="chord">G/B</span> <span class="chord">C</span></span>
 <span class="linha">Tudo eu deixarei</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Toma Meu Coração</h1>
-          <div class="print-meta">Tom: D | 76ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="53" data-pos-label="76ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Toma Meu Coração</h1>
+        <div class="print-meta">
+          Tom: D
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 76ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">D</span></span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">D</span></span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha"><span class="chord">D</span>              <span class="chord">Bm</span></span>
 <span class="linha">Este é o meu desejo</span>
@@ -21027,17 +21408,21 @@ function clearBibleScreen() {
 <span class="linha">Cada vez que eu acordar</span>
 <span class="linha">      <span class="chord">G</span>      <span class="chord">A</span>      <span class="chord">D</span></span>
 <span class="linha">Faz o Teu querer em mim</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Tu és Santo</h1>
-          <div class="print-meta">Tom: D | 77ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="31" data-pos-label="77ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Tu és Santo</h1>
+        <div class="print-meta">
+          Tom: D
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 77ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">D</span></span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">D</span></span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha">       <span class="chord">D</span></span>
 <span class="linha">Tu és Santo</span>
@@ -21141,17 +21526,21 @@ function clearBibleScreen() {
 <span class="linha">Quero Viver Minha Vida</span>
 <span class="linha">    <span class="chord">G</span>  <span class="chord">D/F#</span> <span class="chord">G</span>  <span class="chord">D/E</span>   <span class="chord">Bm</span>  <span class="chord">A/C#</span>  <span class="chord">D</span></span>
 <span class="linha">Em Ti</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Tu És Soberano</h1>
-          <div class="print-meta">Tom: C | 78ª (alfabética)</div>
-          <div class="print-meta"><a href="https://www.youtube.com/watch?v=yshJe6byGbs" target="_blank" rel="noopener">https://www.youtube.com/watch?v=yshJe6byGbs</a></div>
+    </div>
+  </div><div class="print-page" data-song-idx="34" data-pos-label="78ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Tu És Soberano</h1>
+        <div class="print-meta">
+          Tom: C
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 78ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">C</span></span>
+        <div class="print-meta"><a href="https://www.youtube.com/watch?v=yshJe6byGbs" target="_blank" rel="noopener">https://www.youtube.com/watch?v=yshJe6byGbs</a></div>
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">C</span></span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 
 <span class="linha" style="min-height:1em;">&nbsp;</span>
@@ -21227,17 +21616,21 @@ function clearBibleScreen() {
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha"><span class="chord">F</span> <span class="chord">Em</span> <span class="chord">Dm</span> <span class="chord">Dm</span>    <span class="chord">C</span></span>
 <span class="linha">Tu és Tremendo</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Tua É a Glória</h1>
-          <div class="print-meta">Tom: C | 79ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="67" data-pos-label="79ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Tua É a Glória</h1>
+        <div class="print-meta">
+          Tom: C
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 79ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">C9</span></span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">C9</span></span>
 <span class="linha"><span class="chord">Am7</span></span>
 <span class="linha">        <span class="chord">F</span>           <span class="chord">C/E</span></span>
 <span class="linha"><span class="chord">Dm7</span>             <span class="chord">F/G</span> <span class="chord">F7</span></span>
@@ -21308,17 +21701,21 @@ function clearBibleScreen() {
 <span class="linha">És a razão da minha  vi-da</span>
 <span class="linha"><span class="chord">Em7</span>           <span class="chord">G/A</span></span>
 <span class="linha">Vivo pra te adorar</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Um Certo Galileu</h1>
-          <div class="print-meta">Tom: E | 80ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="19" data-pos-label="80ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Um Certo Galileu</h1>
+        <div class="print-meta">
+          Tom: E
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 80ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">E</span></span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">E</span></span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha">          <span class="chord">E</span>           <span class="chord">B</span></span>
 <span class="linha">Um certo dia a beira-mar</span>
@@ -21445,17 +21842,21 @@ function clearBibleScreen() {
 <span class="linha">Ele é o Cristo é a razão da nossa fé</span>
 <span class="linha">      <span class="chord">E</span>    <span class="chord">B</span>   <span class="chord">E</span>  <span class="chord">A</span>  <span class="chord">E</span> </span>
 <span class="linha">E um dia voltará</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Vem, Esta É a Hora</h1>
-          <div class="print-meta">Tom: D | 81ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="50" data-pos-label="81ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Vem, Esta É a Hora</h1>
+        <div class="print-meta">
+          Tom: D
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 81ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">D</span>  <span class="chord">C/D</span>  <span class="chord">G</span></span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">D</span>  <span class="chord">C/D</span>  <span class="chord">G</span></span>
 <span class="linha"><span class="chord">D</span>  <span class="chord">C/D</span>  <span class="chord">G</span></span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
@@ -21498,17 +21899,21 @@ function clearBibleScreen() {
 <span class="linha">Mas aquele que a Ti escolher</span>
 <span class="linha">     <span class="chord">G</span>            <span class="chord">A4</span>  <span class="chord">A</span></span>
 <span class="linha">O tesouro maior terá</span>
-        </div>
       </div>
-    </div><div class="print-page">
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>Vim Para Adorar-Te</h1>
-          <div class="print-meta">Tom: C | 82ª (alfabética)</div>
-          
+    </div>
+  </div><div class="print-page" data-song-idx="62" data-pos-label="82ª (alfabética)">
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>Vim Para Adorar-Te</h1>
+        <div class="print-meta">
+          Tom: C
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest(&#39;.print-page&#39;))" title="Transpor +½ tom">+½</button>
+           | 82ª (alfabética)
         </div>
-        <div class="print-columns">
-          <span class="linha"><span class="chord">F7+</span>                <span class="chord">C</span></span>
+        
+      </div>
+      <div class="print-columns">
+        <span class="linha"><span class="chord">F7+</span>                <span class="chord">C</span></span>
 <span class="linha"><span class="chord">C</span>                  <span class="chord">G</span></span>
 <span class="linha"><span class="chord">G</span>             <span class="chord">Am</span>             <span class="chord">F</span>	</span>
 <span class="linha" style="min-height:1em;">&nbsp;</span>
@@ -21611,9 +22016,9 @@ function clearBibleScreen() {
 <span class="linha">Totalmente digno</span>
 <span class="linha"><span class="chord">G</span>            <span class="chord">Am</span>        <span class="chord">F</span></span>
 <span class="linha">Tão maravilhoso para mim</span>
-        </div>
       </div>
-    </div></div>
+    </div>
+  </div></div>
 </div>
 
 
@@ -21623,17 +22028,117 @@ function clearBibleScreen() {
 
 /*
 
-	NO MODO ATUAL, QUANDO PRECIONA CTRL + I ARE O MODO IMPRESSÃO MOSTRANDO AS MÚSICAS SELECIONADAS NA SEQUENCIA DA SELEÇÃO
+	NO PRINT MODE
 	
-	QUERO QUE CONTINUE EXATAMENTE ASSIM, MAS QUERO ADICIONAR UMA FUNCIONALIDADE SIMILAR
+	COLADO NA MARGEM DIREITA DA TELA FICARÁ UM MENU SUSPENSO QUE SEMPRE ESTARÁ NA TELA, INDEPENDENTE DA ROLAGEM
+	ESSE MENU TERÁ O ALFABETO ORGANIZADO VERTICALMENTE
+	QUANDO CLICAR EM UMA LETRA, A PÁGINA IRÁ ROLAR PARA A PRIMEIRA MÚSICA DA LISTA QUE COMEÇA COM A LETRA CLICADA
 	
-	QUANDO PRESSIONAR SHIFT + I DEVE:
+	LETRAS QUE NÃO POSSUEM MÚSICAS COM A MESMA INICIAL NÃO IRÃO APARECER, PULANDO NO ALFABETO
 	
-	- ABRIR TODAS AS MÚSICAS NO MODO IMPRESSÃO EM ORDEM ALFABÉTICA PELO NOME NA MESMA FORMATAÇÃO DE QUANDO SE PRESSIONA CTRL + I
-
+	ESSA FUNCIONALIDADE SERÁ USADA EM TABLET, POR ISSO DEVE TER TAMANHO IDEAL
+	
+	
 */
 
 
+
+function buildAlphaMenu() {
+  const menu = document.getElementById('printAlphaMenu');
+  if (!menu) return;
+  menu.innerHTML = '';
+
+  const pages = [...document.querySelectorAll('#printContent .print-page')];
+  const letterMap = new Map(); // letra → primeiro pageEl com aquela inicial
+
+  pages.forEach(page => {
+    const idx = parseInt(page.dataset.songIdx);
+    const musica = songsMaster[idx];
+    if (!musica) return;
+    const titulo = getText(musica, 'titulo') || getText(musica, 'itulo') || '';
+    const letra = titulo.trim().toUpperCase()[0];
+    if (letra && !letterMap.has(letra)) {
+      letterMap.set(letra, page);
+    }
+  });
+
+  [...letterMap.keys()].sort().forEach(letra => {
+    const btn = document.createElement('button');
+    btn.className = 'alpha-btn';
+    btn.textContent = letra;
+    btn.title = letra;
+    btn.addEventListener('click', () => {
+      const target = letterMap.get(letra);
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    menu.appendChild(btn);
+  });
+}
+
+function buildPrintPageContent(pageEl, musica, idx, posLabel) {
+  const titulo = getText(musica, 'titulo') || getText(musica, 'itulo') || 'Música sem título';
+  const tom = getText(musica, 'tom') || '';
+  const cifraRaw = getText(musica, 'cifra') || '';
+  const bpm = getText(musica, 'bpm') || '';
+  const youtube = getText(musica, 'youtube') || '';
+
+  const origRoot = parseRoot(tom) || 'C';
+  const targetRoot = transposeMap[titulo] || origRoot;
+  const semis = semisBetween(origRoot, targetRoot);
+  const displayKey = targetRoot + (/m(?!aj)/i.test(tom) ? 'm' : '');
+
+  const introMatch = cifraRaw.match(/<intro>([\s\S]*?)<\/intro>/i);
+  const introContent = introMatch ? introMatch[1] : '';
+  const cifraWithoutIntro = cifraRaw.replace(/<intro>[\s\S]*?<\/intro>/i, '');
+
+  const linhas = cifraWithoutIntro.replace(/\r\n?/g, '\n').split('\n');
+  const starIdx = linhas.findIndex(l => l.trim().startsWith('*'));
+  const cifraBody = starIdx !== -1 ? linhas.slice(starIdx + 1).join('\n') : cifraWithoutIntro;
+
+  let introHtml = '';
+  if (introContent.trim()) {
+    const apenasAcordes = introContent.replace(/\r\n?/g, '\n').split('\n').filter(l => isChordLine(l)).join('\n');
+    if (apenasAcordes.trim()) {
+      introHtml = `<div class="print-intro-section"><span class="print-intro-label">INTRO</span>${wrapChordsForPrint(apenasAcordes, semis)}<hr class="print-intro-hr"></div>`;
+    }
+  }
+
+  const cifraHtml = introHtml + wrapChordsForPrint(cifraBody, semis);
+
+  pageEl.innerHTML = `
+    <div style="page-break-inside: avoid; break-inside: avoid;">
+      <div class="print-header">
+        <h1>${titulo}</h1>
+        <div class="print-meta">
+          Tom: ${displayKey}
+          <button class="print-transpose-btn" onclick="transposePrintSong(this.closest('.print-page'))" title="Transpor +½ tom">+½</button>
+          ${bpm ? ' | BPM: ' + bpm : ''} | ${posLabel}
+        </div>
+        ${youtube.trim() ? `<div class="print-meta"><a href="${youtube.trim()}" target="_blank" rel="noopener">${youtube.trim()}</a></div>` : ''}
+      </div>
+      <div class="print-columns">
+        ${cifraHtml}
+      </div>
+    </div>
+  `;
+}
+
+function transposePrintSong(pageEl) {
+  const idx = parseInt(pageEl.dataset.songIdx);
+  const musica = songsMaster[idx];
+  if (!musica) return;
+
+  const titulo = getText(musica, 'titulo') || getText(musica, 'itulo') || '';
+  const tom = getText(musica, 'tom') || '';
+  const origRoot = parseRoot(tom) || 'C';
+  const currentTarget = transposeMap[titulo] || origRoot;
+  const newTarget = i2n((n2i(currentTarget) + 1 + 12) % 12);
+
+  transposeMap[titulo] = newTarget;
+  saveTransposeMap();
+
+  buildPrintPageContent(pageEl, musica, idx, pageEl.dataset.posLabel);
+}
 
 function generatePrintMode() {
   // Verifica se há músicas na fila
@@ -21713,20 +22218,10 @@ function generatePrintMode() {
     // Cria página
     const page = document.createElement('div');
     page.className = 'print-page';
-    
-    page.innerHTML = `
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>${titulo}</h1>
-          <div class="print-meta">Tom: ${displayKey}${bpm ? ' | BPM: ' + bpm : ''} | ${queuePos + 1}ª da sequência</div>
-          ${youtube.trim() ? `<div class="print-meta"><a href="${youtube.trim()}" target="_blank" rel="noopener">${youtube.trim()}</a></div>` : ''}
-        </div>
-        <div class="print-columns">
-          ${cifraHtml}
-        </div>
-      </div>
-    `;
-    
+    page.dataset.songIdx = globalIdx;
+    page.dataset.posLabel = `${queuePos + 1}ª da sequência`;
+    buildPrintPageContent(page, musica, globalIdx, page.dataset.posLabel);
+
     printContent.appendChild(page);
   });
   
@@ -21743,7 +22238,8 @@ function generatePrintMode() {
   // Mostra modo impressão
   printMode.classList.add('active');
   document.body.style.overflow = 'auto';
-  
+  buildAlphaMenu();
+
   console.log(`[PrintMode] ${songItems.length} música(s) prontas. Use Ctrl+P para imprimir.`);
 }
 
@@ -21866,18 +22362,9 @@ function generatePrintModeAll() {
 
     const page = document.createElement('div');
     page.className = 'print-page';
-    page.innerHTML = `
-      <div style="page-break-inside: avoid; break-inside: avoid;">
-        <div class="print-header">
-          <h1>${titulo}</h1>
-          <div class="print-meta">Tom: ${displayKey}${bpm ? ' | BPM: ' + bpm : ''} | ${pos + 1}ª (alfabética)</div>
-          ${youtube.trim() ? `<div class="print-meta"><a href="${youtube.trim()}" target="_blank" rel="noopener">${youtube.trim()}</a></div>` : ''}
-        </div>
-        <div class="print-columns">
-          ${cifraHtml}
-        </div>
-      </div>
-    `;
+    page.dataset.songIdx = idx;
+    page.dataset.posLabel = `${pos + 1}ª (alfabética)`;
+    buildPrintPageContent(page, musica, idx, page.dataset.posLabel);
     printContent.appendChild(page);
   });
 
@@ -21892,6 +22379,7 @@ function generatePrintModeAll() {
 
   printMode.classList.add('active');
   document.body.style.overflow = 'auto';
+  buildAlphaMenu();
 
   console.log(`[PrintModeAll] ${allSongs.length} música(s) prontas em ordem alfabética.`);
 }
