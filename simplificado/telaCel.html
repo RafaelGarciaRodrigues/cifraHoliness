@@ -8209,9 +8209,38 @@ Tão maravilhoso para mim
 		scrollRAF = requestAnimationFrame(passoScroll);
 	}
 
+	// ===== Mantem a tela ligada enquanto a rolagem estiver ativa =====
+	var wakeLock = null;
+
+	function pedirWakeLock() {
+		if (!("wakeLock" in navigator)) return;
+		navigator.wakeLock.request("screen").then(function (lock) {
+			wakeLock = lock;
+			wakeLock.addEventListener("release", function () {
+				wakeLock = null;
+			});
+		}).catch(function () {
+			wakeLock = null;
+		});
+	}
+
+	function liberarWakeLock() {
+		if (wakeLock) {
+			wakeLock.release().catch(function () {});
+			wakeLock = null;
+		}
+	}
+
+	document.addEventListener("visibilitychange", function () {
+		if (tocando && document.visibilityState === "visible" && !wakeLock) {
+			pedirWakeLock();
+		}
+	});
+
 	function iniciarScroll() {
 		tocando = true;
 		iconePlayPause.className = "bi bi-pause";
+		pedirWakeLock();
 		if (!scrollRAF) {
 			ultimoTimestamp = null;
 			scrollRAF = requestAnimationFrame(passoScroll);
@@ -8221,6 +8250,7 @@ Tão maravilhoso para mim
 	function pararScroll() {
 		tocando = false;
 		iconePlayPause.className = "bi bi-play";
+		liberarWakeLock();
 		if (scrollRAF) cancelAnimationFrame(scrollRAF);
 		scrollRAF = null;
 		ultimoTimestamp = null;
