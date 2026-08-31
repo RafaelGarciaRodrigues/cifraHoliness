@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Cifras</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <style>
 	* { box-sizing: border-box; }
 	html, body {
@@ -25,6 +26,8 @@
 		border-bottom: 1px solid #333;
 	}
 	#lista-musicas {
+		display: flex;
+		flex-direction: column;
 		padding: 4px 44px 60px 12px;
 	}
 	.musica {
@@ -35,6 +38,27 @@
 		font-size: 1.15em;
 		color: #ffcc66;
 		margin: 0 0 10px 0;
+		cursor: pointer;
+		user-select: none;
+	}
+	.musica.selecionada h2 {
+		color: #f60;
+	}
+	.musica .velocidade-controle {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		margin: 0 0 14px 0;
+		font-size: 0.8em;
+		color: #999;
+	}
+	.musica .velocidade-controle input[type="range"] {
+		flex: 1;
+		accent-color: #4ade80;
+	}
+	.musica .velocidade-valor {
+		min-width: 3.2em;
+		text-align: right;
 	}
 	.musica pre.cifra {
 		font-family: "Courier New", Consolas, monospace;
@@ -83,13 +107,44 @@
 		font-size: 15px;
 		line-height: 20px;
 	}
-	#nav-alfabeto a.tocando {
-		color: #4ade80;
-	}
 	#nav-alfabeto .nav-sep {
 		height: 1px;
 		background: #444;
 		margin: 4px 2px;
+	}
+	#controles-inferiores {
+		position: fixed;
+		left: 50%;
+		bottom: 16px;
+		transform: translateX(-50%);
+		display: flex;
+		align-items: center;
+		gap: 14px;
+		z-index: 10;
+	}
+	.botao-circular {
+		width: 52px;
+		height: 52px;
+		border-radius: 50%;
+		background: #101010;
+		color: #fff;
+		opacity: 0.6;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 1.6em;
+		border: 1px solid #333;
+	}
+	.botao-circular:active {
+		opacity: 0.9;
+	}
+	.botao-circular.pequeno {
+		width: 40px;
+		height: 40px;
+		font-size: 1.2em;
+	}
+	.botao-circular[hidden] {
+		display: none;
 	}
 </style>
 </head>
@@ -97,20 +152,14 @@
 <h1>Cifras</h1>
 <nav id="nav-alfabeto"></nav>
 <div id="lista-musicas"></div>
+<div id="controles-inferiores">
+	<div id="filtro-btn" class="botao-circular pequeno" hidden><i class="bi bi-funnel"></i></div>
+	<div id="play-pause-btn" class="botao-circular"><i class="bi bi-play"></i></div>
+	<div id="limpar-selecao-btn" class="botao-circular pequeno" hidden><i class="bi bi-x"></i></div>
+</div>
 
 <script id="musicas-xml" type="application/xml">
 <musicas>
-<musica>
-<![CDATA[
-...
-TOM:C
-
-
-<intro>
-</intro>
-]]>
-</musica>
-
 <musica>
 <![CDATA[
 A Alegria Está No Coração
@@ -3916,126 +3965,115 @@ Um restingal de vassoura pôr-do-sol perto de mim
 <musica>
 <![CDATA[
 Meus Filhos São Teus
-TOM:C
+TOM:E
 
+[Intro] E  G#  A  E  A
 
-C
-   F7/E                 D7
-       C
-   F7               D7
-  F7/E          G    C  ( F )
-	
-	
-C
+E
 Herança de Deus
-F/C
+A
 Presente do céu
-G/C          F/C
+E          A
 São meus filhos
-C
+E
 Pedi ao Senhor
- Dm7
+ F#m7
 E Ele me ouviu
-  C/E       Dm  C/E  F
+  E       F#m  E  A
 Por eles clamo
-
-
-F
+A
 Que ouçam tua voz
- C/E
+ E
 Que amém tua voz
-D7                 G4  G
+F#7                 B
 E busquem sempre obedecer
- F
+ A
 Que tenham em ti
-C/E
+E
 O tesouro maior
-D7                   G4
+F#7                 B
 E vivam pra te engrandecer
-       C
+       E
 Sejam luz por onde andarem
-   F7/E                 D7
+   A                 F#7
 Resplandecendo a luz do amor
-       C
+       E
 Sejam sal onde estiverem
-   F7               D7
+   A7               F#7
 Trazendo o sabor de Deus
-  F7/E          G    C  ( F )
+  A         B  E       E  A
 Meus filhos   são teus
 
-
-C
+E
 Herança de Deus
-F/C
+A
 Presente do céu
-G/C          F/C
+E          A
 São meus filhos
-C
+E
 Pedi ao Senhor
-Dm7
+ F#m7
 E Ele me ouviu
-   C/E      Dm  C/E
+     Eº   F#m  E
 Por eles clamo
-F
+A
 Que ouçam tua voz
- C/E
+ E
 Que amém tua voz
-D7               G    C
+F#7               B    E
 E busquem sempre obedecer
- F
+ A
 Que tenham em ti
-C/E
+E
 O tesouro maior
-D7                    G
+F#7                 B
 E vivam pra te engrandecer
-       C
+       E
 Sejam luz por onde andarem
-   F                D7
+   A                F#7
 Resplandecendo a luz do amor
-       C
+       E
 Sejam sal sim onde estiverem
-   F               D7
+   A7               F#7
 Trazendo o sabor de Deus
-  F7/E          G    C
+  A         B  E       E  A
 Meus filhos   são teus
 
-
-F
+A
 Que tua graça os livre do mal
- Am
+ E
 E o teu pão os sustente
-    F                   G/F
+    A                   B
 Seus anseios estejam em ti
-       Am7       G
+       C#m7       B
 Sim, em ti tão somente
-    F        C/E      D7
+     E            F#7
 Consagrados estão ao Senhor
-F
+A
 Meus filhos
 
-       C
+       E
 Sejam luz por onde andarem
-   F                D7
+   A                F#7
 Resplandecendo a luz do amor
-       C
+       E
 Sejam sal onde estiverem
-   F               D7
+   A7               F#7
 Trazendo o sabor de Deus
-  F7/E     D7
+  A    F#7
 Meus filhos
-  F     D7
+  A    F#7
 Meus filhos
-  F      G         C  F  G
+  A    B     E    A   B
 Meus filhos, são teus
 
-
-  F    C
+  A    E
 Sejam sal sim onde estiverem
-   Dm        C/E   D7  E
+   F#m           E   F#7
 Trazendo o sabor de Deus
-   Am    C/G
+G#m   C#m   B
 Meus fi___lhos
-F     Dm          C
+A     F#m      B    E
 Meus filhos, são teus
 ]]>
 </musica>
@@ -7770,15 +7808,125 @@ Tão maravilhoso para mim
 		}).join("");
 	}
 
+	// ===== Quebra de linhas longas (cifra + letra quebram juntas, na mesma coluna) =====
+	function medirLarguraCaractere() {
+		var el = document.createElement("span");
+		el.style.position = "fixed";
+		el.style.visibility = "hidden";
+		el.style.whiteSpace = "pre";
+		el.style.fontFamily = "\"Courier New\", Consolas, monospace";
+		el.style.fontSize = "0.95em";
+		el.textContent = new Array(101).join("0");
+		document.body.appendChild(el);
+		var largura = el.getBoundingClientRect().width / 100;
+		document.body.removeChild(el);
+		return largura || 8;
+	}
+
+	function medirColunasDisponiveis() {
+		var container = document.getElementById("lista-musicas");
+		var estilos = getComputedStyle(container);
+		var larguraDisponivel = container.clientWidth - parseFloat(estilos.paddingLeft) - parseFloat(estilos.paddingRight);
+		var larguraChar = medirLarguraCaractere();
+		return Math.max(10, Math.floor(larguraDisponivel / larguraChar));
+	}
+
+	function ehInicioDePalavra(str, idx) {
+		if (idx === 0) return str.charAt(0) !== " ";
+		return str.charAt(idx) !== " " && str.charAt(idx - 1) === " ";
+	}
+
+	// acha o inicio de palavra mais proximo de "alvo" dentro de str
+	function acharInicioDePalavra(str, alvo) {
+		var n = str.length;
+		if (alvo <= 0) return 0;
+		if (alvo >= n) return n;
+		for (var passo = 0; passo <= n; passo++) {
+			var antes = alvo - passo;
+			var depois = alvo + passo;
+			if (antes >= 0 && ehInicioDePalavra(str, antes)) return antes;
+			if (depois <= n && ehInicioDePalavra(str, depois)) return depois;
+		}
+		return alvo;
+	}
+
+	// quebra um par cifra+letra na mesma posicao, repetindo enquanto alguma das duas nao couber
+	function quebrarPar(cifra, letra, colunas) {
+		var pares = [];
+		var tentativas = 0;
+		while ((cifra.length > colunas || letra.length > colunas) && tentativas < 30) {
+			tentativas++;
+			var referencia = letra.length >= cifra.length ? letra : cifra;
+			var alvo = Math.min(colunas, Math.floor(referencia.length / 2));
+			var corte = acharInicioDePalavra(referencia, alvo);
+			if (corte <= 0 || corte >= referencia.length) {
+				corte = Math.max(1, Math.min(colunas, referencia.length - 1));
+			}
+			pares.push([cifra.slice(0, corte), letra.slice(0, corte)]);
+			cifra = cifra.slice(corte);
+			letra = letra.slice(corte);
+		}
+		pares.push([cifra, letra]);
+		return pares;
+	}
+
+	// quebra uma linha solta (sem par de cifra/letra), repetindo enquanto nao couber
+	function quebrarLinhaSolta(linha, colunas) {
+		var partes = [];
+		var tentativas = 0;
+		while (linha.length > colunas && tentativas < 30) {
+			tentativas++;
+			var alvo = Math.min(colunas, Math.floor(linha.length / 2));
+			var corte = acharInicioDePalavra(linha, alvo);
+			if (corte <= 0 || corte >= linha.length) {
+				corte = Math.max(1, Math.min(colunas, linha.length - 1));
+			}
+			partes.push(linha.slice(0, corte));
+			linha = linha.slice(corte);
+		}
+		partes.push(linha);
+		return partes;
+	}
+
+	function quebrarLinhasLongas(linhas, colunas) {
+		var resultado = [];
+		var i = 0;
+		while (i < linhas.length) {
+			var atual = linhas[i];
+			var proxima = linhas[i + 1];
+			if (isChordLine(atual) && proxima !== undefined) {
+				quebrarPar(atual, proxima, colunas).forEach(function (par) {
+					resultado.push(par[0]);
+					resultado.push(par[1]);
+				});
+				i += 2;
+			} else if (atual.length > colunas) {
+				quebrarLinhaSolta(atual, colunas).forEach(function (l) {
+					resultado.push(l);
+				});
+				i += 1;
+			} else {
+				resultado.push(atual);
+				i += 1;
+			}
+		}
+		return resultado;
+	}
+
+	var colunasDisponiveis = medirColunasDisponiveis();
+
 	function renderCifra(texto, semis) {
-		return String(texto).replace(/\r\n?/g, "\n").split("\n").map(function (linha) {
+		var linhas = String(texto).replace(/\r\n?/g, "\n").split("\n");
+		linhas = quebrarLinhasLongas(linhas, colunasDisponiveis);
+		return linhas.map(function (linha) {
 			return renderCifraLinha(linha, semis);
 		}).join("\n");
 	}
 
 	// ===== Persistencia no cache do navegador =====
 	var CHAVE_TRANSPOSTOS = "cifras_transpostos_v1";
-	var CHAVE_VELOCIDADE = "cifras_velocidade_v1";
+	var CHAVE_VELOCIDADES = "cifras_velocidades_v1";
+	var VELOCIDADE_PADRAO = 0;
 
 	function carregarTranspostos() {
 		try {
@@ -7794,18 +7942,33 @@ Tão maravilhoso para mim
 		} catch (e) {}
 	}
 
-	function carregarVelocidade() {
+	function carregarVelocidades() {
 		try {
-			var v = parseInt(localStorage.getItem(CHAVE_VELOCIDADE), 10);
-			return isNaN(v) ? 0 : v;
+			return JSON.parse(localStorage.getItem(CHAVE_VELOCIDADES)) || {};
 		} catch (e) {
-			return 0;
+			return {};
 		}
 	}
 
-	function salvarVelocidade(nivel) {
+	function salvarVelocidades(mapa) {
 		try {
-			localStorage.setItem(CHAVE_VELOCIDADE, String(nivel));
+			localStorage.setItem(CHAVE_VELOCIDADES, JSON.stringify(mapa));
+		} catch (e) {}
+	}
+
+	var CHAVE_SELECIONADAS = "cifras_selecionadas_v1";
+
+	function carregarSelecionadas() {
+		try {
+			return JSON.parse(localStorage.getItem(CHAVE_SELECIONADAS)) || [];
+		} catch (e) {
+			return [];
+		}
+	}
+
+	function salvarSelecionadas(lista) {
+		try {
+			localStorage.setItem(CHAVE_SELECIONADAS, JSON.stringify(lista));
 		} catch (e) {}
 	}
 
@@ -7813,6 +7976,7 @@ Tão maravilhoso para mim
 	var xml = new DOMParser().parseFromString(xmlText, "application/xml");
 	var nos = Array.prototype.slice.call(xml.getElementsByTagName("musica"));
 	var transpostosSalvos = carregarTranspostos();
+	var velocidadesSalvas = carregarVelocidades();
 
 	var musicas = nos.map(function (no) {
 		var conteudo = (no.textContent || "").trim();
@@ -7820,7 +7984,9 @@ Tão maravilhoso para mim
 		var titulo = (linhas[0] || "(Sem titulo)").trim();
 		var corpo = linhas.slice(1).join("\n").trim();
 		var semisSalvo = transpostosSalvos[titulo] || 0;
-		return { titulo: titulo, conteudo: corpo, semis: semisSalvo };
+		var velocidadeSalva = velocidadesSalvas[titulo];
+		if (velocidadeSalva === undefined) velocidadeSalva = VELOCIDADE_PADRAO;
+		return { titulo: titulo, conteudo: corpo, semis: semisSalvo, velocidade: velocidadeSalva };
 	});
 
 	musicas.sort(function (a, b) {
@@ -7829,6 +7995,7 @@ Tão maravilhoso para mim
 
 	var lista = document.getElementById("lista-musicas");
 	var primeiraPorLetra = {};
+	var ordemSelecao = carregarSelecionadas();
 
 	musicas.forEach(function (musica, i) {
 		var id = "musica-" + i;
@@ -7841,10 +8008,42 @@ Tão maravilhoso para mim
 		var secao = document.createElement("section");
 		secao.className = "musica";
 		secao.id = id;
+		secao.style.order = i;
+		if (ordemSelecao.indexOf(musica.titulo) !== -1) {
+			secao.classList.add("selecionada");
+		}
 
 		var h2 = document.createElement("h2");
 		h2.textContent = musica.titulo;
+		h2.addEventListener("click", function () {
+			alternarSelecao(secao, musica);
+		});
 		secao.appendChild(h2);
+
+		var controleVel = document.createElement("div");
+		controleVel.className = "velocidade-controle";
+
+		var valorVel = document.createElement("span");
+		valorVel.className = "velocidade-valor";
+		valorVel.textContent = musica.velocidade + "%";
+
+		var sliderVel = document.createElement("input");
+		sliderVel.type = "range";
+		sliderVel.min = "0";
+		sliderVel.max = "100";
+		sliderVel.step = "5";
+		sliderVel.value = String(musica.velocidade);
+		sliderVel.addEventListener("input", function () {
+			musica.velocidade = parseInt(sliderVel.value, 10);
+			valorVel.textContent = musica.velocidade + "%";
+			var mapa = carregarVelocidades();
+			mapa[musica.titulo] = musica.velocidade;
+			salvarVelocidades(mapa);
+		});
+
+		controleVel.appendChild(sliderVel);
+		controleVel.appendChild(valorVel);
+		secao.appendChild(controleVel);
 
 		var pre = document.createElement("pre");
 		pre.className = "cifra";
@@ -7854,20 +8053,96 @@ Tão maravilhoso para mim
 		lista.appendChild(secao);
 	});
 
+	// ===== Selecao e filtro de musicas =====
+	var filtroAtivo = false;
+	var filtroBtn = document.getElementById("filtro-btn");
+	var limparSelecaoBtn = document.getElementById("limpar-selecao-btn");
+
+	function atualizarControlesSelecao() {
+		var temSelecao = ordemSelecao.length > 0;
+		filtroBtn.hidden = !temSelecao;
+		limparSelecaoBtn.hidden = !temSelecao;
+	}
+
+	function aplicarFiltro() {
+		document.querySelectorAll(".musica").forEach(function (secao, i) {
+			var titulo = secao.querySelector("h2").textContent;
+			if (filtroAtivo) {
+				var pos = ordemSelecao.indexOf(titulo);
+				secao.hidden = pos === -1;
+				if (pos !== -1) secao.style.order = pos;
+			} else {
+				secao.hidden = false;
+				secao.style.order = i;
+			}
+		});
+	}
+
+	function alternarSelecao(secao, musica) {
+		var pos = ordemSelecao.indexOf(musica.titulo);
+		if (pos === -1) {
+			ordemSelecao.push(musica.titulo);
+			secao.classList.add("selecionada");
+		} else {
+			ordemSelecao.splice(pos, 1);
+			secao.classList.remove("selecionada");
+		}
+		salvarSelecionadas(ordemSelecao);
+		atualizarControlesSelecao();
+		if (filtroAtivo) aplicarFiltro();
+	}
+
+	filtroBtn.addEventListener("click", function () {
+		filtroAtivo = true;
+		aplicarFiltro();
+	});
+
+	limparSelecaoBtn.addEventListener("click", function () {
+		ordemSelecao = [];
+		salvarSelecionadas(ordemSelecao);
+		document.querySelectorAll(".musica.selecionada").forEach(function (secao) {
+			secao.classList.remove("selecionada");
+		});
+		filtroAtivo = false;
+		aplicarFiltro();
+		atualizarControlesSelecao();
+	});
+
+	atualizarControlesSelecao();
+
 	// Descobre qual musica esta sendo lida no momento (a que fica logo abaixo do cabecalho fixo)
-	function musicaAtual() {
-		var header = document.querySelector("h1");
-		var limite = header ? header.getBoundingClientRect().bottom : 0;
-		var secoes = document.querySelectorAll(".musica");
+	// Encontra a secao .musica que esta na altura Y informada (ultima cujo topo ja passou de Y)
+	function musicaNaAltura(y) {
+		// So considera secoes visiveis (o filtro esconde as demais com [hidden], cujo rect fica zerado)
+		// e ordena pela posicao visual real, pois o CSS "order" pode divergir da ordem do DOM quando filtrado.
+		var secoes = Array.prototype.filter.call(document.querySelectorAll(".musica"), function (s) {
+			return !s.hidden;
+		});
+		secoes.sort(function (a, b) {
+			return a.getBoundingClientRect().top - b.getBoundingClientRect().top;
+		});
 		var atual = secoes[0] || null;
 		for (var i = 0; i < secoes.length; i++) {
-			if (secoes[i].getBoundingClientRect().top <= limite + 1) {
+			if (secoes[i].getBoundingClientRect().top <= y + 1) {
 				atual = secoes[i];
 			} else {
 				break;
 			}
 		}
 		return atual;
+	}
+
+	function musicaAtual() {
+		var header = document.querySelector("h1");
+		var limite = header ? header.getBoundingClientRect().bottom : 0;
+		return musicaNaAltura(limite);
+	}
+
+	// Musica que esta visualmente por baixo do botao de play/pause
+	function musicaSobPlay() {
+		var btn = document.getElementById("play-pause-btn");
+		var y = btn ? btn.getBoundingClientRect().top : window.innerHeight;
+		return musicaNaAltura(y);
 	}
 
 	function transporAtual(delta) {
@@ -7890,38 +8165,43 @@ Tão maravilhoso para mim
 	}
 
 	// ===== Rolagem automatica (play/pause) =====
-	var NIVEIS_VELOCIDADE = 5; // niveis 1..5 tocando, 0 = parado
-	var BASE_PX_POR_SEG = 25; // velocidade "lenta" de referencia (100%)
-	var nivelScroll = carregarVelocidade();
+	var tocando = false;
 	var scrollRAF = null;
 	var ultimoTimestamp = null;
-	var botaoPlay = null;
+	var fracaoAcumulada = 0; // guarda pixels fracionarios entre frames (scrollBy arredonda para inteiro)
+	var botaoPlayPause = document.getElementById("play-pause-btn");
+	var iconePlayPause = botaoPlayPause.querySelector("i");
 
-	function multiplicadorVelocidade(nivel) {
-		return nivel > 0 ? 1 + (nivel - 1) * 0.2 : 0;
+	function velocidadeAtualPct() {
+		var secao = musicaSobPlay();
+		if (!secao) return VELOCIDADE_PADRAO;
+		var idx = parseInt(secao.id.replace("musica-", ""), 10);
+		var musica = musicas[idx];
+		var v = musica ? Number(musica.velocidade) : NaN;
+		return isNaN(v) ? VELOCIDADE_PADRAO : v;
 	}
 
-	function atualizarBotaoPlay() {
-		if (!botaoPlay) return;
-		if (nivelScroll > 0) {
-			botaoPlay.classList.add("tocando");
-			botaoPlay.title = "Rolando a " + Math.round(multiplicadorVelocidade(nivelScroll) * 100) + "% - clique para acelerar";
-		} else {
-			botaoPlay.classList.remove("tocando");
-			botaoPlay.title = "Rolagem automatica";
-		}
+	// 0% = parado, 1% = 1px/s, ..., 100% = 100px/s (relacao direta)
+	function pxPorSegundo(pct) {
+		return pct;
 	}
 
 	function passoScroll(timestamp) {
-		if (!nivelScroll) {
+		if (!tocando) {
 			scrollRAF = null;
 			ultimoTimestamp = null;
+			fracaoAcumulada = 0;
 			return;
 		}
 		if (ultimoTimestamp === null) ultimoTimestamp = timestamp;
 		var dt = (timestamp - ultimoTimestamp) / 1000;
 		ultimoTimestamp = timestamp;
-		window.scrollBy(0, BASE_PX_POR_SEG * multiplicadorVelocidade(nivelScroll) * dt);
+		fracaoAcumulada += pxPorSegundo(velocidadeAtualPct()) * dt;
+		var pixelsInteiros = Math.floor(fracaoAcumulada);
+		if (pixelsInteiros > 0) {
+			window.scrollBy(0, pixelsInteiros);
+			fracaoAcumulada -= pixelsInteiros;
+		}
 		if ((window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight - 2) {
 			pararScroll();
 			return;
@@ -7930,46 +8210,31 @@ Tão maravilhoso para mim
 	}
 
 	function iniciarScroll() {
-		if (scrollRAF) return;
-		ultimoTimestamp = null;
-		scrollRAF = requestAnimationFrame(passoScroll);
-	}
-
-	function pararScroll() {
-		if (scrollRAF) cancelAnimationFrame(scrollRAF);
-		scrollRAF = null;
-		ultimoTimestamp = null;
-		nivelScroll = 0;
-		salvarVelocidade(nivelScroll);
-		atualizarBotaoPlay();
-	}
-
-	function alternarScroll() {
-		nivelScroll = (nivelScroll + 1) % (NIVEIS_VELOCIDADE + 1);
-		salvarVelocidade(nivelScroll);
-		atualizarBotaoPlay();
-		if (nivelScroll === 0) {
-			if (scrollRAF) cancelAnimationFrame(scrollRAF);
-			scrollRAF = null;
+		tocando = true;
+		iconePlayPause.className = "bi bi-pause";
+		if (!scrollRAF) {
 			ultimoTimestamp = null;
-		} else {
-			iniciarScroll();
+			scrollRAF = requestAnimationFrame(passoScroll);
 		}
 	}
 
-	var nav = document.getElementById("nav-alfabeto");
+	function pararScroll() {
+		tocando = false;
+		iconePlayPause.className = "bi bi-play";
+		if (scrollRAF) cancelAnimationFrame(scrollRAF);
+		scrollRAF = null;
+		ultimoTimestamp = null;
+	}
 
-	botaoPlay = document.createElement("a");
-	botaoPlay.textContent = ">";
-	botaoPlay.href = "#";
-	botaoPlay.className = "ativo transpor";
-	botaoPlay.addEventListener("click", function (e) {
-		e.preventDefault();
-		alternarScroll();
+	botaoPlayPause.addEventListener("click", function () {
+		if (tocando) {
+			pararScroll();
+		} else {
+			iniciarScroll();
+		}
 	});
-	nav.appendChild(botaoPlay);
-	atualizarBotaoPlay();
-	if (nivelScroll > 0) iniciarScroll();
+
+	var nav = document.getElementById("nav-alfabeto");
 
 	[["+", 1], ["-", -1]].forEach(function (par) {
 		var link = document.createElement("a");

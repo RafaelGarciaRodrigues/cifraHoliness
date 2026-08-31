@@ -1,122 +1,111 @@
 ﻿Meus Filhos São Teus
-TOM:C
+TOM:E
 
+[Intro] E  G#  A  E  A
 
-C
-   F7/E                 D7
-       C
-   F7               D7
-  F7/E          G    C  ( F )
-	
-	
-C
+E
 Herança de Deus
-F/C
+A
 Presente do céu
-G/C          F/C
+E          A
 São meus filhos
-C
+E
 Pedi ao Senhor
- Dm7
+ F#m7
 E Ele me ouviu
-  C/E       Dm  C/E  F
+  E       F#m  E  A
 Por eles clamo
-
-
-F
+A
 Que ouçam tua voz
- C/E
+ E
 Que amém tua voz
-D7                 G4  G
+F#7                 B
 E busquem sempre obedecer
- F
+ A
 Que tenham em ti
-C/E
+E
 O tesouro maior
-D7                   G4
+F#7                 B
 E vivam pra te engrandecer
-       C
+       E
 Sejam luz por onde andarem
-   F7/E                 D7
+   A                 F#7
 Resplandecendo a luz do amor
-       C
+       E
 Sejam sal onde estiverem
-   F7               D7
+   A7               F#7
 Trazendo o sabor de Deus
-  F7/E          G    C  ( F )
+  A         B  E       E  A
 Meus filhos   são teus
 
-
-C
+E
 Herança de Deus
-F/C
+A
 Presente do céu
-G/C          F/C
+E          A
 São meus filhos
-C
+E
 Pedi ao Senhor
-Dm7
+ F#m7
 E Ele me ouviu
-   C/E      Dm  C/E
+     Eº   F#m  E
 Por eles clamo
-F
+A
 Que ouçam tua voz
- C/E
+ E
 Que amém tua voz
-D7               G    C
+F#7               B    E
 E busquem sempre obedecer
- F
+ A
 Que tenham em ti
-C/E
+E
 O tesouro maior
-D7                    G
+F#7                 B
 E vivam pra te engrandecer
-       C
+       E
 Sejam luz por onde andarem
-   F                D7
+   A                F#7
 Resplandecendo a luz do amor
-       C
+       E
 Sejam sal sim onde estiverem
-   F               D7
+   A7               F#7
 Trazendo o sabor de Deus
-  F7/E          G    C
+  A         B  E       E  A
 Meus filhos   são teus
 
-
-F
+A
 Que tua graça os livre do mal
- Am
+ E
 E o teu pão os sustente
-    F                   G/F
+    A                   B
 Seus anseios estejam em ti
-       Am7       G
+       C#m7       B
 Sim, em ti tão somente
-    F        C/E      D7
+     E            F#7
 Consagrados estão ao Senhor
-F
+A
 Meus filhos
 
-       C
+       E
 Sejam luz por onde andarem
-   F                D7
+   A                F#7
 Resplandecendo a luz do amor
-       C
+       E
 Sejam sal onde estiverem
-   F               D7
+   A7               F#7
 Trazendo o sabor de Deus
-  F7/E     D7
+  A    F#7
 Meus filhos
-  F     D7
+  A    F#7
 Meus filhos
-  F      G         C  F  G
+  A    B     E    A   B
 Meus filhos, são teus
 
-
-  F    C
+  A    E
 Sejam sal sim onde estiverem
-   Dm        C/E   D7  E
+   F#m           E   F#7
 Trazendo o sabor de Deus
-   Am    C/G
+G#m   C#m   B
 Meus fi___lhos
-F     Dm          C
+A     F#m      B    E
 Meus filhos, são teus

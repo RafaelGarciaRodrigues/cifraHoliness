@@ -51,3 +51,76 @@
 - quando executo syncCifraHoliness.bat
 - não está atualizando a pasta \simplificado e deve ser atualizada
 
+# CONTROLE DO SCROLL e seleção de música
+- remova insira ">" (não ficou bom)
+- a velocidade não está mudando como deve
+- abaixo do nome de cada música insira um slider que irei ajustar a velocidade para cada música
+- o valor do slider para cada música ficará salvo no cache
+- na parte inferior da tela o ícone <i class="bi bi-play"></i> em alpha 60%
+-- quando clicado irá começar a rolagem e muda para o icone <i class="bi bi-pause"></i>
+-- quando clicar em <i class="bi bi-pause"></i> pasa a rolagem e volta o icone <i class="bi bi-play"></i>
+
+# VELOCIDADE DO SCROLL
+- só começa a rolar acima de 120%
+- deve começar sempre em 0% (parado)
+- a cada 5% deve rolar 5px / segundos sendo 100% 100 px / segundos
+
+# SELEÇÃO DAS MÚSICAS
+- é possivel clicar sobre as músicas
+- clicando ela muda para a cor #f60
+- clicando novamente volta para a cor original
+- quando na cor #f60 entendemos que ela está selecionada
+- ao selecionar, pelo menos, uma música deve:
+-- aparecer o icone <i class="bi bi-funnel"></i> em alpha 60% ao lado esquerdo do icone <i class="bi bi-play"></i>
+-- clicando em <i class="bi bi-funnel"></i> deve:
+--- filtrar mostrando apenas as músicas selecionadas na ordem em que foram selecionadas
+-- deve aparecer o ícone <i class="bi bi-x"></i> em alpha 60% ao lado direito do icone <i class="bi bi-play"></i>
+-- clicando em <i class="bi bi-x"></i> remove os filtros (músicas selecionadas) voltando ao original
+-- músicas selecionadas devem ficar salvas no cache do navegador
+
+# AJUSTE NA VISUALIZAÇÃO
+- o objetivo é visualizar cifras na tela do celular
+- entretanto algumas músicas possuem uma linha longa (maior que a largura da tela)
+- quero uma função que quebre a linha da cifra (e não a linha normal do texto)
+- por exemplo, a música "A Lua Que Eu Te Dei":
+
+ 
+ 
+A9                 A/G                  F#m7            D9
+Posso te falar dos sonhos das flores de como a cidade mudou
+A9                A/G            F#m7          D9
+Posso te falar do medo  do meu desejo  do meu amor
+A9      A9/C#   D9                  B/D#       A/E
+Posso falar  da tarde que cai e aos poucos deixa ver
+   C#7(9+)  F#m7         F7M       A9/E
+No céu    a lua   que um dia eu te dei
+ 
+
+
+- deve quebrar assim:
+
+A9                 A/G    
+Posso te falar dos sonhos 
+              F#m7            D9
+das flores de como a cidade mudou
+A9                A/G   
+Posso te falar do medo  
+         F#m7          D9
+do meu desejo  do meu amor
+A9      A9/C#   D9    
+Posso falar  da tarde 
+              B/D#       A/E
+que cai e aos poucos deixa ver
+   C#7(9+)  F#m7  
+No céu    a lua   
+       F7M       A9/E
+que um dia eu te dei
+
+- ou seja:
+-- identifica mais ou menos o meio da linha e escolhe o inicio de uma palavra
+-- quebra tanto a linha da cifra quando a linha da letra na mesma posição
+-- mantem a posição da cifra exatamente na mesma posição sobre a letra
+-- deve ocorrer quando identificar que a linha é maior que a tela
+--- quando a linha não for maior que a tela, não deve quebrar
+-- analise é feita pode linha e não na música, ou seja:
+--- a mesma música pode ter linhas quebradas e outras não
