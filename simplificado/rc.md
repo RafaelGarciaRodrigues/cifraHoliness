@@ -124,3 +124,7 @@ que um dia eu te dei
 --- quando a linha não for maior que a tela, não deve quebrar
 -- analise é feita pode linha e não na música, ou seja:
 --- a mesma música pode ter linhas quebradas e outras não
+
+# AJUSTE ROLAGEM
+- na rolagem definimos que 1% corsponde a 1px/só
+- quero mudar, a cada 1% corresponde a 0.5px/s ou seja, 2% é 1px/segundo

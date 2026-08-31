@@ -8181,9 +8181,9 @@ Tão maravilhoso para mim
 		return isNaN(v) ? VELOCIDADE_PADRAO : v;
 	}
 
-	// 0% = parado, 1% = 1px/s, ..., 100% = 100px/s (relacao direta)
+	// 0% = parado, cada 1% = 0.5px/s (2% = 1px/s), 100% = 50px/s
 	function pxPorSegundo(pct) {
-		return pct;
+		return pct * 0.5;
 	}
 
 	function passoScroll(timestamp) {
