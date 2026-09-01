@@ -129,6 +129,35 @@
 	.botao-circular[hidden] {
 		display: none;
 	}
+	#acorde-modal {
+		position: fixed;
+		inset: 0;
+		display: none;
+		align-items: center;
+		justify-content: center;
+		z-index: 20;
+	}
+	#acorde-modal.aberto {
+		display: flex;
+	}
+	#acorde-modal .caixa {
+		background: rgba(16, 16, 16, 0.55);
+		color: #fff;
+		padding: 22px 32px;
+		border-radius: 14px;
+		text-align: center;
+		border: 1px solid rgba(255, 255, 255, 0.15);
+	}
+	#acorde-modal .simbolo {
+		color: #f60;
+		font-weight: bold;
+		font-size: 1.5em;
+		margin-bottom: 10px;
+	}
+	#acorde-modal .notas {
+		font-size: 1.2em;
+		letter-spacing: 1px;
+	}
 </style>
 </head>
 <body>
@@ -140,6 +169,12 @@
 	<div id="play-pause-btn" class="botao-circular"><i class="bi bi-play"></i></div>
 	<div id="transpor-menos-btn" class="botao-circular pequeno"><i class="bi bi-dash"></i></div>
 	<div id="limpar-selecao-btn" class="botao-circular pequeno" hidden><i class="bi bi-x"></i></div>
+</div>
+<div id="acorde-modal">
+	<div class="caixa">
+		<div class="simbolo"></div>
+		<div class="notas"></div>
+	</div>
 </div>
 
 <script id="musicas-xml" type="application/xml">
@@ -7780,6 +7815,62 @@ Tão maravilhoso para mim
 		return transposeSymbol(tok, semis);
 	}
 
+	// ===== Dicionario de acordes (recriado de app.html: normalizeSymbol/chordIntervals/chordNotes) =====
+	function normalizeSymbol(symRaw) {
+		var s = symRaw.replace(/\s+/g, "");
+		s = s.replace(/°|º/g, "dim");
+		s = s.replace(/maj7|7M/gi, "maj7");
+		s = s.replace(/\+/g, "aug");
+		return s;
+	}
+
+	function chordIntervals(symbol) {
+		var root = parseRoot(symbol);
+		if (!root) return { root: null, set: [] };
+		var after = symbol.slice(root.length);
+		var isDim = /dim/.test(after);
+		var isAug = /aug/.test(after);
+		var isMin = /^m(?!aj)/.test(after);
+		var triad;
+		if (isDim) triad = [0, 3, 6];
+		else if (isAug) triad = [0, 4, 8];
+		else if (isMin) triad = [0, 3, 7];
+		else triad = [0, 4, 7];
+		if (/sus4/.test(after) || /(^|[^0-9])4(?![0-9])/.test(after)) {
+			triad = [0, 5, 7];
+		}
+		var add = {};
+		if (/maj7/.test(after)) add[11] = true;
+		else if (/7/.test(after)) add[10] = true;
+		if (/(^|[^0-9])6(?![0-9])/.test(after)) add[9] = true;
+		if (/\(.*9.*\)|(^|[^0-9])9(?![0-9])/.test(after)) add[2] = true;
+		if (/\(.*11.*\)|(^|[^0-9])11(?![0-9])/.test(after)) add[5] = true;
+		if (/\(.*13.*\)|(^|[^0-9])13(?![0-9])/.test(after)) add[9] = true;
+		var set = {};
+		triad.forEach(function (n) { set[n] = true; });
+		Object.keys(add).forEach(function (n) { set[n] = true; });
+		return { root: root, set: Object.keys(set).map(Number) };
+	}
+
+	function chordNotes(sym) {
+		var s = normalizeSymbol(sym);
+		var partes = s.split("/");
+		var head = partes[0];
+		var info = chordIntervals(head);
+		if (!info.root || !info.set.length) return { root: null, notes: [] };
+		var vistos = {};
+		var notas = [info.root];
+		vistos[info.root] = true;
+		info.set.slice().sort(function (a, b) { return a - b; }).forEach(function (semi) {
+			var nota = i2n((n2i(info.root) + semi) % 12);
+			if (!vistos[nota]) {
+				vistos[nota] = true;
+				notas.push(nota);
+			}
+		});
+		return { root: info.root, notes: notas };
+	}
+
 	function renderCifraLinha(linha, semis) {
 		if (!isChordLine(linha)) {
 			return escapeHtml(linha) || "&nbsp;";
@@ -8304,6 +8395,31 @@ Tão maravilhoso para mim
 		});
 	});
 	atualizarLetraAtual();
+
+	// ===== Modal com as notas do acorde clicado =====
+	var modalAcorde = document.getElementById("acorde-modal");
+	var modalAcordeSimbolo = modalAcorde.querySelector(".simbolo");
+	var modalAcordeNotas = modalAcorde.querySelector(".notas");
+
+	function mostrarModalAcorde(simbolo) {
+		var info = chordNotes(simbolo);
+		if (!info.root) return;
+		modalAcordeSimbolo.textContent = simbolo;
+		modalAcordeNotas.textContent = info.notes.join("  -  ");
+		modalAcorde.classList.add("aberto");
+	}
+
+	function esconderModalAcorde() {
+		modalAcorde.classList.remove("aberto");
+	}
+
+	modalAcorde.addEventListener("click", esconderModalAcorde);
+
+	lista.addEventListener("click", function (e) {
+		var span = e.target.closest(".chord");
+		if (!span) return;
+		mostrarModalAcorde(span.textContent);
+	});
 })();
 </script>
 </body>

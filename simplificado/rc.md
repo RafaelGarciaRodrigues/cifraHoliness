@@ -146,3 +146,10 @@ que um dia eu te dei
 - substitua o botão "+" do menu lateral por <i class="bi bi-plus"></i> a esquerda de <i class="bi bi-play">, mas 25% menor que <i class="bi bi-play"> e com mesmo alpha
 - substitua o botão "-" do menu lateral por <i class="bi bi-dash"></i> a direita de <i class="bi bi-play">, mas 25% menor que <i class="bi bi-play"> e com mesmo alpha
 - para ganhar espaço em tela, remova <h1>Cifras</h1>
+
+# DICIONARIO DE ACORDES
+- em app.html tem uma função que identifica as notas musicais dos acordes
+- entenda essa função e:
+-- quando clicar em cima de um acorde na letra da música, deve aparecer um modal em alpha 55% somente com as notas musicais do acorde clicado
+-- não marque os acordes como elementos clicaveis (tipo link) não mude a formatação
+-- apenas quando clicar ele deve mostrar esse modal
