@@ -128,3 +128,15 @@ que um dia eu te dei
 # AJUSTE ROLAGEM
 - na rolagem definimos que 1% corsponde a 1px/só
 - quero mudar, a cada 1% corresponde a 0.5px/s ou seja, 2% é 1px/segundo
+
+# ANALISE DE TECNOLOGIA
+- não implemente nada
+- quero avaliar se há uma tecnologia que:
+-- vou usar a telaCel.html no celular
+-- quero ter outro arquivo html no computador
+-- conectar o celular no computador via bluethoth
+-- quero que o que a musica da tela do celular apareça também no computador, apenas a letra
+-- no computador posso ter um arquivo com todas as letras
+-- mas precisa mostrar o trecho exato que está na tela do celular na tela do computador
+-- para que pessoas possam ler e cantar junto na igreja
+-- nao havalie, me de alternativas de abordagens
