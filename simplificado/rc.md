@@ -140,3 +140,9 @@ que um dia eu te dei
 -- mas precisa mostrar o trecho exato que está na tela do celular na tela do computador
 -- para que pessoas possam ler e cantar junto na igreja
 -- nao havalie, me de alternativas de abordagens
+
+# INDICAÇÃO NO MEU LATERAL
+- no meu lateral, a letra que estiver com a musica (inicial do nome) na tela, a letra do menu deve ficar #f60
+- substitua o botão "+" do menu lateral por <i class="bi bi-plus"></i> a esquerda de <i class="bi bi-play">, mas 25% menor que <i class="bi bi-play"> e com mesmo alpha
+- substitua o botão "-" do menu lateral por <i class="bi bi-dash"></i> a direita de <i class="bi bi-play">, mas 25% menor que <i class="bi bi-play"> e com mesmo alpha
+- para ganhar espaço em tela, remova <h1>Cifras</h1>

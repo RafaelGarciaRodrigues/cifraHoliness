@@ -14,17 +14,6 @@
 		color: #f0f0f0;
 		font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif;
 	}
-	h1 {
-		font-size: 1.3em;
-		text-align: center;
-		padding: 12px 44px 12px 12px;
-		margin: 0;
-		background: #101010;
-		position: sticky;
-		top: 0;
-		z-index: 5;
-		border-bottom: 1px solid #333;
-	}
 	#lista-musicas {
 		display: flex;
 		flex-direction: column;
@@ -103,14 +92,8 @@
 		color: #555;
 		pointer-events: none;
 	}
-	#nav-alfabeto a.transpor {
-		font-size: 15px;
-		line-height: 20px;
-	}
-	#nav-alfabeto .nav-sep {
-		height: 1px;
-		background: #444;
-		margin: 4px 2px;
+	#nav-alfabeto a.atual {
+		color: #f60;
 	}
 	#controles-inferiores {
 		position: fixed;
@@ -149,12 +132,13 @@
 </style>
 </head>
 <body>
-<h1>Cifras</h1>
 <nav id="nav-alfabeto"></nav>
 <div id="lista-musicas"></div>
 <div id="controles-inferiores">
 	<div id="filtro-btn" class="botao-circular pequeno" hidden><i class="bi bi-funnel"></i></div>
+	<div id="transpor-mais-btn" class="botao-circular pequeno"><i class="bi bi-plus"></i></div>
 	<div id="play-pause-btn" class="botao-circular"><i class="bi bi-play"></i></div>
+	<div id="transpor-menos-btn" class="botao-circular pequeno"><i class="bi bi-dash"></i></div>
 	<div id="limpar-selecao-btn" class="botao-circular pequeno" hidden><i class="bi bi-x"></i></div>
 </div>
 
@@ -8133,9 +8117,7 @@ Tão maravilhoso para mim
 	}
 
 	function musicaAtual() {
-		var header = document.querySelector("h1");
-		var limite = header ? header.getBoundingClientRect().bottom : 0;
-		return musicaNaAltura(limite);
+		return musicaNaAltura(0);
 	}
 
 	// Musica que esta visualmente por baixo do botao de play/pause
@@ -8264,24 +8246,15 @@ Tão maravilhoso para mim
 		}
 	});
 
-	var nav = document.getElementById("nav-alfabeto");
-
-	[["+", 1], ["-", -1]].forEach(function (par) {
-		var link = document.createElement("a");
-		link.textContent = par[0];
-		link.href = "#";
-		link.className = "ativo transpor";
-		link.title = par[1] > 0 ? "Subir meio tom" : "Baixar meio tom";
-		link.addEventListener("click", function (e) {
-			e.preventDefault();
-			transporAtual(par[1]);
-		});
-		nav.appendChild(link);
+	document.getElementById("transpor-mais-btn").addEventListener("click", function () {
+		transporAtual(1);
+	});
+	document.getElementById("transpor-menos-btn").addEventListener("click", function () {
+		transporAtual(-1);
 	});
 
-	var sep = document.createElement("div");
-	sep.className = "nav-sep";
-	nav.appendChild(sep);
+	var nav = document.getElementById("nav-alfabeto");
+	var letraParaLink = {};
 
 	"ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").forEach(function (letra) {
 		var link = document.createElement("a");
@@ -8296,8 +8269,41 @@ Tão maravilhoso para mim
 		} else {
 			link.className = "inativo";
 		}
+		letraParaLink[letra] = link;
 		nav.appendChild(link);
 	});
+
+	// ===== Destaca no menu lateral a inicial da musica que esta na tela =====
+	var letraDestacada = null;
+
+	function atualizarLetraAtual() {
+		var secao = musicaAtual();
+		if (!secao) return;
+		var idx = parseInt(secao.id.replace("musica-", ""), 10);
+		var musica = musicas[idx];
+		if (!musica) return;
+		var letraMatch = normalizar(musica.titulo).match(/[A-Z]/);
+		var letra = letraMatch ? letraMatch[0] : "#";
+		if (letra === letraDestacada) return;
+		if (letraDestacada && letraParaLink[letraDestacada]) {
+			letraParaLink[letraDestacada].classList.remove("atual");
+		}
+		if (letraParaLink[letra]) {
+			letraParaLink[letra].classList.add("atual");
+		}
+		letraDestacada = letra;
+	}
+
+	var atualizacaoLetraAgendada = false;
+	window.addEventListener("scroll", function () {
+		if (atualizacaoLetraAgendada) return;
+		atualizacaoLetraAgendada = true;
+		requestAnimationFrame(function () {
+			atualizacaoLetraAgendada = false;
+			atualizarLetraAtual();
+		});
+	});
+	atualizarLetraAtual();
 })();
 </script>
 </body>
