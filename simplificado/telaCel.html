@@ -7963,6 +7963,11 @@ Tão maravilhoso para mim
 		return partes;
 	}
 
+	// Cada item do resultado carrega o indice da linha original (antes da quebra visual) de onde
+	// veio - pedacos nascidos da mesma linha original (par quebrado em 2+, ou linha solta quebrada)
+	// compartilham o mesmo indiceOriginal. Isso e o que permite ao sincronismo com o NodeMCU (ver
+	// spec_esp32.md secao 4.4) saber "qual linha do .txt original" esta em exibicao, independente
+	// de quebra visual.
 	function quebrarLinhasLongas(linhas, colunas) {
 		var resultado = [];
 		var i = 0;
@@ -7971,17 +7976,17 @@ Tão maravilhoso para mim
 			var proxima = linhas[i + 1];
 			if (isChordLine(atual) && proxima !== undefined) {
 				quebrarPar(atual, proxima, colunas).forEach(function (par) {
-					resultado.push(par[0]);
-					resultado.push(par[1]);
+					resultado.push({ texto: par[0], indiceOriginal: i });
+					resultado.push({ texto: par[1], indiceOriginal: i + 1 });
 				});
 				i += 2;
 			} else if (atual.length > colunas) {
 				quebrarLinhaSolta(atual, colunas).forEach(function (l) {
-					resultado.push(l);
+					resultado.push({ texto: l, indiceOriginal: i });
 				});
 				i += 1;
 			} else {
-				resultado.push(atual);
+				resultado.push({ texto: atual, indiceOriginal: i });
 				i += 1;
 			}
 		}
@@ -7992,9 +7997,10 @@ Tão maravilhoso para mim
 
 	function renderCifra(texto, semis) {
 		var linhas = String(texto).replace(/\r\n?/g, "\n").split("\n");
-		linhas = quebrarLinhasLongas(linhas, colunasDisponiveis);
-		return linhas.map(function (linha) {
-			return renderCifraLinha(linha, semis);
+		var partes = quebrarLinhasLongas(linhas, colunasDisponiveis);
+		return partes.map(function (parte) {
+			var html = renderCifraLinha(parte.texto, semis);
+			return '<span class="linha" data-linha-original="' + parte.indiceOriginal + '">' + html + "</span>";
 		}).join("\n");
 	}
 
@@ -8395,6 +8401,87 @@ Tão maravilhoso para mim
 		});
 	});
 	atualizarLetraAtual();
+
+	// ===== Sincronizacao com a tela da igreja via NodeMCU/ESP8266 (ver simplificado/spec_esp32.md) =====
+	// IP do NodeMCU no modo SoftAP; editar aqui se o modo AP do firmware mudar no futuro.
+	var SERVIDOR_IP = "192.168.4.1";
+
+	// Acha, dentro do <pre class="cifra"> informado, o span .linha cuja borda superior esta na
+	// altura Y (mesmo algoritmo geometrico de musicaNaAltura, aplicado as linhas em vez de as secoes).
+	function linhaNaAltura(pre, y) {
+		var spans = Array.prototype.slice.call(pre.querySelectorAll(".linha"));
+		if (!spans.length) return null;
+		spans.sort(function (a, b) {
+			return a.getBoundingClientRect().top - b.getBoundingClientRect().top;
+		});
+		var atual = spans[0];
+		for (var i = 0; i < spans.length; i++) {
+			if (spans[i].getBoundingClientRect().top <= y + 1) {
+				atual = spans[i];
+			} else {
+				break;
+			}
+		}
+		return atual;
+	}
+
+	// Musica + indice de linha original que devem ser mandados pro NodeMCU neste momento (ou null
+	// se nao houver musica/linha detectavel, ex.: lista vazia).
+	function estadoAtualDeLeitura() {
+		var secao = musicaAtual();
+		if (!secao) return null;
+		var idx = parseInt(secao.id.replace("musica-", ""), 10);
+		var musica = musicas[idx];
+		if (!musica) return null;
+		var pre = secao.querySelector("pre.cifra");
+		var span = pre ? linhaNaAltura(pre, 0) : null;
+		if (!span) return null;
+		var linha = parseInt(span.getAttribute("data-linha-original"), 10);
+		if (isNaN(linha)) return null;
+		return { titulo: musica.titulo, linha: linha };
+	}
+
+	// Envio best-effort/nao-bloqueante: se o NodeMCU estiver fora do ar, falha em silencio e a tela
+	// do celular continua funcionando normalmente (ver criterio de aceite em spec_esp32.md).
+	var ultimoEstadoEnviadoChave = null;
+
+	function enviarEstado(estado) {
+		var chave = estado.titulo + " " + estado.linha;
+		if (chave === ultimoEstadoEnviadoChave) return;
+		ultimoEstadoEnviadoChave = chave;
+
+		var controller = ("AbortController" in window) ? new AbortController() : null;
+		var timeoutId = controller ? setTimeout(function () { controller.abort(); }, 1500) : null;
+
+		fetch("http://" + SERVIDOR_IP + "/estado", {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify(estado),
+			signal: controller ? controller.signal : undefined
+		}).catch(function () {
+			// sem NodeMCU por perto, ou rede fora do ar: ignora silenciosamente
+		}).then(function () {
+			if (timeoutId) clearTimeout(timeoutId);
+		});
+	}
+
+	// Throttle: no maximo 1 tentativa de envio a cada ~300ms (enviarEstado ainda filtra por valor
+	// inalterado por cima disso).
+	var envioEstadoAgendado = null;
+
+	function agendarEnvioEstado() {
+		if (envioEstadoAgendado) return;
+		envioEstadoAgendado = setTimeout(function () {
+			envioEstadoAgendado = null;
+			var estado = estadoAtualDeLeitura();
+			if (estado) enviarEstado(estado);
+		}, 300);
+	}
+
+	// Sempre ativo (nao so durante o play automatico) - o usuario pode rolar manualmente com o
+	// dedo e a tela da igreja deve acompanhar do mesmo jeito.
+	window.addEventListener("scroll", agendarEnvioEstado);
+	agendarEnvioEstado();
 
 	// ===== Modal com as notas do acorde clicado =====
 	var modalAcorde = document.getElementById("acorde-modal");

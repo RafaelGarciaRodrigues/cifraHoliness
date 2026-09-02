@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Letras</title>
+<style>
+	html, body {
+		margin: 0;
+		padding: 0;
+		height: 100%;
+		background: #1c1c1c;
+		color: #fff;
+		font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+		overflow: hidden;
+	}
+
+	#titulo {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		padding: 0.4em 0.8em;
+		font-size: 2em;
+		font-weight: bold;
+		background: rgba(0, 0, 0, 0.55);
+		z-index: 2;
+	}
+
+	#letra {
+		box-sizing: border-box;
+		height: 100%;
+		overflow: hidden;
+		padding: 4.5em 1em 2em 1em;
+		font-size: 4em;
+		line-height: 1.5;
+		text-align: center;
+	}
+
+	#letra .linha {
+		display: block;
+		white-space: pre-wrap;
+		transition: background-color 0.3s ease;
+		border-radius: 0.15em;
+	}
+
+	#letra .linha.atual {
+		background: rgba(255, 102, 0, 0.25);
+	}
+
+	#status {
+		position: fixed;
+		bottom: 0.5em;
+		right: 0.7em;
+		font-size: 0.9em;
+		color: #a33;
+		opacity: 0;
+		transition: opacity 0.3s ease;
+		z-index: 2;
+	}
+
+	#status.visivel {
+		opacity: 1;
+	}
+</style>
+</head>
+<body>
+
+<div id="titulo"></div>
+<div id="letra"></div>
+<div id="status">sem conexão com o ESP32</div>
+
+<script>
+(function () {
+	"use strict";
+
+	// IP do ESP32 (mesma convencao de telaCel.html - editar se o modo AP do firmware mudar).
+	// Como este arquivo e servido pelo proprio ESP32, string vazia = mesma origem (relativo).
+	var ESP32_BASE = "";
+
+	var elTitulo = document.getElementById("titulo");
+	var elLetra = document.getElementById("letra");
+	var elStatus = document.getElementById("status");
+
+	var musicas = [];
+	var porTitulo = {};
+	var tituloAtual = null;
+	var linhaAtualDestacada = null;
+	var linhasRenderizadas = []; // [{indice, el}], so as de tipo "letra", em ordem crescente de indice
+	var falhasConsecutivas = 0;
+
+	function carregarDataset() {
+		return fetch("musicas.json").then(function (r) {
+			if (!r.ok) throw new Error("HTTP " + r.status);
+			return r.json();
+		}).then(function (dados) {
+			musicas = dados;
+			porTitulo = {};
+			musicas.forEach(function (m) { porTitulo[m.titulo] = m; });
+		});
+	}
+
+	function renderMusica(titulo) {
+		var musica = porTitulo[titulo];
+		elTitulo.textContent = titulo;
+		elLetra.innerHTML = "";
+		linhasRenderizadas = [];
+		linhaAtualDestacada = null;
+		if (!musica) return;
+
+		musica.linhas.forEach(function (linha, indice) {
+			if (linha.tipo !== "letra") return; // nunca mostra linha de acorde
+			var div = document.createElement("div");
+			div.className = "linha";
+			div.textContent = linha.texto || " ";
+			div.setAttribute("data-linha-original", String(indice));
+			elLetra.appendChild(div);
+			linhasRenderizadas.push({ indice: indice, el: div });
+		});
+	}
+
+	// Acha, entre as linhas de letra renderizadas, a ultima cujo indice original e <= linha alvo
+	// (mesma logica de "ultima que ja passou" usada em musicaNaAltura de telaCel.html) - cobre o
+	// caso em que a linha do celular e uma linha de acorde (que aqui nao existe como elemento).
+	function acharLinhaAlvo(linhaIndiceAlvo) {
+		if (!linhasRenderizadas.length) return null;
+		var atual = linhasRenderizadas[0];
+		for (var i = 0; i < linhasRenderizadas.length; i++) {
+			if (linhasRenderizadas[i].indice <= linhaIndiceAlvo) {
+				atual = linhasRenderizadas[i];
+			} else {
+				break;
+			}
+		}
+		return atual;
+	}
+
+	function destacarLinha(linhaIndiceAlvo) {
+		var alvo = acharLinhaAlvo(linhaIndiceAlvo);
+		if (!alvo || alvo.indice === linhaAtualDestacada) return;
+
+		document.querySelectorAll("#letra .linha.atual").forEach(function (el) {
+			el.classList.remove("atual");
+		});
+
+		// destaca a linha alvo e algumas seguintes, pra dar uma nocao de "regiao" sendo cantada
+		var posAlvo = linhasRenderizadas.indexOf(alvo);
+		for (var i = posAlvo; i < Math.min(posAlvo + 4, linhasRenderizadas.length); i++) {
+			linhasRenderizadas[i].el.classList.add("atual");
+		}
+
+		alvo.el.scrollIntoView({ behavior: "smooth", block: "center" });
+		linhaAtualDestacada = alvo.indice;
+	}
+
+	function aplicarEstado(estado) {
+		if (estado.titulo !== tituloAtual) {
+			tituloAtual = estado.titulo;
+			renderMusica(tituloAtual);
+		}
+		destacarLinha(estado.linha);
+	}
+
+	function marcarConectado() {
+		falhasConsecutivas = 0;
+		elStatus.classList.remove("visivel");
+	}
+
+	function marcarFalha() {
+		falhasConsecutivas++;
+		if (falhasConsecutivas >= 3) {
+			elStatus.classList.add("visivel");
+		}
+	}
+
+	function consultarEstado() {
+		fetch(ESP32_BASE + "/estado").then(function (r) {
+			if (!r.ok) throw new Error("HTTP " + r.status);
+			return r.json();
+		}).then(function (estado) {
+			marcarConectado();
+			if (estado && estado.titulo) aplicarEstado(estado);
+		}).catch(function () {
+			marcarFalha();
+		});
+	}
+
+	carregarDataset().then(function () {
+		consultarEstado();
+		setInterval(consultarEstado, 1000);
+	}).catch(function () {
+		elTitulo.textContent = "Erro ao carregar musicas.json";
+	});
+})();
+</script>
+
+</body>
+</html>
