@@ -7748,6 +7748,13 @@ Tão maravilhoso para mim
 (function () {
 	"use strict";
 
+	// Instantaneo do HTML puro, capturado ANTES de qualquer manipulacao do DOM (nav-alfabeto,
+	// lista-musicas, controles-velocidade etc. abaixo comecam vazios e sao preenchidos via
+	// appendChild). Usado pelo botao de download - se pegassemos o DOM ao vivo no momento do
+	// clique, viria com tudo isso ja duplicado, e ao reabrir o arquivo baixado o mesmo script
+	// preencheria de novo por cima, duplicando a cada novo download.
+	var htmlOriginal = document.documentElement.outerHTML;
+
 	function normalizar(str) {
 		return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
 	}
@@ -8371,7 +8378,7 @@ Tão maravilhoso para mim
 
 	// ===== Download do arquivo HTML completo =====
 	document.getElementById("download-btn").addEventListener("click", function () {
-		var html = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+		var html = "<!DOCTYPE html>\n" + htmlOriginal;
 		var blob = new Blob([html], { type: "text/html" });
 		var url = URL.createObjectURL(blob);
 		var a = document.createElement("a");
