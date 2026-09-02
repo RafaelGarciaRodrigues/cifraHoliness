@@ -2,7 +2,16 @@
 TOM:A
 
 
-A
+<intro>
+     D9                E
+Logo eu, um pobre pecador
+     A/C#      A     E/G#     F#m
+Logo eu tão fraco e tão devedor
+    Bm7               E4
+Logo eu, de graça recebi
+          A9      A7
+O amor de Deus
+</intro>
 
 A                    E/G#
 Graça sob Graça recebi

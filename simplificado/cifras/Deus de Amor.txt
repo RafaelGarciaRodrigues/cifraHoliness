@@ -1,8 +1,17 @@
 ﻿Deus de Amor
 TOM:G
 
-
+<intro>
 G
+Deus de Amor
+Em
+Deus de Amor
+C              G/B
+Graças te dou pois,
+     Am             D
+Tu és Deus de Amor!
+</intro>
+
 
 G                    C/G
 Tanto amor por mim
@@ -13,8 +22,6 @@ O justo pelo injusto
    Am         D
 O santo pelo pecador
 
---
-
 G                C/G
 Tanto amor assim
        D/F#               G  D/F#
@@ -24,7 +31,6 @@ Quem é o homem pra que dele
     G/B       Am      B
 Te lembres, oh Senhor
 
----
          Em              C G/B
 Mas o teu amor me atraiu
    Am            Am/G          D/F#
@@ -38,8 +44,6 @@ Como posso agradecer o
                     D
 Teu cuidado e Teu amor por mim? (oh)
 
-----
-
 G
 Deus de Amor
 Em
@@ -57,8 +61,6 @@ C              G/B
 Graças te dou pois,
      Am             D
 Tu és Deus de Amor!
-
----
 
 G                    C/G
 Tanto amor por mim
@@ -88,8 +90,6 @@ Rendido a Ti
 Como posso agradecer o 
                     D
 Teu cuidado e Teu amor por mim? (oh)
-
-----
 
 G
 Deus de Amor

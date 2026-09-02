@@ -2,9 +2,16 @@
 TOM:G
 
 
-G7 C  D/C  Bm  Em Am7  D  C  D7
-
---
+<intro>
+G    C       D/C    Bm   Em
+   Tu és, Senhor, o meu pastor
+          Am7
+Por isso nada
+          D         G7
+Em minha vida faltará
+Cm          G
+Nada Faltará
+</intro>
 
         G7M          Bm     
 Pelos prados e campinas
@@ -22,8 +29,6 @@ Repousantes eu vou
 Minhas forças o Senhor     
         D4  D   G7
 Vai animar
-
----
 
     C       D/C    Bm   Em
   Tu és, Senhor, o meu pastor
@@ -57,8 +62,6 @@ Segurança sempre tenho
          D4  D  G7
 Em Suas mãos
 
-----
-
     C       D/C    Bm   Em
   Tu és, Senhor, o meu pastor
           Am7
@@ -74,7 +77,6 @@ Em minha vida faltará
 Cm          G
 Nada Faltará
 
----
          G7M           Bm     
 Num banquete em Sua casa
         C        G7M
@@ -92,8 +94,6 @@ E transborda a minha taça
          D4  D  G7
 Em Seu amor
 
-----
-
     C       D/C    Bm   Em
   Tu és, Senhor, o meu pastor
           Am7
@@ -108,8 +108,6 @@ Por isso nada
 Em minha vida faltará
 Cm          G
 Nada Faltará
-
----
 
         G7M           Bm     
 Bem a frente do inimigo
@@ -127,8 +125,6 @@ E eu jamais temerei
 Sempre junto do Senhor     
         D4  D
 Eu estarei
-
-----
 
     C       D/C    Bm   Em
   Tu és, Senhor, o meu pastor

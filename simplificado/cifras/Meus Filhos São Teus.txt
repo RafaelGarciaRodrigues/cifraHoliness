@@ -1,7 +1,18 @@
 ﻿Meus Filhos São Teus
 TOM:E
 
-[Intro] E  G#  A  E  A
+<intro>
+       E
+Sejam luz por onde andarem
+   A                 F#7
+Resplandecendo a luz do amor
+       E
+Sejam sal onde estiverem
+   A7               F#7
+Trazendo o sabor de Deus
+  A         B  E       E  A
+Meus filhos   são teus
+</intro>
 
 E
 Herança de Deus
