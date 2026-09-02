@@ -15,23 +15,29 @@
 		overflow: hidden;
 	}
 
-	#titulo {
+	#titulo-espera {
 		position: fixed;
-		top: 0;
-		left: 0;
-		right: 0;
-		padding: 0.4em 0.8em;
-		font-size: 2em;
+		inset: 0;
+		display: none;
+		align-items: center;
+		justify-content: center;
+		text-align: center;
+		padding: 0.5em;
+		font-size: 3em;
 		font-weight: bold;
-		background: rgba(0, 0, 0, 0.55);
-		z-index: 2;
+		background: #1c1c1c;
+		z-index: 5;
+	}
+
+	#titulo-espera.visivel {
+		display: flex;
 	}
 
 	#letra {
 		box-sizing: border-box;
 		height: 100%;
 		overflow: hidden;
-		padding: 4.5em 1em 2em 1em;
+		padding: 0.5em 1em;
 		font-size: 4em;
 		line-height: 1.5;
 		text-align: center;
@@ -45,7 +51,7 @@
 	}
 
 	#letra .linha.atual {
-		background: rgba(255, 102, 0, 0.25);
+		/*background: rgba(255, 102, 0, 0.25);*/
 	}
 
 	#status {
@@ -66,8 +72,8 @@
 </head>
 <body>
 
-<div id="titulo"></div>
 <div id="letra"></div>
+<div id="titulo-espera"></div>
 <div id="status">sem conexão com o ESP32</div>
 
 <script>
@@ -78,7 +84,7 @@
 	// Como este arquivo e servido pelo proprio ESP32, string vazia = mesma origem (relativo).
 	var ESP32_BASE = "";
 
-	var elTitulo = document.getElementById("titulo");
+	var elTituloEspera = document.getElementById("titulo-espera");
 	var elLetra = document.getElementById("letra");
 	var elStatus = document.getElementById("status");
 
@@ -102,7 +108,6 @@
 
 	function renderMusica(titulo) {
 		var musica = porTitulo[titulo];
-		elTitulo.textContent = titulo;
 		elLetra.innerHTML = "";
 		linhasRenderizadas = [];
 		linhaAtualDestacada = null;
@@ -110,9 +115,19 @@
 
 		musica.linhas.forEach(function (linha, indice) {
 			if (linha.tipo !== "letra") return; // nunca mostra linha de acorde
+			var texto = linha.texto || "";
+			var textoTrim = texto.trim();
+			if (textoTrim === "<intro>" || textoTrim === "</intro>") return; // marcador, nunca aparece
+			if (/^TOM:/i.test(textoTrim)) return; // linha do tom nunca aparece aqui
+
 			var div = document.createElement("div");
 			div.className = "linha";
-			div.textContent = linha.texto || " ";
+			if (linha.intro) {
+				div.classList.add("intro");
+				div.innerHTML = '<i class="bi bi-music-note"></i> <i class="bi bi-music-note"></i> <i class="bi bi-music-note"></i>';
+			} else {
+				div.textContent = texto || " ";
+			}
 			div.setAttribute("data-linha-original", String(indice));
 			elLetra.appendChild(div);
 			linhasRenderizadas.push({ indice: indice, el: div });
@@ -153,12 +168,26 @@
 		linhaAtualDestacada = alvo.indice;
 	}
 
+	function mostrarTituloEspera() {
+		elTituloEspera.textContent = tituloAtual || "";
+		elTituloEspera.classList.add("visivel");
+	}
+
+	function esconderTituloEspera() {
+		elTituloEspera.classList.remove("visivel");
+	}
+
 	function aplicarEstado(estado) {
 		if (estado.titulo !== tituloAtual) {
 			tituloAtual = estado.titulo;
 			renderMusica(tituloAtual);
 		}
-		destacarLinha(estado.linha);
+		if (estado.aguardando) {
+			mostrarTituloEspera();
+		} else {
+			esconderTituloEspera();
+			destacarLinha(estado.linha);
+		}
 	}
 
 	function marcarConectado() {
@@ -189,7 +218,8 @@
 		consultarEstado();
 		setInterval(consultarEstado, 1000);
 	}).catch(function () {
-		elTitulo.textContent = "Erro ao carregar musicas.json";
+		elTituloEspera.textContent = "Erro ao carregar musicas.json";
+		elTituloEspera.classList.add("visivel");
 	});
 })();
 </script>

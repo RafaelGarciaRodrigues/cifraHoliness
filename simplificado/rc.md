@@ -153,3 +153,53 @@ que um dia eu te dei
 -- quando clicar em cima de um acorde na letra da música, deve aparecer um modal em alpha 55% somente com as notas musicais do acorde clicado
 -- não marque os acordes como elementos clicaveis (tipo link) não mude a formatação
 -- apenas quando clicar ele deve mostrar esse modal
+
+# AJUSTES DE INTERFACE
+- em letras.html
+-- remover id="titulo"
+-- devemos aproveitar o máximo da tela com a letra da música
+-- linha com "TOM:" não deve aparecer em letras.html
+
+- em telaCel.html
+-- quando a cifra tiver a tag <intro> o que estiver dentro dessa tag deve:
+--- aparecer telaCel.html com a letra color: #bbb
+--- aparecer telaCel.html com a cifra color: #0ff
+- em letras.html
+-- as linhas das letras de telaCel.html que estiverem dentro de <intro> deve:
+--- aparecer "<i class="bi bi-music-note"></i> <i class="bi bi-music-note"></i> <i class="bi bi-music-note"></i>" em cada linha dentro de <intro>
+--- <intro> indica que é introdução, a letra é apenas um guia para quem está tocando e por isso não deve aparecer no letras.html
+--- não precisa aparecer literalmente "<intro>" em telaCel.html e nem em letras.html
+
+- em telaCel.html
+- quando etiver com músicas selecionadas e filtradas e play ativado
+- ao trocar de música deve
+-- esperar 5 segundos até começar a nova música
+--- durante esse tempo de espera em letras.html deve aparecer o titulo da música centralizado na tela
+--- ao começar a rolar o titulo some e a letra começa a subir conforme telaCel.html
+-- se em algum momento o play for pausado
+--- em letras.html deve aparecer o titulo da música centralizado na tela
+--- ao começar a rolar (play ativado) o titulo some e a letra começa a subir conforme telaCel.html
+
+- em telaCel.html
+- quando play estiver ativado deve aparecer:
+-- posicionado na lateral direita, sobre o menu alfabético posicionados um abaixo do outro e no tamanho de class="bi bi-dash"
+--- icone <i class="bi bi-music-note"></i> que se clicado deve reduzir a taxa de rolagem em 5px/segundo
+--- icone <i class="bi bi-music-note-beamed"></i></i> que se clicado deve aumentar a taxa de rolagem em 5px/segundo
+-- deve ser no mesmo padrão dos demais ícones, com mesmo alpha (pode usar mesma classe)
+-- esses ícones só aparecem enquanto play estiver ativo e rolagem acontecendo, se pausar o play os ícones desaparecem
+-- ele irá alterar somente a música atual (que está na tela)
+- quando traspor a cifra em id="transpor-mais-btn" ou id="transpor-menos-btn"
+-- também deve transpor o tom indicado na linha com "TOM:"
+
+- implemente sem quebrar nada, na duvida pergunte
+
+# ALTERAÇÃO DA TAXA DE ROLAGEM
+- testando aqui vi que precisamos mudar esse trecho:
+--- icone <i class="bi bi-music-note"></i> que se clicado deve reduzir a taxa de rolagem em 2px/segundo
+--- icone <i class="bi bi-music-note-beamed"></i></i> que se clicado deve aumentar a taxa de rolagem em 2px/segundo
+
+# AJUSTE DA VELOCIDADE
+- quando troca música a parada de 5 segundos está funcionando muito bem
+- o ajuste de velocidade entre as músicas deveria acontecer no mesmo momento
+- mas quando a segunda música já aparece embaixo da tela, a velocidade considerada passa a ser ela mesmo ainda estando tocando a anterior
+- o ajuste é simples, a troca da velocidade deve ocorrer após a parada dos 5 segundos, que está acontecendo no momento correto

@@ -42,6 +42,7 @@ ESP8266WebServer server(80);
 
 String estadoTitulo = "";
 int estadoLinha = 0;
+bool estadoAguardando = true;
 
 // ===== CORS =====
 // O celular abre telaCel.html como arquivo local (ou de outra origem, fora da rede CifrasIgreja
@@ -77,6 +78,7 @@ void handleEstadoPost() {
 
 	estadoTitulo = doc["titulo"].as<String>();
 	estadoLinha = doc["linha"].as<int>();
+	estadoAguardando = doc["aguardando"].as<bool>();
 
 	server.send(200, "application/json", "{\"ok\":true}");
 }
@@ -87,6 +89,7 @@ void handleEstadoGet() {
 	JsonDocument doc;
 	doc["titulo"] = estadoTitulo;
 	doc["linha"] = estadoLinha;
+	doc["aguardando"] = estadoAguardando;
 
 	String saida;
 	serializeJson(doc, saida);

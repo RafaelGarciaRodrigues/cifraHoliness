@@ -62,6 +62,21 @@
 	.musica pre.cifra .chord {
 		color: #f60;
 	}
+	.musica pre.cifra .linha.intro {
+		color: #bbb;
+	}
+	.musica pre.cifra .linha.intro .chord {
+		color: #0ff;
+	}
+	#controles-velocidade {
+		position: fixed;
+		top: 6px;
+		right: 2px;
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+		z-index: 10;
+	}
 	#nav-alfabeto {
 		position: fixed;
 		top: 50%;
@@ -162,6 +177,10 @@
 </head>
 <body>
 <nav id="nav-alfabeto"></nav>
+<div id="controles-velocidade">
+	<div id="velocidade-menos-btn" class="botao-circular pequeno" hidden><i class="bi bi-music-note"></i></div>
+	<div id="velocidade-mais-btn" class="botao-circular pequeno" hidden><i class="bi bi-music-note-beamed"></i></div>
+</div>
 <div id="lista-musicas"></div>
 <div id="controles-inferiores">
 	<div id="filtro-btn" class="botao-circular pequeno" hidden><i class="bi bi-funnel"></i></div>
@@ -7872,6 +7891,13 @@ Tão maravilhoso para mim
 	}
 
 	function renderCifraLinha(linha, semis) {
+		// A linha "TOM:X" nao e uma linha de acordes (CHORD_TOKEN_RE nao bate em "TOM:X" como um
+		// todo), mas o tom exibido deve acompanhar a transposicao mesmo assim.
+		var tomMatch = linha.match(/^(TOM:)(\S+)(.*)$/i);
+		if (tomMatch) {
+			var tomExibido = semis ? transposeSymbol(tomMatch[2], semis) : tomMatch[2];
+			return escapeHtml(tomMatch[1] + tomExibido + tomMatch[3]);
+		}
 		if (!isChordLine(linha)) {
 			return escapeHtml(linha) || "&nbsp;";
 		}
@@ -7995,12 +8021,40 @@ Tão maravilhoso para mim
 
 	var colunasDisponiveis = medirColunasDisponiveis();
 
+	// <intro>/</intro> ficam em linhas proprias. As linhas ENTRE os marcadores (exclusive) sao
+	// marcadas como "dentro da intro" (cor diferenciada); os marcadores em si nunca aparecem.
+	function marcarLinhasIntro(linhas) {
+		var flags = [];
+		var dentro = false;
+		linhas.forEach(function (l, i) {
+			var t = l.trim();
+			if (t === "<intro>") {
+				dentro = true;
+				flags[i] = false;
+			} else if (t === "</intro>") {
+				dentro = false;
+				flags[i] = false;
+			} else {
+				flags[i] = dentro;
+			}
+		});
+		return flags;
+	}
+
+	function ehMarcadorIntro(texto) {
+		var t = texto.trim();
+		return t === "<intro>" || t === "</intro>";
+	}
+
 	function renderCifra(texto, semis) {
 		var linhas = String(texto).replace(/\r\n?/g, "\n").split("\n");
+		var flagsIntro = marcarLinhasIntro(linhas);
 		var partes = quebrarLinhasLongas(linhas, colunasDisponiveis);
 		return partes.map(function (parte) {
-			var html = renderCifraLinha(parte.texto, semis);
-			return '<span class="linha" data-linha-original="' + parte.indiceOriginal + '">' + html + "</span>";
+			var marcador = ehMarcadorIntro(parte.texto);
+			var html = marcador ? "" : renderCifraLinha(parte.texto, semis);
+			var classe = "linha" + (flagsIntro[parte.indiceOriginal] ? " intro" : "");
+			return '<span class="' + classe + '" data-linha-original="' + parte.indiceOriginal + '">' + html + "</span>";
 		}).join("\n");
 	}
 
@@ -8217,13 +8271,6 @@ Tão maravilhoso para mim
 		return musicaNaAltura(0);
 	}
 
-	// Musica que esta visualmente por baixo do botao de play/pause
-	function musicaSobPlay() {
-		var btn = document.getElementById("play-pause-btn");
-		var y = btn ? btn.getBoundingClientRect().top : window.innerHeight;
-		return musicaNaAltura(y);
-	}
-
 	function transporAtual(delta) {
 		var secao = musicaAtual();
 		if (!secao) return;
@@ -8252,7 +8299,7 @@ Tão maravilhoso para mim
 	var iconePlayPause = botaoPlayPause.querySelector("i");
 
 	function velocidadeAtualPct() {
-		var secao = musicaSobPlay();
+		var secao = musicaAtual();
 		if (!secao) return VELOCIDADE_PADRAO;
 		var idx = parseInt(secao.id.replace("musica-", ""), 10);
 		var musica = musicas[idx];
@@ -8265,6 +8312,36 @@ Tão maravilhoso para mim
 		return pct * 0.5;
 	}
 
+	// ===== Espera de 5s na troca de musica (so com selecao+filtro+play ativos) =====
+	// esperandoTransicaoAte: timestamp (mesmo relogio de performance.now()/rAF) ate quando a
+	// rolagem deve ficar parada; 0 = nao estamos esperando.
+	var esperandoTransicaoAte = 0;
+	var musicaAnteriorParaTransicao = null;
+
+	function estaEmEsperaDeTransicao() {
+		return esperandoTransicaoAte > 0 && performance.now() < esperandoTransicaoAte;
+	}
+
+	function verificarTransicaoDeMusica() {
+		if (!filtroAtivo || !tocando) {
+			musicaAnteriorParaTransicao = null;
+			return;
+		}
+		var secao = musicaAtual();
+		if (!secao) return;
+		var titulo = secao.querySelector("h2").textContent;
+		if (musicaAnteriorParaTransicao === null) {
+			musicaAnteriorParaTransicao = titulo;
+			return;
+		}
+		if (titulo !== musicaAnteriorParaTransicao) {
+			musicaAnteriorParaTransicao = titulo;
+			esperandoTransicaoAte = performance.now() + 5000;
+			atualizarControlesVelocidadeVisibilidade();
+			agendarEnvioEstado();
+		}
+	}
+
 	function passoScroll(timestamp) {
 		if (!tocando) {
 			scrollRAF = null;
@@ -8275,6 +8352,17 @@ Tão maravilhoso para mim
 		if (ultimoTimestamp === null) ultimoTimestamp = timestamp;
 		var dt = (timestamp - ultimoTimestamp) / 1000;
 		ultimoTimestamp = timestamp;
+
+		if (estaEmEsperaDeTransicao()) {
+			scrollRAF = requestAnimationFrame(passoScroll);
+			return;
+		}
+		if (esperandoTransicaoAte) {
+			esperandoTransicaoAte = 0;
+			atualizarControlesVelocidadeVisibilidade();
+			agendarEnvioEstado();
+		}
+
 		fracaoAcumulada += pxPorSegundo(velocidadeAtualPct()) * dt;
 		var pixelsInteiros = Math.floor(fracaoAcumulada);
 		if (pixelsInteiros > 0) {
@@ -8320,6 +8408,8 @@ Tão maravilhoso para mim
 		tocando = true;
 		iconePlayPause.className = "bi bi-pause";
 		pedirWakeLock();
+		atualizarControlesVelocidadeVisibilidade();
+		agendarEnvioEstado();
 		if (!scrollRAF) {
 			ultimoTimestamp = null;
 			scrollRAF = requestAnimationFrame(passoScroll);
@@ -8330,6 +8420,10 @@ Tão maravilhoso para mim
 		tocando = false;
 		iconePlayPause.className = "bi bi-play";
 		liberarWakeLock();
+		esperandoTransicaoAte = 0;
+		musicaAnteriorParaTransicao = null;
+		atualizarControlesVelocidadeVisibilidade();
+		agendarEnvioEstado();
 		if (scrollRAF) cancelAnimationFrame(scrollRAF);
 		scrollRAF = null;
 		ultimoTimestamp = null;
@@ -8348,6 +8442,47 @@ Tão maravilhoso para mim
 	});
 	document.getElementById("transpor-menos-btn").addEventListener("click", function () {
 		transporAtual(-1);
+	});
+
+	// ===== Botoes de ajuste fino de velocidade (so aparecem tocando, e nao durante a espera de
+	// transicao) - afetam somente a musica atualmente sob o botao de play (a que esta rolando) =====
+	var velocidadeMenosBtn = document.getElementById("velocidade-menos-btn");
+	var velocidadeMaisBtn = document.getElementById("velocidade-mais-btn");
+
+	function atualizarControlesVelocidadeVisibilidade() {
+		var visivel = tocando && !estaEmEsperaDeTransicao();
+		velocidadeMenosBtn.hidden = !visivel;
+		velocidadeMaisBtn.hidden = !visivel;
+	}
+
+	// delta em px/segundo; a conversao pra % usa a mesma relacao de pxPorSegundo (1% = 0.5px/s)
+	function ajustarVelocidadeMusicaAtual(deltaPxPorSeg) {
+		var secao = musicaAtual();
+		if (!secao) return;
+		var idx = parseInt(secao.id.replace("musica-", ""), 10);
+		var musica = musicas[idx];
+		if (!musica) return;
+
+		var deltaPct = deltaPxPorSeg / 0.5;
+		var novoValor = Math.max(0, Math.min(100, musica.velocidade + deltaPct));
+		if (novoValor === musica.velocidade) return;
+		musica.velocidade = novoValor;
+
+		var slider = secao.querySelector(".velocidade-controle input[type='range']");
+		var valorSpan = secao.querySelector(".velocidade-valor");
+		if (slider) slider.value = String(novoValor);
+		if (valorSpan) valorSpan.textContent = novoValor + "%";
+
+		var mapa = carregarVelocidades();
+		mapa[musica.titulo] = novoValor;
+		salvarVelocidades(mapa);
+	}
+
+	velocidadeMenosBtn.addEventListener("click", function () {
+		ajustarVelocidadeMusicaAtual(-2);
+	});
+	velocidadeMaisBtn.addEventListener("click", function () {
+		ajustarVelocidadeMusicaAtual(2);
 	});
 
 	var nav = document.getElementById("nav-alfabeto");
@@ -8438,7 +8573,8 @@ Tão maravilhoso para mim
 		if (!span) return null;
 		var linha = parseInt(span.getAttribute("data-linha-original"), 10);
 		if (isNaN(linha)) return null;
-		return { titulo: musica.titulo, linha: linha };
+		var aguardando = !tocando || estaEmEsperaDeTransicao();
+		return { titulo: musica.titulo, linha: linha, aguardando: aguardando };
 	}
 
 	// Envio best-effort/nao-bloqueante: se o NodeMCU estiver fora do ar, falha em silencio e a tela
@@ -8446,7 +8582,7 @@ Tão maravilhoso para mim
 	var ultimoEstadoEnviadoChave = null;
 
 	function enviarEstado(estado) {
-		var chave = estado.titulo + " " + estado.linha;
+		var chave = estado.titulo + " " + estado.linha + " " + estado.aguardando;
 		if (chave === ultimoEstadoEnviadoChave) return;
 		ultimoEstadoEnviadoChave = chave;
 
@@ -8479,7 +8615,10 @@ Tão maravilhoso para mim
 	}
 
 	// Sempre ativo (nao so durante o play automatico) - o usuario pode rolar manualmente com o
-	// dedo e a tela da igreja deve acompanhar do mesmo jeito.
+	// dedo e a tela da igreja deve acompanhar do mesmo jeito. verificarTransicaoDeMusica roda
+	// sincrono (sem throttle) pra garantir que esperandoTransicaoAte ja esteja setado antes do
+	// agendarEnvioEstado (que so dispara ~300ms depois) mandar o "aguardando" certo pro NodeMCU.
+	window.addEventListener("scroll", verificarTransicaoDeMusica);
 	window.addEventListener("scroll", agendarEnvioEstado);
 	agendarEnvioEstado();
 

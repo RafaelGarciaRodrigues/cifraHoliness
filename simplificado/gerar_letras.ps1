@@ -89,10 +89,24 @@ foreach ($arquivo in $arquivos) {
 
     $linhasOriginais = [regex]::Split($corpo, '\r?\n')
 
+    # <intro>/</intro> ficam em linhas proprias (ver simplificado/spec_esp32.md). As linhas ENTRE
+    # os marcadores (exclusive) recebem intro=true; os marcadores em si nunca aparecem em
+    # letras.html (telaCel.html.js confere pelo texto literal "<intro>"/"</intro>").
     $linhasClassificadas = @()
+    $dentroIntro = $false
     foreach ($l in $linhasOriginais) {
+        $tTrim = $l.Trim()
+        if ($tTrim -eq '<intro>') {
+            $dentroIntro = $true
+            $introFlag = $false
+        } elseif ($tTrim -eq '</intro>') {
+            $dentroIntro = $false
+            $introFlag = $false
+        } else {
+            $introFlag = $dentroIntro
+        }
         $tipo = if (Test-ChordLine $l) { "acorde" } else { "letra" }
-        $linhasClassificadas += [PSCustomObject]@{ tipo = $tipo; texto = $l }
+        $linhasClassificadas += [PSCustomObject]@{ tipo = $tipo; texto = $l; intro = $introFlag }
     }
 
     $musicas += [PSCustomObject]@{ titulo = $titulo; linhas = $linhasClassificadas }
