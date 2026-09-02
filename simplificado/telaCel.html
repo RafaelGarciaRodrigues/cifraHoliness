@@ -8137,15 +8137,28 @@ Tão maravilhoso para mim
 		} catch (e) {}
 	}
 
-	// ===== Selecao compartilhada via URL (?sel=[{"t":titulo,"v":velocidade},...]) =====
+	// ===== Selecao compartilhada via URL (#sel=indice-velocidade,indice-velocidade,...) =====
+	// Vai na HASH (nao na query string) de proposito: este arquivo costuma ser aberto via
+	// htmlpreview.github.io, que usa TODA a query string como a propria URL de destino
+	// (?https://github.com/...) - mexer nela com URLSearchParams quebra esse redirecionamento.
+	// A hash nunca e tocada por esse tipo de proxy, entao e o unico lugar seguro pra isso.
+	// O indice usado e a posicao de "musica" no array ja ordenado (musicas[indice]) - so funciona
+	// se remetente e destinatario estiverem vendo a mesma versao de telaCel.html (mesmo conjunto
+	// de musicas), que e o caso normal aqui (o link aponta pro mesmo arquivo publicado).
 	function analisarUrlCompartilhada() {
 		try {
-			var params = new URLSearchParams(window.location.search);
-			var bruto = params.get("sel");
-			if (!bruto) return null;
-			var itens = JSON.parse(bruto);
-			if (!Array.isArray(itens)) return null;
-			return itens;
+			var hash = window.location.hash || "";
+			if (hash.charAt(0) === "#") hash = hash.slice(1);
+			if (hash.indexOf("sel=") !== 0) return null;
+			var payload = hash.slice(4);
+			if (!payload) return null;
+			var itens = payload.split(",").map(function (par) {
+				var partes = par.split("-");
+				return { idx: parseInt(partes[0], 10), v: parseInt(partes[1], 10) };
+			}).filter(function (item) {
+				return !isNaN(item.idx) && !isNaN(item.v);
+			});
+			return itens.length ? itens : null;
 		} catch (e) {
 			return null;
 		}
@@ -8158,15 +8171,6 @@ Tão maravilhoso para mim
 	var nos = Array.prototype.slice.call(xml.getElementsByTagName("musica"));
 	var transpostosSalvos = carregarTranspostos();
 	var velocidadesSalvas = carregarVelocidades();
-
-	if (itensCompartilhados) {
-		itensCompartilhados.forEach(function (item) {
-			if (item && typeof item.t === "string") {
-				velocidadesSalvas[item.t] = Math.max(0, Math.min(100, Number(item.v) || 0));
-			}
-		});
-		salvarVelocidades(velocidadesSalvas);
-	}
 
 	var musicas = nos.map(function (no) {
 		var conteudo = (no.textContent || "").trim();
@@ -8183,16 +8187,28 @@ Tão maravilhoso para mim
 		return normalizar(a.titulo).localeCompare(normalizar(b.titulo));
 	});
 
+	// So agora "musicas" existe e esta na ordem final, entao os indices da URL podem ser resolvidos.
+	var selecaoCompartilhadaResolvida = null;
+	if (itensCompartilhados) {
+		var mapaVelCompartilhada = carregarVelocidades();
+		selecaoCompartilhadaResolvida = [];
+		itensCompartilhados.forEach(function (item) {
+			var musica = musicas[item.idx];
+			if (!musica) return;
+			var v = Math.max(0, Math.min(100, item.v));
+			musica.velocidade = v;
+			mapaVelCompartilhada[musica.titulo] = v;
+			selecaoCompartilhadaResolvida.push(musica.titulo);
+		});
+		salvarVelocidades(mapaVelCompartilhada);
+	}
+
 	var lista = document.getElementById("lista-musicas");
 	var primeiraPorLetra = {};
 	var ordemSelecao = carregarSelecionadas();
 
-	if (itensCompartilhados) {
-		ordemSelecao = itensCompartilhados.filter(function (item) {
-			return item && typeof item.t === "string";
-		}).map(function (item) {
-			return item.t;
-		});
+	if (selecaoCompartilhadaResolvida && selecaoCompartilhadaResolvida.length) {
+		ordemSelecao = selecaoCompartilhadaResolvida;
 		salvarSelecionadas(ordemSelecao);
 	}
 
@@ -8310,14 +8326,15 @@ Tão maravilhoso para mim
 	});
 
 	function construirUrlCompartilhamento() {
-		var itens = ordemSelecao.map(function (titulo) {
-			var musica = musicas.filter(function (m) { return m.titulo === titulo; })[0];
-			return { t: titulo, v: musica ? musica.velocidade : VELOCIDADE_PADRAO };
+		var pares = [];
+		ordemSelecao.forEach(function (titulo) {
+			var idx = musicas.findIndex(function (m) { return m.titulo === titulo; });
+			if (idx === -1) return;
+			pares.push(idx + "-" + musicas[idx].velocidade);
 		});
-		var url = new URL(window.location.href);
-		url.hash = "";
-		url.searchParams.set("sel", JSON.stringify(itens));
-		return url.toString();
+		// so mexe na hash; a query string (usada pelo htmlpreview.github.io pra apontar pro
+		// arquivo real no GitHub) fica intocada.
+		return window.location.origin + window.location.pathname + window.location.search + "#sel=" + pares.join(",");
 	}
 
 	compartilharBtn.addEventListener("click", function () {
@@ -8343,12 +8360,11 @@ Tão maravilhoso para mim
 	// Se a pagina foi aberta a partir de um link compartilhado, ja abre filtrada nas musicas
 	// recebidas (a selecao e as velocidades ja foram aplicadas mais acima). Limpa o parametro da
 	// URL depois de aplicar pra nao forcar esse estado de novo num reload manual futuro.
-	if (itensCompartilhados && itensCompartilhados.length) {
+	if (selecaoCompartilhadaResolvida && selecaoCompartilhadaResolvida.length) {
 		filtroAtivo = true;
 		aplicarFiltro();
-		var urlLimpa = new URL(window.location.href);
-		urlLimpa.searchParams.delete("sel");
-		window.history.replaceState(null, "", urlLimpa.toString());
+		// remove so a hash (#sel=...), preserva a query string intacta (importante no htmlpreview)
+		window.history.replaceState(null, "", window.location.pathname + window.location.search);
 	}
 
 	atualizarControlesSelecao();
