@@ -195,11 +195,16 @@ que um dia eu te dei
 
 # ALTERAÇÃO DA TAXA DE ROLAGEM
 - testando aqui vi que precisamos mudar esse trecho:
---- icone <i class="bi bi-music-note"></i> que se clicado deve reduzir a taxa de rolagem em 2px/segundo
---- icone <i class="bi bi-music-note-beamed"></i></i> que se clicado deve aumentar a taxa de rolagem em 2px/segundo
+--- icone <i class="bi bi-music-note"></i> que se clicado deve reduzir a taxa de rolagem em 1px/segundo
+--- icone <i class="bi bi-music-note-beamed"></i></i> que se clicado deve aumentar a taxa de rolagem em 1px/segundo
 
 # AJUSTE DA VELOCIDADE
 - quando troca música a parada de 5 segundos está funcionando muito bem
 - o ajuste de velocidade entre as músicas deveria acontecer no mesmo momento
 - mas quando a segunda música já aparece embaixo da tela, a velocidade considerada passa a ser ela mesmo ainda estando tocando a anterior
 - o ajuste é simples, a troca da velocidade deve ocorrer após a parada dos 5 segundos, que está acontecendo no momento correto
+
+# DUVIDA SOBRE O ESP
+- ontem eu fiz upload dos arquivos em \simplificado\nodeMCU através da IDE do arquino, baixando e instalando bibliotecas
+- não implemente nada, quero apenas analisar uma alternativas
+- é possível construir um *.bat que após eu conectar o nodemcu na porta usb, executar e ele atualizar os arquivos no módulo?
