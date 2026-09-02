@@ -208,3 +208,16 @@ que um dia eu te dei
 - ontem eu fiz upload dos arquivos em \simplificado\nodeMCU através da IDE do arquino, baixando e instalando bibliotecas
 - não implemente nada, quero apenas analisar uma alternativas
 - é possível construir um *.bat que após eu conectar o nodemcu na porta usb, executar e ele atualizar os arquivos no módulo?
+
+# COMPARTILHAR
+- criar um botão ao lado direito de class="bi bi-x" com o ícone <i class="bi bi-share"></i> que irá aparecer somente se tiver pelo menos uma música selecionada
+- ele irá criar uma url para compartilhar que:
+-- deve enviar na url o id das músicas selecionadas
+-- deve enviar na url o valor de class="velocidade-valor" de cada música selecionada
+-- quando o destinatário abrir o link já abrirá com o mesmo filtro das músicas e com os valores da velocidade para cada uma
+- se o destinatário clicar em class="bi bi-x", mostrará todas as músicas, exatamente como funciona hoje
+- aqui a questão é apenas criar a url
+-- provavelmente terá que criar um sistema de id para as músicas para poder enviar como GET
+# DOWNLOAD
+- botão <i class="bi bi-cloud-download"></i> ao lado esquerdo de class="bi bi-funnel"
+- esse botão deve fazer download de todo o arquivo html

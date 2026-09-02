@@ -173,6 +173,10 @@
 		font-size: 1.2em;
 		letter-spacing: 1px;
 	}
+	.botao-circular.copiado {
+		opacity: 0.9;
+		color: #4ade80;
+	}
 </style>
 </head>
 <body>
@@ -183,11 +187,13 @@
 </div>
 <div id="lista-musicas"></div>
 <div id="controles-inferiores">
+	<div id="download-btn" class="botao-circular pequeno"><i class="bi bi-cloud-download"></i></div>
 	<div id="filtro-btn" class="botao-circular pequeno" hidden><i class="bi bi-funnel"></i></div>
 	<div id="transpor-mais-btn" class="botao-circular pequeno"><i class="bi bi-plus"></i></div>
 	<div id="play-pause-btn" class="botao-circular"><i class="bi bi-play"></i></div>
 	<div id="transpor-menos-btn" class="botao-circular pequeno"><i class="bi bi-dash"></i></div>
 	<div id="limpar-selecao-btn" class="botao-circular pequeno" hidden><i class="bi bi-x"></i></div>
+	<div id="compartilhar-btn" class="botao-circular pequeno" hidden><i class="bi bi-share"></i></div>
 </div>
 <div id="acorde-modal">
 	<div class="caixa">
@@ -8131,11 +8137,36 @@ Tão maravilhoso para mim
 		} catch (e) {}
 	}
 
+	// ===== Selecao compartilhada via URL (?sel=[{"t":titulo,"v":velocidade},...]) =====
+	function analisarUrlCompartilhada() {
+		try {
+			var params = new URLSearchParams(window.location.search);
+			var bruto = params.get("sel");
+			if (!bruto) return null;
+			var itens = JSON.parse(bruto);
+			if (!Array.isArray(itens)) return null;
+			return itens;
+		} catch (e) {
+			return null;
+		}
+	}
+
+	var itensCompartilhados = analisarUrlCompartilhada();
+
 	var xmlText = document.getElementById("musicas-xml").textContent;
 	var xml = new DOMParser().parseFromString(xmlText, "application/xml");
 	var nos = Array.prototype.slice.call(xml.getElementsByTagName("musica"));
 	var transpostosSalvos = carregarTranspostos();
 	var velocidadesSalvas = carregarVelocidades();
+
+	if (itensCompartilhados) {
+		itensCompartilhados.forEach(function (item) {
+			if (item && typeof item.t === "string") {
+				velocidadesSalvas[item.t] = Math.max(0, Math.min(100, Number(item.v) || 0));
+			}
+		});
+		salvarVelocidades(velocidadesSalvas);
+	}
 
 	var musicas = nos.map(function (no) {
 		var conteudo = (no.textContent || "").trim();
@@ -8155,6 +8186,15 @@ Tão maravilhoso para mim
 	var lista = document.getElementById("lista-musicas");
 	var primeiraPorLetra = {};
 	var ordemSelecao = carregarSelecionadas();
+
+	if (itensCompartilhados) {
+		ordemSelecao = itensCompartilhados.filter(function (item) {
+			return item && typeof item.t === "string";
+		}).map(function (item) {
+			return item.t;
+		});
+		salvarSelecionadas(ordemSelecao);
+	}
 
 	musicas.forEach(function (musica, i) {
 		var id = "musica-" + i;
@@ -8216,11 +8256,13 @@ Tão maravilhoso para mim
 	var filtroAtivo = false;
 	var filtroBtn = document.getElementById("filtro-btn");
 	var limparSelecaoBtn = document.getElementById("limpar-selecao-btn");
+	var compartilharBtn = document.getElementById("compartilhar-btn");
 
 	function atualizarControlesSelecao() {
 		var temSelecao = ordemSelecao.length > 0;
 		filtroBtn.hidden = !temSelecao;
 		limparSelecaoBtn.hidden = !temSelecao;
+		compartilharBtn.hidden = !temSelecao;
 	}
 
 	function aplicarFiltro() {
@@ -8267,7 +8309,63 @@ Tão maravilhoso para mim
 		atualizarControlesSelecao();
 	});
 
+	function construirUrlCompartilhamento() {
+		var itens = ordemSelecao.map(function (titulo) {
+			var musica = musicas.filter(function (m) { return m.titulo === titulo; })[0];
+			return { t: titulo, v: musica ? musica.velocidade : VELOCIDADE_PADRAO };
+		});
+		var url = new URL(window.location.href);
+		url.hash = "";
+		url.searchParams.set("sel", JSON.stringify(itens));
+		return url.toString();
+	}
+
+	compartilharBtn.addEventListener("click", function () {
+		var url = construirUrlCompartilhamento();
+		if (navigator.share) {
+			navigator.share({ url: url, title: "Cifras" }).catch(function () {});
+			return;
+		}
+		if (navigator.clipboard && navigator.clipboard.writeText) {
+			navigator.clipboard.writeText(url).then(function () {
+				var icone = compartilharBtn.querySelector("i");
+				var classeOriginal = icone.className;
+				icone.className = "bi bi-check2";
+				compartilharBtn.classList.add("copiado");
+				setTimeout(function () {
+					icone.className = classeOriginal;
+					compartilharBtn.classList.remove("copiado");
+				}, 1500);
+			}).catch(function () {});
+		}
+	});
+
+	// Se a pagina foi aberta a partir de um link compartilhado, ja abre filtrada nas musicas
+	// recebidas (a selecao e as velocidades ja foram aplicadas mais acima). Limpa o parametro da
+	// URL depois de aplicar pra nao forcar esse estado de novo num reload manual futuro.
+	if (itensCompartilhados && itensCompartilhados.length) {
+		filtroAtivo = true;
+		aplicarFiltro();
+		var urlLimpa = new URL(window.location.href);
+		urlLimpa.searchParams.delete("sel");
+		window.history.replaceState(null, "", urlLimpa.toString());
+	}
+
 	atualizarControlesSelecao();
+
+	// ===== Download do arquivo HTML completo =====
+	document.getElementById("download-btn").addEventListener("click", function () {
+		var html = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+		var blob = new Blob([html], { type: "text/html" });
+		var url = URL.createObjectURL(blob);
+		var a = document.createElement("a");
+		a.href = url;
+		a.download = "telaCel.html";
+		document.body.appendChild(a);
+		a.click();
+		document.body.removeChild(a);
+		setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+	});
 
 	// Descobre qual musica esta sendo lida no momento (a que fica logo abaixo do cabecalho fixo)
 	// Encontra a secao .musica que esta na altura Y informada (ultima cujo topo ja passou de Y)
