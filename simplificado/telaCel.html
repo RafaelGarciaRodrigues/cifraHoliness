@@ -8211,6 +8211,7 @@ Tão maravilhoso para mim
 	}
 
 	var lista = document.getElementById("lista-musicas");
+	lista.innerHTML = ""; // idempotente: limpa antes de popular, mesmo se a fonte ja vier com algo aqui
 	var primeiraPorLetra = {};
 	var ordemSelecao = carregarSelecionadas();
 
@@ -8378,7 +8379,16 @@ Tão maravilhoso para mim
 
 	// ===== Download do arquivo HTML completo =====
 	document.getElementById("download-btn").addEventListener("click", function () {
-		var html = "<!DOCTYPE html>\n" + htmlOriginal;
+		// htmlOriginal foi capturado antes da limpeza/preenchimento de nav-alfabeto e
+		// lista-musicas rodar - se a fonte ja veio corrompida (duplicada), ele ainda carrega essa
+		// duplicacao. Por garantia, forca esses dois containers vazios numa copia isolada (parseada
+		// a parte, sem afetar a pagina ao vivo) antes de gerar o arquivo.
+		var docLimpo = new DOMParser().parseFromString(htmlOriginal, "text/html");
+		var navLimpo = docLimpo.getElementById("nav-alfabeto");
+		if (navLimpo) navLimpo.innerHTML = "";
+		var listaLimpa = docLimpo.getElementById("lista-musicas");
+		if (listaLimpa) listaLimpa.innerHTML = "";
+		var html = "<!DOCTYPE html>\n" + docLimpo.documentElement.outerHTML;
 		var blob = new Blob([html], { type: "text/html" });
 		var url = URL.createObjectURL(blob);
 		var a = document.createElement("a");
@@ -8631,6 +8641,7 @@ Tão maravilhoso para mim
 	});
 
 	var nav = document.getElementById("nav-alfabeto");
+	nav.innerHTML = ""; // idempotente: limpa antes de popular, mesmo se a fonte ja vier com algo aqui
 	var letraParaLink = {};
 
 	"ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").forEach(function (letra) {
