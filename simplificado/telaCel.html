@@ -8952,22 +8952,25 @@ Você vai discar várias vezes, telefone mudo não pode chamar
 	// e calculada - aplicarFiltro so e chamada de verdade depois disso.
 	function aplicarFiltro() {
 		document.querySelectorAll(".musica").forEach(function (secao, i) {
-			// grupo "" = sem grupo (arquivos direto na raiz de \cifras). So mostra a musica se ela
-			// estiver no grupo ativo (ou sem grupo, quando nenhum grupo esta selecionado).
-			var noGrupoAtivo = grupoAtivo ? secao.dataset.grupo === grupoAtivo : secao.dataset.grupo === "";
-			if (!noGrupoAtivo) {
-				secao.hidden = true;
-				return;
-			}
 			var titulo = secao.querySelector("h2").textContent;
+
+			// O filtro de selecao (funil/link compartilhado) tem prioridade sobre o grupo: se a
+			// musica foi explicitamente selecionada, ela aparece independente de qual grupo (pasta)
+			// pertence - senao, compartilhar um link de uma musica de dentro de um grupo a deixaria
+			// escondida por padrao (nenhum grupo ativo), com nada pra rolar (ver rc.md secao
+			// "BUG QUANDO COMPARTILHAR").
 			if (filtroAtivo) {
 				var pos = ordemSelecao.indexOf(titulo);
 				secao.hidden = pos === -1;
 				if (pos !== -1) secao.style.order = pos;
-			} else {
-				secao.hidden = false;
-				secao.style.order = i;
+				return;
 			}
+
+			// grupo "" = sem grupo (arquivos direto na raiz de \cifras). So mostra a musica se ela
+			// estiver no grupo ativo (ou sem grupo, quando nenhum grupo esta selecionado).
+			var noGrupoAtivo = grupoAtivo ? secao.dataset.grupo === grupoAtivo : secao.dataset.grupo === "";
+			secao.hidden = !noGrupoAtivo;
+			secao.style.order = i;
 		});
 	}
 

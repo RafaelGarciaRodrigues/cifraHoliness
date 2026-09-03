@@ -272,6 +272,13 @@ que um dia eu te dei
 - se houverem musicas fora de grupo (subpastas) elas serão mostradas se nenhum grupo estiver selecionado
 - ao selecionar um grupo apenas as músicas daquele grupo serão mostradas
 
+# BUG QUANDO COMPARTILHAR
+- testando ontem a funcionalidade de compartilhar (class="bi bi-share")
+- gera um link no qual envio por whats app
+- mas quando abre no telefone de destino o link não funciona o play (class="bi bi-play")
+- só funciona se remover da url as variaveis GET
+- não quebre nada, analise onde está o bug e corrija
+
 
 
 
