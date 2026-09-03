@@ -9056,11 +9056,20 @@ Você vai discar várias vezes, telefone mudo não pode chamar
 	// Se a pagina foi aberta a partir de um link compartilhado, ja abre filtrada nas musicas
 	// recebidas (a selecao e as velocidades ja foram aplicadas mais acima). Limpa o parametro da
 	// URL depois de aplicar pra nao forcar esse estado de novo num reload manual futuro.
+	// Tudo dentro de try/catch: history.replaceState pode lancar (SecurityError ou similar) em
+	// navegadores in-app restritos (ex.: o WebView do WhatsApp) - sem o try/catch, essa excecao
+	// sincrona interrompia o resto do script, e o addEventListener do botao de play (mais abaixo)
+	// nunca chegava a rodar. Resultado: o link compartilhado abria mas o play nao fazia nada, e so
+	// voltava a funcionar removendo o #sel=... da URL (ver rc.md secao BUG QUANDO COMPARTILHAR).
 	if (selecaoCompartilhadaResolvida && selecaoCompartilhadaResolvida.length) {
-		filtroAtivo = true;
-		aplicarFiltro();
-		// remove so a hash (#sel=...), preserva a query string intacta (importante no htmlpreview)
-		window.history.replaceState(null, "", window.location.pathname + window.location.search);
+		try {
+			filtroAtivo = true;
+			aplicarFiltro();
+			// remove so a hash (#sel=...), preserva a query string intacta (importante no htmlpreview)
+			window.history.replaceState(null, "", window.location.pathname + window.location.search);
+		} catch (e) {
+			console.error("Falha ao aplicar selecao compartilhada:", e);
+		}
 	}
 
 	atualizarControlesSelecao();
