@@ -1,9 +1,25 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Cifras</title>
+<style>
+/* Fallback offline dos icones (ver rc.md secao ICONES): bootstrap-icons.min.css vem de CDN e nao
+   carrega sem internet. Fica ANTES do <link> do CDN de proposito - se o CDN carregar, suas regras
+   (que vem depois) ganham a cascata; senao, essas ficam valendo. */
+.bi-music-note::before { content: "\266A"; }
+.bi-music-note-beamed::before { content: "\266B"; }
+.bi-play::before { content: "\25B7"; }
+.bi-pause::before { content: "\23F8"; }
+.bi-plus::before { content: "\29FE"; }
+.bi-dash::before { content: "\29FF"; }
+.bi-cloud-download::before { content: "\1F863"; }
+.bi-funnel::before { content: "\2730"; }
+.bi-share::before { content: "\1F517"; }
+.bi-x::before { content: "\2715"; }
+.bi-check2::before { content: "\2713"; }
+</style>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <style>
 	* { box-sizing: border-box; }

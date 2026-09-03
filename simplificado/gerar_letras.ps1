@@ -1,5 +1,5 @@
 # Fonte: simplificado/cifras/*.txt (mesma pasta usada por inclui.ps1)
-# Destino: simplificado/nodeMCU/data/musicas.json
+# Destino: simplificado/nodeMCU/data/musicas.json + simplificado/nodeMCU/data/index.html
 #
 # Gera o dataset de letras consumido pelo firmware do NodeMCU ESP8266/ESP-12 (ver
 # simplificado/spec_esp32.md,
@@ -11,16 +11,30 @@
 # A classificacao acorde/letra de cada linha reimplementa fielmente CHORD_TOKEN_RE/isChordToken/
 # isChordLine de telaCel.html. Qualquer mudanca nessa logica em telaCel.html precisa ser
 # replicada aqui tambem, senao a classificacao diverge entre celular e ESP32.
+#
+# Tambem gera simplificado/telaCel.html como nodeMCU/data/index.html: o NodeMCU passa a servir
+# o proprio telaCel.html em GET / (ver spec_esp32.md) - abrir via http://192.168.4.1/ em vez de um
+# arquivo local resolve o navigator.wakeLock, que o Chrome recusa em paginas file://. Rode
+# inclui.ps1 ANTES deste script se \cifras mudou, senao o index.html sai com o conteudo antigo.
+# Nao e uma copia 1:1: insere um fallback CSS pros icones (bootstrap-icons vem de CDN, que nao
+# carrega offline - ver rc.md secao ICONES), so nesse arquivo, sem alterar telaCel.html.
 
 $ErrorActionPreference = "Stop"
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $cifrasDir = Join-Path $scriptDir "cifras"
+$telaCelPath = Join-Path $scriptDir "telaCel.html"
 $outDir = Join-Path $scriptDir "nodeMCU\data"
 $outPath = Join-Path $outDir "musicas.json"
+$indexPath = Join-Path $outDir "index.html"
 
 if (-not (Test-Path $cifrasDir)) {
     Write-Error "Pasta cifras nao encontrada em: $cifrasDir"
+    exit 1
+}
+
+if (-not (Test-Path $telaCelPath)) {
+    Write-Error "Arquivo telaCel.html nao encontrado em: $telaCelPath"
     exit 1
 }
 
@@ -116,4 +130,44 @@ $json = $musicas | ConvertTo-Json -Depth 6 -Compress
 $utf8SemBom = New-Object System.Text.UTF8Encoding($false)
 [System.IO.File]::WriteAllText($outPath, $json, $utf8SemBom)
 
+# index.html nao e uma copia 1:1 de telaCel.html: os icones (<i class="bi bi-...">) vem do
+# Bootstrap Icons via CDN, que nao carrega na rede do NodeMCU (sem internet - ver rc.md secao
+# ICONES). Insere um fallback em CSS puro *antes* do <link> do CDN: se o CDN carregar, suas regras
+# (que vem depois no documento) ganham a cascata e os icones bonitos aparecem normalmente; se nao
+# carregar (uso real via NodeMCU), so o fallback fica valendo e mostra os caracteres Unicode no
+# lugar. Cobre os 9 icones listados no rc.md (secao ICONES) + bi-x (limpar selecao) e bi-check2
+# (feedback de "link copiado" do botao compartilhar), que usam o mesmo tipo de fallback.
+$telaCelConteudo = Get-Content -Path $telaCelPath -Raw -Encoding UTF8
+
+$fallbackIcones = @'
+<style>
+/* Fallback offline dos icones (ver rc.md secao ICONES): bootstrap-icons.min.css vem de CDN e nao
+   carrega sem internet. Fica ANTES do <link> do CDN de proposito - se o CDN carregar, suas regras
+   (que vem depois) ganham a cascata; senao, essas ficam valendo. */
+.bi-music-note::before { content: "\266A"; }
+.bi-music-note-beamed::before { content: "\266B"; }
+.bi-play::before { content: "\25B7"; }
+.bi-pause::before { content: "\23F8"; }
+.bi-plus::before { content: "\29FE"; }
+.bi-dash::before { content: "\29FF"; }
+.bi-cloud-download::before { content: "\1F863"; }
+.bi-funnel::before { content: "\2730"; }
+.bi-share::before { content: "\1F517"; }
+.bi-x::before { content: "\2715"; }
+.bi-check2::before { content: "\2713"; }
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+'@
+
+$marcadorCdn = '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">'
+if (-not $telaCelConteudo.Contains($marcadorCdn)) {
+    Write-Error "Link do bootstrap-icons nao encontrado em telaCel.html (verifique se a versao/URL mudou) - ajuste `$marcadorCdn` em gerar_letras.ps1"
+    exit 1
+}
+$indexConteudo = $telaCelConteudo.Replace($marcadorCdn, $fallbackIcones)
+
+$utf8SemBomIndex = New-Object System.Text.UTF8Encoding($false)
+[System.IO.File]::WriteAllText($indexPath, $indexConteudo, $utf8SemBomIndex)
+
 Write-Host "Concluido. $($musicas.Count) musica(s) gravada(s) em: $outPath"
+Write-Host "Gerado telaCel.html (com fallback de icones offline) para: $indexPath"

@@ -235,3 +235,33 @@ que um dia eu te dei
 - ainda não entendi o motivo, mas as vezes funciona e as vezes não
 - quando não funciona, não aparece nada no monitor serial
 - parece que mesmo estando no mesmo wifi (CifrasIgreja) telaCel.html não se conecta
+
+# ICONES
+- icones não aparecem no index pq está offline
+- sendo assim, substitua apenas em index.html:
+-- class="bi bi-music-note" por unicode dec &#9834;
+-- class="bi bi-music-note-beamed" por unicode dec &#9835;
+-- class="bi bi-play" por unicode dec &#9655;
+-- class="bi bi-pause" por unicode dec &#9208;
+-- class="bi bi-plus" por unicode dec &#10750;
+-- class="bi bi-dash" por unicode dec &#10751;
+-- class="bi bi-cloud-download" por unicode dec &#129123;
+-- class="bi bi-funnel" por unicode dec &#10032;
+-- class="bi bi-share" por unicode dec &#128279;
+
+
+# AJUSTE SINCRONIA
+- notei que quando a música está no topo de telaCel.html (rolando para cima quase sumindo) a mesma linha está embaixo, surgindo em letras.html
+- esse comportamento prejudica acompanhar
+- quando a linha estiver sumindo no topo de telaCel.html a linha correspondente também precisa estar sumindo no topo em letras.html
+
+
+
+
+
+
+
+
+
+
+

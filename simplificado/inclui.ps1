@@ -49,3 +49,13 @@ $htmlContent = [regex]::Replace($htmlContent, $pattern, $evaluator, 1)
 Set-Content -Path $telaCelPath -Value $htmlContent -Encoding UTF8 -NoNewline
 
 Write-Host "Concluido. $($arquivos.Count) musica(s) incluida(s) em: $telaCelPath"
+
+# Regenera tambem o dataset do NodeMCU (musicas.json) e a copia de telaCel.html usada como
+# index.html - roda depois de telaCel.html estar atualizado, senao o index.html sairia com
+# conteudo velho (ver simplificado/spec_esp32.md).
+$gerarLetrasPath = Join-Path $scriptDir "gerar_letras.ps1"
+if (Test-Path $gerarLetrasPath) {
+    & $gerarLetrasPath
+} else {
+    Write-Warning "gerar_letras.ps1 nao encontrado em: $gerarLetrasPath (pulei a atualizacao do NodeMCU)"
+}

@@ -168,7 +168,12 @@
 			linhasRenderizadas[i].el.classList.add("atual");
 		}
 
-		alvo.el.scrollIntoView({ behavior: "smooth", block: "center" });
+		// "start" (nao "center"): telaCel.html manda a linha que esta no TOPO da tela do celular
+		// (ver estadoAtualDeLeitura em telaCel.html, referencia y=0) - se aqui centralizasse, a
+		// linha so apareceria no meio da tela da igreja bem depois de ja ter sumido no topo do
+		// celular (ver rc.md secao AJUSTE SINCRONIA). Alinhar no topo os dois lados usa a mesma
+		// referencia.
+		alvo.el.scrollIntoView({ behavior: "smooth", block: "start" });
 		linhaAtualDestacada = alvo.indice;
 	}
 

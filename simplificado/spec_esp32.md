@@ -57,17 +57,18 @@ O usuário (Rafael) toca/lidera cânticos na igreja usando o celular com `telaCe
 
 ```
 ┌─────────────┐   Wi-Fi (rede do NodeMCU, SoftAP) ┌──────────────┐   Wi-Fi (mesma rede)   ┌──────────────────┐
-│  Celular     │ ───── POST /estado (JSON) ──────► │   NodeMCU    │ ◄──── GET /estado ──── │  PC da igreja     │
-│  telaCel.html│                                    │(ESP8266WebSrv)│ ──── GET /letras.html ►│  (só navegador)   │
+│  Celular     │ ◄──── GET /  (index.html) ──────  │   NodeMCU    │ ◄──── GET /estado ──── │  PC da igreja     │
+│  (navegador) │ ───── POST /estado (JSON) ──────► │(ESP8266WebSrv)│ ──── GET /letras.html ►│  (só navegador)   │
 └─────────────┘                                    └──────────────┘                        └──────────────────┘
 ```
 
 - O NodeMCU é o servidor. Ele guarda em memória o "estado atual" (última música/linha recebida do celular) e serve isso sob demanda pro navegador da igreja.
+- **O próprio NodeMCU serve o `telaCel.html` pro celular** (copiado como `index.html`, ver seção 5.1/5.2) — o celular abre `http://192.168.4.1/` no navegador em vez de um arquivo baixado localmente. Motivo (achado na prática, não é só preferência): `navigator.wakeLock.request()` (usado pra impedir a tela do celular de apagar durante o play) lança `NotAllowedError` em páginas `file://` — o Chrome recusa a permissão nesse tipo de origem, mesmo sendo tecnicamente um "contexto seguro". Servir como página `http://` de verdade resolve isso, e de quebra elimina o risco de o celular estar com uma cópia desatualizada do arquivo (problema real que já aconteceu — ver seção 5.5 sobre a URL relativa `/estado`).
 - O celular manda updates (fire-and-forget, best-effort) sempre que a linha/música visível na tela mudar.
 - O navegador da igreja fica com `letras.html` (servido pelo próprio NodeMCU) aberto, dando **polling** em `/estado` a cada ~1s e atualizando o destaque/scroll conforme o valor mudar.
 - **v1 é só HTTP + polling (sem WebSocket)** — sem dependências externas de biblioteca, só `ESP8266WiFi.h` + `ESP8266WebServer.h` (core padrão do Arduino-ESP8266). WebSocket é uma melhoria de v2 (seção 8), não bloqueia o v1.
 - Toda comunicação do celular pro NodeMCU deve ser **best-effort e não-bloqueante**: se o NodeMCU estiver desligado/fora de alcance, `telaCel.html` deve continuar funcionando normalmente (sem travar, sem mostrar erro pro usuário). Use `fetch(...).catch(() => {})` com um timeout curto (ex.: `AbortController` com ~1.5s).
-- **CORS (achado durante a implementação, não é opcional)**: o celular abre `telaCel.html` como arquivo local (ou de outra origem, antes de trocar de Wi-Fi), então o `POST /estado` é uma chamada de **origem cruzada**. Como o corpo é `application/json`, o navegador manda um *preflight* `OPTIONS` antes do POST de verdade. Sem o servidor responder esse preflight com os cabeçalhos CORS certos, **toda** atualização falha em silêncio — o `catch()` best-effort do celular esconde o erro, então o sintoma é só "a tela da igreja nunca atualiza", sem nenhuma pista no console. O firmware (seção 5.2) precisa tratar `OPTIONS /estado` explicitamente e mandar `Access-Control-Allow-Origin: *` em toda resposta de `/estado`.
+- **CORS (achado durante a implementação, não é opcional)**: quando `telaCel.html` é aberto como arquivo local (uso standalone, sem NodeMCU, via o botão de download) o `POST /estado` é uma chamada de **origem cruzada**. Como o corpo é `application/json`, o navegador manda um *preflight* `OPTIONS` antes do POST de verdade. Sem o servidor responder esse preflight com os cabeçalhos CORS certos, **toda** atualização falha em silêncio — o `catch()` best-effort do celular esconde o erro, então o sintoma é só "a tela da igreja nunca atualiza", sem nenhuma pista no console. O firmware (seção 5.2) precisa tratar `OPTIONS /estado` explicitamente e mandar `Access-Control-Allow-Origin: *` em toda resposta de `/estado` — isso continua necessário mesmo no modo "servido pelo NodeMCU" (`/estado` relativo é mesma origem e não dispara preflight, mas o modo arquivo local ainda existe e usa o IP fixo com CORS).
 
 ### 4.1 Identificação de linha — a peça mais importante do contrato
 
@@ -151,6 +152,7 @@ Resposta JSON:
 - Sugestão de nome: `simplificado/gerar_letras.ps1` (mesmo padrão dos scripts existentes: `extrai.ps1`, `inclui.ps1`).
 - Precisa reimplementar (em PowerShell) a mesma lógica de `isChordLine`/`isChordToken`/`CHORD_TOKEN_RE` que já existe em JS dentro de `telaCel.html` — **copie a regex e as regras exatamente**, para que a classificação bata 100% com o que o próprio `telaCel.html` mostra colorido (senão uma linha pode aparecer como "acorde" pro celular e "letra" pro NodeMCU, ou vice-versa, e os índices/exibição ficam inconsistentes entre os dois lados). **Cuidado com encoding**: caracteres como "º"/"°" em símbolos de acorde (ex.: "Ebº") precisam ser tratados via código Unicode (`[char]0x00BA`) em vez de literal no `.ps1`, senão o jeito como o Windows PowerShell 5.1 lê o próprio arquivo do script pode corromper esses caracteres e quebrar a classificação silenciosamente — valide sempre comparando a saída contra a lógica JS real (não contra uma releitura sua dela).
 - Saída: `simplificado/nodeMCU/data/musicas.json` (ver seção 5.3 sobre a pasta `data/`).
+- **Também copia `simplificado/telaCel.html` para `simplificado/nodeMCU/data/index.html`** — é essa cópia que o NodeMCU serve pro celular em `GET /` (ver seção 4 sobre o porquê: `navigator.wakeLock` não funciona em `file://`). Como isso é só uma cópia de arquivo (não regenera `telaCel.html`), rode `inclui.ps1` **antes** deste script se `\cifras` mudou, senão o `index.html` sai com conteúdo desatualizado.
 - Deve rodar sob demanda (tipo `extrai.bat`/`inclui.bat`), não precisa de bat separado necessariamente — pode reaproveitar/estender `inclui.ps1` pra gerar os dois formatos (o XML do `telaCel.html` E o `musicas.json`) na mesma execução, já que ambos partem da mesma pasta `\cifras`. Decisão de implementação livre; só documentar no próprio script qual é a fonte e o destino.
 
 ### 5.2 Firmware do NodeMCU (novo)
@@ -162,7 +164,8 @@ Resposta JSON:
   1. Inicializa `LittleFS` (sistema de arquivos onde `letras.html` e `musicas.json` foram gravados via upload de dados do Arduino IDE — ver seção 5.3). No ESP8266, `LittleFS.begin()` não recebe parâmetro de formatar-se-falhar (diferente do ESP32).
   2. Sobe Wi-Fi em modo **SoftAP**: `WiFi.softAP("CifrasIgreja", "<senha a definir>")`. SSID e senha devem ficar em constantes fáceis de achar/editar no topo do arquivo.
   3. Registra rotas no `ESP8266WebServer`:
-     - `GET /` e `GET /letras.html` → serve `letras.html` do `LittleFS`.
+     - `GET /` e `GET /index.html` → serve `index.html` do `LittleFS` (cópia de `telaCel.html`, é o que o celular abre).
+     - `GET /letras.html` → serve `letras.html` do `LittleFS` (é o que o computador da igreja abre).
      - `GET /musicas.json` → serve `musicas.json` do `LittleFS` (assim `letras.html` carrega o dataset completo via `fetch` normal, sem precisar embutir no HTML).
      - `OPTIONS /estado` → responde o preflight CORS (204 + cabeçalhos `Access-Control-Allow-*`, ver nota de CORS na seção 4).
      - `POST /estado` → lê o corpo (JSON), atualiza `estadoTitulo`/`estadoLinha` (variáveis globais), responde 200 (com os mesmos cabeçalhos CORS).
@@ -179,11 +182,12 @@ O Arduino IDE tem uma ferramenta (plugin de upload de LittleFS pro core esp8266,
 simplificado/nodeMCU/
 ├── nodeMCU.ino
 └── data/
+    ├── index.html    (copia de telaCel.html, gerada pelo script da secao 5.1)
     ├── letras.html
-    └── musicas.json   (gerado pelo script da seção 5.1)
+    └── musicas.json  (gerado pelo script da secao 5.1)
 ```
 
-**Nota para quem for implementar**: confirme se está usando Arduino IDE (precisa instalar o plugin de upload de LittleFS compatível com a versão em uso) ou PlatformIO (já tem esse recurso embutido via `pio run --target uploadfs`) — o processo de upload da pasta `data/` muda de ferramenta pra ferramenta, documente o passo a passo escolhido dentro do próprio `nodeMCU.ino` como comentário no topo do arquivo. Escolha no Boards Manager um esquema de partição/flash size com espaço de FS suficiente pro `musicas.json` (algumas centenas de KB) + `letras.html`.
+**Nota para quem for implementar**: confirme se está usando Arduino IDE (precisa instalar o plugin de upload de LittleFS compatível com a versão em uso) ou PlatformIO (já tem esse recurso embutido via `pio run --target uploadfs`) — o processo de upload da pasta `data/` muda de ferramenta pra ferramenta, documente o passo a passo escolhido dentro do próprio `nodeMCU.ino` como comentário no topo do arquivo. Escolha no Boards Manager um esquema de partição/flash size com espaço de FS suficiente — os três arquivos juntos somam uns 650KB hoje (`index.html` é o maior, crescendo conforme mais músicas forem adicionadas).
 
 ### 5.4 `letras.html` (novo)
 
@@ -205,15 +209,15 @@ Resumo do que precisa mudar (detalhado na seção 4.4):
 2. Nova função de detecção de linha visível dentro da música atual (reaproveitando o padrão de `musicaNaAltura`).
 3. Nova função de envio (`fetch` POST, debounced, best-effort, silenciosa em caso de erro).
 4. Listener de `scroll` no `window` disparando essa detecção+envio (sempre ativo, não só durante auto-scroll).
-5. Uma constante/config pro IP do NodeMCU (`192.168.4.1` como padrão — implementada como `SERVIDOR_IP`).
+5. Uma constante/config pro IP do NodeMCU (`192.168.4.1` como padrão — implementada como `SERVIDOR_IP`), usada só de fallback: quando `telaCel.html` é servido pelo próprio NodeMCU (`window.location.protocol !== "file:"`), usa caminho relativo `/estado` (mesma origem, funciona mesmo que o IP mude) — só cai pro IP fixo quando a página foi aberta como arquivo local (`file://`, modo standalone via o botão de download).
 
 **Importante**: essas mudanças não podem quebrar nada do que já existe (transposição, filtro, rolagem automática, quebra de linha) nem degradar a experiência quando não há NodeMCU por perto — teste explicitamente o cenário "NodeMCU desligado" e confirme que `telaCel.html` continua 100% funcional e sem erros/lentidão perceptível no console.
 
 ## 6. Fluxo de uso esperado (ponta a ponta)
 
-1. Em casa: roda `gerar_letras.ps1` (ou equivalente) sempre que `\cifras` mudar, pra atualizar `musicas.json`. Faz upload do firmware + pasta `data/` pro NodeMCU via Arduino IDE/PlatformIO.
+1. Em casa: roda `inclui.ps1` se `\cifras` mudou, depois `gerar_letras.ps1` (regenera `musicas.json` E copia `telaCel.html` para `nodeMCU/data/index.html`). Faz upload do firmware + pasta `data/` pro NodeMCU via Arduino IDE/PlatformIO (dois passos separados — ver seção 5.3).
 2. Na igreja: liga o NodeMCU em qualquer USB (só energia — ver conversa que originou este documento, adaptador USB do NodeMCU NÃO dá acesso de rede por cabo, só energia/gravação). Ele sobe a rede Wi-Fi `CifrasIgreja`.
-3. Celular conecta na rede `CifrasIgreja`, abre `telaCel.html` normalmente (arquivo local, como já é usado hoje).
+3. Celular conecta na rede `CifrasIgreja`, abre `http://192.168.4.1/` no navegador (é o próprio NodeMCU servindo `telaCel.html` — não mais um arquivo baixado localmente, ver seção 4 sobre o wake lock).
 4. Computador da igreja conecta na rede `CifrasIgreja`, abre o navegador, digita `http://192.168.4.1/letras.html`.
 5. Conforme o usuário rola/toca as músicas no celular (manual ou via play automático), a tela da igreja acompanha sozinha.
 

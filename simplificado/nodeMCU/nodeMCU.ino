@@ -3,16 +3,24 @@
 // hardware escolhido e o NodeMCU ESP8266/ESP-12 - ver a nota no topo do spec).
 //
 // O ESP8266 cria a propria rede Wi-Fi (modo SoftAP) e serve:
-//   GET  /            e /letras.html  -> data/letras.html (tela pra ligar no projetor/TV)
+//   GET  /            e /index.html   -> data/index.html (copia de telaCel.html, pro celular -
+//                                         ver nota de wake lock abaixo sobre o porque disso)
+//   GET  /letras.html                 -> data/letras.html (tela pra ligar no projetor/TV)
 //   GET  /musicas.json                -> data/musicas.json (dataset gerado por gerar_letras.ps1)
 //   POST /estado  { "titulo": "...", "linha": N } -> guarda o estado atual (mandado pelo celular)
 //   GET  /estado                      -> devolve o estado atual guardado
+//
+// Por que o celular abre http://192.168.4.1/ em vez de um telaCel.html baixado localmente: o
+// Chrome recusa navigator.wakeLock.request() (NotAllowedError) em paginas file://, entao a tela
+// do celular apagava sozinha durante o play - servir como pagina http:// de verdade resolve isso
+// e de quebra garante que o celular sempre ve a versao atual (sem depender de reenviar o arquivo
+// toda vez que ele mudar).
 //
 // Bibliotecas necessarias (Library Manager do Arduino IDE): so ArduinoJson (ESP8266WiFi,
 // ESP8266WebServer e LittleFS ja vem com o core esp8266/Arduino). Testado com ArduinoJson 7.x
 // (API JsonDocument sem tamanho fixo). Placa no Boards Manager: "NodeMCU 1.0 (ESP-12E Module)".
 //
-// Como gravar a pasta data/ (letras.html + musicas.json) no LittleFS do ESP8266 - ISSO E
+// Como gravar a pasta data/ (index.html + letras.html + musicas.json) no LittleFS do ESP8266 - ISSO E
 // SEPARADO do upload do firmware (.ino) em si:
 //   - Arduino IDE: instale o plugin de upload de LittleFS pro core esp8266 (ex.:
 //     "arduino-esp8266littlefs-plugin" ou o mais recente "arduino-littlefs-upload", conforme a
@@ -24,10 +32,11 @@
 // disponivel e complete/ajuste este comentario com o passo a passo exato que funcionou.
 //
 // Memoria/flash: o ESP8266 tem bem menos RAM que um ESP32 (uns 80KB uteis, contra 320KB+), mas
-// como musicas.json e SO servido como arquivo estatico do LittleFS (nunca carregado inteiro na
-// RAM/parseado pelo firmware - isso fica por conta do navegador), isso nao e um problema. Escolha
-// no Boards Manager um esquema de particao/flash size que sobre espaco de FS suficiente pro
-// musicas.json (algumas centenas de KB) + letras.html.
+// como musicas.json/index.html/letras.html sao SO servidos como arquivo estatico do LittleFS
+// (nunca carregados inteiros na RAM/parseados pelo firmware - isso fica por conta do navegador),
+// isso nao e um problema. Escolha no Boards Manager um esquema de particao/flash size que sobre
+// espaco de FS suficiente: os tres arquivos juntos somam uns 650KB hoje (index.html - copia de
+// telaCel.html - e o maior, ~200KB, crescendo conforme mais musicas forem adicionadas).
 
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
@@ -135,6 +144,16 @@ void handleLetrasHtml() {
 	}
 }
 
+// GET / e GET /index.html servem o telaCel.html (copiado pelo gerar_letras.ps1 como index.html).
+// Abrir via http://192.168.4.1/ em vez de um arquivo local resolve o navigator.wakeLock, que o
+// Chrome recusa em paginas file:// (ver spec_esp32.md) - e elimina o risco de o celular estar
+// com uma copia desatualizada, ja que sempre busca a versao que esta no proprio NodeMCU.
+void handleIndexHtml() {
+	if (!servirArquivo("/index.html", "text/html; charset=utf-8")) {
+		server.send(404, "text/plain", "index.html nao encontrado no LittleFS");
+	}
+}
+
 void handleMusicasJson() {
 	if (!servirArquivo("/musicas.json", "application/json; charset=utf-8")) {
 		server.send(404, "text/plain", "musicas.json nao encontrado no LittleFS");
@@ -153,7 +172,8 @@ void setup() {
 	Serial.print("SoftAP iniciado, IP: ");
 	Serial.println(WiFi.softAPIP()); // deve ser 192.168.4.1
 
-	server.on("/", HTTP_GET, handleLetrasHtml);
+	server.on("/", HTTP_GET, handleIndexHtml);
+	server.on("/index.html", HTTP_GET, handleIndexHtml);
 	server.on("/letras.html", HTTP_GET, handleLetrasHtml);
 	server.on("/musicas.json", HTTP_GET, handleMusicasJson);
 
