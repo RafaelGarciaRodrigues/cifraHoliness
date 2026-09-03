@@ -221,3 +221,17 @@ que um dia eu te dei
 # DOWNLOAD
 - botão <i class="bi bi-cloud-download"></i> ao lado esquerdo de class="bi bi-funnel"
 - esse botão deve fazer download de todo o arquivo html
+
+# NÃO FUNCIONOU
+- em letras.html
+-- as linhas das letras de telaCel.html que estiverem dentro de <intro> deve:
+--- aparecer "<i class="bi bi-music-note"></i> <i class="bi bi-music-note"></i> <i class="bi bi-music-note"></i>" em letras.html PARA cada linha dentro de <intro> em telaCel.html 
+- reforçando que deve aparecer "<i class="bi bi-music-note"></i> <i class="bi bi-music-note"></i> <i class="bi bi-music-note"></i>" somente em letras.html, substituindo as linhas dentro de <intro>
+
+# BLQUEIO DE TELA
+- a funcionalidade e não blpquear avtela do celular quando play ativo parou de funcionar, antes funcionava bem em  telaCel.html
+
+# NÃO HÁ SINCRONIA
+- ainda não entendi o motivo, mas as vezes funciona e as vezes não
+- quando não funciona, não aparece nada no monitor serial
+- parece que mesmo estando no mesmo wifi (CifrasIgreja) telaCel.html não se conecta

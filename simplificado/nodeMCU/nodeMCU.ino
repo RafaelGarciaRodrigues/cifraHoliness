@@ -57,21 +57,41 @@ void aplicarCabecalhosCors() {
 }
 
 void handleEstadoOptions() {
+	Serial.println("---- OPTIONS /estado (preflight CORS) recebido ----");
 	aplicarCabecalhosCors();
 	server.send(204);
+}
+
+// DEBUG temporario: se o navegador do celular pedir algo que nenhuma rota acima bateu (ex.: um
+// path diferente por engano), isso aparece aqui em vez de sumir em silencio.
+void handleNaoEncontrado() {
+	Serial.print("404: ");
+	Serial.print(server.method() == HTTP_GET ? "GET " : server.method() == HTTP_POST ? "POST " : server.method() == HTTP_OPTIONS ? "OPTIONS " : "? ");
+	Serial.println(server.uri());
+	server.send(404, "text/plain", "nao encontrado");
 }
 
 void handleEstadoPost() {
 	aplicarCabecalhosCors();
 
+	// DEBUG temporario: tira depois de confirmar que o POST chega certo (ver spec_esp32.md).
+	Serial.println("---- POST /estado recebido ----");
+
 	if (!server.hasArg("plain")) {
+		Serial.println("SEM corpo 'plain' (hasArg(\"plain\") == false)");
 		server.send(400, "application/json", "{\"ok\":false}");
 		return;
 	}
 
+	String corpo = server.arg("plain");
+	Serial.print("Corpo recebido: ");
+	Serial.println(corpo);
+
 	JsonDocument doc;
-	DeserializationError erro = deserializeJson(doc, server.arg("plain"));
+	DeserializationError erro = deserializeJson(doc, corpo);
 	if (erro) {
+		Serial.print("Falha ao parsear JSON: ");
+		Serial.println(erro.c_str());
 		server.send(400, "application/json", "{\"ok\":false}");
 		return;
 	}
@@ -79,6 +99,11 @@ void handleEstadoPost() {
 	estadoTitulo = doc["titulo"].as<String>();
 	estadoLinha = doc["linha"].as<int>();
 	estadoAguardando = doc["aguardando"].as<bool>();
+
+	Serial.print("Estado atualizado: titulo=");
+	Serial.print(estadoTitulo);
+	Serial.print(" linha=");
+	Serial.println(estadoLinha);
 
 	server.send(200, "application/json", "{\"ok\":true}");
 }
@@ -135,6 +160,8 @@ void setup() {
 	server.on("/estado", HTTP_OPTIONS, handleEstadoOptions);
 	server.on("/estado", HTTP_POST, handleEstadoPost);
 	server.on("/estado", HTTP_GET, handleEstadoGet);
+
+	server.onNotFound(handleNaoEncontrado);
 
 	server.begin();
 	Serial.println("Servidor HTTP iniciado");

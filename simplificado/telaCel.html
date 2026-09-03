@@ -8533,6 +8533,7 @@ Tão maravilhoso para mim
 
 	// ===== Mantem a tela ligada enquanto a rolagem estiver ativa =====
 	var wakeLock = null;
+	var wakeLockRetryInterval = null;
 
 	function pedirWakeLock() {
 		if (!("wakeLock" in navigator)) return;
@@ -8554,8 +8555,12 @@ Tão maravilhoso para mim
 	}
 
 	document.addEventListener("visibilitychange", function () {
-		if (tocando && document.visibilityState === "visible" && !wakeLock) {
-			pedirWakeLock();
+		if (tocando && document.visibilityState === "visible") {
+			if (!wakeLock) pedirWakeLock();
+			// A aba pode ter ficado em segundo plano tempo suficiente pra timers ficarem suspensos
+			// (mesmo o listener de scroll nao dispara nesse periodo) - ao voltar, reenvia a posicao
+			// atual imediatamente em vez de esperar o proximo scroll do usuario.
+			agendarEnvioEstado();
 		}
 	});
 
@@ -8563,6 +8568,18 @@ Tão maravilhoso para mim
 		tocando = true;
 		iconePlayPause.className = "bi bi-pause";
 		pedirWakeLock();
+		if (!wakeLockRetryInterval) {
+			// O wake lock pode falhar em silencio (ex.: navegador recusa) ou ser liberado pelo
+			// sistema sem disparar visibilitychange (alguns Android fazem isso quando a tela apaga
+			// por timeout antes do usuario notar) - insiste periodicamente enquanto estiver tocando,
+			// em vez de depender so da re-tentativa no evento de visibilidade.
+			// IMPORTANTE: navigator.wakeLock.request() so funciona com a pagina VISIVEL (lanca
+			// NotAllowedError e falha em silencio caso contrario) - so tenta nesse caso, senao a
+			// tela ja apagou e nao ha nada que a pagina consiga fazer ate o usuario acorda-la de novo.
+			wakeLockRetryInterval = setInterval(function () {
+				if (tocando && !wakeLock && document.visibilityState === "visible") pedirWakeLock();
+			}, 10000);
+		}
 		atualizarControlesVelocidadeVisibilidade();
 		agendarEnvioEstado();
 		if (!scrollRAF) {
@@ -8575,6 +8592,10 @@ Tão maravilhoso para mim
 		tocando = false;
 		iconePlayPause.className = "bi bi-play";
 		liberarWakeLock();
+		if (wakeLockRetryInterval) {
+			clearInterval(wakeLockRetryInterval);
+			wakeLockRetryInterval = null;
+		}
 		esperandoTransicaoAte = 0;
 		musicaAnteriorParaTransicao = null;
 		atualizarControlesVelocidadeVisibilidade();

@@ -123,8 +123,12 @@
 			var div = document.createElement("div");
 			div.className = "linha";
 			if (linha.intro) {
+				// Nao usa <i class="bi bi-music-note"> (icone do Bootstrap Icons): esse font vem de
+				// um CDN, e letras.html roda numa rede sem internet (a do proprio NodeMCU) - o
+				// icone simplesmente nao apareceria. Nota musical Unicode funciona sem depender de
+				// nada externo.
 				div.classList.add("intro");
-				div.innerHTML = '<i class="bi bi-music-note"></i> <i class="bi bi-music-note"></i> <i class="bi bi-music-note"></i>';
+				div.textContent = "♪ ♪ ♪";
 			} else {
 				div.textContent = texto || " ";
 			}
