@@ -177,6 +177,42 @@
 		opacity: 0.9;
 		color: #4ade80;
 	}
+	#nav-alfabeto a.grupo-toggle {
+		color: #ffcc66;
+		margin-top: 4px;
+		border-top: 1px solid #444;
+		padding-top: 6px;
+	}
+	#grupos-painel {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		display: none;
+		flex-wrap: wrap;
+		gap: 8px;
+		padding: 10px 44px 10px 12px;
+		background: rgba(16, 16, 16, 0.95);
+		border-bottom: 1px solid #333;
+		z-index: 15;
+	}
+	#grupos-painel.visivel {
+		display: flex;
+	}
+	.botao-circular.botao-grupo {
+		width: auto;
+		height: auto;
+		border-radius: 10px;
+		padding: 8px 16px;
+		font-size: 1em;
+		cursor: pointer;
+		user-select: none;
+	}
+	.botao-circular.botao-grupo.ativo {
+		color: #f60;
+		border-color: #f60;
+		opacity: 0.9;
+	}
 
 	/* Indicador de diagnostico: mostra se a tela esta sendo mantida acesa (navigator.wakeLock)
 	   enquanto o play esta ativo. So existe pra facilitar debug num aparelho sem acesso a
@@ -195,6 +231,7 @@
 </head>
 <body>
 <nav id="nav-alfabeto"></nav>
+<div id="grupos-painel"></div>
 <div id="controles-velocidade">
 	<div id="velocidade-menos-btn" class="botao-circular pequeno" hidden><i class="bi bi-music-note"></i></div>
 	<div id="velocidade-mais-btn" class="botao-circular pequeno" hidden><i class="bi bi-music-note-beamed"></i></div>
@@ -219,7 +256,7 @@
 
 <script id="musicas-xml" type="application/xml">
 <musicas>
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 A Alegria Está No Coração
 TOM:C
@@ -322,7 +359,7 @@ Já conhece a Jesus
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 A Benção
 TOM:G
@@ -456,7 +493,7 @@ G
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 A Ele a Glória
 TOM:Bm
@@ -527,7 +564,7 @@ Ele a Glória, pra sempre amém
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Acalma o Meu Coração
 TOM:E
@@ -673,7 +710,7 @@ Acalma o meu coração
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Aclame Ao Senhor
 TOM:A
@@ -799,7 +836,7 @@ Incomparáveis são tuas promessas pra mim
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Amigo de Deus
 TOM:C
@@ -862,7 +899,7 @@ De Jesus, meu Bom Pastor
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Atos 2
 TOM:Em
@@ -1008,7 +1045,7 @@ Tua glória contemplar
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Bondade de Deus
 TOM:A
@@ -1122,7 +1159,7 @@ Eu cantarei da bondade de Deus
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Cantarei Teu Amor Pra Sempre
 TOM:F
@@ -1226,7 +1263,7 @@ A#9            C
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Consagração
 TOM:A
@@ -1356,7 +1393,7 @@ E o louvor,   ao rei,      Jesus
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Deus de Amor
 TOM:G
@@ -1471,7 +1508,7 @@ Tu és Deus de Amor!
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Deus Está Aqui
 TOM:A
@@ -1531,7 +1568,7 @@ Tão certo como eu te falo podes me ouvir
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Diante do Rei
 TOM:G
@@ -1610,7 +1647,7 @@ Diante do rei dos reis todo joelho se dobrará
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Doxologia
 TOM:G
@@ -1637,7 +1674,7 @@ Amém
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Ele É Exaltado
 TOM:A
@@ -1740,7 +1777,7 @@ O rei é exaltado nos céus
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Ele Vem Pra Te Salvar
 TOM:D
@@ -1860,7 +1897,7 @@ Ele vem para te salvar
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Em Espírito, Em Verdade
 TOM:C
@@ -1952,7 +1989,7 @@ Ministrando o louvor
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Em Jesus Amigo Temos
 TOM:G
@@ -2032,7 +2069,7 @@ E nos dá conso..la..ção
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Emaús
 TOM:C
@@ -2200,7 +2237,7 @@ Tome o lugar de honra
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Esperando Na Janela
 TOM:D
@@ -2300,7 +2337,7 @@ D/F#              G  A7  D
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Espirito Santo Ore Por Mim
 TOM:D
@@ -2339,7 +2376,7 @@ Mas o meu clamor está subindo
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Eu Navegarei
 TOM:Am
@@ -2432,7 +2469,7 @@ Eu servirei
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Eu Vejo a Glória
 TOM:D
@@ -2516,7 +2553,7 @@ Vou louvando o Teu nome, porque sinto o Senhor me tocar
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Faz Chover
 TOM:C
@@ -2586,7 +2623,7 @@ Faz Chover
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Fico Feliz Em Vir Em Tua Casa
 TOM:G
@@ -2668,7 +2705,7 @@ C       D   G
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Grande É o Senhor
 TOM:C
@@ -2778,7 +2815,7 @@ Sobre toda terra e céus
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Grandioso És Tu
 TOM:G
@@ -2874,7 +2911,7 @@ Grandioso és Tu! Grandioso és Tu!
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Há um doce Espírito aqui
 TOM:C
@@ -2906,7 +2943,7 @@ Sopra Santo Espírito de Deus
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Hallelujah
 TOM:F
@@ -2999,7 +3036,7 @@ Aleluia, Alelu_____ia
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Hosana
 TOM:E
@@ -3077,7 +3114,7 @@ Hosana nas Alturas
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Infinitamente Mais
 TOM:C
@@ -3127,7 +3164,7 @@ Do que tudo o que nós cremos, infinitamente mais
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Louvamos
 TOM:A
@@ -3184,7 +3221,7 @@ E e-xi-me de cul-pas o réu pe-ca-dor.
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Maranata
 TOM:Bm
@@ -3286,7 +3323,7 @@ Maranata ora, vem Senhor Jesus
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Me Derramar
 TOM:G
@@ -3366,7 +3403,7 @@ Me derramar, dizer que és formoso
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Meu Coração
 TOM:D
@@ -3416,7 +3453,7 @@ Aleluia,  aleluia, amém
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Meu Deus É Bom Pra Mim
 TOM:C
@@ -3502,7 +3539,7 @@ Deus é bom pra mim
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Meus Filhos São Teus
 TOM:E
@@ -3629,7 +3666,7 @@ Meus filhos, são teus
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Ninguém Te Ama Como Eu
 TOM:A
@@ -3703,7 +3740,7 @@ ama como eu
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Noites Traiçoeiras
 TOM:A
@@ -3799,7 +3836,7 @@ Mas Deus te quer sorrindo
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Nome Sobre Todo Nome
 TOM:G
@@ -3873,7 +3910,7 @@ Pai da Eternidade, e Príncipe da Paz
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 O Amor de Deus
 TOM:A
@@ -4001,7 +4038,7 @@ O amor de Deus
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 O Amor do Nosso Deus
 TOM:D
@@ -4080,7 +4117,7 @@ nosso Deus!
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 O Escudo
 TOM:D
@@ -4175,7 +4212,7 @@ Escudo para os que nele creem
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 O Sabão
 TOM:C
@@ -4247,7 +4284,7 @@ Tudo Ele pode apagar
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Ó Vinde Fiéis - Iza Morotomo Shu o
 TOM:D
@@ -4317,7 +4354,7 @@ Yukite haise yo Kami no ko wo
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Oceanos
 TOM:Bm
@@ -4470,7 +4507,7 @@ Pois eu sou Teu e Tu  és meu
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Poder para Salvar
 TOM:C
@@ -4564,7 +4601,7 @@ Sobre a morte venceu
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Poderoso Deus
 TOM:C
@@ -4644,7 +4681,7 @@ Dm7            G
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Porque Ele Vive
 TOM:C
@@ -4751,7 +4788,7 @@ Que vivo está
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Quão Grande É o Meu Deus
 TOM:D
@@ -4842,7 +4879,7 @@ D
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Quão Grande És Tu
 TOM:A
@@ -4940,7 +4977,7 @@ Quão grande és Tu! Quão grande és Tu!
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Quebrantado
 TOM:C
@@ -5048,7 +5085,7 @@ C
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Renova-me
 TOM:D
@@ -5117,7 +5154,7 @@ De Ti
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Rompendo em Fé
 TOM:C
@@ -5203,7 +5240,7 @@ Rompendo em fé
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Salmo 23
 TOM:G
@@ -5356,7 +5393,7 @@ Nada Faltará
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Salmo 96
 TOM:G
@@ -5421,7 +5458,7 @@ Força e formosura no seu santuário
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Santo Pra Sempre
 TOM:F
@@ -5541,7 +5578,7 @@ Santo pra sempre
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Santo, Santo, Santo
 TOM:G
@@ -5614,7 +5651,7 @@ Lou_ve seu nome para sempre
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Seja o Centro
 TOM:D
@@ -5696,7 +5733,7 @@ Jesus,       Jesus
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Senhor, Te Quero
 TOM:C
@@ -5780,7 +5817,7 @@ C             G    F
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Só Hoje
 TOM:E
@@ -5911,7 +5948,7 @@ Só hoje
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Só Tu És Santo
 TOM:A
@@ -5987,7 +6024,7 @@ Não há outro como Jesus
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Tami Mina Yorokobe
 TOM:D
@@ -6035,7 +6072,7 @@ Shu Iesu wa      sukuinushi
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Te Agradeço
 TOM:A
@@ -6112,7 +6149,7 @@ Te agrade___ço
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Te Louvarei
 TOM:D
@@ -6217,7 +6254,7 @@ D
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Todas as Coisas
 TOM:D
@@ -6321,7 +6358,7 @@ Tudo eu deixarei
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Toma Meu Coração
 TOM:E
@@ -6396,7 +6433,7 @@ Faz o Teu querer em mim
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Tu és Santo
 TOM:D
@@ -6509,7 +6546,7 @@ Em Ti
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Tu És Soberano
 TOM:C
@@ -6594,7 +6631,7 @@ Tu és Tremendo
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Tua É a Glória
 TOM:C
@@ -6674,7 +6711,7 @@ Vivo pra te adorar
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Um Certo Galileu
 TOM:E
@@ -6810,7 +6847,7 @@ E um dia voltará
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Vem, Esta É a Hora
 TOM:D
@@ -6862,7 +6899,7 @@ O tesouro maior terá
 ]]>
 </musica>
 
-<musica>
+<musica grupo="Holiness">
 <![CDATA[
 Vim Para Adorar-Te
 TOM:C
@@ -6971,6 +7008,1361 @@ C               G
 Totalmente digno
 G            Am        F
 Tão maravilhoso para mim
+]]>
+</musica>
+
+<musica grupo="Rafael">
+<![CDATA[
+A Lua Que Eu Te Dei
+TOM:F
+
+
+A9                 A/G                  F#m7            D9
+Posso te falar dos sonhos das flores de como a cidade mudou
+A9                A/G            F#m7          D9
+Posso te falar do medo  do meu desejo  do meu amor
+A9      A9/C#   D9                  B/D#       A/E
+Posso falar  da tarde que cai e aos poucos deixa ver
+   C#7(9+)  F#m7         F7M       A9/E
+No céu    a lua   que um dia eu te dei
+
+
+A9                  A/G           F#m7            D9
+Gosto de fechar os olhos fugir do tempo  de me perder
+A9                 A/G            F#m7            D9
+Posso até perder a hora mas sei que já passou das seis
+A9          A9/C#   D9         B/D#     A/E
+Sei que não há   no mundo quem possa te dizer
+    C#7(9+)  F#m7  F7M(11+)            F#m7
+Que não    é tua   a lua     que eu te dei
+       Db/F     A/E       D#m7(5-)
+Pra brilhar por onde você for
+          D9        Dm6      Dm6
+Me queira bem durma bem meu amor
+
+
+   A9      A9/C#   D9                  B/D#        A/E
+Eu posso falar  da tarde que cai e aos poucos deixa ver
+   C#7(9+)  F#m7         F7M(11+)      F#m7
+No céu    a lua   que um dia     eu te dei
+
+
+       Db/F     A/E       D#m7(5-)
+Pra brilhar por onde você for
+           D9
+Me queira bem
+      Dm6
+Durma bem
+    F#m7  Db/F  A/E  D#m7(5-)
+Meu amor
+      D9            Dm6         Dm6
+Durma bem me queira bem meu amor
+]]>
+</musica>
+
+<musica grupo="Rafael">
+<![CDATA[
+Acorrentado Em Você
+TOM:C
+
+
+C
+
+       Dm
+Eu não sei o que é que eu faço
+          Gm
+Estou num beco sem saída
+       C                        F
+Não consigo tirar você da minha vida
+    D
+Era só uma brincadeira
+    Gm
+Era só uma aventura
+     E
+De repente virou um vício
+     A
+De repente virou loucura
+
+
+       Dm
+Eu não sei o que é que eu faço
+                Gm
+Porque é que eu fui brincar com fogo
+      C
+O meu coração se distraiu
+       F
+E entregou o jogo
+     D
+Faço tudo que posso eu luto
+       Gm
+Pra quebrar essa corrente
+      E
+Eu me viro até do avesso
+      A
+Pra parar de pensar na gente
+
+
+
+       D
+Mas na hora que dá vontade
+        Em
+Não tem jeito eu não me seguro
+     G              A
+Na batalha com a saudade
+      D             A
+Eu me rendo e te procuro
+      D               D7
+Já cansei de brigar comigo
+         G            Gm
+E não consigo te esquecer
+      D            Em   A    D
+Eu me sinto acorrentado em você
+]]>
+</musica>
+
+<musica grupo="Rafael">
+<![CDATA[
+Apenas Mais Uma de Amor
+TOM:Em
+
+
+G
+    G
+Eu gosto tanto de você
+      C9
+Que até prefiro esconder
+G/B                            D4  D  
+    Deixo assim ficar subentendi__do
+
+
+           Am      G/B  C     
+Como uma ideia que e___xiste 
+ D    G      D9
+Na cabeça e não
+        Am       G/B  C     
+Tem a menor obriga___ção
+ D   G   C9  G  C9  G
+De acontecer
+
+
+   G
+Eu acho tão bonito isso
+C9
+   De ser abstrato, baby
+G/B                       D4  D  
+    A beleza é mesmo tão fu__gaz
+
+
+           Am      G/B  C     
+Como uma ideia que e___xiste 
+ D    G      D9
+Na cabeça e não
+         Am     G/B  C     
+Tem a menor preten__são 
+     D    G  C9  G
+De acontecer
+
+
+C9               D
+   Pode até parecer fraqueza
+          G       F6(9)   C9  G/B
+Pois que seja fraqueza então
+Am7             G4/B  C
+    A alegria que me dá
+      D            G  G7M  G7
+Isso vai sem eu dizer
+
+C                    D
+  Se amanhã não for nada disso
+     G       F6(9)    C9  G/B
+Caberá só a mim esquecer
+Am7                 G4/B      C
+    O que eu ganho, o que eu perco
+     D  G     C9     G  C9  G
+Ninguém   precisa saber
+]]>
+</musica>
+
+<musica grupo="Rafael">
+<![CDATA[
+Boate Azul
+TOM: Dm
+ 
+[Intro] Dm  G  C  F
+        Dm  E  Am  A7
+        Dm  G  C  F
+        Dm  E  Am
+
+[Solo Introdução]
+
+Parte 1
+E|-1-1-1-0-1-0-1--------------0---0---0----------------|
+B|---------------1-0----0-1-3---3---3------------------|
+G|----------------------------------------2/4 2--------|
+D|-----------------------------------------------------|
+A|-----------------------------------------------------|
+E|-----------------------------------------------------|
+
+Parte 2
+E|-------------------------------------0---------------|
+B|---0-1-3-1-3-1-3---------0-1-0-1-2-3-----------------|
+G|-2---------------1/2-1-2-----------------------------|
+D|-----------------------------------------------------|
+A|-----------------------------------------------------|
+E|-----------------------------------------------------|
+
+Parte 3
+E|-1-0-1-0-1-3/5-3---------0---0---0-1/3-1-------------|
+B|-------------------0-1-3---3---3---------------------|
+G|-----------------------------------------------------|
+D|-----------------------------------------------------|
+A|-----------------------------------------------------|
+E|-----------------------------------------------------|
+
+Parte 4
+E|-----------------------4-5/7-5--------17-------------|
+B|---0-1-3-1-3-1-3-5/6-5-------------------------------|
+G|-2------------------------------------17-------------|
+D|-----------------------------------------------------|
+A|----------------------------------------0------------|
+E|-----------------------------------------------------|
+
+[Primeira Parte]
+
+            Am
+Doente de amor procurei remédio
+           G
+Na vida noturna
+               F
+Com a flor da noite
+                           E
+Em uma boate aqui na zona sul
+
+           Dm
+A dor do amor é com outro amor
+             Am
+Que a gente cura
+             E
+Vim curar a dor desse mal de amor
+           Am A7
+Na boate azul
+            Dm
+E quando a noite vai se agonizando
+                Am
+No clarão da aurora
+      E
+Os integrantes da vida noturna
+             Am A7
+Se foram dormir
+             Dm
+E a dama da noite que estava comigo
+              Am
+Também foi embora
+                F
+Fecharam-se as portas
+            E
+Sozinho de novo
+          A
+Tive que sair
+
+[Refrão]
+
+A              E
+  Sair de que jeito
+              D              A
+Se nem sei o rumo para onde vou
+                                 E
+Muito vagamente me lembro que estou
+         D                 A
+Em uma boate aqui na zona sul
+           E
+Eu bebi demais
+          D                  A
+E não consigo me lembrar sequer
+                            E
+Qual era o nome daquela mulher
+           D        E      A   A7
+A flor da noite na boate azul
+
+( Dm  G  C  F )
+( Dm  E  Am  A7 )
+
+[Repete a Primeira Parte]
+
+            Dm
+E quando a noite vai se agonizando
+                Am
+No clarão da aurora
+      E
+Os integrantes da vida noturna
+             Am A7
+Se foram dormir
+             Dm
+E a dama da noite que estava comigo
+              Am
+Também foi embora
+                F
+Fecharam-se as portas
+            E
+Sozinho de novo
+          A
+Tive que sair
+
+[Refrão Final]
+
+A              E
+  Sair de que jeito
+              D              A
+Se nem sei o rumo para onde vou
+                                 E
+Muito vagamente me lembro que estou
+         D                 A
+Em uma boate aqui na zona sul
+           E
+Eu bebi demais
+          D                  A
+E não consigo me lembrar sequer
+                            E
+Qual era o nome daquela mulher
+           D        E      A   A7
+A flor da noite na boate azul
+
+A              E
+  Sair de que jeito
+              D              A
+Se nem sei o rumo para onde vou
+                                 E
+Muito vagamente me lembro que estou
+         D                 A
+Em uma boate aqui na zona sul
+           E
+Eu bebi demais
+          D                  A
+E não consigo me lembrar sequer
+                            E
+Qual era o nome daquela mulher
+           D        E      A
+A flor da noite na boate azul
+]]>
+</musica>
+
+<musica grupo="Rafael">
+<![CDATA[
+Chamamecero
+TOM:A
+
+
+A7M
+	
+A7M
+Como se a escuridão trouxesse luz
+C#m7
+Como se o coração fosse explodir
+D7M/A             Ebº
+Mastiguei a fala, negaceei a mágoa
+Bm7          Bm7/A   Bm4/G#  E
+Só pra ver a lágrima feliz
+
+A7M
+Quis amansar a dor, me vi pela vida
+C#m7
+Quis conhecer o amor, fiz um chamamé
+D7M/A             Ebº
+Cheio de carinho, louco de faceiro
+    Bm7       Bm7/A     Bm4/G#  E
+Mas que chamamecero me senti
+
+A7M
+Coisa de bom menino abraçando o pai
+C#m7
+Coisa de mãe saudosa mimando o filho
+D7M/A                Ebº
+Fui me emocionando a mando do gaiteiro
+   Bm7        Bm7/A     Bm4/G#  E
+Mas que chamamecero, repeti
+
+A7M
+A mão vem me dando um soco
+     A7
+E eu prendo-lhe um sapucay
+  D         
+O pé pisoteia a marca
+   Ebº                    
+Que a alma arrepia em pêlo
+Cº   Bm7             Bm7/A
+   E quase arrebenta o fole
+  Bm4/G#    E            A7M
+Que torce, pra vida melhorar
+
+( A7M  A/G  D/F#  E ) 
+( Bm7  E  A  A/G ) 
+( D/F#  E  A )
+
+A7M
+Como se a escuridão trouxesse luz
+C#m7
+Como se o coração fosse explodir
+D7M/A             Ebº
+Mastiguei a fala, negaceei a mágoa
+Bm7          Bm7/A   Bm4/G#  E
+Só pra ver a lágrima feliz
+
+A7M
+Quis amansar a dor, me vi pela vida
+C#m7
+Quis conhecer o amor, fiz um chamamé
+D7M/A             Ebº
+Cheio de carinho, louco de faceiro
+    Bm7       Bm7/A     Bm4/G#  E
+Mas que chamamecero me senti
+
+A7M
+Coisa de bom menino abraçando o pai
+C#m7
+Coisa de mãe saudosa mimando o filho
+D7M/A                Ebº
+Fui me emocionando a mando do gaiteiro
+   Bm7        Bm7/A     Bm4/G#  E
+Mas que chamamecero, repeti
+
+A7M
+A mão vem me dando um soco
+     A7
+E eu prendo-lhe um sapucay
+  D         
+O pé pisoteia a marca
+   Ebº                    
+Que a alma arrepia em pêlo
+Cº   Bm7             Bm7/A
+   E quase arrebenta o fole
+  Bm4/G#    E            A7M
+Que torce, pra vida melhorar
+]]>
+</musica>
+
+<musica grupo="Rafael">
+<![CDATA[
+Do Fundo da Grota
+TOM: E
+
+
+Fui criado na campanha
+                        B 
+Em rancho de barro e capim
+
+Por isso é que eu canto assim
+                     E
+Pra relembrá meu passado
+
+Eu me criei arremendado
+                   B 
+Dormindo pelos galpão
+
+Perto de um fogo de chão
+                     E
+Com os cabelo enfumaçado
+                         B 
+Quando rompe a estrela D'alva
+
+Aquento a chaleira
+                      E
+Já quase no clariá o dia
+
+Meu pingo de arreio
+                  B 
+Relincha na estrevaria
+
+Enquanto uma saracura
+                    E
+Vai cantando empulerada
+                   B 
+Escuto o grito do sorro
+
+E lá no piquete
+                     E
+Relincha o potro tordilho
+Na boca da noite
+                  B 
+Me aparece um zorrilho
+
+Vem mijá perto de casa
+                     E
+Pra inticá com a cachorrada
+
+( E  B   E )
+
+Numa cama de pelego
+                   B 
+Me acordo de madrugada
+
+Escuto uma mão pelada
+                 E
+Acoando no banhadal
+
+Eu me criei xucro e bagual
+                      B 
+Honrando o sistema antigo
+
+Comendo feijão mexido
+                       E
+Com pouca graxa e sem sal
+
+                         B 
+Quando rompe a estrela D'alva
+
+Aquento a chaleira
+                      E
+Já quase no clariá o dia
+
+Meu pingo de arreio
+                  B 
+Relincha na estrevaria
+
+Enquanto uma saracura
+                    E
+Vai cantando empulerada
+                   B 
+Escuto o grito do sorro
+
+E lá no piquete
+                     E
+Relincha o potro tordilho
+
+Na boca da noite
+                  B 
+Me aparece um zorrilho
+
+Vem mijá perto de casa
+                        E
+Pra inticá com a cachorrada
+
+( E  B   E )
+
+Reformando um alambrado
+                     B 
+Na beira de um corredor
+
+No cabo de um socador
+                     E
+Quas mão rodeada de calo
+
+No meu mango eu dou de estalo
+                      B 
+E sigo a minha campeirada
+
+E uma perdiz ressabiada
+                      E
+Voa e me espanta o cavalo
+
+                         B 
+Quando rompe a estrela D'alva
+
+Aquento a chaleira
+                      E
+Já quase no clariá o dia
+
+Meu pingo de arreio
+                  B 
+Relincha na estrevaria
+
+Enquanto uma saracura
+                    E
+Vai cantando empulerada
+                   B 
+Escuto o grito do sorro
+
+E lá no piquete
+                     E
+Relincha o potro tordilho
+
+Na boca da noite
+                  B 
+Me aparece um zorrilho
+
+Vem mijá perto de casa
+                        E
+Pra inticá com a guaipecada
+
+( E  B   E )
+
+Lá no centro do capão
+                    B 
+Ouço piá de um nambú
+
+Numa trincheira o jacú
+                     E
+Grita o sabiá nas pitanga
+
+E bem na costa da sanga
+                    B 
+Berra a vaca e o bezerro
+
+No barulho dos cincerro
+                        E
+Eu encontro os bois de canga
+
+                         B 
+Quando rompe a estrela D'alva
+
+Aquento a chaleira
+                      E
+Já quase no clariá o dia
+
+Meu pingo de arreio
+                  B 
+Relincha na estrevaria
+
+Enquanto uma saracura
+                    E
+Vai cantando empulerada
+                   B 
+Escuto o grito do sorro
+
+E lá no piquete
+                     E
+Relincha o potro tordilho
+
+Na boca da noite
+                  B 
+Me aparece um zorrilho
+
+Vem mijá perto de casa
+                       E
+Pra inticá com a guaipecada
+]]>
+</musica>
+
+<musica grupo="Rafael">
+<![CDATA[
+Enchendo os Olhos de Campo
+TOM: Cm
+
+[Intro] Cm  D7  G7  Cm  D7  G7
+        Cm  C7  Fm  Cm  G7  Cm
+                                                  G7  Ab7  G7
+Manhazita de maio e notícias do céu desabam nas casa
+     Ab7        G7                                     Cm
+Um angico nas brasas, consome sem pressa seu cerno de lei
+                                                   G7  Ab7  G7
+O meu cusco ovelheiro fareja o suor da xerca estendida
+       Ab7       G7                                    Cm
+Que descansa da lida e do lombo do baio, meu trono de rei
+
+Gm7(b5)  C7      Fm                                      Cm
+Outro ronco de mate quebrava o murmúrio das chuvas nas telhas
+              Ab                   D7                G7
+E o baeta vermelha, aberto em suas asas pingava no chão
+C7               Fm                                 Cm
+Imitando um sol posto, largava de pouco luz a da janela
+                   Ab                 G7                  C  G7  C
+E empurrando a cancela um ventito minuano assobiava no oitão
+                                                    G7
+Pelo olhar da janela a vista perdia-se pelo campo vasto
+                                                      C
+Verdejando o pasto, coxilha e canhada até a beira do rio
+C7              Fm                                      Cm
+Um mangueirão grande, guardando um silêncio dormido de pedras
+                  Ab                    G7                     C
+E uma estrada de léguas são parte da estória de alguém que partiu
+
+( D7  G7  C  G7  C  C7  Fm  Cm  G7  Cm )
+                                                             G7  Ab7  G7
+Partiram pra longe, feito tantos do campo, feito cantos dos meus
+        Ab7       G7                                    Cm
+Que por conta de Deus e a procura de mais encilharam cavalos
+                                                       G7  Ab7  G7
+E rumaram pra sempre, deixando o galpão, saudade e um mate
+      Ab7             G7                                    Cm
+Pra depois n'outro embate, pelear por sonho e talvez encontrá-lo
+
+Gm7(b5)  C7     Fm                                      Cm
+Hoje abro a janela e pergunto pro tempo: por onde andarão?
+                   Ab            D7                  G7
+Os que aqui no galpão, cevaram amargos por conta da lida
+C7                   Fm                                   Cm
+Que estenderam seus ponchos, baetas vermelhas de almas lavadas
+                      Ab                   G7                C  G7  C
+Onde em léguas de estradas, na calma das tropas prosearam a vida
+
+                                                             G7
+Só o silêncio das pedras e água da chuva que encharca a mangueira
+                                                     C
+E uma dor costumeira, saudosa do tempo, me fazem costado
+C7                 Fm                                      Cm
+Vejo o angico nas cinzas e o cusco ovelheiro, deitado num canto
+                     Ab                 D7  (G7)              G7  (Cm)
+E encho os olhos de campo de água e saudade, lembrando o passado
+                                       Cm
+Manhãzita de maio, manhãzita de maio
+]]>
+</musica>
+
+<musica grupo="Rafael">
+<![CDATA[
+I don't wanna miss a thing
+TOM:D
+
+
+D6        D6/C#             D6/B
+I could stay awake just to hear you breathing
+            D6/G                D6/F#
+Watch you smile while you are sleeping
+              D6/E
+While you're far away and dreaming
+          D6          D6/C#             D6/B
+I could spend my life in this sweet surrender
+          D6/G               D6/F#    D6/E
+I could stay lost in this moment   forever
+               D6/F#     D6/G
+Every moment spent with you
+                  D6/A
+Is a moment of treasure
+
+[Refrão]
+
+D5(9)               A9/C#
+      Don't wanna close my eyes
+Em7(9)
+       I don't wanna fall asleep
+  G5/F#     G7M
+'Cause I'd miss you baby
+                   A4          
+And I don't wanna miss a thing
+D5(9)                      A9/C#
+      'Cause even when I dream of you
+Em7(9)
+       The sweetest dream would never do
+      G5/F#  G7M
+I'd still   miss you baby
+                   A4          
+And I don't wanna miss a thing
+
+( D5(9)  A9/C#  Em7(9)  A4 )
+
+[Primeira Parte - Variação]
+
+         D
+Laying close to you
+ A9/C#              Bm7(11)
+Feeling your heart beating
+         G                      D9/F#
+And I'm wondering what you're dreaming
+          Em7
+Wondering if it's me you're seeing
+        D
+Then I kiss your eyes
+      A9/C#            Bm7(11)
+And thank God we're together
+                     F#m7(11) G7M
+And I just want to stay with you
+                  A4
+In this moment forever, forever and ever
+
+[Refrão]
+
+D5(9)               A9/C#
+      Don't wanna close my eyes
+Em7(9)
+       I don't wanna fall asleep
+  G5/F#     G7M
+'Cause I'd miss you baby
+                   A4          
+And I don't wanna miss a thing
+D5(9)                      A9/C#
+      'Cause even when I dream of you
+Em7(9)
+       The sweetest dream would never do
+      G5/F#  G7M
+I'd still   miss you baby
+                   A4          
+And I don't wanna miss a thing
+
+[Segunda Parte]
+
+               C9
+I don't wanna miss one smile
+               C9/B
+I don't wanna miss one kiss
+              Bb9(11+)
+I just wanna be with you
+                      F/A
+Right here with you, just like this
+              C9
+I just wanna hold you close
+                       C9/B
+I feel your heart so close to mine
+           Dm7(9)
+And just stay here in this moment
+             A4          A
+For all the rest of time
+
+[Refrão] (…)
+]]>
+</musica>
+
+<musica grupo="Rafael">
+<![CDATA[
+Meu Disfarce
+TOM:A
+
+
+Gm  Cm  
+D7  Gm
+
+ Gm
+Você vê esse meu jeito
+ D/F#
+De pessoa liberada
+           G7
+Mas não sabe que por dentro
+                  Cm
+Não é isso, eu não sou nada
+
+                D7
+Tenho ares de serpente
+             Gm
+Mas em caso de amor
+                   A7
+Sou pequeno, sou carente
+                    D7
+Sou tão frágil, sonhador
+
+        Gm
+Eu me pinto e me disfarço
+  D/F#
+Companheiro do perigo
+       G7
+Eu me solto em sua festa
+                  Cm
+Mas, sozinho, eu não consigo
+
+                   D7
+Digo coisas que não faço
+                  Gm
+Faço coisas que eu não digo
+                 A7
+Quero ser o seu amado
+                D7
+Não somente o seu amigo
+
+    Cm
+Cada vez
+         F7                       Bb
+Que eu sinto um beijo seu na minha face
+    Gm                      Cm
+Eu luto pra manter o meu disfarce
+   D7                         Gm   G7
+E não deixar tão claro que te quero
+
+   Cm
+Cada vez
+     F7                      Bb
+Se torna mais difícil o meu teatro
+   Gm                        Cm
+Não dá mais pra fugir do seu contato
+   D7                  Gm  D7
+Estou apaixonado por você
+
+( Cm  F  Bb  Gm  Cm  D7  Gm )
+
+         Gm
+Eu me pinto e me disfarço
+  D/F#
+Companheiro do perigo
+       G7
+Eu me solto em sua festa
+                   Cm
+Mas, sozinho, eu não consigo
+
+                   D7
+Digo coisas que não faço
+                  Gm
+Faço coisas que eu não digo
+                 A7
+Quero ser o seu amado
+                D7
+Não somente o seu amigo
+
+    Cm
+Cada vez
+         F7                       Bb
+Que eu sinto um beijo seu na minha face
+    Gm                      Cm
+Eu luto pra manter o meu disfarce
+   D7                         Gm   G7
+E não deixar tão claro que te quero
+
+   Cm
+Cada vez
+     F7                      Bb
+Se torna mais difícil o meu teatro
+   Gm                        Cm
+Não dá mais pra fugir do seu contato
+   D7                  Gm  D7
+Estou apaixonado por você
+]]>
+</musica>
+
+<musica grupo="Rafael">
+<![CDATA[
+Meu Rancho
+TOM:E
+
+
+E
+
+E                      G#m7
+Que alma tem o meu rancho por isso deixá-lo, como?
+A                          E         B7
+Pedaço de céu com terra folhado de cinamomo
+E                     G#m7
+Silêncio rodeado a berro solidão sem viver só
+A                            E      B7
+Madeirama de pau-ferro toda atada com cipó
+
+A                             E
+Mangueira de pedra-moura que nunca mais vai ter fim
+B7                              E
+Um restingal de vassoura pôr-do-sol perto de mim
+
+A                             E
+Mangueira de pedra-moura que nunca mais vai ter fim
+B7                              E
+Um restingal de vassoura pôr-do-sol perto de mim
+
+A                               E
+Coqueiral a caturrita galpão de fogo pachorro
+              B7                E
+Uma chirua bonita cavalo bom e cachorro
+
+E                        G#m7
+Com chuva corda e milonga com sol ao campo cedinho
+A                            E        B7
+Por aqui a noite é longa e o dia devagarzinho
+E                           G#m7
+Quando eu saio mais que um dia este rancho é um ser vivente
+A                            E         B7
+Me recebe com alegria tem saudade como a gente
+
+A                             E
+Mangueira de pedra-moura que nunca mais vai ter fim
+B7                              E
+Um restingal de vassoura pôr-do-sol perto de mim
+
+A                             E
+Mangueira de pedra-moura que nunca mais vai ter fim
+B7                              E
+Um restingal de vassoura pôr-do-sol perto de mim
+]]>
+</musica>
+
+<musica grupo="Rafael">
+<![CDATA[
+My sacrifice
+TOM:D
+
+
+<intro>
+</intro>
+
+
+
+    D5
+Hello my friend we meet again
+
+It's been a while where should
+      Bm7(9)            G5(9)
+We begin  Feels like forever
+ D5
+Within my heart are memories
+                                  Bm7(9)
+Of perfect love that you gave to me
+     G5(9)
+I remember
+
+
+              D
+When you are with me
+      A11/C#   Bm7(9)        G5(9)
+I'm free, I'm careless, I believe
+              D              A11/C#
+Above all the others we'll fly
+             Bm7(9)     G5(9)
+This brings tears to my eyes
+
+My sacrifice
+
+
+D5  Bm7(9)  G5(9)
+
+
+ D5
+We've seen our share of ups and downs
+                               Bm7(9)
+Oh how quickly life can turn around in
+       G5(9)
+an instant
+D5
+It feels so good to reunite
+                                 Bm7(9)
+Within yourself and within your mind
+            G5(9)
+Let's find peace there
+
+
+              D
+When you are with me
+      A11/C#   Bm7(9)        G5(9)
+I'm free, I'm careless, I believe
+              D              D/C#
+Above all the others we'll fly
+             Bm7(9)     G5(9)
+This brings tears to my eyes
+             D5
+My sacrifice
+
+
+D5
+I just want to say hello again
+                               D5+  D5(9)
+I just want to say hello again
+
+
+              D
+When you are with me
+      A11/C#   Bm7(9)        G5(9)
+I'm free, I'm careless, I believe
+              D              D/C#
+Above all the others we'll fly
+             Bm7(9)     G5(9)
+This brings tears to my eyes
+
+              D
+When you are with me
+      A11/C#   Bm7(9)        G5(9)
+I'm free, I'm careless, I believe
+              D              D/C#
+Above all the others we'll fly
+             Bm7(9)     G5(9)
+This brings tears to my eyes
+             D5
+My sacrifice
+
+My sacrifice
+
+D5
+I just want to say hello again
+                               D5+  
+I just want to say hello again
+         D5(9)    
+My sacrifice
+]]>
+</musica>
+
+<musica grupo="Rafael">
+<![CDATA[
+Nosso Xote
+TOM:F
+
+
+F  Em7(5-)  A7  Dm  Dbm  Cm  F 
+Bb  C7  F  C  Bb  Am7  Gm7  F
+
+  F            Em7(5-)    A7      Dm
+Moreno me convidou para dançar um xote
+               Dm/F                Bb
+Beijou o meu cabelo cheirou meu cangote
+                 C7             F
+Fez meu corpo inteiro se arrepiar
+            A7                             Dm
+Fiquei sem jeito e ele me acolheu junto ao peito
+   Dm/F                    Bb
+E foi nos braços desse moreno
+              C7              F   C Bb Am7  Gm7
+Que eu forroziei até o dia clariar
+F              Em7(5-)    A7            Dm
+Oi oi oi oi oi oi me encantei por teu olhar
+
+Dm Dbm Cm     F7       Bb
+Moreno chega mais pra cá
+    C7                  F  C7
+Meu dengo vem me chamegá
+F              Em7(5-)      A7         Dm
+Oi oi oi oi oi oi teu jeito de balancear
+        Dm Dbm Cm        F        Bb
+O corpo inteiro Faz meu coração bater
+            C7                   F       C Bb Am7  Gm7  F
+ Ligeiro assim eu vou me apaixonar
+]]>
+</musica>
+
+<musica grupo="Rafael">
+<![CDATA[
+Outra Noite Que Se Vai
+TOM:Em
+
+
+<intro>
+</intro>
+
+
+
+G7M              Em7
+E outra noite que se vai
+G7M               Em7
+E eu não tô correndo atrás
+G7M             Em7
+Quanto tempo já passou
+G7M             Em7
+E a gente não se falou
+C
+Quanta coisa a gente faz
+Cm
+E depois quer voltar atrás
+G7M           Em7
+Outra noite que você
+G7M               Em7
+Passa e finge que nem vê
+G7M              Em7
+Não esconde o teu rancor
+G7M              Em7
+Quer tentar me enlouquecer
+C
+Quanta coisa a gente faz
+Cm
+E depois quer voltar atrás
+
+G      Bm
+Então me diz alguma coisa
+C
+Bate aqui de madrugada
+Cm
+Pra lembrar daquele tempo
+G             Bm
+Pra sempre um só por um momento
+C
+Me dá um beijo na boca
+Cm
+E depois me leva pra tua casa
+
+G7M                    Em7
+Perguntou por mim que eu sei
+G7M                 Em7
+Olha por mim vai tudo bem
+G7M                 Em7
+Disse que me viu passar por ai
+G7M                    Em7
+E que eu não tava muito bem
+C
+Quanta coisa a gente faz
+Cm
+E depois quer voltar atrás
+
+G7      Bm
+Então me diz alguma coisa
+C
+Toco um marley na viola
+Cm
+Pra lembrar daquele tempo
+G             Bm
+Pra sempre um só por um momento
+C
+Me dá um beijo na boca
+Cm                         G7M
+E depois me leva pra tua casa
+
+( G7M  Em7  G7M  Em7 ) (2x) C  Cm
+
+G7M                     Em7
+Perguntou por mim que eu sei
+G7M                  Em7
+Olha por mim vai tudo bem
+G7M                     Em7
+Disse que me viu passar por ai
+G7M                   Em7
+E que eu não tava muito bem
+C
+Quanta coisa a gente faz
+Cm
+E depois quer voltar atrás
+
+G        Bm
+Então me diz alguma coisa
+C
+Toco um marley na viola
+Cm
+Pra lembrar daquele tempo
+G             Bm
+Pra sempre um só por um momento
+C
+Me da um beijo na boca
+Cm
+E depois me leva pra tua casa
+G        Bm
+Então me diz alguma coisa
+C
+Bate aqui de madrugada
+Cm
+Pra lembrar daquele tempo
+G             Bm
+Pra sempre um só por um momento
+C
+Me dá um beijo na boca
+Cm                        G7M
+E depois me leva pra tua casa
+]]>
+</musica>
+
+<musica grupo="Rafael">
+<![CDATA[
+Telefone Mudo
+TOM: G
+
+[Intro] G  C  G  D  G
+        C  G  D  G
+
+E|--------2/3-3-3-3-3-3-2-3-3-3-2-2-2-------|
+B|--------3/5-5-5-5-5-5-3-5-5-5-3-3-3-0-----|
+G|------------------------------------------|
+D|------------------------------------------|
+A|---0-2------------------------------------|
+E|-3----------------------------------------|
+
+E|------------------------------------------|
+B|-----1-3-1-3-0-1--------------------------|
+G|-2h4-------------2-4-2-4-2-2-2/4~---------|
+D|------------------------------------------|
+A|------------------------------------------|
+E|------------------------------------------|
+
+E|-------2/3-3-3-3-3-2-3-3-3-5-5-5-7-7-7----|
+B|-------3/5-5-5-5-5-3-5-5-5-7-7-7-8-8-8----|
+G|------------------------------------------|
+D|------------------------------------------|
+A|---0-2------------------------------------|
+E|-3----------------------------------------|
+
+E|-8--8--8--10-10-10-12-12-12---------------|
+B|-10-10-10-12-12-12-13-13-13---------------|
+G|------------------------------------------|
+D|------------------------------------------|
+A|------------------------------------------|
+E|------------------------------------------|
+
+E|-14-14-14-14-12-12-10-10--8--10-12-8--7---|
+B|-15-15-15-15-13-13-12-12--10-12-13-10-8---|
+G|------------------------------------------|
+D|------------------------------------------|
+A|------------------------------------------|
+E|------------------------------------------|
+
+[Refrão]
+
+     C                                  G
+Eu quero que risque o meu nome da sua agenda
+    D              C              G
+Esqueça o meu telefone não me ligue mais
+     C                              G
+Porque já estou cansado de ser o remédio
+                 D                                   G    D/F#  Em7
+Pra curar o seu tédio, quando seus amores não lhe satisfaz
+
+[Primeira Parte]
+
+    D                           C             G
+Cansei de ser o seu palhaço, fazer o que sempre quis
+                     D
+Cansei de curar sua fossa
+             C               G  D/F#  Em7
+Quando você não se sentia feliz
+
+[Segunda Parte]
+
+    D                     C            G
+Por isso é que decidi, o meu telefone cortar
+                        D               C        D     G
+Você vai discar várias vezes, telefone mudo não pode chamar
+
+[Solo] G  C  G  D  G
+       C  G  D  G
+
+E|--------2/3-3-3-3-3-3-2-3-3-3-2-2-2-------|
+B|--------3/5-5-5-5-5-5-3-5-5-5-3-3-3-0-----|
+G|------------------------------------------|
+D|------------------------------------------|
+A|---0-2------------------------------------|
+E|-3----------------------------------------|
+
+E|------------------------------------------|
+B|-----1-3-1-3-0-1--------------------------|
+G|-2h4-------------2-4-2-4-2-2-2/4~---------|
+D|------------------------------------------|
+A|------------------------------------------|
+E|------------------------------------------|
+
+E|-------2/3-3-3-3-3-2-3-3-3-5-5-5-7-7-7----|
+B|-------3/5-5-5-5-5-3-5-5-5-7-7-7-8-8-8----|
+G|------------------------------------------|
+D|------------------------------------------|
+A|---0-2------------------------------------|
+E|-3----------------------------------------|
+
+E|-8--8--8--10-10-10-12-12-12---------------|
+B|-10-10-10-12-12-12-13-13-13---------------|
+G|------------------------------------------|
+D|------------------------------------------|
+A|------------------------------------------|
+E|------------------------------------------|
+
+E|-14-14-14-14-12-12-10-10--8--10-12-8--7---|
+B|-15-15-15-15-13-13-12-12--10-12-13-10-8---|
+G|------------------------------------------|
+D|------------------------------------------|
+A|------------------------------------------|
+E|------------------------------------------|
+
+[Refrão]
+
+     C                                  G
+Eu quero que risque o meu nome da sua agenda
+    D              C              G
+Esqueça o meu telefone não me ligue mais
+     C                              G
+Porque já estou cansado de ser o remédio
+                 D                                   G    D/F#  Em7
+Pra curar o seu tédio, quando seus amores não lhe satisfaz
+
+[Primeira Parte]
+
+    D                           C             G
+Cansei de ser o seu palhaço, fazer o que sempre quis
+                     D
+Cansei de curar sua fossa
+             C               G  D/F#  Em7
+Quando você não se sentia feliz
+
+[Segunda Parte]
+
+    D                     C            G
+Por isso é que decidi, o meu telefone cortar
+                        D               C        D     G
+Você vai discar várias vezes, telefone mudo não pode chamar
+
+[Primeira Parte]
+
+    D                           C             G
+Cansei de ser o seu palhaço, fazer o que sempre quis
+                     D
+Cansei de curar sua fossa
+             C               G  D/F#  Em7
+Quando você não se sentia feliz
+
+[Segunda Parte]
+
+    D                     C            G
+Por isso é que decidi, o meu telefone cortar
+                        D               C        D     G   D  G
+Você vai discar várias vezes, telefone mudo não pode chamar
 ]]>
 </musica>
 
@@ -7377,6 +8769,23 @@ Tão maravilhoso para mim
 		} catch (e) {}
 	}
 
+	// ===== Grupos (subpastas de \cifras - ver rc.md secao GRUPOS) =====
+	var CHAVE_GRUPO_ATIVO = "cifras_grupo_ativo_v1";
+
+	function carregarGrupoAtivo() {
+		try {
+			return localStorage.getItem(CHAVE_GRUPO_ATIVO) || "";
+		} catch (e) {
+			return "";
+		}
+	}
+
+	function salvarGrupoAtivo(grupo) {
+		try {
+			localStorage.setItem(CHAVE_GRUPO_ATIVO, grupo || "");
+		} catch (e) {}
+	}
+
 	// ===== Selecao compartilhada via URL (#sel=indice-velocidade,indice-velocidade,...) =====
 	// Vai na HASH (nao na query string) de proposito: este arquivo costuma ser aberto via
 	// htmlpreview.github.io, que usa TODA a query string como a propria URL de destino
@@ -7420,12 +8829,28 @@ Tão maravilhoso para mim
 		var semisSalvo = transpostosSalvos[titulo] || 0;
 		var velocidadeSalva = velocidadesSalvas[titulo];
 		if (velocidadeSalva === undefined) velocidadeSalva = VELOCIDADE_PADRAO;
-		return { titulo: titulo, conteudo: corpo, semis: semisSalvo, velocidade: velocidadeSalva };
+		var grupo = no.getAttribute("grupo") || "";
+		return { titulo: titulo, conteudo: corpo, semis: semisSalvo, velocidade: velocidadeSalva, grupo: grupo };
 	});
 
 	musicas.sort(function (a, b) {
 		return normalizar(a.titulo).localeCompare(normalizar(b.titulo));
 	});
+
+	// grupoAtivo precisa existir ANTES do primeiro aplicarFiltro() possivel (mais abaixo, no bloco
+	// de selecao compartilhada via URL) - se ficasse "undefined" (var so declarada, sem valor, mais
+	// pra frente no arquivo) o filtro ficaria incorreto nessa primeira chamada.
+	var gruposDisponiveis = [];
+	musicas.forEach(function (m) {
+		if (m.grupo && gruposDisponiveis.indexOf(m.grupo) === -1) gruposDisponiveis.push(m.grupo);
+	});
+	gruposDisponiveis.sort(function (a, b) {
+		return normalizar(a).localeCompare(normalizar(b));
+	});
+
+	var grupoAtivo = carregarGrupoAtivo();
+	// se o grupo salvo nao existe mais (cifras reorganizadas desde a ultima visita), volta ao padrao
+	if (grupoAtivo && gruposDisponiveis.indexOf(grupoAtivo) === -1) grupoAtivo = "";
 
 	// So agora "musicas" existe e esta na ordem final, entao os indices da URL podem ser resolvidos.
 	var selecaoCompartilhadaResolvida = null;
@@ -7465,6 +8890,7 @@ Tão maravilhoso para mim
 		secao.className = "musica";
 		secao.id = id;
 		secao.style.order = i;
+		secao.dataset.grupo = musica.grupo;
 		if (ordemSelecao.indexOf(musica.titulo) !== -1) {
 			secao.classList.add("selecionada");
 		}
@@ -7522,8 +8948,17 @@ Tão maravilhoso para mim
 		compartilharBtn.hidden = !temSelecao;
 	}
 
+	// grupoAtivo e definido mais abaixo (secao GRUPOS), depois que a lista de grupos disponiveis
+	// e calculada - aplicarFiltro so e chamada de verdade depois disso.
 	function aplicarFiltro() {
 		document.querySelectorAll(".musica").forEach(function (secao, i) {
+			// grupo "" = sem grupo (arquivos direto na raiz de \cifras). So mostra a musica se ela
+			// estiver no grupo ativo (ou sem grupo, quando nenhum grupo esta selecionado).
+			var noGrupoAtivo = grupoAtivo ? secao.dataset.grupo === grupoAtivo : secao.dataset.grupo === "";
+			if (!noGrupoAtivo) {
+				secao.hidden = true;
+				return;
+			}
 			var titulo = secao.querySelector("h2").textContent;
 			if (filtroAtivo) {
 				var pos = ordemSelecao.indexOf(titulo);
@@ -7925,18 +9360,76 @@ Tão maravilhoso para mim
 		var link = document.createElement("a");
 		link.textContent = letra;
 		link.href = "#";
-		if (primeiraPorLetra[letra]) {
-			link.className = "ativo";
-			link.addEventListener("click", function (e) {
-				e.preventDefault();
-				document.getElementById(primeiraPorLetra[letra]).scrollIntoView({ behavior: "smooth", block: "start" });
-			});
-		} else {
-			link.className = "inativo";
-		}
+		link.className = primeiraPorLetra[letra] ? "ativo" : "inativo";
+		// Sempre registra o clique (mesmo comecando inativo): quando um grupo e trocado, a classe
+		// e reavaliada (atualizarNavAlfabeto) e primeiraPorLetra[letra] e lido de novo aqui em cima
+		// no momento do clique - nao precisa recriar o link nem o listener a cada troca de grupo.
+		link.addEventListener("click", function (e) {
+			e.preventDefault();
+			if (!primeiraPorLetra[letra]) return;
+			document.getElementById(primeiraPorLetra[letra]).scrollIntoView({ behavior: "smooth", block: "start" });
+		});
 		letraParaLink[letra] = link;
 		nav.appendChild(link);
 	});
+
+	// Recalcula primeiraPorLetra considerando so as secoes VISIVEIS no momento (grupo ativo) e
+	// atualiza a classe ativo/inativo de cada letra de acordo.
+	function atualizarNavAlfabeto() {
+		var mapa = {};
+		document.querySelectorAll(".musica").forEach(function (secao) {
+			if (secao.hidden) return;
+			var letraMatch = normalizar(secao.querySelector("h2").textContent).match(/[A-Z]/);
+			var letra = letraMatch ? letraMatch[0] : "#";
+			if (!(letra in mapa)) mapa[letra] = secao.id;
+		});
+		primeiraPorLetra = mapa;
+		Object.keys(letraParaLink).forEach(function (letra) {
+			letraParaLink[letra].className = mapa[letra] ? "ativo" : "inativo";
+		});
+	}
+
+	// ===== Grupos (subpastas de \cifras): painel de botoes + icone de alternancia em nav-alfabeto =====
+	// (gruposDisponiveis/grupoAtivo em si ja foram calculados mais acima, antes do primeiro
+	// aplicarFiltro() possivel - ver comentario proximo a essas variaveis.)
+	if (gruposDisponiveis.length) {
+		var gruposPainel = document.getElementById("grupos-painel");
+		var botaoParaGrupo = {};
+
+		gruposDisponiveis.forEach(function (nomeGrupo) {
+			var botao = document.createElement("div");
+			botao.className = "botao-circular botao-grupo" + (nomeGrupo === grupoAtivo ? " ativo" : "");
+			botao.textContent = nomeGrupo;
+			botao.addEventListener("click", function () {
+				grupoAtivo = (grupoAtivo === nomeGrupo) ? "" : nomeGrupo;
+				salvarGrupoAtivo(grupoAtivo);
+				Object.keys(botaoParaGrupo).forEach(function (g) {
+					botaoParaGrupo[g].classList.toggle("ativo", g === grupoAtivo);
+				});
+				aplicarFiltro();
+				atualizarNavAlfabeto();
+				gruposPainel.classList.remove("visivel");
+			});
+			botaoParaGrupo[nomeGrupo] = botao;
+			gruposPainel.appendChild(botao);
+		});
+
+		// icone de alternancia do painel de grupos - ultimo item de #nav-alfabeto, mesmo tamanho
+		// de fonte dos demais (herda de "#nav-alfabeto a").
+		var grupoToggle = document.createElement("a");
+		grupoToggle.href = "#";
+		grupoToggle.className = "grupo-toggle";
+		grupoToggle.innerHTML = '<i class="bi bi-node-plus-fill"></i>';
+		grupoToggle.addEventListener("click", function (e) {
+			e.preventDefault();
+			gruposPainel.classList.toggle("visivel");
+		});
+		nav.appendChild(grupoToggle);
+	}
+
+	// Aplica o grupo ativo (persistido ou padrao "sem grupo") logo na carga da pagina.
+	aplicarFiltro();
+	atualizarNavAlfabeto();
 
 	// ===== Destaca no menu lateral a inicial da musica que esta na tela =====
 	var letraDestacada = null;

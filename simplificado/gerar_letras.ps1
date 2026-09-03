@@ -87,7 +87,10 @@ function Test-ChordLine {
 
 # ===== Leitura das musicas (mesma logica de indexacao de telaCel.html) =====
 
-$arquivos = Get-ChildItem -Path $cifrasDir -Filter "*.txt" | Sort-Object Name
+# -Recurse: \cifras agora pode ter subpastas de grupo (ver rc.md secao GRUPOS / inclui.ps1). Sem
+# isso, musicas dentro de uma subpasta ficariam fora do musicas.json e a sincronia com letras.html
+# quebraria pra elas especificamente (letras.html nao acharia o titulo no dataset).
+$arquivos = Get-ChildItem -Path $cifrasDir -Filter "*.txt" -Recurse | Sort-Object FullName
 $musicas = @()
 
 foreach ($arquivo in $arquivos) {
@@ -135,8 +138,9 @@ $utf8SemBom = New-Object System.Text.UTF8Encoding($false)
 # ICONES). Insere um fallback em CSS puro *antes* do <link> do CDN: se o CDN carregar, suas regras
 # (que vem depois no documento) ganham a cascata e os icones bonitos aparecem normalmente; se nao
 # carregar (uso real via NodeMCU), so o fallback fica valendo e mostra os caracteres Unicode no
-# lugar. Cobre os 9 icones listados no rc.md (secao ICONES) + bi-x (limpar selecao) e bi-check2
-# (feedback de "link copiado" do botao compartilhar), que usam o mesmo tipo de fallback.
+# lugar. Cobre os 9 icones listados no rc.md (secao ICONES) + bi-x (limpar selecao), bi-check2
+# (feedback de "link copiado" do botao compartilhar) e bi-node-plus-fill (icone de grupos, secao
+# GRUPOS), que usam o mesmo tipo de fallback.
 $telaCelConteudo = Get-Content -Path $telaCelPath -Raw -Encoding UTF8
 
 $fallbackIcones = @'
@@ -155,6 +159,7 @@ $fallbackIcones = @'
 .bi-share::before { content: "\1F517"; }
 .bi-x::before { content: "\2715"; }
 .bi-check2::before { content: "\2713"; }
+.bi-node-plus-fill::before { content: "\2630"; }
 </style>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 '@

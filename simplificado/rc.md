@@ -255,7 +255,22 @@ que um dia eu te dei
 - esse comportamento prejudica acompanhar
 - quando a linha estiver sumindo no topo de telaCel.html a linha correspondente também precisa estar sumindo no topo em letras.html
 
-
+# GRUPOS
+- inclui.bat inclui as cifras que estão na pasta \cifras
+- quero separar essas cifras por grupos
+- dentro da pasta cifras terão subpastas, o nome dessas pastas serão os grupos
+- como acessar os grupos em telaCel.html e \nodeMCU\data\index.html
+-- dentro de id="nav-alfabeto", o último caractere de ser <i class="bi bi-node-plus-fill"></i> (icone de grupo) no mesmo tamanho da fonte em id="nav-alfabeto"
+-- ao clicar nesse ícone de grupo:
+--- mostra uma div oculta no topo da página
+--- dentro dessa div terão botões no mesmo estilo dos demais class="botao-circular", mas não precisa ser circular
+--- o texto desses botões serão os nomes das pastas em \cifras
+--- ao clicar no botão irá mostrar as cifras dentro dessa pasta, atualizando id="nav-alfabeto"
+--- ao clicar no ícone do grupo irá ocultar novamente a div que contem os botões
+- deve ficar salvo no cache o último botão clicado e a lista de musicas selecionadas
+- não quebre nada do que já está funcionando
+- se houverem musicas fora de grupo (subpastas) elas serão mostradas se nenhum grupo estiver selecionado
+- ao selecionar um grupo apenas as músicas daquele grupo serão mostradas
 
 
 

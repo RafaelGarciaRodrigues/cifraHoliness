@@ -14,7 +14,9 @@ if (-not (Test-Path $telaCelPath)) {
     exit 1
 }
 
-$arquivos = Get-ChildItem -Path $cifrasDir -Filter "*.txt" | Sort-Object Name
+# -Recurse pega tambem os *.txt dentro de subpastas de \cifras - cada subpasta de primeiro nivel
+# vira um "grupo" (ver rc.md secao GRUPOS). Arquivos direto na raiz de \cifras ficam sem grupo.
+$arquivos = Get-ChildItem -Path $cifrasDir -Filter "*.txt" -Recurse | Sort-Object FullName
 
 $sb = New-Object System.Text.StringBuilder
 [void]$sb.AppendLine("<musicas>")
@@ -23,7 +25,11 @@ foreach ($arquivo in $arquivos) {
     $conteudo = (Get-Content -Path $arquivo.FullName -Raw -Encoding UTF8).TrimEnd("`r", "`n")
     $conteudoSeguro = $conteudo -replace '\]\]>', ']]]]><![CDATA[>'
 
-    [void]$sb.AppendLine("<musica>")
+    $relativo = $arquivo.DirectoryName.Substring($cifrasDir.Length).Trim('\')
+    $grupo = if ($relativo -eq '') { '' } else { ($relativo -split '\\')[0] }
+    $grupoEscapado = [System.Security.SecurityElement]::Escape($grupo)
+
+    [void]$sb.AppendLine("<musica grupo=`"$grupoEscapado`">")
     [void]$sb.AppendLine("<![CDATA[")
     [void]$sb.AppendLine($conteudoSeguro)
     [void]$sb.AppendLine("]]>")
