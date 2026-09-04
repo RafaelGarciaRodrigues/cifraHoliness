@@ -2,43 +2,83 @@
 TOM:F
 
 
-A9                 A/G                  F#m7            D9
-Posso te falar dos sonhos das flores de como a cidade mudou
-A9                A/G            F#m7          D9
-Posso te falar do medo  do meu desejo  do meu amor
-A9      A9/C#   D9                  B/D#       A/E
-Posso falar  da tarde que cai e aos poucos deixa ver
-   C#7(9+)  F#m7         F7M       A9/E
-No céu    a lua   que um dia eu te dei
+A9                 A/G   
+Posso te falar dos sonhos
+           
+ das flores
+    F#m7            D9
+ de como a cidade mudou
+A9                A/G 
+Posso te falar do medo
+           F#m7
+  do meu desejo
+          D9
+  do meu amor
+A9      A9/C#
+Posso falar  
+   D9           
+da tarde que cai
+       B/D#       A/E
+ e aos poucos deixa ver
+   C#7(9+)  F#m7
+No céu    a lua 
+         F7M       A9/E
+  que um dia eu te dei
 
 
-A9                  A/G           F#m7            D9
-Gosto de fechar os olhos fugir do tempo  de me perder
-A9                 A/G            F#m7            D9
-Posso até perder a hora mas sei que já passou das seis
-A9          A9/C#   D9         B/D#     A/E
-Sei que não há   no mundo quem possa te dizer
-    C#7(9+)  F#m7  F7M(11+)            F#m7
-Que não    é tua   a lua     que eu te dei
-       Db/F     A/E       D#m7(5-)
-Pra brilhar por onde você for
-          D9        Dm6      Dm6
-Me queira bem durma bem meu amor
+A9                  A/G 
+Gosto de fechar os olhos
+          F#m7 
+ fugir do tempo
+           D9
+  de me perder
+A9                 A/G 
+Posso até perder a hora
+        
+ mas sei
+   F#m7            D9
+ que já passou das seis
+A9          A9/C#   D9   
+Sei que não há   no mundo
+      B/D#     A/E
+ quem possa te dizer
+    C#7(9+)  F#m7
+Que não    é tua 
+  F7M(11+)            F#m7
+  a lua     que eu te dei
+       Db/F
+Pra brilhar
+     A/E       D#m7(5-)
+ por onde você for
+          D9 
+Me queira bem
+       Dm6      Dm6
+ durma bem meu amor
 
 
-   A9      A9/C#   D9                  B/D#        A/E
-Eu posso falar  da tarde que cai e aos poucos deixa ver
-   C#7(9+)  F#m7         F7M(11+)      F#m7
-No céu    a lua   que um dia     eu te dei
+A9      A9/C#
+Posso falar  
+   D9           
+da tarde que cai
+       B/D#       A/E
+ e aos poucos deixa ver
+   C#7(9+)  F#m7
+No céu    a lua 
+         F7M       A9/E
+  que um dia eu te dei
 
 
-       Db/F     A/E       D#m7(5-)
-Pra brilhar por onde você for
+       Db/F
+Pra brilhar
+     A/E       D#m7(5-)
+ por onde você for
            D9
 Me queira bem
       Dm6
 Durma bem
     F#m7  Db/F  A/E  D#m7(5-)
 Meu amor
-      D9            Dm6         Dm6
-Durma bem me queira bem meu amor
+      D9 
+Durma bem
+           Dm6         Dm6
+ me queira bem meu amor

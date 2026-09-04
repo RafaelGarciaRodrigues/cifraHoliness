@@ -3,16 +3,22 @@ TOM:E
 
 
 <intro>
-E          C#m7       F#m7
-Não quero interromper 
-        F#m           B7
-O teu silêncio, oh, pai
-           G#m        E/G#         C#7
-Mas é só orando que eu encontro paz
-           B7   F#m7                    B
-O vento da afli_ção quer apagar a chama
-         B7      E   
-Da minha adoração 
+             
+Acalma o meu 
+F#m    B/D#
+coração
+             
+Acalma o meu 
+E      C#m/E
+coração
+                 F#m7
+O vento está soprando
+               B7  
+Mas é te adorando
+                   
+Que venço o mar da 
+  A   E
+aflição 
 
 </intro>
 
@@ -21,12 +27,18 @@ E          C#m7       F#m7
 Não quero interromper 
         F#m           B7
 O teu silêncio, oh, pai
-           G#m        E/G#         C#7
-Mas é só orando que eu encontro paz
-           B7   F#m7                    B
-O vento da afli_ção quer apagar a chama
-         B7      E   
-Da minha adoração 
+           G#m  
+Mas é só orando 
+      E/G#         C#7
+que eu encontro paz
+           B7   F#m7  
+O vento da afli_ção   
+                  B
+quer apagar a chama
+         
+Da minha 
+B7      E   
+adoração 
 
 
   C#m7             F#m7
@@ -44,27 +56,39 @@ E acalma a tempestade que
           B7      E 
 Agita o meu coração 
 
-             F#m    B/D#
-Acalma o meu coração
-             E      C#m/E
-Acalma o meu coração
+             
+Acalma o meu 
+F#m    B/D#
+coração
+             
+Acalma o meu 
+E      C#m/E
+coração
                  F#m7
 O vento está soprando
                B7  
 Mas é te adorando
-                     A   E
-Que venço o mar da aflição 
+                   
+Que venço o mar da 
+  A   E
+aflição 
 
-             F#m    B/D#
-Acalma o meu coração
-             E      C#m/E
-Acalma o meu coração
+              
+Acalma o meu  
+F#m    B/D#
+coração
+             
+Acalma o meu 
+E      C#m/E
+coração
                  F#m7
 Só venço esse mundo 
                   B7
 Se for em tua presença
-          C#m7   A   E
-Acalma o meu coração   
+          C#m7 
+Acalma o meu   
+    A   E
+coração   
 
      C#m7       F#m7
 O barulho do mar 
@@ -96,46 +120,70 @@ Senhor, sem tua presença
                   B7      E 
 Minha fé vai naufragar
 
-             F#m    B/D#
-Acalma o meu coração
-             E      C#m/E
-Acalma o meu coração
+             
+Acalma o meu 
+F#m    B/D#
+coração
+             
+Acalma o meu 
+E      C#m/E
+coração
                  F#m7
 O vento está soprando
                B7  
 Mas é te adorando
-                     A   E
-Que venço o mar da aflição 
+                   
+Que venço o mar da 
+  A   E
+aflição 
 
-             F#m    B/D#
-Acalma o meu coração
-             E      C#m/E
-Acalma o meu coração
+              
+Acalma o meu  
+F#m    B/D#
+coração
+             
+Acalma o meu 
+E      C#m/E
+coração
                  F#m7
 Só venço esse mundo 
                   B7
 Se for em tua presença
-          C#m7   A   E
-Acalma o meu coração 
+          C#m7 
+Acalma o meu   
+    A   E
+coração  
 
-             F#m    B/D#
-Acalma o meu coração
-             E      C#m/E
-Acalma o meu coração
+             
+Acalma o meu 
+F#m    B/D#
+coração
+             
+Acalma o meu 
+E      C#m/E
+coração
                  F#m7
 O vento está soprando
                B7  
 Mas é te adorando
-                     A   E
-Que venço o mar da aflição 
+                   
+Que venço o mar da 
+  A   E
+aflição 
 
-             F#m    B/D#
-Acalma o meu coração
-             E      C#m/E
-Acalma o meu coração
+              
+Acalma o meu  
+F#m    B/D#
+coração
+             
+Acalma o meu 
+E      C#m/E
+coração
                  F#m7
 Só venço esse mundo 
                   B7
 Se for em tua presença
-          C#m7   A   E
-Acalma o meu coração
+          C#m7 
+Acalma o meu   
+    A   E
+coração  

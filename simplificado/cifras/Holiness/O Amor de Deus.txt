@@ -3,12 +3,18 @@ TOM:A
 
 
 <intro>
-     D9                E
-Logo eu, um pobre pecador
-     A/C#      A     E/G#     F#m
-Logo eu tão fraco e tão devedor
-    Bm7               E4
-Logo eu, de graça recebi
+     D9  
+Logo eu, 
+              E
+um pobre pecador
+     A/C# 
+Logo eu   
+       A     E/G#     F#m
+tão fraco e tão devedor
+    Bm7  
+Logo eu, 
+             E4
+de graça recebi
           A9      A7
 O amor de Deus
 </intro>
@@ -25,27 +31,40 @@ No amor de Deus
 A                      E/G#
 Viva e poderosa salvação
 F#m7
-Luz que me alcançou na escuridão
+Luz que me alcançou 
+na escuridão
 E                      D9
 Todo meu pecado se apagou
             A     A7
 No amor de Deus
 
 
-     D9                E
-Logo eu, um pobre pecador
-     A/C#      A     E/G#     F#m
-Logo eu tão fraco e tão devedor
-    Bm7               E4
-Logo eu, de graça recebi
+     D9  
+Logo eu, 
+              E
+um pobre pecador
+     A/C# 
+Logo eu   
+       A     E/G#     F#m
+tão fraco e tão devedor
+    Bm7  
+Logo eu, 
+             E4
+de graça recebi
           A9      A7
 O amor de Deus
-     D9              E
-Logo eu, finito e carnal
-     A/C#      A     E/G#     F#m
-Logo eu, diante de um Deus imortal
-     Bm7              E4
-Logo eu, de graça recebi
+     D9  
+Logo eu, 
+            E
+finito e carnal
+     A/C# 
+Logo eu,  
+      A     E/G#     F#m
+diante de um Deus imortal
+     Bm7 
+Logo eu, 
+             E4
+de graça recebi
              A   E7
 O amor de Deus
 
@@ -67,55 +86,91 @@ Todo meu pecado se apagou
             A      A7
 No amor de Deus
 
-     D9                E
-Logo eu, um pobre pecador
-     A/C#      A     E/G#     F#m
-Logo eu tão fraco e tão devedor
-    Bm7               E4
-Logo eu, de graça recebi
+     D9  
+Logo eu, 
+              E
+um pobre pecador
+     A/C# 
+Logo eu   
+       A     E/G#     F#m
+tão fraco e tão devedor
+    Bm7  
+Logo eu, 
+             E4
+de graça recebi
           A9      A7
 O amor de Deus
-     D9              E
-Logo eu, finito e carnal
-     A/C#      A     E/G#     F#m
-Logo eu, diante de um Deus imortal
-     Bm7              E4
-Logo eu, de graça recebi
+     D9  
+Logo eu, 
+            E
+finito e carnal
+     A/C# 
+Logo eu,  
+      A     E/G#     F#m
+diante de um Deus imortal
+     Bm7 
+Logo eu, 
+             E4
+de graça recebi
              A   E7
 O amor de Deus
 
-          A9                      E/G#
-O Amor de Deus é rico em benefícios
-          F#m7
-O amor de Deus não mede sacrifícios
-                  E                Bm7
-Dos braços desse amor recebo o perdão
+          A9   
+O Amor de Deus 
+                   E/G#
+é rico em benefícios
+          F#m7 
+O amor de Deus 
+não mede sacrifícios
+                  E   
+Dos braços desse amor 
+             Bm7
+recebo o perdão
               F#m7  E
 Comprado por Jesus
 
-          A9                      E/G#
-O amor de Deus é puro e consciente
+          A9   
+O amor de Deus 
+                   E/G#
+é puro e consciente
           F#m7
-Como as manhãs, é firme e constante
-                    E                   Bm7
-Que se entregou na cruz e a morte derrotou
+Como as manhãs, 
+é firme e constante
+                    E   
+Que se entregou na cruz 
+                Bm7
+e a morte derrotou
             A      A7
 Amor de Jesus
 
-     D9                E
-Logo eu, um pobre pecador
-     A/C#                D9
-Logo eu tão fraco e tão devedor
-    Bm7               E4
-Logo eu, de graça recebi
-          A9.
+     D9  
+Logo eu, 
+              E
+um pobre pecador
+     A/C# 
+Logo eu   
+       A     E/G#     F#m
+tão fraco e tão devedor
+    Bm7  
+Logo eu, 
+             E4
+de graça recebi
+          A9      A7
 O amor de Deus
-     D9              E/G#
-Logo eu, finito e carnal
-   A/C#                    D9
-Logo eu, diante de um Deus imortal
-     Bm7              E4
-Logo eu, de graça recebi
+     D9  
+Logo eu, 
+            E
+finito e carnal
+     A/C# 
+Logo eu,  
+      A     E/G#     F#m
+diante de um Deus imortal
+     Bm7 
+Logo eu, 
+             E4
+de graça recebi
+             A   E7
+O amor de Deus
 
           D    E
 O amor de Deus

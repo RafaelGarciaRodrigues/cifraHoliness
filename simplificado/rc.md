@@ -284,6 +284,48 @@ que um dia eu te dei
 - sendo assim, substitua quando estiver offline em index.html e telaCel.html:
 -- class="bi bi-share" por unicode dec &#9430;
 
+# AJUSTE DAS Cifras
+- em \simplificado crie
+-- AjustaCifra.bat que dispara AjustaCifra.ps1 que irá:
+--- percorrer \cifras e todas as subpastas
+--- identificar qual arquivo está aberto no bloco de notas e ou Notepad++ ou similar
+--- identifica o caractere ";"
+--- quebra a linha junto com a cifra conforme exemplo abaixo:
+
+A9                 A/G                  F#m7            D9
+Posso te falar dos sonhos; das flores de como a cidade mudou
+A9                A/G            F#m7          D9
+Posso te falar do medo;  do meu desejo;  do meu amor
+A9      A9/C#   D9                  B/D#       A/E
+Posso falar  da tarde que cai; e aos poucos deixa ver
+   C#7(9+)  F#m7         F7M       A9/E
+No céu    a lua ;  que um dia eu te dei
+
+--- depois
+
+A9                 A/G   
+Posso te falar dos sonhos
+              F#m7            D9
+ das flores de como a cidade mudou
+A9                A/G 
+Posso te falar do medo
+          F#m7          D9
+  do meu desejo;  do meu amor
+A9      A9/C#   D9           
+Posso falar  da tarde que cai
+      B/D#       A/E
+ e aos poucos deixa ver
+   C#7(9+)  F#m7
+No céu    a lua 
+        F7M       A9/E
+  que um dia eu te dei
+  
+--- note que quebra a cifra na mesma posição da linha que quebra a letra
+--- remove ";"
+
+--- o arquivo .bat não fecha, ele pergunta se quero executar novamente
+--- não precisa digitar nada para confirmar, apen apertar qqr tecla e ele executa de novo
+
 
 
 
