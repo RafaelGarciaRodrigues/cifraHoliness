@@ -279,7 +279,10 @@ que um dia eu te dei
 - só funciona se remover da url as variaveis GET
 - não quebre nada, analise onde está o bug e corrija
 
-
+# ICONES
+- icones não aparecem no index pq está offline
+- sendo assim, substitua quando estiver offline em index.html e telaCel.html:
+-- class="bi bi-share" por unicode dec &#9430;
 
 
 

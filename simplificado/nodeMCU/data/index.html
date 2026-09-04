@@ -5,6 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Cifras</title>
 <style>
+/* Fallback offline do icone de compartilhar (ver rc.md secao ICONES): o link do celular pode ser
+   aberto sem internet (rede do NodeMCU), entao o bootstrap-icons.min.css do CDN abaixo nao
+   carrega. Fica ANTES do <link> de proposito - se o CDN carregar, a regra dele (que vem depois)
+   ganha a cascata; senao, essa fica valendo. Diferente dos outros icones (ver gerar_letras.ps1),
+   este fica aqui no proprio telaCel.html porque foi pedido pros dois arquivos.  */
+.bi-share::before { content: "\24D6"; }
+</style>
+<style>
 /* Fallback offline dos icones (ver rc.md secao ICONES): bootstrap-icons.min.css vem de CDN e nao
    carrega sem internet. Fica ANTES do <link> do CDN de proposito - se o CDN carregar, suas regras
    (que vem depois) ganham a cascata; senao, essas ficam valendo. */
@@ -16,7 +24,6 @@
 .bi-dash::before { content: "\29FF"; }
 .bi-cloud-download::before { content: "\1F863"; }
 .bi-funnel::before { content: "\2730"; }
-.bi-share::before { content: "\1F517"; }
 .bi-x::before { content: "\2715"; }
 .bi-check2::before { content: "\2713"; }
 .bi-node-plus-fill::before { content: "\2630"; }
@@ -3764,32 +3771,51 @@ TOM:A
 
 
 <intro>
-A            D               E7
-E ainda se vier noites traiçoeiras
-                  C#m7                  F#m7
-Se a cruz pesada for, Cristo estará contigo
-               Bm7              E
-O mundo pode até fazer você chorar
-                  A     A4  A  A4
-Mas Deus te quer sorrindo
+A            D  
+E ainda se vier 
+             E7
+noites traiçoeiras
+                  C#m7
+Se a cruz pesada for
+                  F#m7
+Cristo estará contigo
+               Bm7
+O mundo pode até 
+               E
+fazer você chorar
+                  
+Mas Deus te quer 
+		A     A4  A  A4
+sorrindo
 </intro>
 
 
- A                      C#m7  
-Deus está aqui neste momento
-        D        E4           A  A4
-Sua presença é real em meu viver
-    A                         C#m7  
-Entregue sua vida e seus problemas
+ A             
+Deus está aqui 
+         C#m7  
+neste momento
+        D    
+Sua presença 
+    E4           A  A4
+é real em meu viver
+    A               
+Entregue sua vida 
+            C#m7
+e seus problemas
           D
 Fale com Deus
-        E4        A    E    D
-Ele vai ajudar você.   oh,..oh
-
+        E4        A 
+Ele vai ajudar você.
+   E    D
+   oh,..oh
                   Bm7
 Deus te trouxe aqui
-          E                A       E    D
-Para aliviar os seus sofrimentos,  oh,..oh
+          E  
+Para aliviar 
+              A     
+os seus sofrimentos,
+   E    D
+  oh,..oh
 
                   Bm7
 É Ele o autor da fé
@@ -3798,58 +3824,98 @@ Do princípio ao fim
                     A     A4  A  G
 de todos os seus momentos
 
-A            D               E7
-E ainda se vier noites traiçoeiras
-                  C#m7                  F#m7
-Se a cruz pesada for, Cristo estará contigo
-               Bm7              E
-O mundo pode até fazer você chorar
-                  A     A4  A  A4
-Mas Deus te quer sorrindo
+A            D  
+E ainda se vier 
+             E7
+noites traiçoeiras
+                  C#m7
+Se a cruz pesada for
+                  F#m7
+Cristo estará contigo
+               Bm7
+O mundo pode até 
+               E
+fazer você chorar
+                  
+Mas Deus te quer 
+		A     A4  A  A4
+sorrindo
 
 
- A                         C#m7         D
-Seja qual for o seu problema, fale com Deus
+ A                         C#m7
+Seja qual for o seu problema,
+            D
+ fale com Deus
         E         A  A4
 Ele vai ajudar você
   A                   C#m7
 Após a dor vem a alegria
-              D       E4               A    E    D
-Pois Deus é amor, e não te deixará sofrer,  oh,..oh
+              D  
+Pois Deus é amor, 
+     E4               A 
+e não te deixará sofrer,
+   E    D
+  oh,..oh
 
                   Bm7
 Deus te trouxe aqui
-          E                A       E    D
-Para aliviar os seus sofrimentos,  oh,..oh
+          E  
+Para aliviar 
+              A     
+os seus sofrimentos,
+   E    D
+  oh,..oh
 
                   Bm7
 É Ele o autor da fé
-                 E                       A     A4  A  G
-Do princípio ao fim, de todos os seus momentos
+                 E  
+Do princípio ao fim,
+                      A     A4  A  G
+ de todos os seus momentos
 
 
-A            D               E7
-E ainda se vier noites traiçoeiras
-                  C#m7                  F#m7
-Se a cruz pesada for, Cristo estará contigo
-               Bm7              E
-O mundo pode até fazer você chorar
-                  A     A4  A  G
-Mas Deus te quer sorrindo
+A            D  
+E ainda se vier 
+             E7
+noites traiçoeiras
+                  C#m7
+Se a cruz pesada for
+                  F#m7
+Cristo estará contigo
+               Bm7
+O mundo pode até 
+               E
+fazer você chorar
+                  
+Mas Deus te quer 
+		A     A4  A  A4
+sorrindo
 
-A            D               E7
-E ainda se vier noites traiçoeiras
-                  C#m7                  F#m7
-Se a cruz pesada for, Cristo estará contigo
-               Bm7              E
-O mundo pode até fazer você chorar
-                  A        F#m7
-Mas Deus te quer sorrindo
+A            D  
+E ainda se vier 
+             E7
+noites traiçoeiras
+                  C#m7
+Se a cruz pesada for
+                  F#m7
+Cristo estará contigo
+               Bm7
+O mundo pode até 
+               E
+fazer você chorar
+                  
+Mas Deus te quer 
+		A     A4  A  A4
+sorrindo
 
-               Bm7              E
-O mundo pode até fazer você chorar
-                  A
-Mas Deus te quer sorrindo
+               Bm7
+O mundo pode até 
+               E
+fazer você chorar
+                  
+Mas Deus te quer 
+		A     A4  A  A4
+sorrindo
 ]]>
 </musica>
 
@@ -7028,7 +7094,7 @@ Tão maravilhoso para mim
 ]]>
 </musica>
 
-<musica grupo="Rafael">
+<musica grupo="RAFAEL">
 <![CDATA[
 A Lua Que Eu Te Dei
 TOM:F
@@ -7077,7 +7143,7 @@ Durma bem me queira bem meu amor
 ]]>
 </musica>
 
-<musica grupo="Rafael">
+<musica grupo="RAFAEL">
 <![CDATA[
 Acorrentado Em Você
 TOM:C
@@ -7137,7 +7203,7 @@ Eu me sinto acorrentado em você
 ]]>
 </musica>
 
-<musica grupo="Rafael">
+<musica grupo="RAFAEL">
 <![CDATA[
 Apenas Mais Uma de Amor
 TOM:Em
@@ -7200,7 +7266,7 @@ Ninguém   precisa saber
 ]]>
 </musica>
 
-<musica grupo="Rafael">
+<musica grupo="RAFAEL">
 <![CDATA[
 Boate Azul
 TOM: Dm
@@ -7363,7 +7429,7 @@ A flor da noite na boate azul
 ]]>
 </musica>
 
-<musica grupo="Rafael">
+<musica grupo="RAFAEL">
 <![CDATA[
 Chamamecero
 TOM:A
@@ -7457,7 +7523,7 @@ Que torce, pra vida melhorar
 ]]>
 </musica>
 
-<musica grupo="Rafael">
+<musica grupo="RAFAEL">
 <![CDATA[
 Do Fundo da Grota
 TOM: E
@@ -7649,7 +7715,7 @@ Pra inticá com a guaipecada
 ]]>
 </musica>
 
-<musica grupo="Rafael">
+<musica grupo="RAFAEL">
 <![CDATA[
 Enchendo os Olhos de Campo
 TOM: Cm
@@ -7714,7 +7780,7 @@ Manhãzita de maio, manhãzita de maio
 ]]>
 </musica>
 
-<musica grupo="Rafael">
+<musica grupo="RAFAEL">
 <![CDATA[
 I don't wanna miss a thing
 TOM:D
@@ -7817,7 +7883,7 @@ For all the rest of time
 ]]>
 </musica>
 
-<musica grupo="Rafael">
+<musica grupo="RAFAEL">
 <![CDATA[
 Meu Disfarce
 TOM:A
@@ -7920,7 +7986,7 @@ Estou apaixonado por você
 ]]>
 </musica>
 
-<musica grupo="Rafael">
+<musica grupo="RAFAEL">
 <![CDATA[
 Meu Rancho
 TOM:E
@@ -7973,7 +8039,7 @@ Um restingal de vassoura pôr-do-sol perto de mim
 ]]>
 </musica>
 
-<musica grupo="Rafael">
+<musica grupo="RAFAEL">
 <![CDATA[
 My sacrifice
 TOM:D
@@ -8076,7 +8142,7 @@ My sacrifice
 ]]>
 </musica>
 
-<musica grupo="Rafael">
+<musica grupo="RAFAEL">
 <![CDATA[
 Nosso Xote
 TOM:F
@@ -8113,7 +8179,7 @@ O corpo inteiro Faz meu coração bater
 ]]>
 </musica>
 
-<musica grupo="Rafael">
+<musica grupo="RAFAEL">
 <![CDATA[
 Outra Noite Que Se Vai
 TOM:Em
@@ -8230,7 +8296,7 @@ E depois me leva pra tua casa
 ]]>
 </musica>
 
-<musica grupo="Rafael">
+<musica grupo="RAFAEL">
 <![CDATA[
 Telefone Mudo
 TOM: G

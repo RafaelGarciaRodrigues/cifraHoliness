@@ -3,32 +3,51 @@ TOM:A
 
 
 <intro>
-A            D               E7
-E ainda se vier noites traiçoeiras
-                  C#m7                  F#m7
-Se a cruz pesada for, Cristo estará contigo
-               Bm7              E
-O mundo pode até fazer você chorar
-                  A     A4  A  A4
-Mas Deus te quer sorrindo
+A            D  
+E ainda se vier 
+             E7
+noites traiçoeiras
+                  C#m7
+Se a cruz pesada for
+                  F#m7
+Cristo estará contigo
+               Bm7
+O mundo pode até 
+               E
+fazer você chorar
+                  
+Mas Deus te quer 
+		A     A4  A  A4
+sorrindo
 </intro>
 
 
- A                      C#m7  
-Deus está aqui neste momento
-        D        E4           A  A4
-Sua presença é real em meu viver
-    A                         C#m7  
-Entregue sua vida e seus problemas
+ A             
+Deus está aqui 
+         C#m7  
+neste momento
+        D    
+Sua presença 
+    E4           A  A4
+é real em meu viver
+    A               
+Entregue sua vida 
+            C#m7
+e seus problemas
           D
 Fale com Deus
-        E4        A    E    D
-Ele vai ajudar você.   oh,..oh
-
+        E4        A 
+Ele vai ajudar você.
+   E    D
+   oh,..oh
                   Bm7
 Deus te trouxe aqui
-          E                A       E    D
-Para aliviar os seus sofrimentos,  oh,..oh
+          E  
+Para aliviar 
+              A     
+os seus sofrimentos,
+   E    D
+  oh,..oh
 
                   Bm7
 É Ele o autor da fé
@@ -37,55 +56,95 @@ Do princípio ao fim
                     A     A4  A  G
 de todos os seus momentos
 
-A            D               E7
-E ainda se vier noites traiçoeiras
-                  C#m7                  F#m7
-Se a cruz pesada for, Cristo estará contigo
-               Bm7              E
-O mundo pode até fazer você chorar
-                  A     A4  A  A4
-Mas Deus te quer sorrindo
+A            D  
+E ainda se vier 
+             E7
+noites traiçoeiras
+                  C#m7
+Se a cruz pesada for
+                  F#m7
+Cristo estará contigo
+               Bm7
+O mundo pode até 
+               E
+fazer você chorar
+                  
+Mas Deus te quer 
+		A     A4  A  A4
+sorrindo
 
 
- A                         C#m7         D
-Seja qual for o seu problema, fale com Deus
+ A                         C#m7
+Seja qual for o seu problema,
+            D
+ fale com Deus
         E         A  A4
 Ele vai ajudar você
   A                   C#m7
 Após a dor vem a alegria
-              D       E4               A    E    D
-Pois Deus é amor, e não te deixará sofrer,  oh,..oh
+              D  
+Pois Deus é amor, 
+     E4               A 
+e não te deixará sofrer,
+   E    D
+  oh,..oh
 
                   Bm7
 Deus te trouxe aqui
-          E                A       E    D
-Para aliviar os seus sofrimentos,  oh,..oh
+          E  
+Para aliviar 
+              A     
+os seus sofrimentos,
+   E    D
+  oh,..oh
 
                   Bm7
 É Ele o autor da fé
-                 E                       A     A4  A  G
-Do princípio ao fim, de todos os seus momentos
+                 E  
+Do princípio ao fim,
+                      A     A4  A  G
+ de todos os seus momentos
 
 
-A            D               E7
-E ainda se vier noites traiçoeiras
-                  C#m7                  F#m7
-Se a cruz pesada for, Cristo estará contigo
-               Bm7              E
-O mundo pode até fazer você chorar
-                  A     A4  A  G
-Mas Deus te quer sorrindo
+A            D  
+E ainda se vier 
+             E7
+noites traiçoeiras
+                  C#m7
+Se a cruz pesada for
+                  F#m7
+Cristo estará contigo
+               Bm7
+O mundo pode até 
+               E
+fazer você chorar
+                  
+Mas Deus te quer 
+		A     A4  A  A4
+sorrindo
 
-A            D               E7
-E ainda se vier noites traiçoeiras
-                  C#m7                  F#m7
-Se a cruz pesada for, Cristo estará contigo
-               Bm7              E
-O mundo pode até fazer você chorar
-                  A        F#m7
-Mas Deus te quer sorrindo
+A            D  
+E ainda se vier 
+             E7
+noites traiçoeiras
+                  C#m7
+Se a cruz pesada for
+                  F#m7
+Cristo estará contigo
+               Bm7
+O mundo pode até 
+               E
+fazer você chorar
+                  
+Mas Deus te quer 
+		A     A4  A  A4
+sorrindo
 
-               Bm7              E
-O mundo pode até fazer você chorar
-                  A
-Mas Deus te quer sorrindo
+               Bm7
+O mundo pode até 
+               E
+fazer você chorar
+                  
+Mas Deus te quer 
+		A     A4  A  A4
+sorrindo

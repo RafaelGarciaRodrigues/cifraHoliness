@@ -140,7 +140,10 @@ $utf8SemBom = New-Object System.Text.UTF8Encoding($false)
 # carregar (uso real via NodeMCU), so o fallback fica valendo e mostra os caracteres Unicode no
 # lugar. Cobre os 9 icones listados no rc.md (secao ICONES) + bi-x (limpar selecao), bi-check2
 # (feedback de "link copiado" do botao compartilhar) e bi-node-plus-fill (icone de grupos, secao
-# GRUPOS), que usam o mesmo tipo de fallback.
+# GRUPOS), que usam o mesmo tipo de fallback. bi-share NAO esta aqui: foi pedido pros dois
+# arquivos (telaCel.html e index.html), entao o fallback dele vive direto em telaCel.html (ver
+# <style> antes do <link> do CDN la) e chega em index.html automaticamente por ja estar no
+# conteudo copiado - duplicar aqui so arriscaria os dois valores divergirem no futuro.
 $telaCelConteudo = Get-Content -Path $telaCelPath -Raw -Encoding UTF8
 
 $fallbackIcones = @'
@@ -156,7 +159,6 @@ $fallbackIcones = @'
 .bi-dash::before { content: "\29FF"; }
 .bi-cloud-download::before { content: "\1F863"; }
 .bi-funnel::before { content: "\2730"; }
-.bi-share::before { content: "\1F517"; }
 .bi-x::before { content: "\2715"; }
 .bi-check2::before { content: "\2713"; }
 .bi-node-plus-fill::before { content: "\2630"; }
