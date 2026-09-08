@@ -110,6 +110,11 @@ foreach ($arquivo in $arquivos) {
     # pra essas linhas nao virarem "letra" por engano.
     $corpo = [regex]::Replace($corpo, '(?s)<yt>\s*.*?\s*</yt>', '').Trim()
 
+    # <t>N</t>: velocidade pre-definida da musica, em % (ver rc.md secao TIME PRE DEFINIDO). So o
+    # celular usa esse valor (pra pre-preencher o slider de velocidade); musicas.json/letras.html
+    # nao tem esse conceito, entao aqui tambem so remove o bloco pra nao virar "letra" por engano.
+    $corpo = [regex]::Replace($corpo, '(?s)<t>\s*\d+\s*</t>', '').Trim()
+
     $linhasOriginais = [regex]::Split($corpo, '\r?\n')
 
     # <intro>/</intro> ficam em linhas proprias (ver simplificado/spec_esp32.md). As linhas ENTRE

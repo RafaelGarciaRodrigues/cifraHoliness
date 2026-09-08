@@ -386,6 +386,12 @@ Cantando ao cordeiro uma canção
 G9
 Cantando ao cordeiro uma canção
 
+# TIME PRE DEFINIDO
+- algumas musicas terãoa tag <t>29</t>
+- essa tag e o conteudo não devem aparecer na tela
+- somente para as musicas com essa tag deve:
+-- ao carrear a página a musica com a tag o class="velocidade-controle" input deve ter o valor dentro da tag, no exemplo, 29
+
 
 
 

@@ -5959,6 +5959,7 @@ TOM:D
 <yt>
 https://www.youtube.com/watch?v=ijNCc7ICCck
 </yt>
+<t>29</t>
 
 <intro>
              G     
@@ -5993,14 +5994,12 @@ E os que hão de crer
 Cantando ao Cordeiro 
   G
 uma canção
-
 G
 Teu nome é o mais alto
    A
 Teu nome é o maior
    Bm         A  G
 Teu nome é sobre todos
-
    G
 Os tronos e domínios
   A
@@ -6029,7 +6028,6 @@ Bm        A
 Cante ao Cordeiro 
    G
 uma canção
-
 D
 Aquele que é livre
  G        D
@@ -6081,6 +6079,7 @@ Os tronos e domínios
 Governos e poderes
    Bm         Em
 Teu nome é sobre todos
+
 G
 Teu nome é o mais alto
    A
@@ -9419,14 +9418,20 @@ Você vai discar várias vezes, telefone mudo não pode chamar
 	// renderizador ignorar linha a linha). A URL extraida vira o icone bi-youtube ao lado do titulo.
 	var YT_RE = /<yt>\s*([\s\S]*?)\s*<\/yt>/;
 
+	// <t>N</t>: velocidade pre-definida da musica, em % (ver rc.md secao TIME PRE DEFINIDO). Mesmo
+	// tratamento da <yt>: removida do corpo, nunca aparece na tela. So vale como PONTO DE PARTIDA -
+	// se o usuario ja tiver ajustado e salvo uma velocidade pra essa musica (velocidadesSalvas),
+	// o valor salvo continua tendo prioridade; <t> so substitui o VELOCIDADE_PADRAO generico (0)
+	// quando ainda nao existe nada salvo, senao ajustar a velocidade e recarregar a pagina
+	// desfaria o ajuste do usuario toda vez.
+	var TEMPO_RE = /<t>\s*(\d+)\s*<\/t>/;
+
 	var musicas = nos.map(function (no) {
 		var conteudo = (no.textContent || "").trim();
 		var linhas = conteudo.split(/\r?\n/);
 		var titulo = (linhas[0] || "(Sem titulo)").trim();
 		var corpo = linhas.slice(1).join("\n").trim();
 		var semisSalvo = transpostosSalvos[titulo] || 0;
-		var velocidadeSalva = velocidadesSalvas[titulo];
-		if (velocidadeSalva === undefined) velocidadeSalva = VELOCIDADE_PADRAO;
 		var grupo = no.getAttribute("grupo") || "";
 		var youtube = null;
 		var ytMatch = corpo.match(YT_RE);
@@ -9434,6 +9439,14 @@ Você vai discar várias vezes, telefone mudo não pode chamar
 			youtube = ytMatch[1].trim();
 			corpo = (corpo.slice(0, ytMatch.index) + corpo.slice(ytMatch.index + ytMatch[0].length)).trim();
 		}
+		var velocidadePadraoMusica = VELOCIDADE_PADRAO;
+		var tempoMatch = corpo.match(TEMPO_RE);
+		if (tempoMatch) {
+			velocidadePadraoMusica = Math.max(0, Math.min(100, parseInt(tempoMatch[1], 10)));
+			corpo = (corpo.slice(0, tempoMatch.index) + corpo.slice(tempoMatch.index + tempoMatch[0].length)).trim();
+		}
+		var velocidadeSalva = velocidadesSalvas[titulo];
+		if (velocidadeSalva === undefined) velocidadeSalva = velocidadePadraoMusica;
 		return { titulo: titulo, conteudo: corpo, semis: semisSalvo, velocidade: velocidadeSalva, grupo: grupo, youtube: youtube };
 	});
 

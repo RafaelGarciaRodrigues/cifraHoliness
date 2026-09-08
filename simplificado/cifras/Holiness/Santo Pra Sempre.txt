@@ -4,6 +4,7 @@ TOM:D
 <yt>
 https://www.youtube.com/watch?v=ijNCc7ICCck
 </yt>
+<t>29</t>
 
 <intro>
              G     
@@ -38,14 +39,12 @@ E os que hão de crer
 Cantando ao Cordeiro 
   G
 uma canção
-
 G
 Teu nome é o mais alto
    A
 Teu nome é o maior
    Bm         A  G
 Teu nome é sobre todos
-
    G
 Os tronos e domínios
   A
@@ -74,7 +73,6 @@ Bm        A
 Cante ao Cordeiro 
    G
 uma canção
-
 D
 Aquele que é livre
  G        D
@@ -126,6 +124,7 @@ Os tronos e domínios
 Governos e poderes
    Bm         Em
 Teu nome é sobre todos
+
 G
 Teu nome é o mais alto
    A
