@@ -104,6 +104,12 @@ foreach ($arquivo in $arquivos) {
         $corpo = ""
     }
 
+    # <yt>URL</yt>: link do YouTube da musica (ver rc.md secao LINK YOUTUBE) - nunca deve aparecer
+    # na tela, nem na do celular nem na do projetor. musicas.json/letras.html nao usam a URL (so
+    # telaCel.html/index.html, pro icone ao lado do titulo), entao aqui so remove o bloco inteiro
+    # pra essas linhas nao virarem "letra" por engano.
+    $corpo = [regex]::Replace($corpo, '(?s)<yt>\s*.*?\s*</yt>', '').Trim()
+
     $linhasOriginais = [regex]::Split($corpo, '\r?\n')
 
     # <intro>/</intro> ficam em linhas proprias (ver simplificado/spec_esp32.md). As linhas ENTRE
@@ -139,8 +145,9 @@ $utf8SemBom = New-Object System.Text.UTF8Encoding($false)
 # (que vem depois no documento) ganham a cascata e os icones bonitos aparecem normalmente; se nao
 # carregar (uso real via NodeMCU), so o fallback fica valendo e mostra os caracteres Unicode no
 # lugar. Cobre os 9 icones listados no rc.md (secao ICONES) + bi-x (limpar selecao), bi-check2
-# (feedback de "link copiado" do botao compartilhar) e bi-node-plus-fill (icone de grupos, secao
-# GRUPOS), que usam o mesmo tipo de fallback. bi-share NAO esta aqui: foi pedido pros dois
+# (feedback de "link copiado" do botao compartilhar), bi-node-plus-fill (icone de grupos, secao
+# GRUPOS) e bi-youtube (link do YouTube por musica, secao LINK YOUTUBE), que usam o mesmo tipo de
+# fallback. bi-share NAO esta aqui: foi pedido pros dois
 # arquivos (telaCel.html e index.html), entao o fallback dele vive direto em telaCel.html (ver
 # <style> antes do <link> do CDN la) e chega em index.html automaticamente por ja estar no
 # conteudo copiado - duplicar aqui so arriscaria os dois valores divergirem no futuro.
@@ -162,6 +169,7 @@ $fallbackIcones = @'
 .bi-x::before { content: "\2715"; }
 .bi-check2::before { content: "\2713"; }
 .bi-node-plus-fill::before { content: "\2630"; }
+.bi-youtube::before { content: "\25B6"; }
 </style>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 '@

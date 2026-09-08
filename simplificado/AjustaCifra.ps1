@@ -1,9 +1,15 @@
 # Ferramenta interativa: percorre \cifras (e subpastas), descobre qual arquivo esta aberto no
-# Bloco de Notas / Notepad++ (ou similar) no momento, e quebra cada linha de letra que contenha
-# ";" em duas linhas - quebrando a linha de cifra logo acima na MESMA coluna, pra manter o
-# alinhamento acorde/letra (ver rc.md secao AJUSTE DAS Cifras). So processa a PRIMEIRA ";" de cada
-# linha por execucao: se sobrar mais de uma ";" na mesma linha, a proxima fica pra rodada seguinte
-# do loop - por isso o script fica perguntando se quer rodar de novo em vez de rodar uma unica vez.
+# Bloco de Notas / Notepad++ (ou similar) no momento, e ajusta as linhas de letra que tenham ";"
+# (ver rc.md secoes AJUSTE DAS Cifras e AJUSTE INVERSO):
+#   - ";" NO MEIO de uma linha de letra -> quebra ela em duas, quebrando a linha de cifra logo
+#     acima na MESMA coluna, pra manter o alinhamento acorde/letra.
+#   - ";" NO FINAL de uma linha de letra -> operacao inversa: junta essa linha com o PROXIMO par
+#     cifra+letra (a cifra ganha um espaco entre as duas metades pra preservar a posicao dos
+#     acordes sobre a letra; a letra e concatenada direto, sem separador, ja que o ";" so marcava
+#     onde juntar).
+# So processa UMA ocorrencia por linha por execucao (a primeira ";" no meio, ou a juncao com o
+# proximo par se terminar em ";") - o que sobrar fica pra rodada seguinte do loop, por isso o
+# script fica perguntando se quer rodar de novo em vez de rodar uma unica vez.
 
 $ErrorActionPreference = "Stop"
 
@@ -57,56 +63,98 @@ function Test-ChordLine {
     return (($valid -ge 2) -and (($valid / $tokens.Count) -ge 0.5))
 }
 
-# ===== Quebra das linhas no ";" =====
+# ===== Ajuste das linhas no ";" (quebra no meio / junta no final) =====
 
-function Quebrar-LinhasComPontoEVirgula {
+function Ajustar-LinhasComPontoEVirgula {
     param([string[]]$linhas)
 
     $resultado = New-Object System.Collections.Generic.List[string]
     $quebras = 0
+    $juncoes = 0
+    $i = 0
 
-    foreach ($linhaAtual in $linhas) {
-        $idx = $linhaAtual.IndexOf(';')
+    while ($i -lt $linhas.Count) {
+        $linhaAtual = $linhas[$i]
+        $ehLetra = -not (Test-ChordLine $linhaAtual)
 
-        if ($idx -ge 0 -and -not (Test-ChordLine $linhaAtual)) {
-            $letraParte1 = $linhaAtual.Substring(0, $idx)
-            $letraParte2 = $linhaAtual.Substring($idx + 1)
+        # ===== INVERSO: ";" no FINAL de uma linha de letra -> junta com o proximo par cifra+letra
+        if ($ehLetra -and $linhaAtual.EndsWith(';')) {
+            $juntou = $false
+            if (($i + 2) -lt $linhas.Count) {
+                $chordProx = $linhas[$i + 1]
+                $lyricProx = $linhas[$i + 2]
+                $temCifraAnterior = ($resultado.Count -gt 0) -and (Test-ChordLine $resultado[$resultado.Count - 1])
 
-            $temCifraAnterior = ($resultado.Count -gt 0) -and (Test-ChordLine $resultado[$resultado.Count - 1])
+                if ($temCifraAnterior -and (Test-ChordLine $chordProx) -and -not (Test-ChordLine $lyricProx)) {
+                    # a cifra ganha um espaco no ponto de juncao (repoe a coluna que a quebra
+                    # original descartou - ver AJUSTE DAS Cifras); a letra e concatenada direto,
+                    # sem separador, so removendo o ";" que marcava onde juntar.
+                    $chordAtual = $resultado[$resultado.Count - 1]
+                    $resultado[$resultado.Count - 1] = $chordAtual + " " + $chordProx
+                    $resultado.Add($linhaAtual.Substring(0, $linhaAtual.Length - 1) + $lyricProx)
 
-            if ($temCifraAnterior) {
-                $linhaCifraAnterior = $resultado[$resultado.Count - 1]
-
-                # mesma coluna (idx) usada pra quebrar a letra tambem quebra a cifra - substring
-                # puro, sem reindentar, igual ao quebrarLinhasLongas de telaCel.html. A coluna do
-                # ";" some dos dois lados (na letra o ";" e removido; na cifra descarta-se a mesma
-                # coluna), por isso a segunda parte comeca em idx+1 nos dois casos.
-                $corteCifra1 = [Math]::Min($idx, $linhaCifraAnterior.Length)
-                $cifraParte1 = $linhaCifraAnterior.Substring(0, $corteCifra1)
-                if ($idx + 1 -le $linhaCifraAnterior.Length) {
-                    $cifraParte2 = $linhaCifraAnterior.Substring($idx + 1)
-                } else {
-                    $cifraParte2 = ""
+                    $juncoes++
+                    $i += 3
+                    $juntou = $true
                 }
-
-                $resultado[$resultado.Count - 1] = $cifraParte1
-                $resultado.Add($letraParte1)
-                if ($cifraParte2.Trim() -ne "") {
-                    $resultado.Add($cifraParte2)
-                }
-                $resultado.Add($letraParte2)
-            } else {
-                $resultado.Add($letraParte1)
-                $resultado.Add($letraParte2)
             }
 
-            $quebras++
-        } else {
+            if ($juntou) { continue }
+
+            # ";" no final sem contexto valido pra juntar (ex.: primeira linha do arquivo, ou o
+            # proximo par nao e cifra+letra) - deixa como esta, nao arrisca produzir lixo.
             $resultado.Add($linhaAtual)
+            $i++
+            continue
         }
+
+        # ===== NORMAL: ";" no MEIO de uma linha de letra -> quebra ela e a cifra anterior
+        if ($ehLetra) {
+            $idx = $linhaAtual.IndexOf(';')
+            if ($idx -ge 0) {
+                $letraParte1 = $linhaAtual.Substring(0, $idx)
+                $letraParte2 = $linhaAtual.Substring($idx + 1)
+
+                $temCifraAnterior = ($resultado.Count -gt 0) -and (Test-ChordLine $resultado[$resultado.Count - 1])
+
+                if ($temCifraAnterior) {
+                    $linhaCifraAnterior = $resultado[$resultado.Count - 1]
+
+                    # mesma coluna (idx) usada pra quebrar a letra tambem quebra a cifra -
+                    # substring puro, sem reindentar, igual ao quebrarLinhasLongas de telaCel.html.
+                    # A coluna do ";" some dos dois lados (na letra o ";" e removido; na cifra
+                    # descarta-se a mesma coluna), por isso a segunda parte comeca em idx+1 nos
+                    # dois casos.
+                    $corteCifra1 = [Math]::Min($idx, $linhaCifraAnterior.Length)
+                    $cifraParte1 = $linhaCifraAnterior.Substring(0, $corteCifra1)
+                    if ($idx + 1 -le $linhaCifraAnterior.Length) {
+                        $cifraParte2 = $linhaCifraAnterior.Substring($idx + 1)
+                    } else {
+                        $cifraParte2 = ""
+                    }
+
+                    $resultado[$resultado.Count - 1] = $cifraParte1
+                    $resultado.Add($letraParte1)
+                    if ($cifraParte2.Trim() -ne "") {
+                        $resultado.Add($cifraParte2)
+                    }
+                    $resultado.Add($letraParte2)
+                } else {
+                    $resultado.Add($letraParte1)
+                    $resultado.Add($letraParte2)
+                }
+
+                $quebras++
+                $i++
+                continue
+            }
+        }
+
+        $resultado.Add($linhaAtual)
+        $i++
     }
 
-    return [PSCustomObject]@{ Linhas = $resultado; Quebras = $quebras }
+    return [PSCustomObject]@{ Linhas = $resultado; Quebras = $quebras; Juncoes = $juncoes }
 }
 
 function Processar-Arquivo {
@@ -115,13 +163,13 @@ function Processar-Arquivo {
     $conteudo = (Get-Content -Path $caminho -Raw -Encoding UTF8).TrimEnd("`r", "`n")
     $linhas = [regex]::Split($conteudo, '\r?\n')
 
-    $resultadoObj = Quebrar-LinhasComPontoEVirgula -linhas $linhas
+    $resultadoObj = Ajustar-LinhasComPontoEVirgula -linhas $linhas
 
-    if ($resultadoObj.Quebras -gt 0) {
+    if (($resultadoObj.Quebras + $resultadoObj.Juncoes) -gt 0) {
         Set-Content -Path $caminho -Value ($resultadoObj.Linhas -join "`r`n") -Encoding UTF8
     }
 
-    return $resultadoObj.Quebras
+    return $resultadoObj
 }
 
 # ===== Descobre qual arquivo de \cifras esta aberto no Bloco de Notas / Notepad++ =====
@@ -152,7 +200,7 @@ function Encontrar-ArquivosAbertos {
 # ===== Loop principal =====
 
 Write-Host "===================================================="
-Write-Host " AjustaCifra - quebra letra+cifra no ';'"
+Write-Host " AjustaCifra - quebra/junta letra+cifra no ';'"
 Write-Host "===================================================="
 
 while ($true) {
@@ -165,9 +213,9 @@ while ($true) {
             Write-Host "Nenhum arquivo de \cifras parece estar aberto no Bloco de Notas / Notepad++ agora."
         } else {
             foreach ($arquivo in $abertos) {
-                $quebras = Processar-Arquivo -caminho $arquivo
-                if ($quebras -gt 0) {
-                    Write-Host "Ajustado ($quebras quebra(s)): $arquivo"
+                $r = Processar-Arquivo -caminho $arquivo
+                if (($r.Quebras + $r.Juncoes) -gt 0) {
+                    Write-Host "Ajustado ($($r.Quebras) quebra(s), $($r.Juncoes) juncao(oes)): $arquivo"
                     Write-Host "  -> se o arquivo estiver aberto no editor, feche SEM salvar e reabra pra ver o resultado (senao salvar por cima desfaz o ajuste)."
                 } else {
                     Write-Host "Sem ';' pendente: $arquivo"

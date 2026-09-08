@@ -1,115 +1,159 @@
 ﻿Santo Pra Sempre
-TOM:F
+TOM:D
 
 
-Bb  C  Am  Dm
-Bb  C  Am  Dm  C
+<intro>
+             G     
+E os anjos clamam, 
+A
+Santo
+        F#m   
+Toda criação, 
+  Bm
+Santo
+        Em   
+Exaltado és, 
+ A
+Santo
+           D
+Santo pra sempre
+</intro>
 
-F
+D                 
 As muitas gerações
-   Bb           F
-Rendidas em louvor
-  Dm           C            Bb
+G            D
+ rendidas em louvor
+Bm           A          G
 Cantando ao Cordeiro uma canção
-    F
+D
 Os que em Ti se foram
-   Bb           F
+  G          D
 E os que hão de crer
-    Dm            C             Bb
+  Bm         A         G
 Cantando ao Cordeiro uma canção
-
-
-     Bb             Dm
+G
 Teu nome é o mais alto
-     C
+   A
 Teu nome é o maior
-     Dm           C  Bb
-Teu nome é sobre todos
-    Bb             Dm
+   Bm     
+Teu nome é
+   A  G
+ sobre todos
+
+   G
 Os tronos e domínios
-     C
+  A
 Governos e poderes
-     Dm          Gm
-Teu nome é sobre todos
-
-
-             Bb    Dm  C
-E os anjos clamam, Saanto
-          Am    Dm
-Toda criação, Saanto
-         Gm     C
-Exaltado És, Saanto
-           F
+   Bm     
+Teu nome é
+   Em
+ sobre todos
+             G     
+E os anjos clamam, 
+A
+Santo
+        F#m   
+Toda criação, 
+   Bm
+Santo
+       Em    
+Exaltado és, 
+ A
+Santo
+           D
 Santo pra sempre
 
-[Segunda Parte]
-
-F
+D
 Quem foi perdoado
- Bb      F
+   G     D
 E redimido foi
-  Dm           C        Bb
+Bm        A          G
 Cante ao Cordeiro uma canção
-F
+D
 Aquele que é livre
- Bb       F
+ G        D
 E leva o Seu nome
-   Dm          C        Bb
+Bm        A           G
 Cante ao Cordeiro uma canção
-      Dm         C       Bb
-Cantaremos para sempre, amém
-
-
-             Bb    Dm   C
-E os anjos clamam, Saanto
-          Am      Dm
-Toda criação, Saanto
-         Gm7    C
-Exaltado És, Saanto
-           F
-Santo pra sempre
-            Bb    Dm   C
-O Teu povo canta, Saanto
-                 Am       Dm
-Sim, ao Rei dos reis, Saanto
-             Gm   C
-Tu sempre serás, Santo
-           F
+    Bm        A    G
+Cantaremos para sempre amém
+             G     
+E os anjos clamam, 
+A
+Santo
+        F#m   
+Toda criação, 
+  Bm
+Santo
+        Em   
+Exaltado és, 
+ A
+Santo
+           D
 Santo pra sempre
 
+G       A
+O teu povo canta, 
+Santo
+               F#m    
+Sim, ao Rei dos Reis, 
+  Bm
+Santo
+Em               
+Tu sempre serás, 
+A
+Santo
+         D
+Santo pra sempre
 
-     Bb             Dm
+G
 Teu nome é o mais alto
-     C
+   A
 Teu nome é o maior
-     Dm             Bb
-Teu nome é sobre todos
-     Bb            Dm
+   Bm     
+Teu nome é
+   A  G
+ sobre todos
+
+   G
 Os tronos e domínios
-   C
+  A
 Governos e poderes
-     Dm            Gm
-Teu nome é sobre todos
-
-
-             Bb    Dm   C
-E os anjos clamam, Saanto
-          Am      Dm
-Toda criação, Saanto
-         Gm7     C
-Exaltado És, Saanto
-           F
-Santo pra sempre
-            Bb    Dm  C
-O Teu povo canta, Saanto
-                 Am       Dm
-Sim, ao Rei dos reis, Saanto
-             Gm7    C
-Tu sempre serás, Santo
-           F
+   Bm     
+Teu nome é
+   Em
+ sobre todos
+             G     
+E os anjos clamam, 
+A
+Santo
+        F#m   
+Toda criação, 
+  Bm
+Santo
+        Em   
+Exaltado és, 
+ A
+Santo
+           D
 Santo pra sempre
 
-             Gm7    C
-Tu sempre serás, Santo
-           F
+G       A
+O teu povo canta, 
+Santo
+               F#m    
+Sim, ao Rei dos Reis, 
+  Bm
+Santo
+Em               
+Tu sempre serás, 
+A
+Santo
+         D
+Santo pra sempre
+Em               
+Tu sempre serás, 
+A
+Santo
+         D
 Santo pra sempre
