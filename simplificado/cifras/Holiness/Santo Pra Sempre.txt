@@ -6,12 +6,18 @@ https://www.youtube.com/watch?v=ijNCc7ICCck
 </yt>
 
 <intro>
-             G      A
-E os anjos clamam, Santo
-        F#m      Bm
-Toda criação, Santo
-       Em     A
-Exaltado és, Santo
+             G     
+E os anjos clamam, 
+ A
+Santo
+        F#m   
+Toda criação, 
+   Bm
+Santo
+       Em    
+Exaltado és, 
+ A
+Santo
            D
 Santo pra sempre
 </intro>
