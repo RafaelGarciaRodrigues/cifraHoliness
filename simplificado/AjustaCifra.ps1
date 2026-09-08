@@ -7,9 +7,12 @@
 #     cifra+letra (a cifra ganha um espaco entre as duas metades pra preservar a posicao dos
 #     acordes sobre a letra; a letra e concatenada direto, sem separador, ja que o ";" so marcava
 #     onde juntar).
-# So processa UMA ocorrencia por linha por execucao (a primeira ";" no meio, ou a juncao com o
-# proximo par se terminar em ";") - o que sobrar fica pra rodada seguinte do loop, por isso o
+# So processa UMA ocorrencia de ";" por linha por execucao (a primeira ";" no meio, ou a juncao com
+# o proximo par se terminar em ";") - o que sobrar fica pra rodada seguinte do loop, por isso o
 # script fica perguntando se quer rodar de novo em vez de rodar uma unica vez.
+# Tambem remove qualquer `">` encontrado em qualquer linha (artefato de copia/cola de outros sites
+# de cifra - ver rc.md secao AjustaCifra) - essa limpeza roda ANTES do ajuste do ";", pra classificar
+# corretamente cifra/letra mesmo em linhas que ainda tem esse lixo.
 
 $ErrorActionPreference = "Stop"
 
@@ -61,6 +64,26 @@ function Test-ChordLine {
     if ($valid -eq 0) { return $false }
     if ($valid -eq $tokens.Count) { return $true }
     return (($valid -ge 2) -and (($valid / $tokens.Count) -ge 0.5))
+}
+
+# ===== Remove ">"" (artefato de copia/cola de outros sites de cifra - ver rc.md secao AjustaCifra) =====
+
+function Remover-AspasMaiorQue {
+    param([string[]]$linhas)
+
+    $resultado = New-Object System.Collections.Generic.List[string]
+    $remocoes = 0
+
+    foreach ($linha in $linhas) {
+        if ($linha.Contains('">')) {
+            $resultado.Add($linha.Replace('">', ''))
+            $remocoes += ([regex]::Matches($linha, '">')).Count
+        } else {
+            $resultado.Add($linha)
+        }
+    }
+
+    return [PSCustomObject]@{ Linhas = $resultado; Remocoes = $remocoes }
 }
 
 # ===== Ajuste das linhas no ";" (quebra no meio / junta no final) =====
@@ -163,13 +186,15 @@ function Processar-Arquivo {
     $conteudo = (Get-Content -Path $caminho -Raw -Encoding UTF8).TrimEnd("`r", "`n")
     $linhas = [regex]::Split($conteudo, '\r?\n')
 
-    $resultadoObj = Ajustar-LinhasComPontoEVirgula -linhas $linhas
+    $limpezaObj = Remover-AspasMaiorQue -linhas $linhas
+    $resultadoObj = Ajustar-LinhasComPontoEVirgula -linhas $limpezaObj.Linhas
 
-    if (($resultadoObj.Quebras + $resultadoObj.Juncoes) -gt 0) {
+    $totalAjustes = $resultadoObj.Quebras + $resultadoObj.Juncoes + $limpezaObj.Remocoes
+    if ($totalAjustes -gt 0) {
         Set-Content -Path $caminho -Value ($resultadoObj.Linhas -join "`r`n") -Encoding UTF8
     }
 
-    return $resultadoObj
+    return [PSCustomObject]@{ Quebras = $resultadoObj.Quebras; Juncoes = $resultadoObj.Juncoes; Remocoes = $limpezaObj.Remocoes }
 }
 
 # ===== Descobre qual arquivo de \cifras esta aberto no Bloco de Notas / Notepad++ =====
@@ -214,11 +239,11 @@ while ($true) {
         } else {
             foreach ($arquivo in $abertos) {
                 $r = Processar-Arquivo -caminho $arquivo
-                if (($r.Quebras + $r.Juncoes) -gt 0) {
-                    Write-Host "Ajustado ($($r.Quebras) quebra(s), $($r.Juncoes) juncao(oes)): $arquivo"
+                if (($r.Quebras + $r.Juncoes + $r.Remocoes) -gt 0) {
+                    Write-Host "Ajustado ($($r.Quebras) quebra(s), $($r.Juncoes) juncao(oes), $($r.Remocoes) remocao(oes) de aspas+maior): $arquivo"
                     Write-Host "  -> se o arquivo estiver aberto no editor, feche SEM salvar e reabra pra ver o resultado (senao salvar por cima desfaz o ajuste)."
                 } else {
-                    Write-Host "Sem ';' pendente: $arquivo"
+                    Write-Host "Nada pendente: $arquivo"
                 }
             }
         }

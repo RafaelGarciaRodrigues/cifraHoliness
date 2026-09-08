@@ -371,7 +371,20 @@ https://www.youtube.com/watch?v=hIrw_wRXAfk
 - mostrar esse icone ao lado direito do nome da música <i class="bi bi-youtube"></i>
 - se clicar no icone uma nova guia deve abrir target=_blank e abrir a url dentro da tag, no exemplo https://www.youtube.com/watch?v=hIrw_wRXAfk
 
+# AjustaCifra
+- em AjustaCifra.bat
+- quando encontrar "">" deve eliminar
+- exemplo:
+    Bm7        A           
+Cantando ao cordeiro uma canção
+">G9
+Cantando ao cordeiro uma canção
 
+- deve ficar:
+    Bm7        A           
+Cantando ao cordeiro uma canção
+G9
+Cantando ao cordeiro uma canção
 
 
 
