@@ -261,11 +261,27 @@
 	#wakelock-indicativo.falhou {
 		color: #f66;
 	}
+	/* Linha de referencia (ver rc.md secao LINHA DEMARCATORIA): a tela do projetor (letras.html) e
+	   mais baixa que a do celular, entao essa linha marca ~40% da altura do celular pra dar uma
+	   nocao aproximada de onde o texto sai da area visivel do projetor. So aparece com o play ativo. */
+	#linha-demarcatoria {
+		position: fixed;
+		left: 0;
+		right: 0;
+		top: 40%;
+		border-top: 2px dashed #555;
+		pointer-events: none;
+		z-index: 9;
+	}
+	#linha-demarcatoria[hidden] {
+		display: none;
+	}
 </style>
 </head>
 <body>
 <nav id="nav-alfabeto"></nav>
 <div id="grupos-painel"></div>
+<div id="linha-demarcatoria" hidden></div>
 <div id="controles-velocidade">
 	<div id="velocidade-menos-btn" class="botao-circular pequeno" hidden><i class="bi bi-music-note"></i></div>
 	<div id="velocidade-mais-btn" class="botao-circular pequeno" hidden><i class="bi bi-music-note-beamed"></i></div>
@@ -6104,6 +6120,7 @@ Tu sempre serás
 Santo
           D
 Santo pra sempre
+
 G
 Teu nome é o mais alto
    A
@@ -9799,6 +9816,7 @@ Você vai discar várias vezes, telefone mudo não pode chamar
 	var fracaoAcumulada = 0; // guarda pixels fracionarios entre frames (scrollBy arredonda para inteiro)
 	var botaoPlayPause = document.getElementById("play-pause-btn");
 	var iconePlayPause = botaoPlayPause.querySelector("i");
+	var linhaDemarcatoria = document.getElementById("linha-demarcatoria");
 
 	function velocidadeAtualPct() {
 		var secao = musicaAtual();
@@ -9935,6 +9953,7 @@ Você vai discar várias vezes, telefone mudo não pode chamar
 	function iniciarScroll() {
 		tocando = true;
 		iconePlayPause.className = "bi bi-pause";
+		linhaDemarcatoria.hidden = false;
 		atualizarIndicativoWakeLock();
 		pedirWakeLock();
 		if (!wakeLockRetryInterval) {
@@ -9960,6 +9979,7 @@ Você vai discar várias vezes, telefone mudo não pode chamar
 	function pararScroll() {
 		tocando = false;
 		iconePlayPause.className = "bi bi-play";
+		linhaDemarcatoria.hidden = true;
 		liberarWakeLock();
 		atualizarIndicativoWakeLock();
 		if (wakeLockRetryInterval) {

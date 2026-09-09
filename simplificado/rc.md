@@ -401,6 +401,16 @@ Cantando ao cordeiro uma canção
 -- se não existir, usa o valor do cache
 - entretanto, o erro pode ser outro, verifique
 
+# LINHA DEMARCATÓRIA
+- quando pressiono o play e a letra passa ser mostrada em letras.html
+- a tela do computador é menor verticalmente que a tela do celular
+- para que eu possa ter uma noção do que está sendo mostrado:
+-- comente quando o play estiver pressionado e ativo
+-- crie uma linha pontilhada horizontal em  cor #555
+-- ela deve estar posicionada em 40% da altura da tela (decima para baixo)
+- quando o play for parado, a linha some
+
+
 
 
 
