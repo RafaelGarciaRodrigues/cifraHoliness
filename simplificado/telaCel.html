@@ -9440,11 +9440,11 @@ Você vai discar várias vezes, telefone mudo não pode chamar
 	var YT_RE = /<yt>\s*([\s\S]*?)\s*<\/yt>/;
 
 	// <t>N</t>: velocidade pre-definida da musica, em % (ver rc.md secao TIME PRE DEFINIDO). Mesmo
-	// tratamento da <yt>: removida do corpo, nunca aparece na tela. So vale como PONTO DE PARTIDA -
-	// se o usuario ja tiver ajustado e salvo uma velocidade pra essa musica (velocidadesSalvas),
-	// o valor salvo continua tendo prioridade; <t> so substitui o VELOCIDADE_PADRAO generico (0)
-	// quando ainda nao existe nada salvo, senao ajustar a velocidade e recarregar a pagina
-	// desfaria o ajuste do usuario toda vez.
+	// tratamento da <yt>: removida do corpo, nunca aparece na tela. Se a tag existir, ela manda -
+	// mesmo que o cache (velocidadesSalvas) tenha um valor diferente de uma sessao anterior (ver
+	// rc.md secao ERRO: a 1a versao deixava o cache vencer, o que na pratica anulava a tag pra
+	// qualquer musica que ja tivesse velocidade salva). So cai no cache/VELOCIDADE_PADRAO quando a
+	// musica NAO tem <t>.
 	var TEMPO_RE = /<t>\s*(\d+)\s*<\/t>/;
 
 	var musicas = nos.map(function (no) {
@@ -9460,14 +9460,15 @@ Você vai discar várias vezes, telefone mudo não pode chamar
 			youtube = ytMatch[1].trim();
 			corpo = (corpo.slice(0, ytMatch.index) + corpo.slice(ytMatch.index + ytMatch[0].length)).trim();
 		}
-		var velocidadePadraoMusica = VELOCIDADE_PADRAO;
 		var tempoMatch = corpo.match(TEMPO_RE);
+		var velocidadeSalva;
 		if (tempoMatch) {
-			velocidadePadraoMusica = Math.max(0, Math.min(100, parseInt(tempoMatch[1], 10)));
+			velocidadeSalva = Math.max(0, Math.min(100, parseInt(tempoMatch[1], 10)));
 			corpo = (corpo.slice(0, tempoMatch.index) + corpo.slice(tempoMatch.index + tempoMatch[0].length)).trim();
+		} else {
+			velocidadeSalva = velocidadesSalvas[titulo];
+			if (velocidadeSalva === undefined) velocidadeSalva = VELOCIDADE_PADRAO;
 		}
-		var velocidadeSalva = velocidadesSalvas[titulo];
-		if (velocidadeSalva === undefined) velocidadeSalva = velocidadePadraoMusica;
 		return { titulo: titulo, conteudo: corpo, semis: semisSalvo, velocidade: velocidadeSalva, grupo: grupo, youtube: youtube };
 	});
 

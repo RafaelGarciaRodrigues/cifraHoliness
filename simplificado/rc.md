@@ -392,6 +392,15 @@ Cantando ao cordeiro uma canção
 - somente para as musicas com essa tag deve:
 -- ao carrear a página a musica com a tag o class="velocidade-controle" input deve ter o valor dentro da tag, no exemplo, 29
 
+# ERRO
+- não funcionou o pedido acima
+- acredito que a funcionalidade de manter no cache o valor da velocidade está se sobrepondo
+- como deve ser o funcionamento:
+-- deve verificar se existe a tag <t> na música
+-- se existir considera esse valor (mesmo que seja divergente do cache)
+-- se não existir, usa o valor do cache
+- entretanto, o erro pode ser outro, verifique
+
 
 
 
