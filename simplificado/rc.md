@@ -410,8 +410,19 @@ Cantando ao cordeiro uma canção
 -- ela deve estar posicionada em 40% da altura da tela (decima para baixo)
 - quando o play for parado, a linha some
 
+# AJUSTAR MODO play
+- tanto em telaCel.html quanto em \nodeMCU\data\index.html
+-- no modo play, quando chega na última música ela para quando o final da letra aparece embaixo da tela (justamente porque não há nada mais a mostrar)
+-- mas isso ocasiona dois problema no comportamento
+--- modo play é interrompido, fazendo a tela do celular apagar
+--- a letra não aparece em letras.html, pois é a parte de cima da letra que é mostrada lá
 
+- para resolver esse problema minha sugestão é que na última música, somente quando está tocando o modo PLAY
+- a letra continue subindo até desaparecer da TELA
+- como não há conteudo embaixo, pode ser uma parte em branco (sem letra e cifra) ocupando esse espaço
 
+- IMPLEMENTE E ME PERGUNTE SE TIVER DUVIDAS
+- NÃO QUEBRE NADA QUE JÁ ESTÁ FUNCIONANDO
 
 
 

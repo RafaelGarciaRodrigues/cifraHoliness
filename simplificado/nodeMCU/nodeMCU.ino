@@ -38,14 +38,19 @@
 // espaco de FS suficiente: os tres arquivos juntos somam uns 650KB hoje (index.html - copia de
 // telaCel.html - e o maior, ~200KB, crescendo conforme mais musicas forem adicionadas).
 
+
+
+
+
+
+
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 #include <LittleFS.h>
 #include <ArduinoJson.h>
 
-// SSID/senha da rede que o ESP8266 cria. Editar aqui se precisar trocar.
+// SSID da rede que o ESP8266 cria. Editar aqui se precisar trocar.
 const char *AP_SSID = "CifrasIgreja";
-const char *AP_SENHA = "cifras123";
 
 ESP8266WebServer server(80);
 
@@ -168,7 +173,7 @@ void setup() {
 	}
 
 	WiFi.mode(WIFI_AP);
-	WiFi.softAP(AP_SSID, AP_SENHA);
+	WiFi.softAP(AP_SSID); // sem senha, rede aberta
 	Serial.print("SoftAP iniciado, IP: ");
 	Serial.println(WiFi.softAPIP()); // deve ser 192.168.4.1
 

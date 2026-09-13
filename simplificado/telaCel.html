@@ -9602,6 +9602,17 @@ Você vai discar várias vezes, telefone mudo não pode chamar
 		lista.appendChild(secao);
 	});
 
+	// Espaco em branco (sem letra/cifra) que só ganha altura enquanto o PLAY está tocando a
+	// última música - ver rc.md secao "AJUSTAR MODO play". Fica sempre por último no flex
+	// (order bem maior que qualquer musica.style.order usado em aplicarFiltro), então aparece
+	// logo depois da última seção visível, seja qual for o filtro/grupo ativo.
+	var espacoFinalPlay = document.createElement("div");
+	espacoFinalPlay.id = "espaco-final-play";
+	espacoFinalPlay.style.order = "999999";
+	espacoFinalPlay.style.height = "0px";
+	espacoFinalPlay.style.flex = "none";
+	lista.appendChild(espacoFinalPlay);
+
 	// ===== Selecao e filtro de musicas =====
 	var filtroAtivo = false;
 	var filtroBtn = document.getElementById("filtro-btn");
@@ -9797,6 +9808,7 @@ Você vai discar várias vezes, telefone mudo não pode chamar
 	var scrollRAF = null;
 	var ultimoTimestamp = null;
 	var fracaoAcumulada = 0; // guarda pixels fracionarios entre frames (scrollBy arredonda para inteiro)
+	var espacoFinalPlayExpandido = false;
 	var botaoPlayPause = document.getElementById("play-pause-btn");
 	var iconePlayPause = botaoPlayPause.querySelector("i");
 	var linhaDemarcatoria = document.getElementById("linha-demarcatoria");
@@ -9873,6 +9885,16 @@ Você vai discar várias vezes, telefone mudo não pode chamar
 			fracaoAcumulada -= pixelsInteiros;
 		}
 		if ((window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight - 2) {
+			// Chegou ao fim de tudo (ultima musica visivel) sem ter expandido o espaco em branco
+			// ainda: em vez de parar o PLAY aqui (o que apagaria a tela e travaria a ultima linha
+			// mostrada em letras.html - ver rc.md secao "AJUSTAR MODO play"), abre espaco embaixo
+			// pra letra poder terminar de subir e sumir da tela antes de realmente parar.
+			if (!espacoFinalPlayExpandido) {
+				espacoFinalPlayExpandido = true;
+				espacoFinalPlay.style.height = window.innerHeight + "px";
+				scrollRAF = requestAnimationFrame(passoScroll);
+				return;
+			}
 			pararScroll();
 			return;
 		}
@@ -9963,6 +9985,10 @@ Você vai discar várias vezes, telefone mudo não pode chamar
 		tocando = false;
 		iconePlayPause.className = "bi bi-play";
 		linhaDemarcatoria.hidden = true;
+		if (espacoFinalPlayExpandido) {
+			espacoFinalPlayExpandido = false;
+			espacoFinalPlay.style.height = "0px";
+		}
 		liberarWakeLock();
 		atualizarIndicativoWakeLock();
 		if (wakeLockRetryInterval) {
