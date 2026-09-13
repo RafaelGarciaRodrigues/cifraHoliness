@@ -424,6 +424,18 @@ Cantando ao cordeiro uma canção
 - IMPLEMENTE E ME PERGUNTE SE TIVER DUVIDAS
 - NÃO QUEBRE NADA QUE JÁ ESTÁ FUNCIONANDO
 
+# ERRO
+LittleFS Filesystem Uploader v1.6.3 -- https://github.com/earlephilhower/arduino-littlefs-upload
+
+ Sketch Path: C:\Users\INHAUS - MKT\Documents\00 Particular\Músicas\cifraHoliness\simplificado\nodeMCU
+   Data Path: C:\Users\INHAUS - MKT\Documents\00 Particular\Músicas\cifraHoliness\simplificado\nodeMCU\data
+      Device: ESP8266 series
+
+
+ERROR: No port specified, check IDE menus.
+
+como devo proceder?
+
 
 
 

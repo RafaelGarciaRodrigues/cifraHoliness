@@ -4,7 +4,7 @@ TOM:D
 <yt>
 https://www.youtube.com/watch?v=ijNCc7ICCck
 </yt>
-<t>21</t>
+<t>19</t>
 
 <intro>
              G     
