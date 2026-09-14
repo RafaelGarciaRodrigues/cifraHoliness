@@ -454,3 +454,31 @@ como devo proceder?
 -- text-decoration: line-through;
 - quero que apenas a letra de <intro> nas linhas que posuem texto fiquem text-decoration: line-through;
 
+- em todas as tags como <intro> e <refrao> por exemplo e demais que possam serm criadas deve:
+-- mesmo que haja espaço (quebra de linha) antes e depois delas essas quebras (apenas uma antes e uma depois) não devem ser mostradas na tela
+-- por exemplo:
+                        B 
+E acalma a tempestade que
+          B7      E 
+Agita o meu coração 
+
+
+<refrao>
+
+             
+Acalma o meu 
+F#m    B/D#
+coração
+
+-- deve ser mostrada como:
+
+                        B 
+E acalma a tempestade que
+          B7      E 
+Agita o meu coração 
+
+<refrao>
+             
+Acalma o meu 
+F#m    B/D#
+coração

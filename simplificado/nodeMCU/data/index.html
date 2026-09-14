@@ -628,8 +628,12 @@ Ele a Glória, pra sempre amém
 Acalma o Meu Coração
 TOM:E
 
+<yt>
+https://www.youtube.com/watch?v=9yuLbxchNZQ
+</yt>
 
 <intro>
+
 E           
  Acalma o meu
 F#m    B/D#
@@ -648,7 +652,6 @@ Que venço o mar da
 aflição
 
 </intro>
-
 
 E          C#m7       F#m7
 Não quero interromper 
@@ -682,9 +685,11 @@ Descanse minha alma
 E acalma a tempestade que
           B7      E 
 Agita o meu coração 
+
 <refrao>
              
-Acalma o meu 
+E           
+ Acalma o meu
 F#m    B/D#
 coração
              
@@ -716,6 +721,7 @@ Se for em tua presença
 Acalma o meu   
     A   E
 coração 
+
 </refrao>  
 
      C#m7       F#m7
@@ -747,9 +753,11 @@ O seu oxigênio
 Senhor, sem tua presença
                   B7      E 
 Minha fé vai naufragar
+
 <refrao>
 
-Acalma o meu 
+E           
+ Acalma o meu
 F#m    B/D#
 coração
              
@@ -765,8 +773,8 @@ Que venço o mar da
   A   E
 aflição 
 
-              
-Acalma o meu  
+E           
+ Acalma o meu 
 F#m    B/D#
 coração
              
@@ -782,8 +790,8 @@ Acalma o meu
     A   E
 coração  
 
-             
-Acalma o meu 
+E           
+ Acalma o meu
 F#m    B/D#
 coração
              
@@ -799,8 +807,8 @@ Que venço o mar da
   A   E
 aflição 
 
-              
-Acalma o meu  
+E           
+ Acalma o meu 
 F#m    B/D#
 coração
              
@@ -815,6 +823,7 @@ Se for em tua presença
 Acalma o meu   
     A   E
 coração
+
 </refrao>
 ]]>
 </musica>
@@ -9378,8 +9387,30 @@ Você vai discar várias vezes, telefone mudo não pode chamar
 	// .linha.intro tambem riscava cifras e linhas vazias, o que nao era a intencao).
 	function ehLinhaDeLetraComTexto(texto) {
 		if (!texto || !texto.trim()) return false;
+		if (ehMarcadorDeFormatacao(texto)) return false;
 		if (/^TOM:\S/i.test(texto.trim())) return false;
 		return !isChordLine(texto);
+	}
+
+	// No .txt fonte e comum ter linha(s) em branco antes/depois de um marcador de tag, so pra
+	// legibilidade de quem edita. Sem isso, cada uma vira uma linha em branco visivel na tela, alem
+	// do proprio marcador (que ja nao mostra texto, mas ainda ocupa uma linha). O pedido (ver rc.md
+	// secao FORMATACAO) e suprimir EXATAMENTE UMA linha em branco imediatamente antes e UMA
+	// imediatamente depois de cada marcador - branco extra alem dessa (mais afastado do marcador)
+	// continua aparecendo normalmente. Roda sobre o array ORIGINAL (antes de quebrarLinhasLongas) e
+	// so decide quais indiceOriginal excluir da renderizacao final - nao mexe no array em si, pra
+	// nao alterar a adjacencia que quebrarLinhasLongas usa pra parear cifra+letra, nem os indices
+	// usados pelo sincronismo com o NodeMCU.
+	function linhasEmBrancoAdjacentesAMarcadores(linhas) {
+		var excluir = {};
+		linhas.forEach(function (l, i) {
+			if (!ehMarcadorDeFormatacao(l)) return;
+			var anterior = i - 1;
+			if (anterior >= 0 && linhas[anterior].trim() === "") excluir[anterior] = true;
+			var proxima = i + 1;
+			if (proxima < linhas.length && linhas[proxima].trim() === "") excluir[proxima] = true;
+		});
+		return excluir;
 	}
 
 	function renderCifra(texto, semis) {
@@ -9388,8 +9419,11 @@ Você vai discar várias vezes, telefone mudo não pode chamar
 		TAGS_FORMATACAO.forEach(function (tag) {
 			flagsPorTag[tag] = marcarLinhasEntreTags(linhas, tag);
 		});
+		var linhasEmBrancoExcluidas = linhasEmBrancoAdjacentesAMarcadores(linhas);
 		var partes = quebrarLinhasLongas(linhas, colunasDisponiveis);
-		return partes.map(function (parte) {
+		return partes.filter(function (parte) {
+			return !linhasEmBrancoExcluidas[parte.indiceOriginal];
+		}).map(function (parte) {
 			var marcador = ehMarcadorDeFormatacao(parte.texto);
 			var html = marcador ? "" : renderCifraLinha(parte.texto, semis);
 			var classe = "linha";

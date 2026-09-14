@@ -1,8 +1,12 @@
 ﻿Acalma o Meu Coração
 TOM:E
 
+<yt>
+https://www.youtube.com/watch?v=9yuLbxchNZQ
+</yt>
 
 <intro>
+
 E           
  Acalma o meu
 F#m    B/D#
@@ -21,7 +25,6 @@ Que venço o mar da
 aflição
 
 </intro>
-
 
 E          C#m7       F#m7
 Não quero interromper 
@@ -55,9 +58,11 @@ Descanse minha alma
 E acalma a tempestade que
           B7      E 
 Agita o meu coração 
+
 <refrao>
              
-Acalma o meu 
+E           
+ Acalma o meu
 F#m    B/D#
 coração
              
@@ -89,6 +94,7 @@ Se for em tua presença
 Acalma o meu   
     A   E
 coração 
+
 </refrao>  
 
      C#m7       F#m7
@@ -120,9 +126,11 @@ O seu oxigênio
 Senhor, sem tua presença
                   B7      E 
 Minha fé vai naufragar
+
 <refrao>
 
-Acalma o meu 
+E           
+ Acalma o meu
 F#m    B/D#
 coração
              
@@ -138,8 +146,8 @@ Que venço o mar da
   A   E
 aflição 
 
-              
-Acalma o meu  
+E           
+ Acalma o meu 
 F#m    B/D#
 coração
              
@@ -155,8 +163,8 @@ Acalma o meu
     A   E
 coração  
 
-             
-Acalma o meu 
+E           
+ Acalma o meu
 F#m    B/D#
 coração
              
@@ -172,8 +180,8 @@ Que venço o mar da
   A   E
 aflição 
 
-              
-Acalma o meu  
+E           
+ Acalma o meu 
 F#m    B/D#
 coração
              
@@ -188,4 +196,5 @@ Se for em tua presença
 Acalma o meu   
     A   E
 coração
+
 </refrao>
