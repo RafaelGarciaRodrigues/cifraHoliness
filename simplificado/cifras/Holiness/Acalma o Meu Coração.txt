@@ -56,6 +56,7 @@ E acalma a tempestade que
           B7      E 
 Agita o meu coração 
 
+<refrao>
              
 Acalma o meu 
 F#m    B/D#
@@ -88,7 +89,8 @@ Se for em tua presença
           C#m7 
 Acalma o meu   
     A   E
-coração   
+coração 
+</refrao>  
 
      C#m7       F#m7
 O barulho do mar 
@@ -120,7 +122,8 @@ Senhor, sem tua presença
                   B7      E 
 Minha fé vai naufragar
 
-             
+<refrao>
+
 Acalma o meu 
 F#m    B/D#
 coração
@@ -186,4 +189,5 @@ Se for em tua presença
           C#m7 
 Acalma o meu   
     A   E
-coração  
+coração
+</refrao>

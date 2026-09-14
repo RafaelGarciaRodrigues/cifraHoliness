@@ -438,4 +438,19 @@ como devo proceder?
 
 
 
+# FORMATAÇÃO
+- atualmente quando a cifra existe a tag <intro> o conteudo entre ela fica com a classe intro
+-- quero adicionar a classe intro
+--- text-decoration: line-through;
+
+
+- semelhante a tag intro quero adicionar a tag <refrao></refrao>
+- o que estiver dentro dela deve:
+-- cifra ter a cor #ffcc66
+- letra ser font-weight: bolder;
+- deve alterar tanto telaCel.html quando index.html
+
+- as linhas da intro sem texto (vazias) e também as cifras ficaram:
+-- text-decoration: line-through;
+- quero que apenas a letra de <intro> nas linhas que posuem texto fiquem text-decoration: line-through;
 

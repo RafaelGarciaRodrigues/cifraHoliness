@@ -82,8 +82,17 @@
 	.musica pre.cifra .linha.intro {
 		color: #bbb;
 	}
+	.musica pre.cifra .linha.intro.letra {
+		text-decoration: line-through;
+	}
 	.musica pre.cifra .linha.intro .chord {
 		color: #0ff;
+	}
+	.musica pre.cifra .linha.refrao {
+		font-weight: bolder;
+	}
+	.musica pre.cifra .linha.refrao .chord {
+		color: #ffcc66;
 	}
 	#controles-velocidade {
 		position: fixed;
@@ -657,6 +666,7 @@ E acalma a tempestade que
           B7      E 
 Agita o meu coração 
 
+<refrao>
              
 Acalma o meu 
 F#m    B/D#
@@ -689,7 +699,8 @@ Se for em tua presença
           C#m7 
 Acalma o meu   
     A   E
-coração   
+coração 
+</refrao>  
 
      C#m7       F#m7
 O barulho do mar 
@@ -721,7 +732,8 @@ Senhor, sem tua presença
                   B7      E 
 Minha fé vai naufragar
 
-             
+<refrao>
+
 Acalma o meu 
 F#m    B/D#
 coração
@@ -787,7 +799,8 @@ Se for em tua presença
           C#m7 
 Acalma o meu   
     A   E
-coração  
+coração
+</refrao>
 ]]>
 </musica>
 
@@ -7469,7 +7482,7 @@ Tão maravilhoso para mim
 ]]>
 </musica>
 
-<musica grupo="RAFAEL">
+<musica grupo="Rafael">
 <![CDATA[
 A Lua Que Eu Te Dei
 TOM:F
@@ -7558,7 +7571,7 @@ Durma bem
 ]]>
 </musica>
 
-<musica grupo="RAFAEL">
+<musica grupo="Rafael">
 <![CDATA[
 Acorrentado Em Você
 TOM:C
@@ -7618,7 +7631,7 @@ Eu me sinto acorrentado em você
 ]]>
 </musica>
 
-<musica grupo="RAFAEL">
+<musica grupo="Rafael">
 <![CDATA[
 Apenas Mais Uma de Amor
 TOM:Em
@@ -7681,7 +7694,7 @@ Ninguém   precisa saber
 ]]>
 </musica>
 
-<musica grupo="RAFAEL">
+<musica grupo="Rafael">
 <![CDATA[
 Boate Azul
 TOM: Dm
@@ -7844,7 +7857,7 @@ A flor da noite na boate azul
 ]]>
 </musica>
 
-<musica grupo="RAFAEL">
+<musica grupo="Rafael">
 <![CDATA[
 Chamamecero
 TOM:A
@@ -7938,7 +7951,7 @@ Que torce, pra vida melhorar
 ]]>
 </musica>
 
-<musica grupo="RAFAEL">
+<musica grupo="Rafael">
 <![CDATA[
 Do Fundo da Grota
 TOM: E
@@ -8130,7 +8143,7 @@ Pra inticá com a guaipecada
 ]]>
 </musica>
 
-<musica grupo="RAFAEL">
+<musica grupo="Rafael">
 <![CDATA[
 Enchendo os Olhos de Campo
 TOM: Cm
@@ -8195,7 +8208,7 @@ Manhãzita de maio, manhãzita de maio
 ]]>
 </musica>
 
-<musica grupo="RAFAEL">
+<musica grupo="Rafael">
 <![CDATA[
 I don't wanna miss a thing
 TOM:D
@@ -8298,7 +8311,7 @@ For all the rest of time
 ]]>
 </musica>
 
-<musica grupo="RAFAEL">
+<musica grupo="Rafael">
 <![CDATA[
 Meu Disfarce
 TOM:A
@@ -8401,7 +8414,7 @@ Estou apaixonado por você
 ]]>
 </musica>
 
-<musica grupo="RAFAEL">
+<musica grupo="Rafael">
 <![CDATA[
 Meu Rancho
 TOM:E
@@ -8454,7 +8467,7 @@ Um restingal de vassoura pôr-do-sol perto de mim
 ]]>
 </musica>
 
-<musica grupo="RAFAEL">
+<musica grupo="Rafael">
 <![CDATA[
 My sacrifice
 TOM:D
@@ -8557,7 +8570,7 @@ My sacrifice
 ]]>
 </musica>
 
-<musica grupo="RAFAEL">
+<musica grupo="Rafael">
 <![CDATA[
 Nosso Xote
 TOM:F
@@ -8594,7 +8607,7 @@ O corpo inteiro Faz meu coração bater
 ]]>
 </musica>
 
-<musica grupo="RAFAEL">
+<musica grupo="Rafael">
 <![CDATA[
 Outra Noite Que Se Vai
 TOM:Em
@@ -8711,7 +8724,7 @@ E depois me leva pra tua casa
 ]]>
 </musica>
 
-<musica grupo="RAFAEL">
+<musica grupo="Rafael">
 <![CDATA[
 Só Hoje
 TOM:E
@@ -8842,7 +8855,7 @@ Só hoje
 ]]>
 </musica>
 
-<musica grupo="RAFAEL">
+<musica grupo="Rafael">
 <![CDATA[
 Telefone Mudo
 TOM: G
@@ -9312,17 +9325,23 @@ Você vai discar várias vezes, telefone mudo não pode chamar
 
 	var colunasDisponiveis = medirColunasDisponiveis();
 
-	// <intro>/</intro> ficam em linhas proprias. As linhas ENTRE os marcadores (exclusive) sao
-	// marcadas como "dentro da intro" (cor diferenciada); os marcadores em si nunca aparecem.
-	function marcarLinhasIntro(linhas) {
+	// <intro>/</intro> e <refrao>/</refrao> ficam em linhas proprias (ver rc.md secao FORMATACAO).
+	// As linhas ENTRE os marcadores (exclusive) sao marcadas com a classe correspondente (cor/estilo
+	// diferenciados via CSS); os marcadores em si nunca aparecem. Os dois usam a mesma logica -
+	// generico por nome da tag em vez de duas funcoes quase identicas.
+	var TAGS_FORMATACAO = ["intro", "refrao"];
+
+	function marcarLinhasEntreTags(linhas, tag) {
+		var abre = "<" + tag + ">";
+		var fecha = "</" + tag + ">";
 		var flags = [];
 		var dentro = false;
 		linhas.forEach(function (l, i) {
 			var t = l.trim();
-			if (t === "<intro>") {
+			if (t === abre) {
 				dentro = true;
 				flags[i] = false;
-			} else if (t === "</intro>") {
+			} else if (t === fecha) {
 				dentro = false;
 				flags[i] = false;
 			} else {
@@ -9332,19 +9351,37 @@ Você vai discar várias vezes, telefone mudo não pode chamar
 		return flags;
 	}
 
-	function ehMarcadorIntro(texto) {
+	function ehMarcadorDeFormatacao(texto) {
 		var t = texto.trim();
-		return t === "<intro>" || t === "</intro>";
+		return TAGS_FORMATACAO.some(function (tag) {
+			return t === "<" + tag + ">" || t === "</" + tag + ">";
+		});
+	}
+
+	// Distingue "linha de letra com texto de verdade" de cifra/TOM:/linha vazia - usado pra restringir
+	// o line-through da <intro> so a letra (ver rc.md secao FORMATACAO: o line-through generico em
+	// .linha.intro tambem riscava cifras e linhas vazias, o que nao era a intencao).
+	function ehLinhaDeLetraComTexto(texto) {
+		if (!texto || !texto.trim()) return false;
+		if (/^TOM:\S/i.test(texto.trim())) return false;
+		return !isChordLine(texto);
 	}
 
 	function renderCifra(texto, semis) {
 		var linhas = String(texto).replace(/\r\n?/g, "\n").split("\n");
-		var flagsIntro = marcarLinhasIntro(linhas);
+		var flagsPorTag = {};
+		TAGS_FORMATACAO.forEach(function (tag) {
+			flagsPorTag[tag] = marcarLinhasEntreTags(linhas, tag);
+		});
 		var partes = quebrarLinhasLongas(linhas, colunasDisponiveis);
 		return partes.map(function (parte) {
-			var marcador = ehMarcadorIntro(parte.texto);
+			var marcador = ehMarcadorDeFormatacao(parte.texto);
 			var html = marcador ? "" : renderCifraLinha(parte.texto, semis);
-			var classe = "linha" + (flagsIntro[parte.indiceOriginal] ? " intro" : "");
+			var classe = "linha";
+			TAGS_FORMATACAO.forEach(function (tag) {
+				if (flagsPorTag[tag][parte.indiceOriginal]) classe += " " + tag;
+			});
+			if (ehLinhaDeLetraComTexto(parte.texto)) classe += " letra";
 			return '<span class="' + classe + '" data-linha-original="' + parte.indiceOriginal + '">' + html + "</span>";
 		}).join("\n");
 	}
