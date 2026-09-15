@@ -2,6 +2,7 @@
 TOM: A
 
 <yt>https://www.youtube.com/watch?v=46HWdiVVCEo</yt>
+<t>9</t>
 
 <intro>
          A9                 B7/A 
@@ -44,6 +45,7 @@ G#m                C#m7
    Faço tudo, mas vem novamente      
 A9                  F#m7 
     Eu mergulho na mirra ardente 
+	
 G#m                      C#m7 
     Mas peço que Tua presença aumente 
 A9                       F#m7 
