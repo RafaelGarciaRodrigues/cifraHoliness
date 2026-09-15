@@ -2,7 +2,7 @@
 TOM:Bm
 
 <yt>https://www.youtube.com/watch?v=QC780wTNfKg</yt>
-<t></t>
+<t>16</t>
 
 <intro>
 Bm          G  A9(11)
@@ -37,6 +37,7 @@ Para Ele são todas as coisas
 A Ele a Glória 
           D  A/C#  Bm
 A Ele a Gló______ria
+
         G  F#m7
 Ele a Glória   
             Bm7 
@@ -46,6 +47,7 @@ pra sempre amém
 A Ele a Glória 
           D  A/C#  Bm
 A Ele a Gló______ria
+
         G  F#m7
 Ele a Glória   
             Bm7 
@@ -57,16 +59,20 @@ Bm                    G
    Quão profundas riquezas
      A9(11)              Bm
 O saber e o conhecer de Deus
-           G             A9(11)       
-Quão insondáveis, seus juízos 
+           G    
+Quão insondáveis
+        A9(11)       
+ seus juízos 
           Bm    Bm7
 E seus caminhos 
                    G 
 Quão profundas riquezas
      A9(11)              Bm
 O saber e o conhecer de Deus
-           G             A9(11)       
-Quão insondáveis, seus juízos 
+           G    
+Quão insondáveis
+        A9(11)       
+ seus juízos 
           Bm
 E seus caminhos
 <refrao>
@@ -74,6 +80,7 @@ E seus caminhos
 A Ele a Glória 
           D  A/C#  Bm
 A Ele a Gló______ria
+
         G  F#m7
 Ele a Glória   
             Bm7 
@@ -83,6 +90,7 @@ pra sempre amém
 A Ele a Glória 
           D  A/C#  Bm
 A Ele a Gló______ria
+
         G  F#m7
 Ele a Glória   
             Bm7 
