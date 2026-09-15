@@ -2,7 +2,7 @@
 TOM: A
 
 <yt>https://www.youtube.com/watch?v=46HWdiVVCEo</yt>
-<t>19</t>
+<t>9</t>
 
 <intro>
          A9                 B7/A 
