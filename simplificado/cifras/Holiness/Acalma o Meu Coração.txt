@@ -37,14 +37,13 @@ Mas é só orando
       E/G#         C#7
 que eu encontro paz
            B7   F#m7  
-O vento da afli_ção   
+O vento da aflição   
                   B
 quer apagar a chama
          
 Da minha 
 B7      E   
 adoração 
-
 
   C#m7             F#m7
 O mundo é um oceano 
@@ -101,7 +100,6 @@ coração
 </refrao> 
 
 <intro>
-
 E           
  Acalma o meu
 F#m    B/D#
@@ -135,6 +133,7 @@ Perdoa se pensei
 Que em meio ao teu silêncio
                B7      E 
 Não estivesse aqui
+
 
      C#m7       F#m7
 Viver na superfície
