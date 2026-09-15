@@ -482,3 +482,14 @@ Agita o meu coração
 Acalma o meu 
 F#m    B/D#
 coração
+
+
+# EDITAR MÚSICAS
+- quando eu executar \simplificado\AjustaCifra.bat deve:
+-- chamar por último \push.bat
+-- em \push.bat
+--- retire as confirmações
+--- deve executar do inicio ao final e fechar se não houver erro
+--- se houver esse avisa e só nesse caso pede confirmação
+-- \simplificado\AjustaCifra.bat deve:
+--- se comportar como é agora, não fecha, posso ir executando em loop a cada confirmação

@@ -13,11 +13,16 @@
 # Tambem remove qualquer `">` encontrado em qualquer linha (artefato de copia/cola de outros sites
 # de cifra - ver rc.md secao AjustaCifra) - essa limpeza roda ANTES do ajuste do ";", pra classificar
 # corretamente cifra/letra mesmo em linhas que ainda tem esse lixo.
+# No FINAL de cada rodada do loop chama \push.bat (ver rc.md secao EDITAR MUSICAS) - regenera
+# telaCel.html/nodeMCU a partir de \cifras e sobe pro git sozinho, sem pedir confirmacao nenhuma
+# (so pausa se push.bat/push.ps1 avisar erro). Assim cada vez que aperto uma tecla pra rodar de
+# novo, o ajuste que acabou de ser feito ja fica commitado/pushado tambem.
 
 $ErrorActionPreference = "Stop"
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $cifrasDir = Join-Path $scriptDir "cifras"
+$pushBatPath = Join-Path (Split-Path -Parent $scriptDir) "push.bat"
 
 if (-not (Test-Path $cifrasDir)) {
     Write-Error "Pasta cifras nao encontrada em: $cifrasDir"
@@ -250,6 +255,19 @@ while ($true) {
     } catch {
         Write-Host "Erro ao processar: $($_.Exception.Message)"
     }
+
+    Write-Host ""
+    Write-Host "---- push.bat ----"
+    if (Test-Path $pushBatPath) {
+        try {
+            & $pushBatPath
+        } catch {
+            Write-Host "Erro ao chamar push.bat: $($_.Exception.Message)"
+        }
+    } else {
+        Write-Host "push.bat nao encontrado em: $pushBatPath"
+    }
+    Write-Host "-------------------"
 
     Write-Host ""
     Write-Host "Pressione qualquer tecla para executar de novo (feche esta janela para sair)..."
