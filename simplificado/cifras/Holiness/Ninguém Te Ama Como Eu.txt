@@ -9,14 +9,17 @@ TOM:A {A}
 <intro>
            A   E     F#m  
 Ninguém te ama  como eu 
+
           Bm  D    E  E7
 ninguém te ama como eu
+
           A   
 Olhe pra cruz 
        E             F#m  
 esta é minha grande prova
 Bm          D         E  E7
  ninguém te ama  como eu
+
 </intro>
 
 A {E}    E           F#m     
@@ -81,26 +84,36 @@ Eu sei bem o que me dizes
 
       D             E   E7  
 ainda que nunca me fales
+
 A      E                 F#m  
 Eu sei bem o que tens sentido
+
 Bm          D          E    E7
  ainda que nunca me reveles 
+ 
 
 A        E          F#m  
 Tenho andado ao teu lado
+
 Bm       D         E    E7  E
  junto a ti permanecido
+ 
 A     E             F#m   
 Eu te levo em meus braços
+
 Bm          D           E   E7 E 
  pois sou teu melhor amigo
  
  
+ 
 <refrao>
+
            A   E     F#m  
 Ninguém te ama  como eu 
+
           Bm  D    E  E7
 ninguém te ama como eu
+
           A   
 Olhe pra cruz 
        E             F#m  
@@ -109,13 +122,43 @@ Bm          D         E  E7
  ninguém te ama  como eu
            A  E       F#m 
 Ninguém te ama  como eu
+
             Bm D      E  E7
 ninguém te ama   como eu
+
            A            E   
 Olhe pra cruz foi por ti 
          F#m Bm 
 porque te amo
+
 Bm          D         E  E7
  ninguém te ama  como eu
+ 
+           A   E     F#m  
+Ninguém te ama  como eu 
 
-<refrao>
+          Bm  D    E  E7
+ninguém te ama como eu
+
+          A   
+Olhe pra cruz 
+       E             F#m  
+esta é minha grande prova
+Bm          D         E  E7
+ ninguém te ama  como eu
+           A  E       F#m 
+Ninguém te ama  como eu
+
+            Bm D      E  E7
+ninguém te ama   como eu
+
+           A            E   
+Olhe pra cruz foi por ti 
+         F#m Bm 
+porque te amo
+
+Bm          D         E  E7
+ ninguém te ama  como eu
+ 
+
+</refrao>
