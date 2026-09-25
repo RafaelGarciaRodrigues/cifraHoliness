@@ -1,5 +1,7 @@
 ﻿Noites Traiçoeiras
-TOM:A
+TOM:A {C#}  
+<t></t>
+<yt>https://www.youtube.com/watch?v=nR_Wd-is3cw</yt>
 
 
 <intro>
@@ -15,14 +17,14 @@ Cristo estará contigo
 O mundo pode até 
                E
 fazer você chorar
-                  
+E
 Mas Deus te quer 
 		A     A4  A  A4
 sorrindo
 </intro>
 
 
- A             
+ A {C#}            
 Deus está aqui 
          C#m7  
 neste momento
@@ -56,6 +58,7 @@ Do princípio ao fim
                     A     A4  A  G
 de todos os seus momentos
 
+<refrao>
 A            D  
 E ainda se vier 
              E7
@@ -68,11 +71,11 @@ Cristo estará contigo
 O mundo pode até 
                E
 fazer você chorar
-                  
+E       
 Mas Deus te quer 
 		A     A4  A  A4
 sorrindo
-
+</refrao>
 
  A                         C#m7
 Seja qual for o seu problema,
@@ -101,7 +104,6 @@ Para aliviar
 os seus sofrimentos,
    E    D
   oh,..oh
-
                   Bm7
 É Ele o autor da fé
                  E  
@@ -109,6 +111,7 @@ Do princípio ao fim,
                       A     A4  A  G
  de todos os seus momentos
 
+<refrao>
 A            D  
 E ainda se vier 
              E7
@@ -121,7 +124,7 @@ Cristo estará contigo
 O mundo pode até 
                E
 fazer você chorar
-                  
+E           
 Mas Deus te quer 
 		A     A4  A  A4
 sorrindo
@@ -138,7 +141,7 @@ Cristo estará contigo
 O mundo pode até 
                E
 fazer você chorar
-                  
+E 
 Mas Deus te quer 
 		A     A4  A  A4
 sorrindo
@@ -147,7 +150,8 @@ sorrindo
 O mundo pode até 
                E
 fazer você chorar
-                  
+E
 Mas Deus te quer 
 		A     A4  A  A4
 sorrindo
+<refrao>

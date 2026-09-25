@@ -6,6 +6,8 @@ TOM:A {A}
 <t>25</t>
 
 
+
+
 <intro>
            A   E     F#m  
 Ninguém te ama  como eu 
