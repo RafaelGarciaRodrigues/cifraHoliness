@@ -3,6 +3,9 @@ TOM:A {A}
 
 <yt>https://www.youtube.com/watch?v=JCN4ggSZPUk</yt>
 
+<t>25</t>
+
+
 <intro>
            A   E     F#m  
 Ninguém te ama  como eu 
@@ -27,6 +30,7 @@ Tenho esperado que me fales
 
 Bm          D            E       E7
   tenho esperado que viesses a mim
+  
   
 A      E                 F#m  
 Eu sei bem o que tens vivido
@@ -60,6 +64,7 @@ Ninguém te ama  como eu
 
             Bm D      E  E7
 ninguém te ama   como eu
+
            A            E   
 Olhe pra cruz foi por ti 
          F#m Bm 
