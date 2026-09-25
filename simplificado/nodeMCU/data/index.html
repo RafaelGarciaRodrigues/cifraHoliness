@@ -11599,8 +11599,24 @@ Você vai discar várias vezes, telefone mudo não pode chamar
 	modalAcorde.addEventListener("click", esconderModalAcorde);
 
 	// ===== Primeira nota da musica: toca a nota por 5 segundos =====
+	// Nota unica sustentada de violino solo (timbre suave e expressivo, ataque lento, decaimento
+	// gradual), com pad ambiente de fundo e reverb - tudo sintetizado via Web Audio (sem arquivos
+	// externos, pra funcionar offline/no NodeMCU).
 	var audioCtx = null;
+	var reverbImpulso = null;
 	var somNotaAtual = null;
+
+	function criarImpulsoReverb(ctx, segundos, decaimento) {
+		var tamanho = Math.floor(ctx.sampleRate * segundos);
+		var buf = ctx.createBuffer(2, tamanho, ctx.sampleRate);
+		for (var c = 0; c < 2; c++) {
+			var dados = buf.getChannelData(c);
+			for (var i = 0; i < tamanho; i++) {
+				dados[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / tamanho, decaimento);
+			}
+		}
+		return buf;
+	}
 
 	function tocarNota(nota) {
 		var raiz = parseRoot(nota);
@@ -11609,41 +11625,131 @@ Você vai discar várias vezes, telefone mudo não pode chamar
 		if (!Ctx) return;
 		if (!audioCtx) audioCtx = new Ctx();
 		if (audioCtx.state === "suspended") audioCtx.resume();
+		if (!reverbImpulso) reverbImpulso = criarImpulsoReverb(audioCtx, 3.5, 2.5);
 		if (somNotaAtual) {
-			try { somNotaAtual.stop(); } catch (e) {}
+			somNotaAtual.stop();
 			somNotaAtual = null;
 		}
+
+		var ctx = audioCtx;
 		var duracao = 5;
-		var freq = 440 * Math.pow(2, (n2i(raiz) - 9) / 12); // oitava 4 (C4..B4)
-		var agora = audioCtx.currentTime;
-		var ganho = audioCtx.createGain();
-		ganho.gain.setValueAtTime(0.0001, agora);
-		ganho.gain.exponentialRampToValueAtTime(0.35, agora + 0.03);
-		ganho.gain.setValueAtTime(0.35, agora + duracao - 0.6);
-		ganho.gain.exponentialRampToValueAtTime(0.0001, agora + duracao);
-		ganho.connect(audioCtx.destination);
-		// Fundamental + harmonicos leves (timbre tipo orgao/piano eletrico)
-		var osciladores = [[1, 1], [2, 0.35], [3, 0.15], [4, 0.08]].map(function (h) {
-			var osc = audioCtx.createOscillator();
-			var g = audioCtx.createGain();
-			osc.type = "sine";
-			osc.frequency.value = freq * h[0];
-			g.gain.value = h[1];
-			osc.connect(g);
-			g.connect(ganho);
-			osc.start(agora);
-			osc.stop(agora + duracao);
-			return osc;
+		var t0 = ctx.currentTime + 0.02;
+		var fim = t0 + duracao;
+		var freq = 440 * Math.pow(2, (n2i(raiz) - 9) / 12); // oitava 4 (C4..B4), regiao do violino
+		var fontes = [];
+
+		// Saida: mix seco + reverb (atmosfera cinematografica)
+		var master = ctx.createGain();
+		master.gain.value = 0.9;
+		master.connect(ctx.destination);
+		var reverb = ctx.createConvolver();
+		reverb.buffer = reverbImpulso;
+		var molhado = ctx.createGain();
+		molhado.gain.value = 0.55;
+		reverb.connect(molhado);
+		molhado.connect(master);
+
+		function osc(tipo, f, detune) {
+			var o = ctx.createOscillator();
+			o.type = tipo;
+			o.frequency.value = f;
+			o.detune.value = detune || 0;
+			fontes.push(o);
+			return o;
+		}
+
+		// --- Violino: serras levemente desafinadas -> ressonancias de corpo -> passa-baixa ---
+		var envViolino = ctx.createGain();
+		envViolino.gain.setValueAtTime(0.0001, t0);
+		envViolino.gain.linearRampToValueAtTime(0.10, t0 + 0.35);   // ataque lento (arco)
+		envViolino.gain.linearRampToValueAtTime(0.16, t0 + 1.4);    // leve crescendo expressivo
+		envViolino.gain.setValueAtTime(0.16, t0 + 2.0);
+		envViolino.gain.exponentialRampToValueAtTime(0.0001, fim);  // decaimento gradual e suave
+
+		var corpo1 = ctx.createBiquadFilter();
+		corpo1.type = "peaking"; corpo1.frequency.value = 280; corpo1.Q.value = 1.2; corpo1.gain.value = 5;
+		var corpo2 = ctx.createBiquadFilter();
+		corpo2.type = "peaking"; corpo2.frequency.value = 2800; corpo2.Q.value = 1.5; corpo2.gain.value = 4;
+		var brilho = ctx.createBiquadFilter();
+		brilho.type = "lowpass"; brilho.Q.value = 0.7;
+		brilho.frequency.setValueAtTime(1200, t0);                  // abre devagar = timbre macio
+		brilho.frequency.linearRampToValueAtTime(3800, t0 + 1.2);
+		brilho.frequency.linearRampToValueAtTime(2200, fim);
+		corpo1.connect(corpo2); corpo2.connect(brilho); brilho.connect(envViolino);
+		envViolino.connect(master);
+		envViolino.connect(reverb);
+
+		// Vibrato que entra aos poucos, como um violinista faz numa nota longa
+		var lfo = osc("sine", 5.2);
+		var profVibrato = ctx.createGain();
+		profVibrato.gain.setValueAtTime(0, t0);
+		profVibrato.gain.setValueAtTime(0, t0 + 0.6);
+		profVibrato.gain.linearRampToValueAtTime(freq * 0.007, t0 + 1.8);
+		lfo.connect(profVibrato);
+
+		[-5, 0, 6].forEach(function (d) {
+			var o = osc("sawtooth", freq, d);
+			profVibrato.connect(o.frequency);
+			o.connect(corpo1);
 		});
+
+		// Ruido de arco bem sutil (so no ataque)
+		var ruidoBuf = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate);
+		var rd = ruidoBuf.getChannelData(0);
+		for (var i = 0; i < rd.length; i++) rd[i] = Math.random() * 2 - 1;
+		var ruido = ctx.createBufferSource();
+		ruido.buffer = ruidoBuf;
+		ruido.loop = true;
+		fontes.push(ruido);
+		var ruidoFiltro = ctx.createBiquadFilter();
+		ruidoFiltro.type = "bandpass"; ruidoFiltro.frequency.value = freq * 3; ruidoFiltro.Q.value = 2;
+		var ruidoEnv = ctx.createGain();
+		ruidoEnv.gain.setValueAtTime(0.0001, t0);
+		ruidoEnv.gain.linearRampToValueAtTime(0.012, t0 + 0.3);
+		ruidoEnv.gain.exponentialRampToValueAtTime(0.002, t0 + 1.5);
+		ruidoEnv.gain.exponentialRampToValueAtTime(0.0001, fim);
+		ruido.connect(ruidoFiltro); ruidoFiltro.connect(ruidoEnv);
+		ruidoEnv.connect(master); ruidoEnv.connect(reverb);
+
+		// --- Pad ambiente: oitava abaixo + quinta, bem filtrado e quase todo no reverb ---
+		var envPad = ctx.createGain();
+		envPad.gain.setValueAtTime(0.0001, t0);
+		envPad.gain.linearRampToValueAtTime(0.05, t0 + 1.8);
+		envPad.gain.setValueAtTime(0.05, t0 + 2.8);
+		envPad.gain.exponentialRampToValueAtTime(0.0001, fim);
+		var padFiltro = ctx.createBiquadFilter();
+		padFiltro.type = "lowpass"; padFiltro.frequency.value = 900; padFiltro.Q.value = 0.5;
+		padFiltro.connect(envPad);
+		var padSeco = ctx.createGain();
+		padSeco.gain.value = 0.4;
+		envPad.connect(padSeco); padSeco.connect(master);
+		envPad.connect(reverb);
+		[[freq / 2, -7], [freq / 2, 7], [freq * 0.75, -4], [freq * 0.75, 5], [freq, 0]].forEach(function (p) {
+			var o = osc("triangle", p[0], p[1]);
+			o.connect(padFiltro);
+		});
+
+		fontes.forEach(function (f) { f.start(t0); f.stop(fim + 0.05); });
+
+		var parado = false;
 		somNotaAtual = {
 			stop: function () {
-				var t = audioCtx.currentTime;
-				ganho.gain.cancelScheduledValues(t);
-				ganho.gain.setValueAtTime(ganho.gain.value, t);
-				ganho.gain.exponentialRampToValueAtTime(0.0001, t + 0.05);
-				osciladores.forEach(function (o) { o.stop(t + 0.06); });
+				if (parado) return;
+				parado = true;
+				var t = ctx.currentTime;
+				master.gain.cancelScheduledValues(t);
+				master.gain.setValueAtTime(master.gain.value, t);
+				master.gain.linearRampToValueAtTime(0, t + 0.08);
+				fontes.forEach(function (f) { try { f.stop(t + 0.1); } catch (e) {} });
+				setTimeout(function () { master.disconnect(); }, 200);
 			}
 		};
+		// Libera os nos depois que o reverb termina de soar
+		var esteSom = somNotaAtual;
+		setTimeout(function () {
+			if (somNotaAtual === esteSom) somNotaAtual = null;
+			if (!parado) { parado = true; master.disconnect(); }
+		}, (duracao + 3.6) * 1000);
 	}
 
 	lista.addEventListener("click", function (e) {
