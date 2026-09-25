@@ -79,7 +79,9 @@ function Test-ChordLine {
     $tokens = @([regex]::Split($norm, '\s+') | Where-Object { $_ -ne '' })
     if ($tokens.Count -eq 0) { return $false }
     $valid = 0
-    foreach ($tok in $tokens) { if (Test-ChordToken $tok) { $valid++ } }
+    # "{X}" = nota de referencia da melodia (ver rc.md secao PRIMEIRA NOTA DA MUSICA / AJUSTE):
+    # conta como acorde pra linha de cifra continuar sendo reconhecida como cifra.
+    foreach ($tok in $tokens) { if ((Test-ChordToken $tok) -or ($tok -match '^\{[A-G][#b]?\}$')) { $valid++ } }
     if ($valid -eq 0) { return $false }
     if ($valid -eq $tokens.Count) { return $true }
     return (($valid -ge 2) -and (($valid / $tokens.Count) -ge 0.5))

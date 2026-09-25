@@ -506,3 +506,16 @@ coração
 - ela deve ser mostrada (sem o '{}') ao lado de "TOM: D" no html, por exemplo na cor #FFCC66 em italico
 - se clicar sobre ela, deve soar um mid de 5 segundos no tom da nota definida (ou transposta)
 - se não existir a nota entre '{}' no arquivo txt da cifra, não mostrar nada no html
+
+# AJUSTE
+- pode ser que eu precise dessa marcação de nota em outro ponto da música, por exemplo:
+G {B}                C/G
+Tanto amor por mim
+
+- depois da introdução, para tocar a letra quero mostrar em qual nota começo
+- mantendo a funcionalidade já definida
+- quando encontrar notas entre '{}' ao longo da cifra deve se comportar conforme a regra já definida
+- mostrar a nota sem '{}'
+- se clicar soa o midi
+- mostrar em itálico
+- mas quero mudar a cor, deve ser #BBBBBB tanto ao lado do tom quanto qqr outra encontrada ao longo da cifra

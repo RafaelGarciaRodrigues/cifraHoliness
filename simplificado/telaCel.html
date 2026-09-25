@@ -95,7 +95,7 @@
 		color: #ffcc66;
 	}
 	.musica pre.cifra .nota-inicial {
-		color: #FFCC66;
+		color: #BBBBBB;
 		font-style: italic;
 		cursor: pointer;
 	}
@@ -10294,11 +10294,24 @@ Você vai discar várias vezes, telefone mudo não pode chamar
 	// Uma linha e "de acordes" se:
 	//  - todos os tokens forem acordes (ex.: "Em7(9)"), OU
 	//  - tiver >= 2 acordes E >= 50% dos tokens forem acordes.
+	var NOTA_TOKEN_RE = /^\{([A-G](?:#|b)?)\}$/;
+	function isTokenNota(tok) {
+		return NOTA_TOKEN_RE.test(String(tok).trim());
+	}
+
+	// <span> clicavel da nota (sem as chaves), ja transposta - clique toca a nota (tocarNota)
+	function htmlNota(nota, semis) {
+		var exibida = semis ? transposeSymbol(nota, semis) : nota;
+		return '<span class="nota-inicial" data-nota="' + escapeHtml(exibida) + '">' + escapeHtml(exibida) + "</span>";
+	}
+
 	function isChordLine(line) {
 		var norm = String(line).replace(/\u00a0/g, " ").trim();
 		var tokens = norm.split(/\s+/).filter(Boolean);
 		if (!tokens.length) return false;
-		var valid = tokens.filter(isChordToken).length;
+		// "{X}" = nota de referencia da melodia (ver rc.md secao PRIMEIRA NOTA DA MUSICA / AJUSTE):
+		// conta como acorde pra linha continuar sendo reconhecida como cifra.
+		var valid = tokens.filter(function (t) { return isChordToken(t) || isTokenNota(t); }).length;
 		if (!valid) return false;
 		if (valid === tokens.length) return true; // 100% acordes (mesmo 1 so)
 		return valid >= 2 && (valid / tokens.length) >= 0.5;
@@ -10425,10 +10438,8 @@ Você vai discar várias vezes, telefone mudo não pode chamar
 			var resto = tomMatch[3];
 			var notaMatch = resto.match(/^(\s*)\{\s*([A-G](?:#|b)?)\s*\}(.*)$/);
 			if (notaMatch) {
-				var notaExibida = semis ? transposeSymbol(notaMatch[2], semis) : notaMatch[2];
 				return escapeHtml(tomMatch[1] + tomExibido) + (notaMatch[1] || " ") +
-					'<span class="nota-inicial" data-nota="' + escapeHtml(notaExibida) + '">' +
-					escapeHtml(notaExibida) + "</span>" + escapeHtml(notaMatch[3]);
+					htmlNota(notaMatch[2], semis) + escapeHtml(notaMatch[3]);
 			}
 			return escapeHtml(tomMatch[1] + tomExibido + resto);
 		}
@@ -10438,6 +10449,14 @@ Você vai discar várias vezes, telefone mudo não pode chamar
 		var partes = linha.split(/(\s+)/);
 		return partes.map(function (p) {
 			if (!p.trim()) return p;
+			var notaTok = p.match(NOTA_TOKEN_RE);
+			if (notaTok) {
+				// As chaves viram espacos: a nota fica na mesma coluna do .txt e os acordes
+				// seguintes nao saem do alinhamento com a letra.
+				var exibida = semis ? transposeSymbol(notaTok[1], semis) : notaTok[1];
+				var sobra = p.length - 1 - exibida.length;
+				return " " + htmlNota(notaTok[1], semis) + (sobra > 0 ? new Array(sobra + 1).join(" ") : "");
+			}
 			if (!isChordToken(p)) return escapeHtml(p);
 			return '<span class="chord">' + escapeHtml(transporToken(p, semis)) + "</span>";
 		}).join("");
