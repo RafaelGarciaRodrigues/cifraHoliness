@@ -1,5 +1,5 @@
 ﻿O Escudo
-TOM:D
+TOM:D {D}
 
 <yt>https://www.youtube.com/watch?v=9It9irbLMnU</yt>
 <t>20</t>

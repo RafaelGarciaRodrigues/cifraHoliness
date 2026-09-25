@@ -111,6 +111,11 @@
 	.musica pre.cifra .linha.refrao .chord {
 		color: #ffcc66;
 	}
+	.musica pre.cifra .nota-inicial {
+		color: #FFCC66;
+		font-style: italic;
+		cursor: pointer;
+	}
 	#controles-velocidade {
 		position: fixed;
 		top: 6px;
@@ -5153,7 +5158,7 @@ nosso Deus!
 <musica grupo="Holiness">
 <![CDATA[
 O Escudo
-TOM:D
+TOM:D {D}
 
 <yt>https://www.youtube.com/watch?v=9It9irbLMnU</yt>
 <t>20</t>
@@ -10387,6 +10392,9 @@ Você vai discar várias vezes, telefone mudo não pode chamar
 			triad = [0, 5, 7];
 		}
 		var add = {};
+		// "2" (ex.: D2) = triade + 9a (add9); "sus2" substitui a 3a pela 2a
+		if (/sus2/.test(after)) triad = [0, 2, 7];
+		else if (/(^|[^0-9])2(?![0-9])/.test(after)) add[2] = true;
 		if (/maj7/.test(after)) add[11] = true;
 		else if (/7/.test(after)) add[10] = true;
 		if (/(^|[^0-9])6(?![0-9])/.test(after)) add[9] = true;
@@ -10396,7 +10404,7 @@ Você vai discar várias vezes, telefone mudo não pode chamar
 		var set = {};
 		triad.forEach(function (n) { set[n] = true; });
 		Object.keys(add).forEach(function (n) { set[n] = true; });
-		return { root: root, set: Object.keys(set).map(Number) };
+		return { root: root, set: Object.keys(set).map(Number), triad: triad };
 	}
 
 	function chordNotes(sym) {
@@ -10408,7 +10416,14 @@ Você vai discar várias vezes, telefone mudo não pode chamar
 		var vistos = {};
 		var notas = [info.root];
 		vistos[info.root] = true;
-		info.set.slice().sort(function (a, b) { return a - b; }).forEach(function (semi) {
+		// Triade primeiro, depois as extensoes (ex.: D2 -> D - F# - A - E)
+		var triade = info.triad || [];
+		info.set.slice().sort(function (a, b) {
+			var ta = triade.indexOf(a) >= 0 ? 0 : 1, tb = triade.indexOf(b) >= 0 ? 0 : 1;
+			if (ta !== tb) return ta - tb;
+			if (ta === 1) { a = a < 7 ? a + 12 : a; b = b < 7 ? b + 12 : b; } // 6/7 antes de 9/11/13
+			return a - b;
+		}).forEach(function (semi) {
 			var nota = i2n((n2i(info.root) + semi) % 12);
 			if (!vistos[nota]) {
 				vistos[nota] = true;
@@ -10421,10 +10436,20 @@ Você vai discar várias vezes, telefone mudo não pode chamar
 	function renderCifraLinha(linha, semis) {
 		// A linha "TOM:X" nao e uma linha de acordes (CHORD_TOKEN_RE nao bate em "TOM:X" como um
 		// todo), mas o tom exibido deve acompanhar a transposicao mesmo assim.
-		var tomMatch = linha.match(/^(TOM:)(\S+)(.*)$/i);
+		var tomMatch = linha.match(/^(TOM:\s*)(\S+)(.*)$/i);
 		if (tomMatch) {
 			var tomExibido = semis ? transposeSymbol(tomMatch[2], semis) : tomMatch[2];
-			return escapeHtml(tomMatch[1] + tomExibido + tomMatch[3]);
+			// "{X}" ao lado do tom = primeira nota da musica (ver rc.md secao PRIMEIRA NOTA DA
+			// MUSICA): transposta junto, mostrada sem as chaves e clicavel (toca a nota).
+			var resto = tomMatch[3];
+			var notaMatch = resto.match(/^(\s*)\{\s*([A-G](?:#|b)?)\s*\}(.*)$/);
+			if (notaMatch) {
+				var notaExibida = semis ? transposeSymbol(notaMatch[2], semis) : notaMatch[2];
+				return escapeHtml(tomMatch[1] + tomExibido) + (notaMatch[1] || " ") +
+					'<span class="nota-inicial" data-nota="' + escapeHtml(notaExibida) + '">' +
+					escapeHtml(notaExibida) + "</span>" + escapeHtml(notaMatch[3]);
+			}
+			return escapeHtml(tomMatch[1] + tomExibido + resto);
 		}
 		if (!isChordLine(linha)) {
 			return escapeHtml(linha) || "&nbsp;";
@@ -10588,7 +10613,7 @@ Você vai discar várias vezes, telefone mudo não pode chamar
 	function ehLinhaDeLetraComTexto(texto) {
 		if (!texto || !texto.trim()) return false;
 		if (ehMarcadorDeFormatacao(texto)) return false;
-		if (/^TOM:\S/i.test(texto.trim())) return false;
+		if (/^TOM:\s*\S/i.test(texto.trim())) return false;
 		return !isChordLine(texto);
 	}
 
@@ -11573,7 +11598,60 @@ Você vai discar várias vezes, telefone mudo não pode chamar
 
 	modalAcorde.addEventListener("click", esconderModalAcorde);
 
+	// ===== Primeira nota da musica: toca a nota por 5 segundos =====
+	var audioCtx = null;
+	var somNotaAtual = null;
+
+	function tocarNota(nota) {
+		var raiz = parseRoot(nota);
+		if (!raiz) return;
+		var Ctx = window.AudioContext || window.webkitAudioContext;
+		if (!Ctx) return;
+		if (!audioCtx) audioCtx = new Ctx();
+		if (audioCtx.state === "suspended") audioCtx.resume();
+		if (somNotaAtual) {
+			try { somNotaAtual.stop(); } catch (e) {}
+			somNotaAtual = null;
+		}
+		var duracao = 5;
+		var freq = 440 * Math.pow(2, (n2i(raiz) - 9) / 12); // oitava 4 (C4..B4)
+		var agora = audioCtx.currentTime;
+		var ganho = audioCtx.createGain();
+		ganho.gain.setValueAtTime(0.0001, agora);
+		ganho.gain.exponentialRampToValueAtTime(0.35, agora + 0.03);
+		ganho.gain.setValueAtTime(0.35, agora + duracao - 0.6);
+		ganho.gain.exponentialRampToValueAtTime(0.0001, agora + duracao);
+		ganho.connect(audioCtx.destination);
+		// Fundamental + harmonicos leves (timbre tipo orgao/piano eletrico)
+		var osciladores = [[1, 1], [2, 0.35], [3, 0.15], [4, 0.08]].map(function (h) {
+			var osc = audioCtx.createOscillator();
+			var g = audioCtx.createGain();
+			osc.type = "sine";
+			osc.frequency.value = freq * h[0];
+			g.gain.value = h[1];
+			osc.connect(g);
+			g.connect(ganho);
+			osc.start(agora);
+			osc.stop(agora + duracao);
+			return osc;
+		});
+		somNotaAtual = {
+			stop: function () {
+				var t = audioCtx.currentTime;
+				ganho.gain.cancelScheduledValues(t);
+				ganho.gain.setValueAtTime(ganho.gain.value, t);
+				ganho.gain.exponentialRampToValueAtTime(0.0001, t + 0.05);
+				osciladores.forEach(function (o) { o.stop(t + 0.06); });
+			}
+		};
+	}
+
 	lista.addEventListener("click", function (e) {
+		var notaInicial = e.target.closest(".nota-inicial");
+		if (notaInicial) {
+			tocarNota(notaInicial.getAttribute("data-nota"));
+			return;
+		}
 		var span = e.target.closest(".chord");
 		if (!span) return;
 		mostrarModalAcorde(span.textContent);

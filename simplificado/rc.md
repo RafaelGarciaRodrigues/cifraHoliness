@@ -493,3 +493,16 @@ coração
 --- se houver esse avisa e só nesse caso pede confirmação
 -- \simplificado\AjustaCifra.bat deve:
 --- se comportar como é agora, não fecha, posso ir executando em loop a cada confirmação
+
+# AJUSTE DE ACORDES
+- em telaCel.html, quando clicamos no acorde 'D2' as notas estão erradas
+- está mostrando 'D - F# - A' que é o acorde D e deveria ser ''D - F# - A - E'
+- ajuste a função que monta as notas dos acordes sem afetar nas demais funções
+
+# PRIMEIRA NOTA DA MÚSICA
+- nos arquivos de cifras vou inserir uma nota ao lado do TOM nesse formato: "TOM:D {D}"
+- a nota dentro de '{}' significa a nota músical que começa a músical
+- quando transpor a música deve transpor essa nota também
+- ela deve ser mostrada (sem o '{}') ao lado de "TOM: D" no html, por exemplo na cor #FFCC66 em italico
+- se clicar sobre ela, deve soar um mid de 5 segundos no tom da nota definida (ou transposta)
+- se não existir a nota entre '{}' no arquivo txt da cifra, não mostrar nada no html
