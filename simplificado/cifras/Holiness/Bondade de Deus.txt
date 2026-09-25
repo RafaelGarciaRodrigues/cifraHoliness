@@ -1,5 +1,5 @@
 ﻿Bondade de Deus
-TOM:A
+TOM:A {A}
 
 
 <intro>

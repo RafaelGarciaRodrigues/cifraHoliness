@@ -1,5 +1,5 @@
 ﻿Deus de Amor
-TOM:G
+TOM:G {A}
 
 <intro>
 G
@@ -13,7 +13,7 @@ Tu és Deus de Amor!
 </intro>
 
 
-G                    C/G
+G {B}                C/G
 Tanto amor por mim
        D/F#  
 mostraste lá 
