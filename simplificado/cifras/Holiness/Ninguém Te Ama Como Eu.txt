@@ -4,22 +4,16 @@ TOM:A {A}
 <yt>https://www.youtube.com/watch?v=JCN4ggSZPUk</yt>
 
 <intro>
-           A   E
-Ninguém te ama  
-    F#m  
-como eu, 
-          Bm  D
-ninguém te ama 
-    E  E7
-como eu
+           A   E     F#m  
+Ninguém te ama  como eu 
+          Bm  D    E  E7
+ninguém te ama como eu
           A   
 Olhe pra cruz 
        E             F#m  
-esta é minha grande prova,
-Bm          D  
- ninguém te ama
-      E  E7
- como eu.
+esta é minha grande prova
+Bm          D         E  E7
+ ninguém te ama  como eu
 </intro>
 
 A {E}    E          F#m     
@@ -40,11 +34,14 @@ Eu sei bem que tens sofrido
 Bm         D          E     E7  E
  pois permaneço ao seu   lado
  
+ 
 <refrao>
            A   E     F#m  
 Ninguém te ama  como eu 
+
           Bm  D    E  E7
 ninguém te ama como eu
+
           A   
 Olhe pra cruz 
        E             F#m  
