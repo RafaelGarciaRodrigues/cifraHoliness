@@ -1,5 +1,5 @@
 ﻿Ele Vem Pra Te Salvar
-TOM:D
+TOM:D {F#}
 
 
 <intro>
@@ -21,7 +21,7 @@ Ele vem para
 te salvar
 </intro>
 
-D     A      Bm 
+D {A}   A      Bm 
    Diga para os 
   G
 temerosos

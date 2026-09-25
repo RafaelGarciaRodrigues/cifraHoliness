@@ -1,5 +1,5 @@
 ﻿Em Jesus Amigo Temos
-TOM:G
+TOM:G {G}
 
 
 <intro>
@@ -14,7 +14,7 @@ Tudo a Deus em o...ra..ção
 </intro>
 
 
-G     G7       C   C9/C#
+G {D} G7       C   C9/C#
 Em Jesus amigo te..mos
 G        D/F#    Em    Am   D
 Mais chegado que um irmão

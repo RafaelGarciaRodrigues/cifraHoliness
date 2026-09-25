@@ -1,5 +1,5 @@
 ﻿Diante do Rei
-TOM:G
+TOM:G {D}
 
 
 <intro>
