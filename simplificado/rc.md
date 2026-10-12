@@ -519,3 +519,4 @@ Tanto amor por mim
 - se clicar soa o midi
 - mostrar em itálico
 - mas quero mudar a cor, deve ser #BBBBBB tanto ao lado do tom quanto qqr outra encontrada ao longo da cifra
+

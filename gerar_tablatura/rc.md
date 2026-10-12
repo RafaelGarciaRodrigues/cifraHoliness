@@ -943,3 +943,25 @@ if __name__ == "__main__":
 - para isso preciso ter um modo REC MIDI
 - essa gravação seria mais uma faixa mas de outra categoria em um seletor select separado, pois posso gravar mais de uma faixa midi (similar a id="btnGravarAudio")
 - talvez eu precise ter mais um route de configuração do controlador midi
+
+
+# CATEGORIA DA Voz
+- ao lado de id="btnLimparMarcas"
+- considerando a extensão vocal
+- gostaria de classificar o tom como Masculino ou Feminino
+- além disso:
+
+• Soprano: É a voz mais aguda das mulheres. Tem grande facilidade para alcançar notas altas.
+• Mezzo-soprano: É a voz intermediária ou média. Fica entre o soprano e o contralto, com bom equilíbrio entre graves e agudos.
+• Contralto: É a voz mais grave entre as mulheres. Tem facilidade e maior riqueza sonora nas notas baixas.
+
+• Tenor: É a voz mais aguda entre os homens. Alcança notas mais altas com maior facilidade.
+• Barítono: É a voz intermediária ou média. É o tipo de voz masculina mais comum, com um timbre encorpado que transita bem entre graves e agudos.
+• Baixo: É a voz mais grave entre os homens. Consegue produzir sons profundos e pesados.
+
+# SOBRE O CONTROLE MIDI
+- eu não sou o administrador desse computador
+- vou precisar usar outro e passar esse codigo pelo git no repositorio contido em C:\Users\cs385499\PycharmProjects\TelaCifras
+- para isso, quero passar sem os modelos, pois quando rodar no outo computador pela primeira vez deverá baixar os modelos
+- e deve enviar sem os arquivos de música e videos (que são pesados)
+- já está dessa maneira?

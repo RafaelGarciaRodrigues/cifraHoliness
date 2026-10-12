@@ -36,6 +36,9 @@
   /* cabeçalho e abas */
   .barraApp { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; }
   .barraApp h1 { margin: 0; font-size: 1.2rem; }
+  .categoriaVoz { font-size: .85rem; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--borda);
+                  background: var(--grade); white-space: nowrap; cursor: help; }
+  .categoriaVoz.vazia { color: var(--suave); }
   .abas { display: flex; gap: 4px; background: var(--grade); padding: 3px; border-radius: 10px; }
   .abas button { border: 0; background: transparent; padding: 6px 14px; min-width: 0; }
   .ajuda { display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 16px; align-items: start; }
@@ -415,6 +418,7 @@
             <button id="btnVozGrave" disabled>—</button>
             <button id="btnVozAguda" disabled>—</button>
             <button id="btnLimparMarcas" class="icone" title="Remover as marcações da linha do tempo" aria-label="Remover as marcações" disabled><i id="f5a2c8" class="bi bi-bookmark-x"></i></button>
+            <span id="categoriaVoz" class="categoriaVoz vazia" tabindex="0">—</span>
           </div>
         </div>
         <div id="d51023" class="dica">
@@ -855,6 +859,28 @@ clique na régua de tempo (embaixo da linha do tempo) para marcar um ponto (de n
         </ul>
         <div id="a4b9e1" class="dica">Depois de uma atualização do programa, feche a janela "Tela de Solos - servidor" e abra
           o SOLO.bat de novo (as rotas novas do servidor, como a das gravações MIDI, só existem depois disso).</div>
+      </section>
+
+      <section id="ajuda-outro-computador" class="painel">
+        <h3 id="a5f2c8"><i id="b9c4e1" class="bi bi-pc-display"></i> Usar em outro computador (git)</h3>
+        <p id="c3d8a6" class="dica" style="margin-top:0">O repositório leva só o programa (~20 MB): códigos, os sons dos timbres
+          (<code id="d7e1b4">instrumentos\</code>), o cadastro (<code id="e2a9c7">musicas.db</code>), as notas e letras
+          editadas (<code id="f6b3d1">dados\</code>, <code id="a9c5e8">letras\</code>) e as tablaturas. Ficam de fora
+          (<code id="b4e7f2">.gitignore</code>): as músicas e faixas (<code id="c8a2d5">audio\</code>,
+          <code id="d1f6b9">faixas\</code>), os vídeos, as gravações (<code id="e5b1c3">midias\</code>) e as credenciais do YouTube.</p>
+        <ol id="f9d4a7">
+          <li id="a2b8e6">Clone o repositório e instale o Python e o FFmpeg (no PATH).</li>
+          <li id="b7f3c9">Na pasta <code id="c1e6a4">gerar_tablatura</code>: <code id="d5a9f2">pip install -r requirements.txt</code>
+            (o basic-pitch vai à parte, com <code id="e8c2b7">--no-deps</code>, como explica o requirements.txt).</li>
+          <li id="f4b7d3">Os modelos de IA (Demucs, Whisper, basic-pitch, wav2vec2 do encaixe da letra) não vão no git: ficam no
+            cache do usuário e são baixados sozinhos no primeiro uso de cada um (alguns GB; precisa de internet e de espaço).</li>
+          <li id="a8e1f5">Copie as músicas para <code id="b3c7e9">audio\</code> e clique em <b id="c6f2a8">⚙ Processar</b> na Biblioteca
+            (ou copie também a pasta <code id="d2a5c1">faixas\</code> por um pen drive/HD para não separar de novo). Um novo
+            processamento refaz as notas automáticas da música, mas mantém a letra e as gravações MIDI.</li>
+          <li id="e7d9b2">YouTube: copie à mão o arquivo <code id="f1a4c6">docs\client_secret_….json</code> (ou baixe de novo no
+            Google Cloud) e conecte a conta em ⚙ YouTube. O token de acesso é de cada computador.</li>
+          <li id="a4c8f1">Teclado MIDI: instale nele o driver USB-MIDI da Yamaha (precisa ser administrador do computador).</li>
+        </ol>
       </section>
 
       <section id="ajuda-referencias" class="painel">
@@ -1449,7 +1475,9 @@ function calcularExtensao(vocais = DADOS.melodias && DADOS.melodias.vocals) {
     if (m - aguda > SALTO_EXTENSAO) break;
     if (conta(m)) aguda = m;
   }
-  return { grave, aguda };
+  // tessitura: onde a voz fica a maior parte do tempo (percentis ponderados pela duração)
+  const percentil = q => { let a = 0; for (const m of alturas) { a += dur.get(m); if (a >= q * total) return m; } return alturas[alturas.length - 1]; };
+  return { grave, aguda, p10: percentil(0.1), mediana: percentil(0.5), p90: percentil(0.9) };
 }
 
 function atualizarExtensao() {
@@ -1459,6 +1487,63 @@ function atualizarExtensao() {
     b.textContent = extensao ? nomeNota(extensao[chave]) : "—";
     b.title = extensao ? `Nota ${rotulo} cantada: ${nomeNota(extensao[chave])}. Clique para ir à primeira vez que ela aparece e ouvi-la por 5 s.` : "Sem faixa de voz";
   }
+  mostrarCategoriaVoz();
+}
+
+// ---------- categoria da voz (ao lado das marcações) ----------
+// Pela tessitura da faixa de voz (onde ela fica a maior parte do tempo), já com a transposição, como
+// os botões "Voz". As pontas da extensão não decidem: a transcrição erra ali (falsete, oitava).
+//  - gênero: mediana das notas até D4 (MIDI 62) = masculino, acima = feminino (nas músicas da
+//    Biblioteca, vozes masculinas ficam em B3–C#4 e femininas em E4–G4);
+//  - tipo: dentro do gênero, o de centro mais perto da mediana, somando metade do quanto a faixa
+//    central (10% a 90% das notas) passa da extensão típica dele. Faixas em MIDI, como cantadas.
+const TIPOS_VOZ = [
+  { nome: "Soprano", genero: "Feminino", grave: 60, aguda: 81,
+    texto: "É a voz mais aguda das mulheres. Tem grande facilidade para alcançar notas altas." },
+  { nome: "Mezzo-soprano", genero: "Feminino", grave: 57, aguda: 77,
+    texto: "É a voz intermediária ou média. Fica entre o soprano e o contralto, com bom equilíbrio entre graves e agudos." },
+  { nome: "Contralto", genero: "Feminino", grave: 53, aguda: 74,
+    texto: "É a voz mais grave entre as mulheres. Tem facilidade e maior riqueza sonora nas notas baixas." },
+  { nome: "Tenor", genero: "Masculino", grave: 48, aguda: 69,
+    texto: "É a voz mais aguda entre os homens. Alcança notas mais altas com maior facilidade." },
+  { nome: "Barítono", genero: "Masculino", grave: 45, aguda: 65,
+    texto: "É a voz intermediária ou média. É o tipo de voz masculina mais comum, com um timbre encorpado que transita bem entre graves e agudos." },
+  { nome: "Baixo", genero: "Masculino", grave: 40, aguda: 62,
+    texto: "É a voz mais grave entre os homens. Consegue produzir sons profundos e pesados." },
+];
+const nomeMidiAbs = m => SUSTENIDOS[pc(m)] + (Math.floor(m / 12) - 1);
+
+const LIMITE_MASCULINO = 62;  // mediana até D4: voz masculina
+function categoriaVoz(p10, mediana, p90) {
+  const genero = mediana <= LIMITE_MASCULINO ? "Masculino" : "Feminino";
+  const nota = t => ({ ...t, fora: Math.max(0, t.grave - p10) + Math.max(0, p90 - t.aguda),
+                       distancia: Math.abs(mediana - (t.grave + t.aguda) / 2) });
+  const ordem = (a, b) => (a.distancia + a.fora * 0.5) - (b.distancia + b.fora * 0.5);
+  const doGenero = TIPOS_VOZ.filter(t => t.genero === genero).map(nota).sort(ordem);
+  const outros = TIPOS_VOZ.filter(t => t.genero !== genero).map(nota).sort(ordem);
+  return [doGenero[0], doGenero[1], outros[0]];
+}
+
+function mostrarCategoriaVoz() {
+  const el = $("categoriaVoz");
+  if (!extensao) {
+    el.textContent = "—";
+    el.classList.add("vazia");
+    el.title = "Categoria da voz: sem faixa de voz";
+    return;
+  }
+  const [melhor, segundo, outroGenero] = categoriaVoz(extensao.p10 + transp, extensao.mediana + transp, extensao.p90 + transp);
+  el.classList.remove("vazia");
+  el.textContent = `${melhor.genero === "Masculino" ? "♂" : "♀"} ${melhor.nome} · ${melhor.genero}`;
+  const faixa = t => `${nomeMidiAbs(t.grave)} a ${nomeMidiAbs(t.aguda)}`;
+  el.title = `Categoria da voz${transp ? " (já com a transposição)" : ""}: ${melhor.nome} — ${melhor.genero}\n\n` +
+    `${melhor.nome}: ${melhor.texto}\nExtensão típica: ${faixa(melhor)}\n\n` +
+    `Na música, a voz fica entre ${nomeNota(extensao.p10)} e ${nomeNota(extensao.p90)} (centro em ` +
+    `${nomeNota(extensao.mediana)}; extensão total ${nomeNota(extensao.grave)} a ${nomeNota(extensao.aguda)}). ` +
+    `Centro até D4 = voz masculina; acima = feminina.\n\n` +
+    `Também pode servir: ${segundo.nome} (${faixa(segundo)}). Na outra voz: ${outroGenero.nome} (${outroGenero.genero}).\n\n` +
+    TIPOS_VOZ.map(t => `${t.nome}: ${faixa(t)}`).join(" · ");
+  el.setAttribute("aria-label", "Categoria da voz: " + el.textContent);
 }
 
 // Voz sintética cantando "A": onda dente-de-serra (rica em harmônicos, como as pregas vocais)
