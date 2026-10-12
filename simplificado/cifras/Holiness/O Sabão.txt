@@ -2,10 +2,6 @@
 TOM:C
 
 
-C  G  C
-C  G  C
-C  G  C  G
-
 
 C        G              
 O sabão lava o meu rostinho
@@ -13,7 +9,7 @@ O sabão lava o meu rostinho
 Lava o meu pezinho, lava a minha mão
                F                 
 Mas Jesus pra me deixar limpinho 
-  C             G   C 
+  C             G Dm  C 
 Quer lavar meu coração 
 
               G
@@ -22,12 +18,8 @@ Quando o mal faz uma manchinha
 Eu sei muito bem quem pode me limpar
               F                
 É Jesus, Dele eu não escondo nada
- C            G   C  
+ C            G Dm  C 
 Tudo Ele pode apagar
-
-C  G  C
-C  G  C
-C  G  C  G
 
 
 C        G              

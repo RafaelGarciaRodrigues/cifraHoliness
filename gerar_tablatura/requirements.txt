@@ -1,0 +1,20 @@
+demucs>=4.0.0
+librosa>=0.10.0
+numpy>=1.22.0
+scipy>=1.8.0
+soundfile>=0.12.1
+# dependências do basic-pitch (ele próprio é instalado à parte com --no-deps, pois
+# exige tensorflow<2.15, que não existe para Python 3.12+; usamos o modelo ONNX)
+onnxruntime
+pretty_midi
+mir_eval
+resampy
+# transcrição da letra (opcional: sem ele o solo.py só pula a letra)
+faster-whisper
+# encaixe da letra pela voz (encaixe.py; modelo wav2vec2 de português, ~1,2 GB baixado na 1ª vez)
+transformers
+# vídeo de karaokê (video.py)
+Pillow
+# publicação no YouTube (youtube.py)
+google-api-python-client
+google-auth-oauthlib

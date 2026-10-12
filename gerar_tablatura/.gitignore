@@ -1,0 +1,15 @@
+# Arquivos pesados ou gerados a partir das músicas: ficam só neste computador.
+# (Em outro computador: copie as músicas para audio\ e processe de novo; os modelos de IA —
+#  Demucs, Whisper, basic-pitch, wav2vec2 — ficam no cache do usuário e são baixados no 1º uso.)
+/audio/
+/faixas/
+/videos/
+/midias/
+
+# Credenciais da conta do YouTube: nunca no repositório (cada computador conecta a conta de novo)
+/docs/client_secret_*.json
+/docs/youtube_token.json
+
+# Python
+__pycache__/
+*.pyc

@@ -1,0 +1,98 @@
+{
+  "config": {
+    "titulo": "{titulo} - {artista} (Playback Karaokê Letra Piano)",
+    "descricao": "{titulo}\nArtista: {artista}\nTom: {tom}\nExtensão vocal: {extensao}\n\nTutorial Piano Violão\n\n\nLetra:\n{letra}\n\nEste vídeo foi produzido para auxiliar igrejas nos ensaios do grupo de louvor e nos cultos",
+    "tags": "playback, cifra, violão, piano, karaokê, letra, {artista}, {titulo}",
+    "hashtags": "#{titulo} #{artista} #karaoke #playback #letra #piano #cifra #louvor #gospel #worship #pianotutorial #tutorialpiano #violao #acordes #jesus #alma",
+    "categoria": "10",
+    "privacidade": "public",
+    "infantil": false,
+    "idioma": "pt-BR",
+    "notificar": false
+  },
+  "canal": "LouvoresKaraoke",
+  "publicados": {
+    "Esther Duran - Acalma o Meu Coração (2).mp4": {
+      "id_musica": "0dd0be11",
+      "video_id": "VBoSJmxnpQ8",
+      "url": "https://youtu.be/VBoSJmxnpQ8",
+      "titulo": "Acalma o Meu Coração - Esther Duran (Karaokê)",
+      "privacidade": "public",
+      "publicado_em": "2026-10-06T12:27:06"
+    },
+    "Vineyard - Senhor, Te Quero.mp4": {
+      "id_musica": "b2cf15a0",
+      "video_id": "-TnLD3uJRuw",
+      "url": "https://youtu.be/-TnLD3uJRuw",
+      "titulo": "Senhor, Te Quero - Vineyard (Karaokê)",
+      "privacidade": "public",
+      "publicado_em": "2026-10-06T15:16:48"
+    },
+    "Edgard Moreira - Te Agradeço.mp4": {
+      "id_musica": "845dbd62",
+      "video_id": "rzuac87TMMQ",
+      "url": "https://youtu.be/rzuac87TMMQ",
+      "titulo": "Te Agradeço - Edgard Moreira (Karaokê)",
+      "privacidade": "public",
+      "publicado_em": "2026-10-06T15:40:03"
+    },
+    "Aline Barros - Primeira Essência.mp4": {
+      "id_musica": "f7c02d78",
+      "video_id": "hXGgGPc0Ohs",
+      "url": "https://youtu.be/hXGgGPc0Ohs",
+      "titulo": "Primeira Essência - Aline Barros (Karaokê)",
+      "privacidade": "public",
+      "publicado_em": "2026-10-06T16:09:36"
+    },
+    "Isaias Assad - Bondade de Deus.mp4": {
+      "id_musica": "30ad5d0b",
+      "video_id": "INgb4B-bVNk",
+      "url": "https://youtu.be/INgb4B-bVNk",
+      "titulo": "Bondade de Deus - Isaias Assad (Playback Karaokê Letra Piano)",
+      "privacidade": "public",
+      "publicado_em": "2026-10-09T14:43:38",
+      "anteriores": [
+        {
+          "id_musica": "30ad5d0b",
+          "video_id": "jy08GlGE4Uw",
+          "url": "https://youtu.be/jy08GlGE4Uw",
+          "titulo": "Bondade de Deus - Isaias Assad (Karaokê)",
+          "privacidade": "public",
+          "publicado_em": "2026-10-07T08:44:59"
+        }
+      ]
+    },
+    "Rachel Novaes - Ele Vem Pra Te Salvar.mp4": {
+      "id_musica": "706c6b0b",
+      "video_id": "ikErQs48p44",
+      "url": "https://youtu.be/ikErQs48p44",
+      "titulo": "Ele Vem Pra Te Salvar - Rachel Novaes (Karaokê e Piano)",
+      "privacidade": "public",
+      "publicado_em": "2026-10-08T13:24:07"
+    },
+    "Rachel Novaes - Deus de Amor (2).mp4": {
+      "id_musica": "058db2cf",
+      "video_id": "biIvhTj4yXk",
+      "url": "https://youtu.be/biIvhTj4yXk",
+      "titulo": "Deus de Amor - Rachel Novaes (Playback Karaokê Piano)",
+      "privacidade": "public",
+      "publicado_em": "2026-10-08T15:43:52"
+    },
+    "Gabriela Rocha - Lugar Secreto.mp4": {
+      "id_musica": "65732b02",
+      "video_id": "tNKOUDZUBxY",
+      "url": "https://youtu.be/tNKOUDZUBxY",
+      "titulo": "Lugar Secreto - Gabriela Rocha (Playback Karaokê Letra Piano)",
+      "privacidade": "public",
+      "publicado_em": "2026-10-09T11:21:05"
+    },
+    "Esther Duran - Acalma o Meu Coração.mp4": {
+      "id_musica": "0dd0be11",
+      "video_id": "KNPkIrh2XHU",
+      "url": "https://youtu.be/KNPkIrh2XHU",
+      "titulo": "Acalma o Meu Coração - Esther Duran (Playback Karaokê Letra Piano)",
+      "privacidade": "public",
+      "publicado_em": "2026-10-09T16:45:49"
+    }
+  }
+}

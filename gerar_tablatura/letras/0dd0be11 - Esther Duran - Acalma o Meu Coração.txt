@@ -1,0 +1,51 @@
+# Letra: Acalma o Meu Coração (id 0dd0be11)
+# Formato: [início - fim] frase · linhas começando com # são ignoradas
+
+[00:20.88 - 00:23.41] Não quero interromper
+[00:23.41 - 00:25.59] o teu silêncio, ó pai
+[00:26.25 - 00:28.21] Mas é só orando
+[00:28.21 - 00:30.87] que eu encontro paz
+[00:31.23 - 00:33.75] O vento da aflição
+[00:33.75 - 00:36.45] Quer apagar a chama
+[00:36.45 - 00:40.45] da minha adoração
+[00:41.50 - 00:44.01] O mundo é um oceano
+[00:44.06 - 00:45.83] Minha carne é um furacão
+[00:46.66 - 00:49.01] Minha vida é um barquinho
+[00:49.39 - 00:51.69] Buscando direção
+[00:52.19 - 00:54.39] Descanso em minha alma
+[00:54.59 - 00:56.97] E a calma tempestade
+[00:57.13 - 01:01.27] Que agita o meu coração
+[01:02.52 - 01:06.47] Acalma o meu coração
+[01:07.64 - 01:11.01] Acalma o meu coração
+[01:12.68 - 01:15.05] O vento está soprando
+[01:15.21 - 01:17.59] Mas é te adorando
+[01:18.02 - 01:22.83] Que venço o mar da aflição
+[01:23.26 - 01:27.43] Acalma o meu coração
+[01:28.31 - 01:31.85] Acalma o meu coração
+[01:32.59 - 01:35.51] Só venço esse mundo
+[01:35.51 - 01:38.27] Se for em tua presença
+[01:38.27 - 01:42.11] Acalma o meu coração
+[02:04.74 - 02:06.88] O barulho do do mar
+[02:06.88 - 02:09.14] vem pra me confundir
+[02:09.14 - 02:12.27] Oh Pai, não deixe as ondas
+[02:12.27 - 02:14.24] minha fé diminuir
+[02:14.24 - 02:17.08] Perdoa se pensai
+[02:17.08 - 02:19.72] que em meio teu silêncio
+[02:19.72 - 02:24.26] não estivesse aqui
+[02:24.26 - 02:26.77] Viver na superfície
+[02:27.45 - 02:29.14] sem poder respirar
+[02:29.80 - 02:32.20] É o mesmo que morrer
+[02:32.20 - 02:34.14] por não te adorar
+[02:34.83 - 02:36.61] És meu oxigênio
+[02:37.61 - 02:39.46] Senhor, sem Tua presença
+[02:39.93 - 02:45.72] Minha fé vai naufragar
+[02:45.72 - 02:54.24] Acalma o meu coração
+[02:50.94 - 02:54.24] Acalma o meu coração
+[02:55.96 - 02:58.10] Só venço esse mundo
+[02:58.10 - 03:00.88] Se for em Tua presença
+[03:00.88 - 03:05.24] Acalma o meu coração
+[03:06.47 - 03:09.48] Acalma o meu coração
+[03:11.02 - 03:14.94] Acalma o meu coração
+[03:16.35 - 03:18.57] Só venço esse mundo
+[03:18.87 - 03:21.53] Se for em tua presença
+[03:21.53 - 03:25.05] Acalma o meu coração

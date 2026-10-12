@@ -1,0 +1,788 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>__TITULO__ · Player de Solo</title>
+<style>
+  :root {
+    --bg: #f6f5f2; --painel: #ffffff; --texto: #1d1d1f; --suave: #6b6b70; --borda: #e2e0da;
+    --acento: #d9480f; --nota: #4263eb; --nota-ativa: #d9480f; --acorde: #e9e7f7; --acorde-ativo: #5f3dc4;
+    --grade: #ecebe6; --grade-forte: #d6d4cc; --cabeca: #d9480f;
+    --f-guitar: #e8590c; --f-piano: #7048e8; --f-other: #0c8599; --f-vocals: #d6336c;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #141416; --painel: #1d1d20; --texto: #ececef; --suave: #9a9aa2; --borda: #2e2e33;
+      --acento: #ff7a3d; --nota: #748ffc; --nota-ativa: #ff7a3d; --acorde: #2b2740; --acorde-ativo: #9775fa;
+      --grade: #232327; --grade-forte: #34343a; --cabeca: #ff7a3d;
+      --f-guitar: #ff922b; --f-piano: #9775fa; --f-other: #22b8cf; --f-vocals: #f06595;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--texto);
+         font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 1100px; margin: 0 auto; padding: 24px 16px 48px; }
+  header h1 { margin: 0; font-size: 1.5rem; }
+  header p { margin: 4px 0 0; color: var(--suave); font-size: .9rem; }
+  .painel { background: var(--painel); border: 1px solid var(--borda); border-radius: 12px; padding: 16px; margin-top: 16px; }
+  .topo { display: flex; align-items: flex-end; gap: 28px; flex-wrap: wrap; }
+  .bloco small { display: block; color: var(--suave); font-size: .78rem; text-transform: uppercase; letter-spacing: .04em; }
+  .grande { font-size: 2.8rem; font-weight: 700; line-height: 1.05; font-variant-numeric: tabular-nums; }
+  #notaAtual { color: var(--acento); min-width: 2.4em; }
+  #acordeAtual { color: var(--acorde-ativo); min-width: 2.4em; }
+  .vazia { color: var(--suave) !important; }
+  .proximo { color: var(--suave); font-size: .9rem; }
+  .tom { font-size: 1.25rem; font-weight: 600; }
+  .tom .orig { font-size: .85rem; color: var(--suave); font-weight: 400; }
+  .relogio { font-variant-numeric: tabular-nums; font-size: 1.25rem; }
+  .relogio small { display: inline; text-transform: none; letter-spacing: 0; font-size: .95rem; }
+  canvas { display: block; width: 100%; height: 330px; border-radius: 8px; cursor: pointer;
+           background: var(--bg); touch-action: none; }
+  input[type=range] { width: 100%; accent-color: var(--acento); }
+  .controles { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 12px; }
+  button { font: inherit; border: 1px solid var(--borda); background: var(--painel); color: var(--texto);
+           border-radius: 8px; padding: 8px 12px; cursor: pointer; min-width: 44px; }
+  button:hover { border-color: var(--acento); }
+  button.primario { background: var(--acento); border-color: var(--acento); color: #fff; font-weight: 600; min-width: 110px; }
+  button.ativo { border-color: var(--acento); color: var(--acento); font-weight: 600; }
+  .grupo { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .separador { flex: 1; }
+  .transpor { font-variant-numeric: tabular-nums; min-width: 3.2em; text-align: center; font-weight: 600; }
+  .ajustes { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; }
+  .ajustes label { display: block; font-size: .85rem; color: var(--suave); margin-bottom: 4px; }
+  .ajustes select { font: inherit; width: 100%; padding: 6px; border-radius: 8px; border: 1px solid var(--borda);
+                    background: var(--painel); color: var(--texto); }
+  .valor { color: var(--texto); font-weight: 600; font-variant-numeric: tabular-nums; }
+  .legenda { display: flex; flex-wrap: wrap; gap: 12px; font-size: .82rem; color: var(--suave); margin-top: 8px; }
+  .legenda i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
+  .lista { position: relative; display: flex; flex-wrap: wrap; gap: 6px; max-height: 200px; overflow-y: auto; }
+  .lista button { padding: 4px 8px; font-size: .85rem; min-width: 0; font-variant-numeric: tabular-nums; }
+  .lista button span { color: var(--suave); margin-right: 4px; }
+  .lista button.atual { background: var(--acento); border-color: var(--acento); color: #fff; }
+  .lista.acordes button.atual { background: var(--acorde-ativo); border-color: var(--acorde-ativo); }
+  .lista button.atual span { color: #fff; opacity: .85; }
+  h2 { font-size: 1rem; margin: 0 0 10px; }
+  .dica { color: var(--suave); font-size: .82rem; margin-top: 10px; }
+  kbd { border: 1px solid var(--borda); border-bottom-width: 2px; border-radius: 4px; padding: 0 5px; font-size: .8rem; }
+  .aviso { color: var(--acento); font-size: .85rem; margin-top: 6px; }
+  .multiselect { border: 1px solid var(--borda); border-radius: 8px; padding: 4px 0; max-height: 190px; overflow-y: auto; }
+  .multiselect label { display: flex; align-items: center; gap: 8px; margin: 0; padding: 4px 10px;
+                       color: var(--texto); font-size: .9rem; cursor: pointer; }
+  .multiselect label:hover { background: var(--grade); }
+  .multiselect input { accent-color: var(--acento); margin: 0; }
+  button.pequeno { padding: 4px 8px; font-size: .85rem; min-width: 0; }
+</style>
+</head>
+<body id="cc392a">
+<main id="c89789">
+  <header id="f77129">
+    <h1 id="d8fb00">__TITULO__</h1>
+    <p id="subtitulo"></p>
+  </header>
+
+  <section id="f856d9" class="painel">
+    <div id="d39061" class="topo">
+      <div id="c5d5ca" class="bloco"><small id="c8e902">Nota</small><div id="notaAtual" class="grande vazia">—</div></div>
+      <div id="bc8147" class="bloco"><small id="dd9def">Acorde</small><div id="acordeAtual" class="grande vazia">—</div>
+        <div id="a057e0" class="proximo">próximo: <span id="proximoAcorde">—</span></div></div>
+      <div id="b8b96b" class="bloco"><small id="d7cead">Tom</small><div id="ea66e5" class="tom"><span id="tomAtual">—</span>
+        <div class="orig" id="tomOriginal"></div></div></div>
+      <div id="d4fee8" class="separador"></div>
+      <div id="c7c2aa" class="bloco relogio"><small id="d60d62">Tempo</small><span id="tempoAtual">00:00.00</span> <small id="c55969">/ <span id="tempoTotal">00:00.00</span></small></div>
+      <div id="c94307" class="bloco relogio"><small id="e7c0ee">Velocidade</small><span id="velocidadeTexto">1.00×</span></div>
+    </div>
+    <div id="ea6ee6" style="margin-top:14px"><canvas id="linha"></canvas></div>
+    <div class="legenda" id="legenda"></div>
+    <input id="barra" type="range" min="0" max="1" step="0.01" value="0" aria-label="Posição na linha do tempo">
+    <div id="e825c8" class="controles">
+      <div id="a50456" class="grupo">
+        <button id="btnInicio" title="Voltar ao início (Home)">⏮</button>
+        <button id="btnVoltar5" title="Voltar 5 s (←)">−5 s</button>
+        <button id="btnVoltar1" title="Voltar 1 s (Shift+←)">−1 s</button>
+        <button id="btnPlay" class="primario" title="Tocar / pausar (Espaço)">▶ Tocar</button>
+        <button id="btnAvancar1" title="Avançar 1 s (Shift+→)">+1 s</button>
+        <button id="btnAvancar5" title="Avançar 5 s (→)">+5 s</button>
+      </div>
+      <div id="ecd1ab" class="separador"></div>
+      <div id="de3090" class="grupo">
+        <button id="btnNotaAnt" title="Nota anterior (,)">◂ Nota</button>
+        <button id="btnNotaProx" title="Próxima nota (.)">Nota ▸</button>
+      </div>
+      <div id="efedd5" class="grupo" title="Transpõe notas, acordes e tom em semitons">
+        Transpor
+        <button id="btnTranspMenos">−½</button>
+        <span id="transpValor" class="transpor">0</span>
+        <button id="btnTranspMais">+½</button>
+        <button id="btnTranspZero" title="Voltar ao tom original">⟲</button>
+      </div>
+      <div id="a12cbb" class="grupo">
+        <button id="btnZoomMenos" title="Afastar linha do tempo (−)">−</button>
+        <button id="btnZoomMais" title="Aproximar linha do tempo (+)">+</button>
+      </div>
+    </div>
+    <div id="ae1189" class="dica">
+      <kbd id="a58c7f">Espaço</kbd> tocar/pausar · <kbd id="b41b70">←</kbd>/<kbd id="d2f129">→</kbd> 5 s · <kbd id="dbf886">Shift</kbd>+setas 1 s ·
+      <kbd id="f752fd">[</kbd>/<kbd id="c95f09">]</kbd> velocidade · <kbd id="b83d23">,</kbd>/<kbd id="f4dcac">.</kbd> nota anterior/próxima ·
+      clique ou arraste na linha do tempo para navegar · roda do mouse sobre ela para zoom
+    </div>
+  </section>
+
+  <section id="b1fbb5" class="painel ajustes">
+    <div id="b3af89">
+      <label id="b3efb4">Notas exibidas e tocadas</label>
+      <select id="fonteNotas"></select>
+      <label id="cd343c" style="margin-top:10px">Velocidade: <span class="valor" id="velocidadeValor">1.00×</span></label>
+      <input id="velocidade" type="range" min="0.25" max="2" step="0.05" value="1">
+      <div class="grupo" id="presetsVelocidade" style="margin-top:6px"></div>
+    </div>
+    <div id="ddfe16">
+      <label id="a1937f">Volume das notas sintetizadas: <span class="valor" id="volumeSintValor">70%</span></label>
+      <input id="volumeSint" type="range" min="0" max="1" step="0.01" value="0.7">
+      <label id="acbd66" style="margin-top:10px">Timbre</label>
+      <select id="timbre">
+        <option id="a5b1bb" value="pluck">Guitarra (dedilhado)</option>
+        <option id="d79144" value="triangle">Flauta (triangular)</option>
+        <option id="e38071" value="sine">Senoidal (pura)</option>
+        <option id="d4b1e3" value="square">Órgão (quadrada)</option>
+      </select>
+    </div>
+    <div id="fdc66d">
+      <label id="de7710">Tocar junto as faixas separadas (áudio real) — marque uma ou mais</label>
+      <div id="faixa" class="multiselect" role="group" aria-label="Faixas separadas"></div>
+      <button id="btnFaixasNenhuma" class="pequeno" style="margin-top:6px">Desmarcar todas</button>
+      <label id="ccc0f9" style="margin-top:10px">Volume das faixas: <span class="valor" id="volumeFaixaValor">80%</span></label>
+      <input id="volumeFaixa" type="range" min="0" max="1" step="0.01" value="0.8">
+      <div id="avisoFaixa" class="aviso" hidden></div>
+    </div>
+  </section>
+
+  <section id="b14589" class="painel">
+    <h2 id="a1e4b6">Acordes (<span id="qtdAcordes">0</span>) — clique para ir até o acorde</h2>
+    <div id="listaAcordes" class="lista acordes"></div>
+  </section>
+
+  <section id="a46560" class="painel">
+    <h2 id="ca90f1">Notas (<span id="qtdNotas">0</span>) — clique para ir até a nota</h2>
+    <div id="listaNotas" class="lista"></div>
+  </section>
+</main>
+
+<script id="dados" type="application/json">__DADOS__</script>
+<script id="edae38">
+"use strict";
+const DADOS = JSON.parse(document.getElementById("dados").textContent);
+const $ = id => document.getElementById(id);
+const porTempo = (a, b) => a.t - b.t;
+const ACORDES = (DADOS.acordes || []).slice().sort(porTempo);
+const TRECHOS = (DADOS.trechosSolo || []).slice().sort(porTempo);
+const ROTULOS = DADOS.rotulos || {};
+let NOTAS = [];
+
+// ---------- nomes musicais e transposição ----------
+const SUSTENIDOS = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+const BEMOIS = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"];
+const TOM_MAIOR = ["C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"];
+const TOM_MENOR = ["C", "C#", "D", "Eb", "E", "F", "F#", "G", "G#", "A", "Bb", "B"];
+const PT = { C: "Dó", D: "Ré", E: "Mi", F: "Fá", G: "Sol", A: "Lá", B: "Si" };
+let transp = 0;
+const tomAtual = () => DADOS.tom ? { tonica: (((DADOS.tom.tonica + transp) % 12) + 12) % 12, modo: DADOS.tom.modo } : null;
+function usaBemol() {
+  const tom = tomAtual();
+  if (!tom) return false;
+  return (tom.modo === "maior" ? [5, 10, 3, 8, 1] : [2, 7, 0, 5, 10, 3]).includes(tom.tonica);
+}
+const pc = m => ((m % 12) + 12) % 12;
+function nomeNota(midi) {
+  const m = midi + transp;
+  return (usaBemol() ? BEMOIS : SUSTENIDOS)[pc(m)] + (Math.floor(m / 12) - 1);
+}
+function nomeAcorde(a) { return (usaBemol() ? BEMOIS : SUSTENIDOS)[pc(a.raiz + transp)] + a.tipo; }
+function nomeTom(tom) {
+  if (!tom) return "—";
+  const letra = (tom.modo === "maior" ? TOM_MAIOR : TOM_MENOR)[tom.tonica];
+  const acid = letra.includes("#") ? " sustenido" : letra.includes("b") ? " bemol" : "";
+  return `${letra}${tom.modo === "menor" ? "m" : ""} · ${PT[letra[0]]}${acid} ${tom.modo}`;
+}
+
+// ---------- utilidades ----------
+function formatarTempo(s) {
+  const c = Math.max(0, Math.round(s * 100));
+  const m = Math.floor(c / 6000), seg = Math.floor((c % 6000) / 100), cs = c % 100;
+  return `${String(m).padStart(2, "0")}:${String(seg).padStart(2, "0")}.${String(cs).padStart(2, "0")}`;
+}
+const midiParaHz = m => 440 * Math.pow(2, (m - 69) / 12);
+const limitar = (v, a, b) => Math.min(b, Math.max(a, v));
+// Índice do último item com início <= t (ou -1)
+function indiceEm(lista, t) {
+  let lo = 0, hi = lista.length - 1, r = -1;
+  while (lo <= hi) { const mid = (lo + hi) >> 1; if (lista[mid].t <= t) { r = mid; lo = mid + 1; } else hi = mid - 1; }
+  return r;
+}
+const indiceNota = t => indiceEm(NOTAS, t);
+const fimDe = lista => lista.length ? lista[lista.length - 1].t + lista[lista.length - 1].d : 0;
+const duracaoFaixas = () => Math.max(0, ...[...faixasAtivas.values()].map(a => isFinite(a.duration) ? a.duration : 0));
+const fimMusica = () => Math.max(fimDe(NOTAS), fimDe(ACORDES), duracaoFaixas()) + 0.5;
+const corFonte = f => cor("--f-" + f) || cor("--nota");
+
+// ---------- estado ----------
+let ctx = null, mestre = null;
+let tocando = false, posicao = 0, velocidade = 1;
+let ancoraCtx = 0, ancoraPos = 0, proximoIndice = 0, temporizador = null;
+let janela = 8;          // segundos visíveis na linha do tempo
+const vozes = new Set();
+const faixasAtivas = new Map();   // nome da faixa -> elemento Audio
+const faixasComErro = new Set();
+
+function tempoAtual() {
+  return tocando ? ancoraPos + (ctx.currentTime - ancoraCtx) * velocidade : posicao;
+}
+
+// ---------- síntese ----------
+function garantirAudio() {
+  if (!ctx) {
+    ctx = new (window.AudioContext || window.webkitAudioContext)();
+    mestre = ctx.createGain();
+    mestre.gain.value = parseFloat($("volumeSint").value);
+    mestre.connect(ctx.destination);
+  }
+  if (ctx.state === "suspended") ctx.resume();
+}
+
+function tocarNota(nota, inicioCtx, duracaoReal) {
+  const timbre = $("timbre").value;
+  const freq = midiParaHz(nota.midi + transp);
+  const dur = Math.max(0.08, duracaoReal);
+  const ganho = ctx.createGain();
+  const osc = ctx.createOscillator();
+  osc.frequency.value = freq;
+
+  if (timbre === "pluck") {
+    osc.type = "sawtooth";
+    const filtro = ctx.createBiquadFilter();
+    filtro.type = "lowpass";
+    filtro.Q.value = 2;
+    filtro.frequency.setValueAtTime(Math.min(freq * 10, 12000), inicioCtx);
+    filtro.frequency.exponentialRampToValueAtTime(Math.max(freq * 1.5, 300), inicioCtx + Math.min(dur, 0.6));
+    osc.connect(filtro); filtro.connect(ganho);
+  } else {
+    osc.type = timbre;
+    osc.connect(ganho);
+  }
+
+  const pico = timbre === "square" ? 0.12 : 0.3;
+  const g = ganho.gain;
+  g.setValueAtTime(0.0001, inicioCtx);
+  g.exponentialRampToValueAtTime(pico, inicioCtx + 0.008);
+  g.exponentialRampToValueAtTime(pico * 0.45, inicioCtx + Math.min(0.25, dur * 0.7));
+  g.setValueAtTime(pico * 0.45, inicioCtx + dur);
+  g.exponentialRampToValueAtTime(0.0001, inicioCtx + dur + 0.08);
+  ganho.connect(mestre);
+
+  osc.start(inicioCtx);
+  osc.stop(inicioCtx + dur + 0.1);
+  const voz = { osc, ganho };
+  vozes.add(voz);
+  osc.onended = () => { vozes.delete(voz); ganho.disconnect(); };
+}
+
+function silenciarTudo() {
+  if (!ctx) return;
+  const agora = ctx.currentTime;
+  for (const v of vozes) {
+    try {
+      v.ganho.gain.cancelScheduledValues(agora);
+      v.ganho.gain.setTargetAtTime(0.0001, agora, 0.015);
+      v.osc.stop(agora + 0.08);
+    } catch (e) { /* voz já encerrada */ }
+  }
+  vozes.clear();
+}
+
+// Agenda as notas que começam dentro da janela de antecipação
+function agendar() {
+  const agora = tempoAtual();
+  if (agora >= fimMusica()) { pausar(); posicao = fimMusica(); return; }
+  const limite = agora + 0.15 * velocidade;
+  while (proximoIndice < NOTAS.length && NOTAS[proximoIndice].t < limite) {
+    const n = NOTAS[proximoIndice++];
+    const inicio = ancoraCtx + (n.t - ancoraPos) / velocidade;
+    tocarNota(n, Math.max(inicio, ctx.currentTime), n.d / velocidade);
+  }
+}
+
+// ---------- transporte ----------
+function iniciarDe(pos) {
+  garantirAudio();
+  silenciarTudo();
+  posicao = limitar(pos, 0, fimMusica());
+  ancoraCtx = ctx.currentTime + 0.05;
+  ancoraPos = posicao;
+  // Nota que já está soando no ponto de partida toca pelo tempo que resta
+  const i = indiceNota(posicao);
+  if (i >= 0 && NOTAS[i].t < posicao && posicao < NOTAS[i].t + NOTAS[i].d) {
+    tocarNota(NOTAS[i], ancoraCtx, (NOTAS[i].t + NOTAS[i].d - posicao) / velocidade);
+  }
+  proximoIndice = i >= 0 && NOTAS[i].t >= posicao ? i : i + 1;
+  tocando = true;
+  clearInterval(temporizador);
+  temporizador = setInterval(agendar, 25);
+  agendar();
+  sincronizarFaixa(true);
+  atualizarBotaoPlay();
+}
+
+function tocar() {
+  if (posicao >= fimMusica() - 0.01) posicao = 0;
+  iniciarDe(posicao);
+}
+
+function pausar() {
+  if (!tocando) return;
+  posicao = tempoAtual();
+  tocando = false;
+  clearInterval(temporizador);
+  silenciarTudo();
+  for (const a of faixasAtivas.values()) a.pause();
+  atualizarBotaoPlay();
+}
+
+function alternar() { tocando ? pausar() : tocar(); }
+
+function irPara(pos) {
+  pos = limitar(pos, 0, fimMusica());
+  if (tocando) iniciarDe(pos);
+  else { posicao = pos; for (const a of faixasAtivas.values()) a.currentTime = pos; }
+}
+
+function definirVelocidade(v) {
+  v = Math.round(limitar(v, 0.25, 2) * 100) / 100;
+  velocidade = v;
+  $("velocidade").value = v;
+  $("velocidadeValor").textContent = $("velocidadeTexto").textContent = v.toFixed(2) + "×";
+  document.querySelectorAll("#presetsVelocidade button")
+    .forEach(b => b.classList.toggle("ativo", parseFloat(b.dataset.v) === v));
+  for (const a of faixasAtivas.values()) a.playbackRate = v;
+  if (tocando) iniciarDe(tempoAtual());
+}
+
+function atualizarBotaoPlay() {
+  $("btnPlay").textContent = tocando ? "⏸ Pausar" : "▶ Tocar";
+}
+
+// ---------- faixas separadas (áudio real, várias ao mesmo tempo) ----------
+// Cada faixa é um <audio> próprio (preserva a afinação ao mudar a velocidade); todas seguem
+// o relógio do player e são reposicionadas quando se afastam dele.
+function sincronizarFaixa(forcar) {
+  const alvo = tempoAtual();
+  for (const a of faixasAtivas.values()) {
+    a.playbackRate = velocidade;
+    if (tocando) {
+      if (forcar || Math.abs(a.currentTime - alvo) > 0.15) a.currentTime = alvo;
+      if (a.paused) a.play().catch(() => {});
+    } else {
+      a.pause();
+    }
+  }
+}
+
+function ligarFaixa(nome, ligada) {
+  const atual = faixasAtivas.get(nome);
+  if (atual) {
+    atual.pause();
+    atual.removeAttribute("src");
+    atual.load();
+    faixasAtivas.delete(nome);
+  }
+  faixasComErro.delete(nome);
+  if (ligada) {
+    const a = new Audio();
+    a.preload = "auto";
+    a.preservesPitch = true;
+    a.addEventListener("error", () => {
+      if (faixasAtivas.get(nome) !== a) return;
+      faixasComErro.add(nome);
+      atualizarAvisoFaixas();
+    });
+    a.src = encodeURI(DADOS.faixas[nome]);
+    a.playbackRate = velocidade;
+    a.volume = parseFloat($("volumeFaixa").value);
+    a.currentTime = tempoAtual();
+    faixasAtivas.set(nome, a);
+  }
+  // Reinicia todas juntas para que a faixa recém-ligada entre alinhada com as demais
+  sincronizarFaixa(true);
+  atualizarAvisoFaixas();
+}
+
+function desligarTodasFaixas() {
+  for (const cb of $("faixa").querySelectorAll("input")) cb.checked = false;
+  for (const nome of [...faixasAtivas.keys()]) ligarFaixa(nome, false);
+}
+
+function atualizarAvisoFaixas() {
+  const msgs = [];
+  if (faixasComErro.size) {
+    msgs.push("Não foi possível abrir: " + [...faixasComErro].map(n => DADOS.faixas[n]).join(", ") +
+              " (a pasta faixas foi movida?)");
+  }
+  if (faixasAtivas.size && transp !== 0) {
+    msgs.push("As faixas reais não são transpostas; apenas as notas e acordes exibidos.");
+  }
+  $("avisoFaixa").hidden = !msgs.length;
+  $("avisoFaixa").textContent = msgs.join(" ");
+}
+
+// ---------- linha do tempo (canvas) ----------
+const canvas = $("linha");
+const g2d = canvas.getContext("2d");
+const MARGEM = 44;          // coluna com nomes das notas
+const FRACAO_CABECA = 0.25; // posição do cursor na largura visível
+const ALT_ACORDES = 28, ALT_FONTE = 6, ESPACO = 4;
+let midiMin = 58, midiMax = 72;
+
+function recalcularFaixaMidi() {
+  if (NOTAS.length) {
+    let mn = Infinity, mx = -Infinity;
+    for (const n of NOTAS) { if (n.midi < mn) mn = n.midi; if (n.midi > mx) mx = n.midi; }
+    midiMin = mn + transp - 2; midiMax = mx + transp + 2;
+  } else { midiMin = 58; midiMax = 72; }
+}
+
+function cor(nome) { return getComputedStyle(document.documentElement).getPropertyValue(nome).trim(); }
+
+function redimensionar() {
+  const r = canvas.getBoundingClientRect(), dpr = window.devicePixelRatio || 1;
+  canvas.width = Math.round(r.width * dpr);
+  canvas.height = Math.round(r.height * dpr);
+  g2d.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+new ResizeObserver(redimensionar).observe(canvas);
+
+function inicioJanela(t) { return t - janela * FRACAO_CABECA; }
+function xDoTempo(t, t0, largura) { return MARGEM + (t - t0) / janela * (largura - MARGEM); }
+function tempoDoX(x, t0, largura) { return t0 + (x - MARGEM) / (largura - MARGEM) * janela; }
+
+function retangulo(x, y, w, h, r) {
+  g2d.beginPath();
+  if (g2d.roundRect) g2d.roundRect(x, y, w, h, r); else g2d.rect(x, y, w, h);
+  g2d.fill();
+}
+
+function desenhar(t, indiceAtivo, acordeAtivo) {
+  const W = canvas.clientWidth, H = canvas.clientHeight;
+  const mostrarFonte = $("fonteNotas").value === "solo" && TRECHOS.length > 0;
+  const topoNotas = ALT_ACORDES + ESPACO + (mostrarFonte ? ALT_FONTE + ESPACO : 0);
+  const Hn = H - topoNotas;
+  const faixas = midiMax - midiMin + 1, alt = Hn / faixas;
+  const yDoMidi = m => topoNotas + Hn - (m - midiMin + 1) * alt;
+  const t0 = inicioJanela(t), t1 = t0 + janela;
+  const c = { grade: cor("--grade"), forte: cor("--grade-forte"), suave: cor("--suave"), nota: cor("--nota"),
+              ativa: cor("--nota-ativa"), cabeca: cor("--cabeca"), texto: cor("--texto"),
+              acorde: cor("--acorde"), acordeAtivo: cor("--acorde-ativo") };
+  const nomes = usaBemol() ? BEMOIS : SUSTENIDOS;
+  g2d.clearRect(0, 0, W, H);
+  g2d.font = "11px system-ui, sans-serif";
+  g2d.textBaseline = "middle";
+
+  // linhas horizontais (teclas pretas sombreadas, linha em cada Dó) e nomes das notas
+  for (let m = midiMin; m <= midiMax; m++) {
+    const nome = nomes[pc(m)], y = yDoMidi(m);
+    if (nome.length === 2) { g2d.fillStyle = c.grade; g2d.fillRect(MARGEM, y, W - MARGEM, alt); }
+    if (nome === "C") { g2d.fillStyle = c.forte; g2d.fillRect(MARGEM, y + alt - 1, W - MARGEM, 1); }
+    if (alt >= 9 || nome === "C") {
+      g2d.fillStyle = nome === "C" ? c.texto : c.suave;
+      g2d.fillText(nome + (Math.floor(m / 12) - 1), 4, y + alt / 2);
+    }
+  }
+
+  // linhas verticais (segundos)
+  const passo = janela <= 4 ? 0.5 : janela <= 16 ? 1 : janela <= 40 ? 5 : 10;
+  g2d.textBaseline = "bottom";
+  for (let s = Math.ceil(t0 / passo) * passo; s <= t1; s += passo) {
+    if (s < 0) continue;
+    const x = xDoTempo(s, t0, W);
+    g2d.fillStyle = c.forte; g2d.fillRect(x, topoNotas, 1, Hn);
+    g2d.fillStyle = c.suave; g2d.fillText(formatarTempo(s).slice(0, passo < 1 ? 8 : 5), x + 3, H - 2);
+  }
+
+  // faixa dos acordes
+  g2d.textBaseline = "middle";
+  g2d.fillStyle = c.suave; g2d.fillText("Acorde", 4, ALT_ACORDES / 2);
+  for (let i = Math.max(0, indiceEm(ACORDES, t0)); i < ACORDES.length && ACORDES[i].t <= t1; i++) {
+    const a = ACORDES[i];
+    if (a.t + a.d < t0) continue;
+    const x = Math.max(MARGEM, xDoTempo(a.t, t0, W)), xf = xDoTempo(a.t + a.d, t0, W);
+    if (xf <= MARGEM) continue;
+    g2d.fillStyle = i === acordeAtivo ? c.acordeAtivo : c.acorde;
+    retangulo(x + 1, 0, Math.max(2, xf - x - 2), ALT_ACORDES, 5);
+    g2d.fillStyle = i === acordeAtivo ? "#fff" : c.texto;
+    g2d.font = "600 13px system-ui, sans-serif";
+    if (xf - x > 20) g2d.fillText(nomeAcorde(a), x + 6, ALT_ACORDES / 2);
+    g2d.font = "11px system-ui, sans-serif";
+  }
+
+  // faixa de onde veio o solo (modo automático)
+  if (mostrarFonte) {
+    const y = ALT_ACORDES + ESPACO;
+    for (const tr of TRECHOS) {
+      if (tr.t + tr.d < t0 || tr.t > t1) continue;
+      const x = Math.max(MARGEM, xDoTempo(tr.t, t0, W)), xf = xDoTempo(tr.t + tr.d, t0, W);
+      g2d.fillStyle = corFonte(tr.f);
+      g2d.fillRect(x, y, Math.max(1, xf - x), ALT_FONTE);
+    }
+  }
+
+  // blocos das notas visíveis
+  let i = Math.max(0, indiceNota(t0) - 1);
+  for (; i < NOTAS.length && NOTAS[i].t <= t1; i++) {
+    const n = NOTAS[i];
+    if (n.t + n.d < t0) continue;
+    const x = xDoTempo(n.t, t0, W), w = Math.max(3, n.d / janela * (W - MARGEM));
+    const y = yDoMidi(n.midi + transp);
+    g2d.fillStyle = i === indiceAtivo ? c.ativa : (n.f ? corFonte(n.f) : c.nota);
+    g2d.globalAlpha = i === indiceAtivo ? 1 : 0.8;
+    const xi = Math.max(x, MARGEM);
+    retangulo(xi, y + 1, w - (xi - x), Math.max(alt - 2, 2), Math.min(4, alt / 2, w / 2));
+    g2d.globalAlpha = 1;
+    if (w > 26 && alt >= 10 && x >= MARGEM) { g2d.fillStyle = "#fff"; g2d.fillText(nomeNota(n.midi), x + 4, y + alt / 2); }
+  }
+
+  // cursor de reprodução
+  const xc = xDoTempo(t, t0, W);
+  g2d.fillStyle = c.cabeca; g2d.fillRect(xc - 1, 0, 2, H);
+}
+
+// arrastar na linha do tempo para navegar
+let arrastando = null;
+canvas.addEventListener("pointerdown", e => {
+  const r = canvas.getBoundingClientRect();
+  const t = tempoAtual();
+  arrastando = { x: e.clientX, t, clique: tempoDoX(e.clientX - r.left, inicioJanela(t), r.width), moveu: false };
+  canvas.setPointerCapture(e.pointerId);
+});
+canvas.addEventListener("pointermove", e => {
+  if (!arrastando) return;
+  const dx = e.clientX - arrastando.x;
+  if (Math.abs(dx) > 4) arrastando.moveu = true;
+  if (arrastando.moveu) irPara(arrastando.t - dx * janela / (canvas.clientWidth - MARGEM));
+});
+canvas.addEventListener("pointerup", () => {
+  if (arrastando && !arrastando.moveu) irPara(arrastando.clique);
+  arrastando = null;
+});
+canvas.addEventListener("wheel", e => {
+  e.preventDefault();  // a roda sobre a linha do tempo faz zoom; fora dela a página rola normalmente
+  if (Math.abs(e.deltaX) > Math.abs(e.deltaY) || e.shiftKey) {
+    irPara(tempoAtual() + (e.deltaX || e.deltaY) / 100 * janela * 0.1);
+  } else {
+    janela = limitar(janela * (e.deltaY > 0 ? 1.15 : 1 / 1.15), 2, 120);
+  }
+}, { passive: false });
+
+// ---------- listas (rolagem só dentro da própria caixa, nunca da página) ----------
+function rolarDentro(caixa, el) {
+  const topo = el.offsetTop, alt = el.offsetHeight;
+  if (topo < caixa.scrollTop || topo + alt > caixa.scrollTop + caixa.clientHeight) {
+    caixa.scrollTop = topo - caixa.clientHeight / 2 + alt / 2;
+  }
+}
+
+function montarLista(caixa, itens, rotulo) {
+  caixa.textContent = "";
+  return itens.map((item, i) => {
+    const b = document.createElement("button");
+    const s = document.createElement("span");
+    b.id = `${caixa.id}-${i}`;
+    s.textContent = formatarTempo(item.t);
+    b.append(s, rotulo(item));
+    b.addEventListener("click", () => irPara(item.t));
+    caixa.appendChild(b);
+    return b;
+  });
+}
+
+let botoesNotas = [], botoesAcordes = [];
+let destaqueNota = -1, destaqueAcorde = -1;
+function montarListas() {
+  botoesNotas = montarLista($("listaNotas"), NOTAS, n => nomeNota(n.midi));
+  botoesAcordes = montarLista($("listaAcordes"), ACORDES, nomeAcorde);
+  destaqueNota = destaqueAcorde = -1;
+  $("qtdNotas").textContent = NOTAS.length;
+  $("qtdAcordes").textContent = ACORDES.length;
+}
+
+function destacar(botoes, anterior, i, caixa) {
+  if (i === anterior) return anterior;
+  if (anterior >= 0 && botoes[anterior]) botoes[anterior].classList.remove("atual");
+  if (i >= 0 && botoes[i]) {
+    botoes[i].classList.add("atual");
+    if (tocando) rolarDentro(caixa, botoes[i]);
+  }
+  return i;
+}
+
+// ---------- fonte das notas e transposição ----------
+function escolherFonteNotas(fonte) {
+  NOTAS = (DADOS.melodias[fonte] || []).slice().sort(porTempo);
+  recalcularFaixaMidi();
+  montarListas();
+  atualizarLegenda();
+  if (tocando) iniciarDe(tempoAtual());
+}
+
+function transpor(delta) {
+  transp = delta === 0 ? 0 : limitar(transp + delta, -12, 12);
+  $("transpValor").textContent = transp > 0 ? "+" + transp : String(transp);
+  const tom = tomAtual();
+  $("tomAtual").textContent = nomeTom(tom);
+  $("tomOriginal").textContent = transp !== 0 && DADOS.tom ? "original: " + nomeTom(DADOS.tom) : "";
+  recalcularFaixaMidi();
+  montarListas();
+  atualizarAvisoFaixas();
+  if (tocando) iniciarDe(tempoAtual());
+}
+
+function atualizarLegenda() {
+  const leg = $("legenda");
+  leg.textContent = "";
+  if ($("fonteNotas").value !== "solo") return;
+  const usadas = [...new Set(TRECHOS.map(t => t.f))];
+  if (!usadas.length) return;
+  leg.append("Solo extraído de: ");
+  for (const f of usadas) {
+    const s = document.createElement("span");
+    const i = document.createElement("i");
+    s.id = "legenda-" + f;
+    i.style.background = corFonte(f);
+    s.append(i, ROTULOS[f] || f);
+    leg.appendChild(s);
+  }
+}
+
+// ---------- laço de atualização da tela ----------
+const barra = $("barra");
+let arrastandoBarra = false;
+barra.addEventListener("pointerdown", () => arrastandoBarra = true);
+barra.addEventListener("pointerup", () => arrastandoBarra = false);
+barra.addEventListener("input", () => irPara(parseFloat(barra.value)));
+
+function quadro() {
+  const t = tempoAtual();
+  const i = indiceNota(t);
+  const ativo = i >= 0 && t < NOTAS[i].t + NOTAS[i].d ? i : -1;
+  const ia = indiceEm(ACORDES, t);
+  const acordeAtivo = ia >= 0 && t < ACORDES[ia].t + ACORDES[ia].d ? ia : -1;
+
+  $("notaAtual").textContent = ativo >= 0 ? nomeNota(NOTAS[ativo].midi) : "—";
+  $("notaAtual").classList.toggle("vazia", ativo < 0);
+  $("acordeAtual").textContent = acordeAtivo >= 0 ? nomeAcorde(ACORDES[acordeAtivo]) : "—";
+  $("acordeAtual").classList.toggle("vazia", acordeAtivo < 0);
+  $("proximoAcorde").textContent = ia + 1 < ACORDES.length ? nomeAcorde(ACORDES[ia + 1]) : "—";
+  $("tempoAtual").textContent = formatarTempo(t);
+  const fim = fimMusica();
+  $("tempoTotal").textContent = formatarTempo(fim);
+  barra.max = fim;
+  if (!arrastandoBarra) barra.value = t;
+
+  destaqueNota = destacar(botoesNotas, destaqueNota, i, $("listaNotas"));
+  destaqueAcorde = destacar(botoesAcordes, destaqueAcorde, ia, $("listaAcordes"));
+
+  if (tocando) sincronizarFaixa(false);
+  desenhar(t, ativo, acordeAtivo);
+  requestAnimationFrame(quadro);
+}
+
+// ---------- controles ----------
+$("btnPlay").addEventListener("click", alternar);
+$("btnInicio").addEventListener("click", () => irPara(0));
+$("btnVoltar5").addEventListener("click", () => irPara(tempoAtual() - 5));
+$("btnVoltar1").addEventListener("click", () => irPara(tempoAtual() - 1));
+$("btnAvancar1").addEventListener("click", () => irPara(tempoAtual() + 1));
+$("btnAvancar5").addEventListener("click", () => irPara(tempoAtual() + 5));
+function notaAnterior() {
+  const i = indiceNota(tempoAtual() - 0.3);
+  irPara(i >= 0 ? NOTAS[i].t : 0);
+}
+function proximaNota() {
+  const i = indiceNota(tempoAtual() + 0.001) + 1;
+  if (i < NOTAS.length) irPara(NOTAS[i].t);
+}
+$("btnNotaAnt").addEventListener("click", notaAnterior);
+$("btnNotaProx").addEventListener("click", proximaNota);
+$("btnZoomMais").addEventListener("click", () => janela = limitar(janela / 1.5, 2, 120));
+$("btnZoomMenos").addEventListener("click", () => janela = limitar(janela * 1.5, 2, 120));
+$("btnTranspMenos").addEventListener("click", () => transpor(-1));
+$("btnTranspMais").addEventListener("click", () => transpor(+1));
+$("btnTranspZero").addEventListener("click", () => transpor(0));
+
+$("velocidade").addEventListener("input", e => definirVelocidade(parseFloat(e.target.value)));
+for (const v of [0.25, 0.5, 0.75, 1, 1.25, 1.5, 2]) {
+  const b = document.createElement("button");
+  b.id = "presetsVelocidade-" + String(v).replace(".", "_");
+  b.textContent = v + "×"; b.dataset.v = v;
+  b.style.padding = "4px 8px"; b.style.minWidth = "0";
+  b.addEventListener("click", () => definirVelocidade(v));
+  $("presetsVelocidade").appendChild(b);
+}
+$("volumeSint").addEventListener("input", e => {
+  const v = parseFloat(e.target.value);
+  $("volumeSintValor").textContent = Math.round(v * 100) + "%";
+  if (mestre) mestre.gain.value = v;
+});
+$("volumeFaixa").addEventListener("input", e => {
+  const v = parseFloat(e.target.value);
+  $("volumeFaixaValor").textContent = Math.round(v * 100) + "%";
+  for (const a of faixasAtivas.values()) a.volume = v;
+});
+
+for (const fonte of Object.keys(DADOS.melodias || {})) {
+  const o = document.createElement("option");
+  o.id = "fonteNotas-" + fonte;
+  o.value = fonte;
+  o.textContent = fonte === "solo" ? "Solo (faixa escolhida automaticamente)" : "Melodia: " + (ROTULOS[fonte] || fonte);
+  $("fonteNotas").appendChild(o);
+}
+$("fonteNotas").addEventListener("change", e => escolherFonteNotas(e.target.value));
+
+for (const nome of Object.keys(DADOS.faixas || {})) {
+  const rotulo = document.createElement("label");
+  const cb = document.createElement("input");
+  rotulo.id = "faixa-" + nome;
+  cb.id = "faixa-" + nome + "-marcar";
+  cb.type = "checkbox";
+  cb.value = nome;
+  cb.addEventListener("change", () => ligarFaixa(nome, cb.checked));
+  rotulo.append(cb, `${ROTULOS[nome] || nome} (${nome}.wav)`);
+  $("faixa").appendChild(rotulo);
+}
+$("btnFaixasNenhuma").addEventListener("click", desligarTodasFaixas);
+
+document.addEventListener("keydown", e => {
+  if (e.ctrlKey || e.altKey || e.metaKey) return;
+  if (e.target.tagName === "SELECT" || (e.target.tagName === "INPUT" && e.key !== " ")) return;
+  const passo = e.shiftKey ? 1 : 5;
+  switch (e.key) {
+    case " ": e.preventDefault(); if (e.target.blur) e.target.blur(); alternar(); break;
+    case "ArrowLeft": e.preventDefault(); irPara(tempoAtual() - passo); break;
+    case "ArrowRight": e.preventDefault(); irPara(tempoAtual() + passo); break;
+    case "]": definirVelocidade(velocidade + 0.05); break;
+    case "[": definirVelocidade(velocidade - 0.05); break;
+    case "Home": e.preventDefault(); irPara(0); break;
+    case ",": notaAnterior(); break;
+    case ".": proximaNota(); break;
+    case "+": case "=": janela = limitar(janela / 1.5, 2, 120); break;
+    case "-": janela = limitar(janela * 1.5, 2, 120); break;
+  }
+});
+
+// ---------- início ----------
+$("subtitulo").textContent = `Arquivo de origem: ${DADOS.origem}`;
+escolherFonteNotas($("fonteNotas").value || "solo");
+transpor(0);
+definirVelocidade(1);
+redimensionar();
+requestAnimationFrame(quadro);
+</script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+# Letra: Senhor, Te Quero (id b2cf15a0)
+# Formato: [início - fim] frase · linhas começando com # são ignoradas
+
+[00:14.90 - 00:18.72] Eu te busco, te procuro, ó Deus
+[00:21.51 - 00:26.23] no silêncio tu estás
+[00:28.40 - 00:29.86] Eu te busco
+[00:29.86 - 00:32.64] toda hora espero em ti,
+[00:32.64 - 00:34.77] revela -te a mim,
+[00:34.99 - 00:40.43] conhecer -te eu quero mais
+[00:41.90 - 00:44.63] Senhor te quero,
+[00:45.35 - 00:48.35] quero ouvir Tua voz
+[00:48.35 - 00:53.49] Senhor te quero mais
+[00:55.43 - 00:58.79] Quero tocar -te,
+[00:58.79 - 01:01.79] tua face eu quero ver
+[01:02.02 - 01:06.67] Senhor te quero mais
+[01:08.63 - 01:12.81] Prosseguindo para o alvo eu vou
+[01:15.31 - 01:19.96] A coroa conquistar
+[01:21.72 - 01:23.38] Vou lutando,
+[01:23.38 - 01:25.80] nada pode me impedir
+[01:25.80 - 01:28.29] eu vou te seguir
+[01:28.40 - 01:34.67] Conhecer-te eu quero mais
+[01:35.19 - 01:38.09] Senhor te quero,
+[01:38.55 - 01:41.55] quero ouvir Tua voz
+[01:41.89 - 01:46.39] Senhor te quero mais
+[01:48.62 - 01:51.92] Quero tocar -te,
+[01:51.92 - 01:54.88] tua face eu quero ver
+[01:55.13 - 01:59.62] Senhor te quero mais
+[02:28.28 - 02:31.93] Prosseguindo para o alvo eu vou
+[02:34.95 - 02:39.02] A coroa conquistar
+[02:41.45 - 02:43.05] Vou lutando,
+[02:43.05 - 02:45.86] nada pode me impedir,
+[02:45.86 - 02:47.84] eu vou te seguir
+[02:47.84 - 02:51.92] Conhecer-te eu quero mais
+[02:54.80 - 02:58.09] Senhor te quero
+[02:58.09 - 03:01.44] Quero ouvir tua voz,
+[03:01.44 - 03:05.03] Senhor te quero mais
+[03:07.93 - 03:11.28] Quero tocar -te,
+[03:11.28 - 03:14.55] tua face eu quero ver
+[03:14.55 - 03:17.15] Senhor te quero, mais
+[03:21.15 - 03:24.19] Senhor te quero,
+[03:24.46 - 03:27.54] quero ouvir tua voz
+[03:27.54 - 03:31.57] Senhor te quero mais
+[03:34.24 - 03:37.04] Quero tocar-te
+[03:37.63 - 03:40.94] tua face eu quero ver,
+[03:40.94 - 03:44.70] Senhor te quero mais
