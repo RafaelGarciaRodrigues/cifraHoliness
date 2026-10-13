@@ -204,6 +204,64 @@
 		font-size: 1.2em;
 		letter-spacing: 1px;
 	}
+	/* Modal do icone do YouTube (ver rc.md secao DOWNLOAD DO YOUTUBE): ver no YouTube ou baixar o mp3 */
+	#youtube-modal {
+		position: fixed;
+		inset: 0;
+		display: none;
+		align-items: center;
+		justify-content: center;
+		background: rgba(0, 0, 0, 0.4);
+		z-index: 20;
+	}
+	#youtube-modal.aberto {
+		display: flex;
+	}
+	#youtube-modal .caixa {
+		background: rgba(16, 16, 16, 0.92);
+		color: #fff;
+		padding: 22px 26px;
+		border-radius: 14px;
+		text-align: center;
+		border: 1px solid rgba(255, 255, 255, 0.15);
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+		min-width: 240px;
+		max-width: 90vw;
+	}
+	#youtube-modal .titulo {
+		color: #ffcc66;
+		font-weight: bold;
+	}
+	#youtube-modal button {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 8px;
+		background: transparent;
+		color: #f0f0f0;
+		border: 1px solid #555;
+		border-radius: 10px;
+		padding: 10px 16px;
+		font-size: 1em;
+		cursor: pointer;
+	}
+	#youtube-modal button:disabled {
+		opacity: 0.5;
+		cursor: default;
+	}
+	#youtube-modal .bi-youtube {
+		color: #ff0000;
+	}
+	#youtube-modal .status {
+		font-size: 0.85em;
+		color: #999;
+		min-height: 1em;
+	}
+	#youtube-modal .status.erro {
+		color: #f66;
+	}
 	.botao-circular.copiado {
 		opacity: 0.9;
 		color: #4ade80;
@@ -298,6 +356,14 @@
 	<div class="caixa">
 		<div class="simbolo"></div>
 		<div class="notas"></div>
+	</div>
+</div>
+<div id="youtube-modal">
+	<div class="caixa">
+		<div class="titulo"></div>
+		<button type="button" class="ver-youtube"><i class="bi bi-youtube"></i> Ver no YouTube</button>
+		<button type="button" class="baixar-mp3"><i class="bi bi-download"></i> Baixar áudio (mp3)</button>
+		<div class="status"></div>
 	</div>
 </div>
 
@@ -8149,6 +8215,8 @@ Tu és Tremendo
 Tua É a Glória
 TOM:C
 
+<yt>https://www.youtube.com/watch?v=UJKNjAjMf44</yt>
+
 <intro>
 C9
 Não deixarei de te louvar
@@ -11214,7 +11282,7 @@ Você vai discar várias vezes, telefone mudo não pode chamar
 			ytIcon.className = "bi bi-youtube";
 			ytIcon.addEventListener("click", function (e) {
 				e.stopPropagation();
-				window.open(musica.youtube, "_blank");
+				mostrarModalYoutube(musica);
 			});
 			h2.appendChild(ytIcon);
 		}
@@ -11937,6 +12005,99 @@ Você vai discar várias vezes, telefone mudo não pode chamar
 	}
 
 	modalAcorde.addEventListener("click", esconderModalAcorde);
+
+	// ===== Modal do YouTube: ver no YouTube ou baixar o audio em mp3 =====
+	// (ver rc.md secao DOWNLOAD DO YOUTUBE). O download usa a API youtube-mp310 do RapidAPI, que
+	// devolve {"downloadUrl": "..."}; esse link serve o audio/mpeg ja convertido. Baixa como blob pra
+	// salvar com o titulo da musica; precisa de internet (nao funciona na rede do NodeMCU).
+	var YT_MP3_API = "https://youtube-mp310.p.rapidapi.com/download/mp3?url=";
+	var YT_MP3_HOST = "youtube-mp310.p.rapidapi.com";
+	var YT_MP3_KEY = "5e3551cd2amsha0360125fbb2dd1p1179aajsn77b637ba0e8a";
+
+	var modalYoutube = document.getElementById("youtube-modal");
+	var modalYoutubeTitulo = modalYoutube.querySelector(".titulo");
+	var modalYoutubeVer = modalYoutube.querySelector(".ver-youtube");
+	var modalYoutubeBaixar = modalYoutube.querySelector(".baixar-mp3");
+	var modalYoutubeStatus = modalYoutube.querySelector(".status");
+	var musicaYoutube = null;
+	var baixandoMp3 = false;
+
+	function statusYoutube(texto, erro) {
+		modalYoutubeStatus.textContent = texto;
+		modalYoutubeStatus.classList.toggle("erro", !!erro);
+	}
+
+	function mostrarModalYoutube(musica) {
+		musicaYoutube = musica;
+		modalYoutubeTitulo.textContent = musica.titulo;
+		if (!baixandoMp3) statusYoutube("", false);
+		modalYoutube.classList.add("aberto");
+	}
+
+	function esconderModalYoutube() {
+		modalYoutube.classList.remove("aberto");
+	}
+
+	function salvarArquivo(href, nome) {
+		var a = document.createElement("a");
+		a.href = href;
+		a.download = nome;
+		document.body.appendChild(a);
+		a.click();
+		document.body.removeChild(a);
+	}
+
+	function baixarMp3(musica) {
+		if (baixandoMp3) return;
+		baixandoMp3 = true;
+		modalYoutubeBaixar.disabled = true;
+		statusYoutube("Gerando o mp3...", false);
+		var nome = musica.titulo.replace(/[\\/:*?"<>|]/g, "").trim() + ".mp3";
+		var linkAudio = null;
+
+		fetch(YT_MP3_API + encodeURIComponent(musica.youtube), {
+			headers: { "x-rapidapi-host": YT_MP3_HOST, "x-rapidapi-key": YT_MP3_KEY }
+		}).then(function (resp) {
+			if (!resp.ok) throw new Error("API respondeu " + resp.status);
+			return resp.json();
+		}).then(function (dados) {
+			if (!dados || !dados.downloadUrl) throw new Error("API nao retornou o link do mp3");
+			linkAudio = dados.downloadUrl;
+			statusYoutube("Baixando o áudio...", false);
+			return fetch(linkAudio);
+		}).then(function (resp) {
+			if (!resp.ok) throw new Error("download respondeu " + resp.status);
+			return resp.blob();
+		}).then(function (blob) {
+			var url = URL.createObjectURL(blob);
+			salvarArquivo(url, nome);
+			setTimeout(function () { URL.revokeObjectURL(url); }, 10000);
+			statusYoutube("Download concluído.", false);
+		}).catch(function (err) {
+			if (linkAudio) {
+				// O link ja responde com Content-Disposition: attachment, entao abrir direto
+				// tambem baixa (so perde o nome do arquivo com o titulo da musica).
+				salvarArquivo(linkAudio, nome);
+				statusYoutube("Download iniciado pelo navegador.", false);
+			} else {
+				statusYoutube("Falha no download: " + err.message, true);
+			}
+		}).then(function () {
+			baixandoMp3 = false;
+			modalYoutubeBaixar.disabled = false;
+		});
+	}
+
+	modalYoutube.addEventListener("click", function (e) {
+		if (e.target === modalYoutube) esconderModalYoutube();
+	});
+	modalYoutubeVer.addEventListener("click", function () {
+		if (musicaYoutube) window.open(musicaYoutube.youtube, "_blank");
+		esconderModalYoutube();
+	});
+	modalYoutubeBaixar.addEventListener("click", function () {
+		if (musicaYoutube) baixarMp3(musicaYoutube);
+	});
 
 	// ===== Primeira nota da musica: toca a nota por 5 segundos =====
 	// Nota unica sustentada de violino solo (timbre suave e expressivo, ataque lento, decaimento

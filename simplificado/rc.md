@@ -520,3 +520,12 @@ Tanto amor por mim
 - mostrar em itálico
 - mas quero mudar a cor, deve ser #BBBBBB tanto ao lado do tom quanto qqr outra encontrada ao longo da cifra
 
+# DOWNLOAD DO YOUTUBE
+- quero que o o botão com o link do youtubera uma opção em um modal
+-- ver no youtube (e aí faz o que acontece hoje, leva até o youtube)
+-- faz download do áudio em mp3
+--- para o download usar:
+curl --request GET \
+	--url 'https://youtube-mp310.p.rapidapi.com/download/mp3?url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DUJKNjAjMf44' \
+	--header 'x-rapidapi-host: youtube-mp310.p.rapidapi.com' \
+	--header 'x-rapidapi-key: 5e3551cd2amsha0360125fbb2dd1p1179aajsn77b637ba0e8a'
