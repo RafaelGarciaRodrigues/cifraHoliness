@@ -1,8 +1,8 @@
-﻿O Escudo
-TOM:D {D}
+﻿Evidências
+TOM:E 
 
-<yt>https://www.youtube.com/watch?v=9It9irbLMnU</yt>
-<t>20</t>
+<yt></yt>
+<t></t>
 
 <intro>
 
