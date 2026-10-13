@@ -2,6 +2,14 @@
 TOM:C
 
 <intro>
+C9
+Não deixarei de te louvar
+Am7
+Não deixarei de te buscar
+        F           C/E
+És a razão da minha  vi-da
+Dm7             F/G
+Vi-vo pra te exaltar
 </intro>
 
 C9      Am7          F7/E
@@ -53,9 +61,9 @@ Não deixarei de te buscar
 És a razão da minha  vi-da
 Dm7           F/G
 Vivo pra te adorar
---
-C  Am7  F
---
+
+C  Am7  F  G  A7
+
 D9
 Não deixarei de te louvar
 Bm7
@@ -64,7 +72,7 @@ Não deixarei de te buscar
 És a razão da minha  vi-da
 Em7             G/A
 Vi-vo pra te exaltar
---
+
 D9
 Não deixarei de te louvar
 Bm7
