@@ -17,6 +17,7 @@ import math
 import mimetypes
 import os
 import re
+import shutil
 import socket
 import subprocess
 import sys
@@ -70,19 +71,23 @@ class Processamentos:
         self.fila = deque()
         self.estado = {}    # chave -> {estado: na fila|processando|concluido|erro, etapa, log}
         self.comandos = {}  # chave -> (argumentos do script, início da linha que indica sucesso)
+        self.tentativas = {}  # chave -> [tentativa atual, total de tentativas]
         self.ocupado = False
 
-    def enfileirar(self, chave, argumentos=None, marcador_sucesso="Pipeline finalizado"):
+    def enfileirar(self, chave, argumentos=None, marcador_sucesso="Pipeline finalizado", tentativas=1):
+        """tentativas > 1: se falhar, a tarefa volta para o fim da fila até esgotar as tentativas."""
         with self.trava:
             atual = self.estado.get(chave, {}).get("estado")
             if atual in ("na fila", "processando"):
-                return
+                return False
             self.estado[chave] = {"estado": "na fila", "etapa": "aguardando na fila", "log": []}
             self.comandos[chave] = (argumentos or [SCRIPT_SOLO, chave], marcador_sucesso)
+            self.tentativas[chave] = [1, max(1, tentativas)]
             self.fila.append(chave)
             if not self.ocupado:
                 self.ocupado = True
                 threading.Thread(target=self._trabalhar, daemon=True).start()
+            return True
 
     def instantaneo(self):
         with self.trava:
@@ -96,9 +101,17 @@ class Processamentos:
                     return
                 chave = self.fila.popleft()
                 info = self.estado[chave]
-                info.update(estado="processando", etapa="iniciando")
+                tentativa, total = self.tentativas.get(chave, [1, 1])
+                info.update(estado="processando", etapa="iniciando" + (f" (tentativa {tentativa} de {total})" if tentativa > 1 else ""))
                 argumentos, marcador = self.comandos[chave]
             self._rodar(argumentos, marcador, info)
+            with self.trava:
+                tentativa, total = self.tentativas.get(chave, [1, 1])
+                if info["estado"] == "erro" and tentativa < total:
+                    self.tentativas[chave] = [tentativa + 1, total]
+                    info["log"].append(f"--- falhou; tentando de novo (tentativa {tentativa + 1} de {total}) ---")
+                    info.update(estado="na fila", etapa=f"falhou; vai tentar de novo ({tentativa + 1}ª de {total} tentativas)")
+                    self.fila.append(chave)
 
     def _rodar(self, argumentos, marcador, info):
         ambiente = {**os.environ, "PYTHONIOENCODING": "utf-8", "PYTHONUNBUFFERED": "1"}
@@ -128,6 +141,177 @@ class Processamentos:
 
 
 PROCESSAMENTOS = Processamentos()
+TENTATIVAS_LOTE = 3  # "Processar todos os não processados": tentativas de cada áudio
+
+
+# ---------------------------------------------------------------- vídeo renderizado no navegador
+class SessoesVideo:
+    """Vídeo de karaokê desenhado pela interface (o mesmo HTML/canvas das abas YouTube e Instagram do
+    player): o navegador manda os quadros em JPEG, em lotes, e o FFmpeg os junta com o áudio (a mistura
+    do player, já enviada em caminho_notas_video). A situação aparece na fila (PROCESSAMENTOS.estado),
+    na chave do formato ("video:<id>" / "instagram:<id>"), como os vídeos do video.py."""
+    PASTAS = {"padrao": os.path.join(BASE_DIR, "videos"), "instagram": os.path.join(BASE_DIR, "videos", "instagram")}
+    QPS = 30
+    MEDIDAS = {"padrao": (1280, 720), "instagram": (1080, 1920)}
+    SEM_RESPOSTA = 120  # s sem receber quadros: o navegador fechou; a sessão é cancelada
+
+    def __init__(self):
+        self.trava = threading.Lock()
+        self.sessoes = {}  # chave da fila -> {token, proc, saida, temporario, total, recebidos, audio, ultimo, trava}
+        threading.Thread(target=self._vigiar, daemon=True).start()
+
+    @staticmethod
+    def nome_arquivo(registro, pasta):
+        base = pastas.base_video(registro)
+        caminho, n = os.path.join(pasta, base + ".mp4"), 2
+        while os.path.exists(caminho):  # não sobrescreve vídeos anteriores
+            caminho = os.path.join(pasta, f"{base} ({n}).mp4")
+            n += 1
+        return caminho
+
+    def _estado(self, chave, **campos):
+        with PROCESSAMENTOS.trava:
+            info = PROCESSAMENTOS.estado.setdefault(chave, {"estado": "processando", "etapa": "", "log": []})
+            linha = campos.pop("linha", None)
+            if linha:
+                info["log"].append(linha)
+                del info["log"][:-200]
+            info.update(campos)
+
+    def iniciar(self, registro, formato, total, silencio, duracao):
+        """Abre o FFmpeg para receber `total` quadros; devolve o token da sessão (ou lança ValueError)."""
+        if shutil.which("ffmpeg") is None:
+            raise ValueError("FFmpeg não encontrado no PATH do sistema")
+        audio = caminho_notas_video(registro["id"], formato)
+        if not os.path.isfile(audio):
+            raise ValueError("o áudio do vídeo não foi recebido")
+        chave = f"{FORMATOS_VIDEO[formato][0]}:{registro['id']}"
+        with self.trava:
+            if chave in self.sessoes or PROCESSAMENTOS.estado.get(chave, {}).get("estado") in ("na fila", "processando"):
+                raise RuntimeError("este vídeo já está sendo criado")
+            pasta = self.PASTAS[formato]
+            os.makedirs(pasta, exist_ok=True)
+            saida = self.nome_arquivo(registro, pasta)
+            temporario = saida + ".parcial.mp4"
+            largura, altura = self.MEDIDAS[formato]
+            atraso = f",adelay=delays={int(round(silencio * 1000))}:all=1" if silencio > 0 else ""
+            comando = ["ffmpeg", "-y", "-loglevel", "error",
+                       "-f", "image2pipe", "-framerate", str(self.QPS), "-c:v", "mjpeg", "-i", "-",
+                       "-t", f"{duracao:.3f}", "-i", audio,
+                       "-filter_complex", f"[0:v]scale={largura}:{altura},format=yuv420p[v];"
+                                          f"[1:a]alimiter=limit=0.95{atraso}[a]",
+                       "-map", "[v]", "-map", "[a]",
+                       "-c:v", "libx264", "-preset", "medium", "-crf", "20",
+                       "-c:a", "aac", "-b:a", "256k", "-movflags", "+faststart", "-shortest", temporario]
+            proc = subprocess.Popen(comando, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
+            token = os.urandom(8).hex()
+            self.sessoes[chave] = {"token": token, "proc": proc, "saida": saida, "temporario": temporario,
+                                   "total": max(1, int(total)), "recebidos": 0, "audio": audio,
+                                   "ultimo": time.time(), "trava": threading.Lock(), "formato": formato}
+        self._estado(chave, estado="processando", etapa="[2/3] Renderizando o vídeo (no navegador): 0%", log=[],
+                     linha="[1/3] Áudio recebido; renderizando os quadros do HTML...")
+        return chave, token
+
+    def _sessao(self, chave, token):
+        with self.trava:
+            s = self.sessoes.get(chave)
+        if not s or s["token"] != token:
+            raise KeyError("sessão de vídeo não encontrada (expirou ou foi cancelada)")
+        return s
+
+    def receber(self, chave, token, leitor, tamanho, quadros):
+        """Repassa ao FFmpeg um lote de quadros JPEG (concatenados) lidos de `leitor`."""
+        s = self._sessao(chave, token)
+        with s["trava"]:
+            restante = tamanho
+            try:
+                while restante > 0:
+                    pedaco = leitor.read(min(1 << 20, restante))
+                    if not pedaco:
+                        raise OSError("envio interrompido")
+                    s["proc"].stdin.write(pedaco)
+                    restante -= len(pedaco)
+            except OSError as e:
+                self.cancelar(chave, token, f"o FFmpeg parou de receber os quadros: {e}")
+                raise
+            s["recebidos"] += quadros
+            s["ultimo"] = time.time()
+            pct = min(99, s["recebidos"] * 100 // s["total"])
+        self._estado(chave, etapa=f"[2/3] Renderizando o vídeo (no navegador): {pct}%")
+
+    @staticmethod
+    def _erro_ffmpeg(s):
+        try:
+            return (s["proc"].stderr.read() or b"").decode("utf-8", "replace").strip()[-400:]
+        except (OSError, ValueError):
+            return ""
+
+    def concluir(self, chave, token):
+        """Fecha a entrada do FFmpeg e termina o arquivo numa thread (a resposta volta na hora)."""
+        s = self._sessao(chave, token)
+        self._estado(chave, etapa="[3/3] Finalizando o arquivo...", linha="[3/3] Finalizando o arquivo...")
+
+        def terminar():
+            with s["trava"]:
+                try:
+                    s["proc"].stdin.close()
+                except OSError:
+                    pass
+                erro = self._erro_ffmpeg(s)
+                codigo = s["proc"].wait()
+            with self.trava:
+                self.sessoes.pop(chave, None)
+            self._apagar_audio(s)
+            if codigo != 0 or not os.path.isfile(s["temporario"]):
+                self._apagar(s["temporario"])
+                self._estado(chave, estado="erro", etapa=f"falhou (código {codigo}); veja o log",
+                             linha=f"Erro: o FFmpeg falhou ao gerar o vídeo. {erro}".strip())
+                return
+            os.replace(s["temporario"], s["saida"])
+            marcador = FORMATOS_VIDEO[s["formato"]][1]
+            self._estado(chave, estado="concluido", etapa="concluído",
+                         linha=f"{marcador}! {os.path.relpath(s['saida'], BASE_DIR)}")
+
+        threading.Thread(target=terminar, daemon=True).start()
+
+    def cancelar(self, chave, token=None, motivo="cancelado"):
+        with self.trava:
+            s = self.sessoes.get(chave)
+            if not s or (token is not None and s["token"] != token):
+                return False
+            self.sessoes.pop(chave, None)
+        try:
+            s["proc"].kill()
+            s["proc"].wait(timeout=10)
+        except (OSError, subprocess.TimeoutExpired):
+            pass
+        erro = self._erro_ffmpeg(s)  # o FFmpeg já terminou: a leitura não trava
+        self._apagar(s["temporario"])
+        self._apagar_audio(s)
+        self._estado(chave, estado="erro", etapa="falhou; veja o log",
+                     linha=f"Erro: vídeo não criado ({motivo}). {erro}".strip())
+        return True
+
+    @staticmethod
+    def _apagar(caminho):
+        try:
+            os.remove(caminho)
+        except OSError:
+            pass
+
+    def _apagar_audio(self, s):
+        self._apagar(s["audio"])
+
+    def _vigiar(self):
+        while True:
+            time.sleep(10)
+            with self.trava:
+                paradas = [c for c, s in self.sessoes.items() if time.time() - s["ultimo"] > self.SEM_RESPOSTA]
+            for chave in paradas:
+                self.cancelar(chave, motivo="o navegador parou de enviar os quadros")
+
+
+SESSOES_VIDEO = SessoesVideo()
 
 
 class Servidor(ThreadingHTTPServer):
@@ -152,6 +336,8 @@ ROTA_LETRA = re.compile(rf"^/api/musicas/{ID}/letra$")
 ROTA_ENCAIXE = re.compile(rf"^/api/musicas/{ID}/letra/encaixar$")
 ROTA_VIDEO = re.compile(rf"^/api/musicas/{ID}/video$")
 ROTA_VIDEO_NOTAS = re.compile(rf"^/api/musicas/{ID}/video/notas$")
+ROTA_VIDEO_QUADROS = re.compile(rf"^/api/musicas/{ID}/video/quadros$")
+ROTA_VIDEO_SESSAO = re.compile(rf"^/api/musicas/{ID}/video/(concluir|cancelar)$")
 ROTA_YOUTUBE = re.compile(rf"^/api/musicas/{ID}/youtube$")
 ROTA_FAIXA = re.compile(rf"^/faixas/{ID}/([a-z]+)\.wav$")
 ROTA_GRAVACOES = re.compile(rf"^/api/musicas/{ID}/gravacoes$")
@@ -303,6 +489,8 @@ class Manipulador(BaseHTTPRequestHandler):
         caminho = url.path
         if m := ROTA_VIDEO.match(caminho):
             return self._criar_video(m.group(1))
+        if m := ROTA_VIDEO_SESSAO.match(caminho):
+            return self._sessao_video(*m.groups())
         if m := ROTA_YOUTUBE.match(caminho):
             return self._publicar_youtube(m.group(1))
         if m := ROTA_ENCAIXE.match(caminho):
@@ -315,9 +503,15 @@ class Manipulador(BaseHTTPRequestHandler):
         if caminho != "/api/processar":
             return self._erro(404, "não encontrado")
         try:
-            arquivo = str(self._ler_json().get("arquivo", ""))
-        except (ValueError, TypeError) as e:
+            corpo = self._ler_json()
+            arquivo = str(corpo.get("arquivo", ""))
+        except (ValueError, TypeError, AttributeError) as e:
             return self._erro(400, str(e))
+        if corpo.get("todos"):
+            # todos os áudios ainda não processados; se um falhar, tenta de novo (até 3 vezes)
+            pendentes = [a["arquivo"] for a in listar_audios() if not a["musica"]]
+            novos = [a for a in pendentes if PROCESSAMENTOS.enfileirar(a, tentativas=TENTATIVAS_LOTE)]
+            return self._json({"ok": True, "enfileirados": novos, "processamentos": PROCESSAMENTOS.instantaneo()})
         # só aceita nomes que estão de fato na pasta audio/ (nada de caminhos arbitrários)
         if arquivo not in pastas.listar_audios():
             return self._erro(404, f"'{arquivo}' não está na pasta audio")
@@ -357,6 +551,8 @@ class Manipulador(BaseHTTPRequestHandler):
             return self._salvar_midi(*n.groups())
         if n := ROTA_VIDEO_NOTAS.match(caminho):
             return self._salvar_notas_video(n.group(1), urlparse(self.path).query)
+        if n := ROTA_VIDEO_QUADROS.match(caminho):
+            return self._quadros_video(n.group(1), urlparse(self.path).query)
         m = ROTA_LETRA.match(caminho)
         if not m:
             return self._erro(404, "não encontrado")
@@ -378,12 +574,18 @@ class Manipulador(BaseHTTPRequestHandler):
         self._json({"ok": True, "arquivo": os.path.basename(caminho), "frases": len(frases)})
 
     def do_DELETE(self):
-        caminho = urlparse(self.path).path
+        url = urlparse(self.path)
+        caminho = url.path
         if m := ROTA_MIDI.match(caminho):
             return self._excluir_midi(*m.groups())
+        if m := ROTA_MUSICA.match(caminho):
+            return self._excluir_musica(m.group(1), parse_qs(url.query).get("audio") == ["1"])
+        if caminho == "/api/audios":
+            return self._excluir_audio((parse_qs(url.query).get("arquivo") or [""])[0])
         if m := ROTA_FAIXA_API.match(caminho):
+            notas = parse_qs(url.query).get("notas") == ["1"]  # tabela das faixas: apaga também as notas
             with TRAVA_DADOS:
-                excluida = mixagem.excluir_faixa(PASTA_FAIXAS, PASTA_DADOS, *m.groups())
+                excluida = mixagem.excluir_faixa(PASTA_FAIXAS, PASTA_DADOS, *m.groups(), notas=notas)
             if not excluida:
                 return self._erro(404, "faixa não encontrada")
             return self._json({"ok": True})
@@ -392,6 +594,53 @@ class Manipulador(BaseHTTPRequestHandler):
             return self._erro(404, "não encontrado")
         if not gravacoes.excluir(*m.groups()):
             return self._erro(404, "gravação não encontrada")
+        self._json({"ok": True})
+
+    # ------------------------------------------------------------ excluir (aba Biblioteca)
+    def _processando(self, arquivo=None, id_musica=None):
+        """Há processamento (ou vídeo/publicação) desta música na fila ou rodando?"""
+        chaves = {arquivo} | ({f"{p}:{id_musica}" for p in ("video", "instagram", "youtube")} if id_musica else set())
+        return any(e["estado"] in ("na fila", "processando")
+                   for c, e in PROCESSAMENTOS.instantaneo().items() if c in chaves)
+
+    def _excluir_musica(self, id_musica, com_audio):
+        """Apaga a música: cadastro, dados/<id>.json, faixas/<id>/, gravações (midias/<id>/) e a letra;
+        com_audio, também o arquivo em audio/ (senão ele volta para a lista como não processado).
+        Os vídeos de videos/ ficam."""
+        registro = banco.obter(id_musica)
+        if registro is None:
+            return self._erro(404, "música não cadastrada")
+        if self._processando(registro["arquivo"], id_musica):
+            return self._erro(409, "a música está sendo processada (ou o vídeo dela): espere terminar")
+        apagados = []
+        try:
+            with TRAVA_DADOS:
+                banco.excluir(id_musica)
+                for pasta in (os.path.join(PASTA_FAIXAS, id_musica), os.path.join(gravacoes.PASTA_MIDIAS, id_musica)):
+                    if os.path.isdir(pasta):
+                        shutil.rmtree(pasta)
+                        apagados.append(os.path.relpath(pasta, BASE_DIR) + os.sep)
+                arquivos = [os.path.join(PASTA_DADOS, f"{id_musica}.json"), letra.localizar(PASTA_LETRAS, id_musica)]
+                if com_audio and os.path.basename(registro["arquivo"]) in pastas.listar_audios():
+                    arquivos.append(os.path.join(pastas.PASTA_AUDIO, registro["arquivo"]))
+                for arquivo in arquivos:
+                    if arquivo and os.path.isfile(arquivo):
+                        os.remove(arquivo)
+                        apagados.append(os.path.relpath(arquivo, BASE_DIR))
+        except OSError as e:
+            return self._erro(500, f"apagada só em parte ({', '.join(apagados) or 'nada'}): {e}")
+        self._json({"ok": True, "apagados": apagados})
+
+    def _excluir_audio(self, arquivo):
+        """Apaga um áudio ainda não processado da pasta audio/ (só nomes que estão de fato nela)."""
+        if arquivo not in pastas.listar_audios():
+            return self._erro(404, f"'{arquivo}' não está na pasta audio")
+        if self._processando(arquivo):
+            return self._erro(409, "o áudio está sendo processado: espere terminar")
+        try:
+            os.remove(os.path.join(pastas.PASTA_AUDIO, arquivo))
+        except OSError as e:
+            return self._erro(500, f"não foi possível apagar: {e}")
         self._json({"ok": True})
 
     def _salvar_notas(self, id_musica, fonte):
@@ -538,10 +787,12 @@ class Manipulador(BaseHTTPRequestHandler):
         self._json({"ok": True})
 
     def _criar_video(self, id_musica):
-        if banco.obter(id_musica) is None:
+        if (registro := banco.obter(id_musica)) is None:
             return self._erro(404, "música não cadastrada")
         try:
             corpo = self._ler_json()
+            if corpo.get("html"):  # quadros desenhados pela interface (abas YouTube/Instagram do player)
+                return self._iniciar_video_html(registro, corpo)
             faixas = [str(f) for f in corpo.get("faixas", [])]
             inicio = max(0.0, float(corpo.get("inicio") or 0))
             fim = corpo.get("fim")
@@ -571,6 +822,66 @@ class Manipulador(BaseHTTPRequestHandler):
         PROCESSAMENTOS.enfileirar(f"{chave}:{id_musica}", argumentos, marcador)
         # "audio": confirma à interface que o vídeo usa a mistura enviada (servidor atualizado)
         self._json({"ok": True, "audio": usa_mistura, "processamentos": PROCESSAMENTOS.instantaneo()})
+
+    def _iniciar_video_html(self, registro, corpo):
+        formato = str(corpo.get("formato") or "padrao")
+        if formato not in FORMATOS_VIDEO:
+            return self._erro(400, "formato de vídeo inválido")
+        try:
+            total = int(corpo["total"])
+            silencio = max(0.0, float(corpo.get("silencio") or 0))
+            duracao = float(corpo["duracao"])
+        except (KeyError, ValueError, TypeError) as e:
+            return self._erro(400, f"parâmetros inválidos: {e}")
+        if not 0 < total <= 30 * 60 * 60 or duracao <= 0:
+            return self._erro(400, "duração do vídeo inválida")
+        try:
+            chave, token = SESSOES_VIDEO.iniciar(registro, formato, total, silencio, duracao)
+        except RuntimeError as e:
+            return self._erro(409, str(e))
+        except (ValueError, OSError) as e:
+            return self._erro(400, str(e))
+        self._json({"ok": True, "sessao": token, "processamentos": PROCESSAMENTOS.instantaneo()})
+
+    def _quadros_video(self, id_musica, query):
+        """Lote de quadros JPEG (concatenados) do vídeo em criação: ?formato=&sessao=&n=<quadros>."""
+        q = parse_qs(query)
+        formato = (q.get("formato") or [""])[0]
+        if formato not in FORMATOS_VIDEO or self.headers.get("Content-Type", "") != "image/jpeg":
+            return self._erro(400, "formato ou Content-Type inválido")
+        try:
+            n = int((q.get("n") or ["0"])[0])
+            tamanho = int(self.headers.get("Content-Length") or 0)
+        except ValueError:
+            return self._erro(400, "parâmetros inválidos")
+        if tamanho <= 0 or tamanho > 1 << 30:
+            return self._erro(400, "lote vazio ou grande demais")
+        chave = f"{FORMATOS_VIDEO[formato][0]}:{id_musica}"
+        try:
+            SESSOES_VIDEO.receber(chave, (q.get("sessao") or [""])[0], self.rfile, tamanho, n)
+        except KeyError as e:
+            return self._erro(404, str(e.args[0]))
+        except OSError as e:
+            return self._erro(500, f"o vídeo falhou: {e}")
+        self._json({"ok": True})
+
+    def _sessao_video(self, id_musica, acao):
+        try:
+            corpo = self._ler_json()
+            formato, token = str(corpo.get("formato") or ""), str(corpo.get("sessao") or "")
+        except (ValueError, TypeError, AttributeError) as e:
+            return self._erro(400, str(e))
+        if formato not in FORMATOS_VIDEO:
+            return self._erro(400, "formato de vídeo inválido")
+        chave = f"{FORMATOS_VIDEO[formato][0]}:{id_musica}"
+        if acao == "cancelar":
+            SESSOES_VIDEO.cancelar(chave, token, str(corpo.get("motivo") or "cancelado na interface")[:300])
+            return self._json({"ok": True, "processamentos": PROCESSAMENTOS.instantaneo()})
+        try:
+            SESSOES_VIDEO.concluir(chave, token)
+        except KeyError as e:
+            return self._erro(404, str(e.args[0]))
+        self._json({"ok": True, "processamentos": PROCESSAMENTOS.instantaneo()})
 
     # ------------------------------------------------------------ YouTube
     def _conectar_youtube(self):

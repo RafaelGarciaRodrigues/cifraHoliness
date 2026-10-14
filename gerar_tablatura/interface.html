@@ -81,6 +81,17 @@
   canvas#piano { height: 120px; cursor: default; background: transparent; border-radius: 0; flex: 1 1 0; min-width: 0; width: auto; }
   /* violão (cifra do acorde) ao lado esquerdo do teclado, com a mesma altura dele */
   .instrumentos { display: flex; align-items: flex-start; gap: 10px; margin-top: 8px; }
+  .abasLinha { display: inline-flex; margin-bottom: 8px; }
+  .abasLinha button { font-size: .85rem; padding: 4px 12px; }
+  .previaVideo { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .quadroPrevia { position: relative; width: 100%; background: #000; border-radius: 8px; overflow: hidden; line-height: 0; }
+  .quadroPrevia canvas { display: block; width: 100%; height: auto; cursor: pointer; }
+  .previaVideo.vertical .quadroPrevia { width: auto; height: min(72vh, 680px); aspect-ratio: 9 / 16; }
+  .previaVideo.vertical .quadroPrevia canvas { width: 100%; height: 100%; }
+  .foraTrecho { position: absolute; top: 8px; left: 50%; transform: translateX(-50%); line-height: 1.4;
+                background: rgba(201, 42, 42, .85); color: #fff; font-size: .8rem; padding: 2px 10px; border-radius: 10px;
+                pointer-events: none; }
+  .infoPrevia { margin-top: 0; text-align: center; }
   .violao { flex: 0 0 auto; height: 120px; display: flex; justify-content: center; }
   .violao svg { height: 100%; width: auto; display: block; }
   .violao.vazio svg { opacity: .35; }
@@ -108,15 +119,39 @@
   .valor { color: var(--texto); font-weight: 600; font-variant-numeric: tabular-nums; }
   .legenda { display: flex; flex-wrap: wrap; gap: 12px; font-size: .82rem; color: var(--suave); margin-top: 8px; }
   .legenda i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
-  /* fontes das notas: as marcadas são exibidas, tocadas e editadas juntas */
-  #seletorMidi { flex: 1 1 auto; min-width: 0; }
-  .fontesNotas { display: flex; flex-direction: column; gap: 2px; font-size: .88rem; margin-top: 4px; }
-  .ajustes .fontesNotas .fonteNota { display: flex; align-items: center; gap: 8px; padding: 3px 6px; margin: 0;
-    border-radius: 6px; font-size: .88rem; color: var(--texto); cursor: pointer; }
-  .fontesNotas .fonteNota i { display: inline-block; flex: 0 0 auto; width: 5px; height: 14px; border-radius: 1px; }
+  /* tabela das faixas: notas exibidas/tocadas, áudio real e gravações MIDI (uma linha por faixa) */
+  .painelFaixas { grid-column: 1 / -1; min-width: 0; }
+  .ajustes .painelFaixas > label b { color: var(--texto); font-weight: 600; }
+  .tabelaFaixasRolagem { border: 1px solid var(--borda); border-radius: 8px; max-height: 320px; overflow: auto; }
+  .tabelaFaixas { width: 100%; border-collapse: collapse; font-size: .88rem; }
+  .tabelaFaixas th { position: sticky; top: 0; z-index: 1; background: var(--painel); text-align: left; font-weight: 600;
+                     font-size: .78rem; color: var(--suave); padding: 5px 8px; border-bottom: 1px solid var(--borda); white-space: nowrap; }
+  .tabelaFaixas td { padding: 3px 8px; border-bottom: 1px solid var(--grade); vertical-align: middle; }
+  .tabelaFaixas tr:last-child td { border-bottom: 0; }
+  .tabelaFaixas tbody tr:hover td { background: var(--grade); }
+  .tabelaFaixas td.centro, .tabelaFaixas th.centro { text-align: center; width: 1%; }
+  .tabelaFaixas input[type=checkbox] { accent-color: var(--acento); margin: 0; cursor: pointer; }
+  .tabelaFaixas .celulaNome { display: flex; align-items: center; gap: 8px; min-width: 0; }
+  .tabelaFaixas .celulaNome i.cor { display: inline-block; flex: 0 0 auto; width: 5px; height: 16px; border-radius: 1px; }
+  .tabelaFaixas .celulaNome .nome { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: text; }
+  .tabelaFaixas .celulaNome input[type=text] { flex: 1 1 auto; padding: 2px 6px; font-size: .88rem; }
+  .tabelaFaixas .celulaNome small { color: var(--suave); white-space: nowrap; }
+  .tabelaFaixas td.timbreFaixa { min-width: 170px; }
+  .tabelaFaixas td.timbreFaixa select { width: 100%; padding: 2px 6px; font-size: .85rem; }
+  .tabelaFaixas td.timbreFaixa .geral { color: var(--suave); font-size: .8rem; }
+  .tabelaFaixas td.acoes { white-space: nowrap; width: 1%; }
+  .tabelaFaixas td.acoes button + button { margin-left: 4px; }
+  .tabelaFaixas td.semItem { color: var(--grade-forte); }
+  .tabelaFaixas tr.midi td { background: color-mix(in srgb, var(--f-midi) 9%, transparent); }
+  .tabelaFaixas tr.midi td:first-child { box-shadow: inset 3px 0 0 var(--f-midi); }
+  .tabelaFaixas tr.midi:hover td { background: color-mix(in srgb, var(--f-midi) 16%, transparent); }
+  .marcaMidi { display: inline-block; font-size: .68rem; font-weight: 700; letter-spacing: .04em; padding: 0 5px; border-radius: 4px;
+               color: #fff; background: var(--f-midi); line-height: 1.5; }
+  .somenteLeitor { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .ajustes label.marca { display: flex; align-items: center; gap: 8px; color: var(--texto); }
+  .ajustes label.marca input { accent-color: var(--acento); margin: 0; }
   .legenda i.marca { width: 4px; height: 12px; border-radius: 1px; }
-  .fontesNotas .fonteNota .nome { flex: 1 1 auto; min-width: 0; }
-  .fontesNotas .fonteNota input { flex: 0 0 auto; margin: 0; accent-color: var(--acento); }
+  .contagemMidi { color: var(--erro); font-weight: 700; }
   .lista { position: relative; display: flex; flex-wrap: wrap; gap: 6px; max-height: 200px; overflow-y: auto; }
   .lista button { padding: 4px 8px; font-size: .85rem; min-width: 0; font-variant-numeric: tabular-nums; }
   .lista button span { color: var(--suave); margin-right: 4px; }
@@ -199,7 +234,13 @@
   td { padding: 3px 6px; border-bottom: 1px solid var(--grade); vertical-align: middle; }
   tr.aberta td { background: var(--acorde); }
   tr.pendente td { color: var(--suave); font-style: italic; }
-  tr.pendente td:first-child, tr.pendente td:first-child button { font-style: normal; }
+  tr.pendente td:nth-child(-n+2), tr.pendente td:nth-child(-n+2) button { font-style: normal; }
+  tr.selecionada td { background: color-mix(in srgb, var(--nota) 14%, transparent); }
+  th.colSelecao, td.colSelecao { width: 28px; text-align: center; cursor: default; }
+  .colSelecao input { width: 16px; height: 16px; cursor: pointer; margin: 0; }
+  .acoesBiblioteca { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 10px; }
+  .acoesBiblioteca .contagem { margin-left: 0; }
+  .listaExcluir { margin: 8px 0 0; padding-left: 20px; max-height: 180px; overflow-y: auto; font-size: .88rem; }
   td input[type=text], td select { width: 100%; min-width: 110px; border-color: transparent; background: transparent;
                                   padding: 4px 6px; transition: border-color .2s, box-shadow .4s; }
   td input[type=text]:hover, td select:hover, td input[type=text]:focus, td select:focus { border-color: var(--borda); background: var(--painel); }
@@ -293,6 +334,8 @@
   .pistaTitulo label { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; cursor: pointer; font-weight: 600; }
   .pistaTitulo label small { color: var(--suave); font-weight: 400; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .pistaTitulo input { accent-color: var(--cor-pista); margin: 0; }
+  .pistaTimbre { display: flex; align-items: center; gap: 8px; font-size: .8rem; color: var(--suave); }
+  .pistaTimbre select { flex: 1 1 auto; min-width: 0; padding: 2px 6px; font-size: .82rem; }
   .pistaTitulo button { padding: 2px 8px; min-width: 0; }
   .pista.desligada .pistaTitulo label { color: var(--suave); }
   .efeitos { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 2px 10px; }
@@ -368,11 +411,39 @@
             </div>
             <div id="statusGravacao" class="statusGravacao"></div></div>
         </div>
-        <div id="de872a" style="margin-top:14px"><canvas id="linha" tabindex="0" aria-label="Linha do tempo (atalhos: Q sobe, W desce, A apaga, S une, D cria nota)"></canvas>
-          <div id="instrumentos" class="instrumentos">
-            <div id="violao" class="violao" role="img" aria-label="Violão: cifra do acorde atual"></div>
-            <canvas id="piano" aria-label="Teclado: nota da melodia e notas do acorde (mão esquerda)"></canvas>
-          </div></div>
+        <div id="de872a" style="margin-top:14px">
+          <div id="abasLinha" class="abas abasLinha" role="tablist" aria-label="Linha do tempo e prévias dos vídeos">
+            <button id="tabLinha-linha" role="tab" aria-selected="true" aria-controls="painelLinha-linha">
+              <i id="a3d9f1" class="bi bi-music-note-list"></i> Linha do tempo</button>
+            <button id="tabLinha-youtube" role="tab" aria-selected="false" aria-controls="painelLinha-youtube"
+              title="Prévia do vídeo de karaokê (1280×720), desenhada no tempo atual da música">
+              <i id="b7e2c4" class="bi bi-youtube"></i> Vídeo do YouTube</button>
+            <button id="tabLinha-instagram" role="tab" aria-selected="false" aria-controls="painelLinha-instagram"
+              title="Prévia do vídeo do Instagram (vertical 1080×1920), desenhada no tempo atual da música">
+              <i id="c1f8a6" class="bi bi-instagram"></i> Vídeo do Instagram</button>
+          </div>
+          <div id="painelLinha-linha" role="tabpanel" aria-labelledby="tabLinha-linha">
+            <canvas id="linha" tabindex="0" aria-label="Linha do tempo (atalhos: Q sobe, W desce, A apaga, S une, D cria nota)"></canvas>
+            <div id="instrumentos" class="instrumentos">
+              <div id="violao" class="violao" role="img" aria-label="Violão: cifra do acorde atual"></div>
+              <canvas id="piano" aria-label="Teclado: nota da melodia e notas do acorde (mão esquerda)"></canvas>
+            </div>
+          </div>
+          <div id="painelLinha-youtube" class="previaVideo" role="tabpanel" aria-labelledby="tabLinha-youtube" hidden>
+            <div id="d5b3e8" class="quadroPrevia">
+              <canvas id="previaYoutube" width="1280" height="720" aria-label="Prévia do vídeo do YouTube: clique numa frase para editá-la"></canvas>
+              <div id="foraYoutube" class="foraTrecho" hidden>fora do trecho do vídeo</div>
+            </div>
+            <div id="infoYoutube" class="dica infoPrevia"></div>
+          </div>
+          <div id="painelLinha-instagram" class="previaVideo vertical" role="tabpanel" aria-labelledby="tabLinha-instagram" hidden>
+            <div id="e9a4c2" class="quadroPrevia">
+              <canvas id="previaInstagram" width="1080" height="1920" aria-label="Prévia do vídeo do Instagram: clique numa frase para editá-la"></canvas>
+              <div id="foraInstagram" class="foraTrecho" hidden>fora do trecho do vídeo</div>
+            </div>
+            <div id="infoInstagram" class="dica infoPrevia"></div>
+          </div>
+        </div>
         <div class="legenda" id="legenda"></div>
         <input id="barra" type="range" min="0" max="1" step="0.01" value="0" aria-label="Posição na linha do tempo">
         <div id="corte" class="corte">
@@ -433,7 +504,8 @@ clique na régua de tempo (embaixo da linha do tempo) para marcar um ponto (de n
           <kbd id="a2c7f5">Ctrl</kbd>+<kbd id="b9d4e1">Z</kbd> desfaz (salva sozinho) ·
           roda do mouse sobre ela para zoom ·
           <i id="c8d2e5" class="bi bi-mic-fill"></i>/<i id="d1f6a3" class="bi bi-camera-reels-fill"></i> gravar junto com a música
-          (pausar, mover a linha do tempo ou mudar a velocidade encerra e salva a gravação)
+          (pausar, mover a linha do tempo ou mudar a velocidade encerra e salva a gravação) ·
+          <i id="b6d2f8" class="bi bi-music-note-beamed"></i> REC MIDI: grava o teclado MIDI depois de 3 s (clicar de novo para e pausa)
         </div>
       </section>
 
@@ -453,16 +525,27 @@ clique na régua de tempo (embaixo da linha do tempo) para marcar um ponto (de n
     </div>
 
     <section id="f6c55c" class="painel ajustes">
-      <div id="bfb6d6">
-        <label id="c6cd57">Notas exibidas e tocadas</label>
-        <div id="fonteNotas" class="fontesNotas" role="group" aria-label="Notas exibidas na linha do tempo e notas tocadas"></div>
-        <label id="c3e8a1" for="seletorMidi" style="margin-top:10px">Gravações MIDI (teclado)</label>
-        <div id="d9b4f2" class="grupo">
-          <select id="seletorMidi" title="Gravação do teclado MIDI exibida, tocada e editada junto com as notas marcadas"></select>
-          <button id="btnRenomearMidi" class="icone" title="Renomear a gravação MIDI" aria-label="Renomear a gravação MIDI" disabled><i id="e6c1a7" class="bi bi-pencil"></i></button>
-          <button id="btnExcluirMidi" class="icone" title="Apagar a gravação MIDI" aria-label="Apagar a gravação MIDI" disabled><i id="f2a8d5" class="bi bi-trash"></i></button>
+      <div id="bfb6d6" class="painelFaixas">
+        <label id="c6cd57">Faixas — <b id="c3e8a1">Notas</b>: exibidas na linha do tempo e tocadas · <b id="d9b4f2">Áudio</b>: a faixa separada (áudio real) tocando junto · gravações do teclado em <span id="e6c1a7" class="marcaMidi">MIDI</span></label>
+        <div id="f2a8d5" class="tabelaFaixasRolagem">
+          <table id="faixa" class="tabelaFaixas" aria-label="Faixas: notas exibidas e tocadas, áudio real e gravações MIDI">
+            <thead id="faixa-cabecalho"><tr id="faixa-cabecalho-linha">
+              <th id="faixa-col-nome">Faixa</th>
+              <th id="faixa-col-notas" title="Notas exibidas na linha do tempo, tocadas e editáveis">Notas</th>
+              <th id="faixa-col-audio" title="Tocar junto a faixa separada (áudio real)">Áudio</th>
+              <th id="faixa-col-timbre" title="Timbre das notas (as gravações MIDI têm o seu; as demais usam o Timbre ao lado)">Timbre</th>
+              <th id="faixa-col-acoes"><span class="somenteLeitor" id="faixa-col-acoes-texto">Ações</span></th>
+            </tr></thead>
+            <tbody id="faixa-corpo"></tbody>
+          </table>
         </div>
-        <label id="f4ec44" style="margin-top:10px">Velocidade: <span class="valor" id="velocidadeValor">1.00×</span></label>
+        <div id="c6b1b6" class="grupo" style="margin-top:6px">
+          <button id="btnFaixasNenhuma" class="pequeno" title="Desliga o áudio de todas as faixas separadas">Áudio: desmarcar todas</button>
+          <button id="btnFaixasTodas" class="pequeno" title="Liga o áudio de todas as faixas separadas">Áudio: marcar todas</button>
+        </div>
+      </div>
+      <div id="a7e2c4">
+        <label id="f4ec44">Velocidade: <span class="valor" id="velocidadeValor">1.00×</span></label>
         <input id="velocidade" type="range" min="0.25" max="2" step="0.05" value="1">
         <div class="grupo" id="presetsVelocidade" style="margin-top:6px"></div>
       </div>
@@ -476,6 +559,11 @@ clique na régua de tempo (embaixo da linha do tempo) para marcar um ponto (de n
         <input id="ataque" type="range" min="0" max="3" step="0.01" value="0" title="0 = a nota entra na hora (duplo clique: padrão do timbre)">
         <label id="c9d3f2" for="sustain" style="margin-top:10px">Sustentação (som depois da nota): <span class="valor" id="sustainValor">1,60 s</span></label>
         <input id="sustain" type="range" min="0" max="6" step="0.05" value="1.6" title="0 = o som para junto com a nota (duplo clique: padrão do timbre)">
+        <label id="f1d8b3" class="marca" style="margin-top:6px" title="Ligado: o teclado MIDI (ao vivo, no REC MIDI e nas gravações MIDI) usa o Ataque e a Sustentação acima. Desligado: entra na hora e usa a sustentação própria abaixo"><input id="midiSustainControles" type="checkbox" checked> Teclado MIDI usa o ataque e a sustentação acima</label>
+        <div id="blocoSustainMidi" hidden>
+          <label id="a9c5e7" for="sustainMidi">Sustentação do teclado MIDI: <span class="valor" id="sustainMidiValor">0,40 s</span></label>
+          <input id="sustainMidi" type="range" min="0" max="6" step="0.05" value="0.4" title="Som depois de soltar a tecla, no teclado ao vivo e nas gravações MIDI (duplo clique: 0,40 s)">
+        </div>
         <label id="d2e7a9" for="reverbNotas" style="margin-top:10px">Reverb das notas: <span class="valor" id="reverbNotasValor">0%</span></label>
         <input id="reverbNotas" type="range" min="0" max="1" step="0.01" value="0" title="Reverb de sala, o mesmo da aba Mixagem (duplo clique: 0%)">
         <label id="e8b1c4" for="chorusNotas" style="margin-top:10px">Chorus das notas: <span class="valor" id="chorusNotasValor">0%</span></label>
@@ -499,13 +587,7 @@ clique na régua de tempo (embaixo da linha do tempo) para marcar um ponto (de n
         <div id="f7343e" class="dica"></div>
       </div>
       <div id="bf49a0">
-        <label id="bce3d3">Tocar junto as faixas separadas (áudio real) — marque uma ou mais</label>
-        <div id="faixa" class="multiselect" role="group" aria-label="Faixas separadas"></div>
-        <div id="c6b1b6" class="grupo" style="margin-top:6px">
-          <button id="btnFaixasNenhuma" class="pequeno">Desmarcar todas</button>
-          <button id="btnFaixasTodas" class="pequeno">Marcar todas</button>
-        </div>
-        <label id="b785e7" style="margin-top:10px">Volume das faixas: <span class="valor" id="volumeFaixaValor">80%</span></label>
+        <label id="b785e7">Volume das faixas (áudio real): <span class="valor" id="volumeFaixaValor">80%</span></label>
         <input id="volumeFaixa" type="range" min="0" max="1" step="0.01" value="0.8">
         <div id="avisoFaixa" class="aviso" hidden></div>
       </div>
@@ -540,6 +622,15 @@ clique na régua de tempo (embaixo da linha do tempo) para marcar um ponto (de n
         <span id="contagemMusicas" class="contagem"></span>
         <button id="btnConfigYoutube" class="pequeno" title="Conta do YouTube e parâmetros de publicação dos vídeos"><i id="a5c8e2" class="bi bi-youtube"></i> ⚙ YouTube</button>
       </div>
+      <div id="acoesBiblioteca" class="acoesBiblioteca">
+        <button id="btnMarcarTodas" class="pequeno" title="Marcar todas as linhas visíveis"><i id="f3a7c1" class="bi bi-check2-square"></i> Marcar todas</button>
+        <button id="btnDesmarcarTodas" class="pequeno" title="Desmarcar todas as linhas"><i id="b8d2e5" class="bi bi-square"></i> Desmarcar todas</button>
+        <span id="contagemSelecionadas" class="contagem"></span>
+        <button id="btnExcluirSelecionadas" class="pequeno" disabled
+          title="Apagar as músicas marcadas: cadastro no banco e todos os arquivos delas"><i id="c6e1f9" class="bi bi-trash"></i> Excluir selecionadas</button>
+        <button id="btnProcessarTodos" class="pequeno"
+          title="Processar todos os áudios da pasta audio\ que ainda não foram processados (um de cada vez); se der erro, tenta de novo até 3 vezes"><i id="d9b4a2" class="bi bi-gear"></i> Processar todos os não processados</button>
+      </div>
       <div id="aa1bc3" class="tabelaRolagem">
         <table id="tabelaMusicas">
           <thead id="e06b6d"><tr id="cabecalhoTabela"></tr></thead>
@@ -553,7 +644,9 @@ clique na régua de tempo (embaixo da linha do tempo) para marcar um ponto (de n
       <datalist id="listaCategorias"></datalist>
       <div id="eb1e9e" class="dica">Clique numa célula para editar; a alteração é gravada no banco ao sair do campo.
         Clique no título de uma coluna para ordenar. A coluna YT publica no YouTube o vídeo de karaokê da música
-        (aparece quando há um vídeo dela na pasta <code id="b2d7f1">videos\</code>).</div>
+        (aparece quando há um vídeo dela na pasta <code id="b2d7f1">videos\</code>).
+        Marque as linhas na 1ª coluna (ou todas, pela caixa do cabeçalho) para excluí-las de uma vez;
+        "Processar todos os não processados" põe na fila todos os áudios novos e tenta de novo (até 3 vezes) os que derem erro.</div>
     </section>
   </div>
 
@@ -648,6 +741,20 @@ clique na régua de tempo (embaixo da linha do tempo) para marcar um ponto (de n
     </div>
   </dialog>
 
+  <!-- ============================== Biblioteca: apagar uma música ============================== -->
+  <dialog id="janelaExcluir" class="janela" aria-labelledby="e7c3a1">
+    <h3 id="e7c3a1"><i id="f2d8b4" class="bi bi-trash"></i> Apagar <span id="excNome"></span></h3>
+    <div id="excTexto" class="dica" style="margin-top:0"></div>
+    <ul id="excLista" class="listaExcluir" hidden></ul>
+    <label id="a4e9c2" class="marca" style="margin-top:12px; display:flex; gap:8px; align-items:center">
+      <input id="excAudio" type="checkbox"> <span id="excAudioTexto"></span></label>
+    <div id="excStatus" class="dica"></div>
+    <div id="b9f3d6" class="acoesJanela">
+      <button id="excCancelar">Cancelar</button>
+      <button id="excConfirmar" class="primario"><i id="c5a1e8" class="bi bi-trash"></i> Apagar</button>
+    </div>
+  </dialog>
+
   <!-- ============================== aba Mixagem ============================== -->
   <div id="aba-mixagem" role="tabpanel" hidden>
     <section id="c5a1e9" class="painel">
@@ -671,6 +778,7 @@ clique na régua de tempo (embaixo da linha do tempo) para marcar um ponto (de n
             <span id="a3d6c8"><i id="b7e1f4" style="background:var(--mx-ia)"></i>Faixa separada da música original (IA)</span>
             <span id="c6f9a2"><i id="d1b4e7" style="background:var(--mx-audio)"></i>Áudio gravado</span>
             <span id="e5c2d9"><i id="f8a7b3" style="background:var(--mx-video)"></i>Vídeo gravado</span>
+            <span id="b2c8e4"><i id="c7d1f5" style="background:var(--f-midi)"></i>Gravação MIDI (teclado)</span>
           </div>
           <div id="a9b3e6" class="dica">Marque as faixas e gravações que devem tocar (a mesma escolha do Player).
             Os ajustes de cada uma valem também no Player e ficam salvos na música. Duplo clique num controle volta ao padrão.
@@ -826,6 +934,9 @@ clique na régua de tempo (embaixo da linha do tempo) para marcar um ponto (de n
             Vale também para tocar as gravações.</li>
           <li id="c4a7f5"><b id="d1c5a9">Tocar o timbre escolhido ao pressionar as teclas</b>: o som sai no timbre de "Timbre"
             (Player), com a força da tecla.</li>
+          <li id="f2b7c4"><b id="a6d3e1">Teclado MIDI usa o ataque e a sustentação acima</b> (Player, abaixo de "Sustentação"):
+            marcado, o teclado ao vivo, o REC MIDI e as gravações MIDI usam o Ataque e a Sustentação das notas; desmarcado,
+            a nota entra na hora e soa pela <b id="b9e4f2">Sustentação do teclado MIDI</b>, ajustável à parte (fica salvo na música).</li>
           <li id="e7d2b6"><b id="f4b8e3">Pedal de sustain (CC 64)</b>: com um pedal ligado ao teclado, as notas continuam soando
             enquanto ele estiver apertado (e a gravação guarda esse tempo).</li>
           <li id="a5e1c8">Também são usados o volume (CC 7), a expressão (CC 11) e o "todas as notas desligadas" (CC 120/123);
@@ -842,20 +953,25 @@ clique na régua de tempo (embaixo da linha do tempo) para marcar um ponto (de n
         <ol id="c7f2e9">
           <li id="d1e6b4">No Player, clique no botão <i id="e9b3a6" class="bi bi-music-note-beamed"></i> ao lado de
             <i id="f5d1c2" class="bi bi-mic-fill"></i> e <i id="a3c8e7" class="bi bi-camera-reels-fill"></i>
-            (Gravar junto): a música começa a tocar e o que você toca é gravado no tempo em que foi tocado, com a força e
-            a duração de cada nota.</li>
-          <li id="b8f5d1">A gravação termina ao clicar no botão de novo, pausar, ou mover a linha do tempo.</li>
-          <li id="c5a2f8">Cada gravação vira uma faixa MIDI nova ("MIDI 1", "MIDI 2"…), salva em
+            (Gravar junto): depois de uma contagem de 3 s ("REC MIDI em 3… 2… 1…") a música começa a tocar (se estiver
+            parada) e o que você toca é gravado no tempo em que foi tocado, com a força e a duração de cada nota.
+            Clicar de novo durante a contagem cancela.</li>
+          <li id="b8f5d1">A gravação termina ao clicar no botão de novo (a música também pausa), em Pausar, ou ao mover a linha do tempo.</li>
+          <li id="c5a2f8">Cada gravação vira uma faixa MIDI nova ("MIDI 1", "MIDI 2"…), com o timbre que estava tocando, salva em
             <code id="d2e8b5">dados\[id da música].json</code> (um novo processamento da música não apaga).</li>
         </ol>
-        <h4 id="e8c4a1">5. Gravações MIDI (Player → "Gravações MIDI (teclado)")</h4>
+        <h4 id="e8c4a1">5. Gravações MIDI (Player → tabela das faixas)</h4>
         <ul id="f3a9d6">
-          <li id="a6d5e2">Escolha a gravação no seletor (uma por vez; "— nenhuma —" esconde). Ela aparece na linha do tempo junto
-            com as notas marcadas em "Notas exibidas e tocadas", com a marca azul-anil no início de cada nota (legenda abaixo
-            do teclado).</li>
-          <li id="b2e7f9">É tocada com a força gravada, no timbre escolhido, e entra no áudio e no teclado dos vídeos.</li>
+          <li id="a6d5e2">Ficam na tabela das faixas, em azul-anil, com a marca <span id="c4e8a2" class="marcaMidi">MIDI</span>. Marque
+            <b id="d7b3f1">Notas</b> para exibir e tocar (várias ao mesmo tempo, junto com as notas das outras faixas); a marca
+            azul-anil no início de cada nota (legenda abaixo do teclado) mostra que a nota é de uma gravação MIDI.</li>
+          <li id="b2e7f9">Cada gravação tem o seu <b id="e1a6c9">Timbre</b> (na tabela ou na aba Mixagem), toca com a força gravada e
+            entra no áudio e no teclado dos vídeos.</li>
+          <li id="f5c2d8">Na aba <b id="a3b8e6">Mixagem</b> cada gravação MIDI tem a sua pista (as notas desenhadas), com volume,
+            ganho, reverb, chorus e pan próprios; os botões de deslocar movem todas as notas dela no tempo.</li>
           <li id="c9b4a3">Dá para editar como as outras notas (Q/W/A/S/D, ↑/↓, Delete, Ctrl+Z): salva sozinho.</li>
-          <li id="d6f1c8"><i id="e3a7d4" class="bi bi-pencil"></i> renomeia e <i id="f7c2e5" class="bi bi-trash"></i> apaga a gravação escolhida.</li>
+          <li id="d6f1c8"><i id="e3a7d4" class="bi bi-pencil"></i> (ou duplo clique no nome) renomeia e
+            <i id="f7c2e5" class="bi bi-trash"></i> apaga — vale para todas as faixas da tabela, não só as MIDI.</li>
         </ul>
         <div id="a4b9e1" class="dica">Depois de uma atualização do programa, feche a janela "Tela de Solos - servidor" e abra
           o SOLO.bat de novo (as rotas novas do servidor, como a das gravações MIDI, só existem depois disso).</div>
@@ -1045,11 +1161,17 @@ const GANHO_SINT = 2.5;
 const volumeSintetizado = () => mudo ? 0 : parseFloat($("volumeSint").value) * GANHO_SINT;
 function definirMudo(valor) {
   mudo = !!valor;
-  if (mestre) mestre.gain.setTargetAtTime(volumeSintetizado(), ctx.currentTime, 0.02);
+  atualizarVolumesSint();
   const b = $("btnMudo");
   b.setAttribute("aria-pressed", String(mudo));
   b.title = mudo ? "Voltar a tocar as notas sintetizadas" : "Silenciar as notas sintetizadas";
   b.firstElementChild.className = mudo ? "bi bi-volume-up" : "bi bi-volume-mute";
+}
+
+// volume/mudo das notas sintetizadas: as notas (mestre) e cada gravação MIDI
+function atualizarVolumesSint() {
+  if (!ctx) return;
+  for (const g of [mestre, ...volumesMidi.values()]) if (g) g.gain.setTargetAtTime(volumeSintetizado(), ctx.currentTime, 0.02);
 }
 
 function garantirAudio() {
@@ -1081,34 +1203,43 @@ function garantirAudio() {
 // Notas sintetizadas: a mesma corda dedilhada da edição de notas (tocarCorda), soando livre como
 // ela pela sustentação escolhida (envelopeCorda). Como numa corda de verdade, a nota seguinte abafa
 // a anterior; notas que começam juntas (acorde) soam juntas.
-let ultimaCorda = null;  // {ganho, inicio} da última nota agendada
-
 // força de uma nota gravada no teclado MIDI (v de 1 a 127), na curva de sensibilidade escolhida
 const forcaDaNota = nota => nota.v ? curvaForca(nota.v / 127) : 1;
 
 function tocarNota(nota, inicioCtx, duracao) {
-  const inst = instrumentoAtivo(), forca = forcaDaNota(nota);
+  const forca = forcaDaNota(nota), dur = Math.max(0.05, duracao || 0.3);
+  const fonte = fonteDaNota.get(nota);
+  if (fonte && gravacaoMidiDe(fonte)) {  // gravação MIDI: o timbre e o canal de mixagem dela
+    const r = instanciaMidi(fonte, timbreDaFonte(fonte), saidaMidiDe(fonte));
+    if (r.inst) r.inst.tocar(nota.midi + transp, dur, inicioCtx, forca);
+    else tocarCordaSint(nota.midi + transp, inicioCtx, forca, r.saida, envelopeMidi());
+    return;
+  }
+  const inst = instrumentoAtivo();
   if (inst) {  // a duração é a da nota; o release de cada instrumento continua depois dela
-    inst.tocar(nota.midi + transp, Math.max(0.05, duracao || 0.3), inicioCtx, forca);
+    inst.tocar(nota.midi + transp, dur, inicioCtx, forca);
     return;
   }
   tocarCordaSint(nota.midi + transp, inicioCtx, forca);
 }
 
-// Corda dedilhada das notas sintetizadas (e do teclado MIDI com o timbre "corda")
-function tocarCordaSint(midi, inicioCtx, forca = 1) {
+// Corda dedilhada das notas sintetizadas (e do teclado MIDI com o timbre "corda"). Cada saída
+// (as notas, cada gravação MIDI, o teclado ao vivo) abafa só a sua nota anterior.
+const ultimasCordas = new Map();  // saída -> {ganho, inicio} da última nota agendada nela
+function tocarCordaSint(midi, inicioCtx, forca = 1, saida = mestre, envelope = envelopeNotas) {
   const corda = cordaDe(midi), fonte = ctx.createBufferSource(), ganho = ctx.createGain();
   fonte.buffer = corda.buffer;
   fonte.playbackRate.value = corda.taxa;
-  const fim = envelopeCorda(ganho.gain, inicioCtx, 0.45 * forca);
+  const fim = envelopeCorda(ganho.gain, inicioCtx, 0.45 * forca, envelope);
   fonte.connect(ganho);
-  ganho.connect(mestre);
+  ganho.connect(saida);
+  const ultimaCorda = ultimasCordas.get(saida);
   if (ultimaCorda && inicioCtx - ultimaCorda.inicio > 0.02) {  // abafa a anterior quando esta começa
     const a = ultimaCorda.ganho.gain;
     a.cancelScheduledValues(inicioCtx);
     a.setTargetAtTime(0, inicioCtx, 0.015);
   }
-  ultimaCorda = { ganho, inicio: inicioCtx };
+  ultimasCordas.set(saida, { ganho, inicio: inicioCtx });
   fonte.start(inicioCtx);
   fonte.stop(fim + 0.05);
   const voz = { osc: fonte, ganho };
@@ -1127,9 +1258,10 @@ function silenciarTudo() {
     } catch (e) { /* voz já encerrada */ }
   }
   vozes.clear();
-  ultimaCorda = null;
+  ultimasCordas.clear();
   const inst = instrumentoAtivo();
   if (inst) inst.soltar();  // os timbres do Tone.js soltam com o release deles (eco suave)
+  for (const [chave, r] of instanciasMidi) if (chave !== CHAVE_AO_VIVO && r.inst) r.inst.soltar();
 }
 
 // ---------- ataque e sustentação das notas sintetizadas ----------
@@ -1153,13 +1285,32 @@ function definirEnvelope(ataque, sustain) {
   $("sustainValor").textContent = fmtSeg(envelopeNotas.sustain);
   const inst = instrumentoAtivo();
   if (inst && inst.envelope) inst.envelope(envelopeNotas.ataque, envelopeNotas.sustain);
+  if (envelopeMidiCfg.controles) aplicarEnvelopeMidi();  // o teclado MIDI acompanha estes controles
+}
+
+// Teclado MIDI (ao vivo, REC MIDI e gravações MIDI): com "usa o ataque e a sustentação acima" marcado,
+// os mesmos controles das notas; desmarcado, entra na hora e soa pela sustentação própria (preferências da música)
+const envelopeMidiCfg = { controles: true, sustain: 0.4 };
+const envelopeMidi = () => envelopeMidiCfg.controles ? envelopeNotas : { ataque: 0, sustain: envelopeMidiCfg.sustain };
+function aplicarEnvelopeMidi() {
+  const { ataque, sustain } = envelopeMidi();
+  for (const r of instanciasMidi.values()) if (r.inst && r.inst.envelope) r.inst.envelope(ataque, sustain);
+}
+function definirEnvelopeMidi(controles, sustain) {
+  envelopeMidiCfg.controles = controles !== false;
+  envelopeMidiCfg.sustain = limitar(Number.isFinite(sustain) ? sustain : 0.4, 0, 6);
+  $("midiSustainControles").checked = envelopeMidiCfg.controles;
+  $("blocoSustainMidi").hidden = envelopeMidiCfg.controles;
+  $("sustainMidi").value = envelopeMidiCfg.sustain;
+  $("sustainMidiValor").textContent = fmtSeg(envelopeMidiCfg.sustain);
+  aplicarEnvelopeMidi();
 }
 const envelopePadrao = () => definirEnvelope(...(PADRAO_ENVELOPE[timbre] || PADRAO_ENVELOPE.corda));
 
 // Na corda dedilhada: sobe em `ataque` e soa até `sustain` depois do início (o tamanho do som gerado,
 // 2,5 s, é o limite); a seguinte abafa a anterior
-function envelopeCorda(g, inicio, pico) {
-  const { ataque } = envelopeNotas, soa = limitar(Math.max(envelopeNotas.sustain, ataque + 0.05), 0.05, 2.45);
+function envelopeCorda(g, inicio, pico, envelope = envelopeNotas) {
+  const { ataque } = envelope, soa = limitar(Math.max(envelope.sustain, ataque + 0.05), 0.05, 2.45);
   const fim = inicio + soa, queda = Math.min(0.25, soa / 2);
   if (ataque > 0) { g.setValueAtTime(0, inicio); g.linearRampToValueAtTime(pico, inicio + Math.min(ataque, soa - queda)); }
   else g.setValueAtTime(pico, inicio);
@@ -1434,12 +1585,97 @@ function prepararTimbre() {
   return c.carregando;
 }
 
+// ---------- timbre de cada gravação MIDI e do teclado ao vivo ----------
+// Cada gravação MIDI tem o seu timbre (preferências da música: timbresMidi) e toca no seu canal da
+// mixagem (chave "midi:<id>"), passando antes pelo volume/mudo das notas sintetizadas. O teclado ao
+// vivo toca o Timbre do player numa instância própria, com o envelope do teclado (envelopeMidi).
+const CHAVE_AO_VIVO = "aoVivo";
+const instanciasMidi = new Map();  // chave -> { timbre, saida, inst, erro, carregando }
+let TIMBRES_MIDI = {};             // id da gravação -> timbre
+const timbreDaFonte = fonte => {
+  const t = TIMBRES_MIDI[String(fonte).slice(5)];
+  return TIMBRES.includes(t) ? t : timbre;  // sem timbre próprio: o do player
+};
+const nomeTimbre = t => { const o = [...$("timbre").options].find(x => x.value === t); return o ? o.textContent : t; };
+
+// Entrada do canal da gravação MIDI, depois do volume das notas sintetizadas (um nó por gravação)
+const volumesMidi = new Map();  // fonte -> GainNode
+function saidaMidiDe(fonte) {
+  let g = volumesMidi.get(fonte);
+  if (g) return g;
+  garantirAudio();
+  g = ctx.createGain();
+  g.gain.value = volumeSintetizado();
+  g.connect(obterCanal(fonte, limitador).entrada);
+  volumesMidi.set(fonte, g);
+  return g;
+}
+
+// A instância do timbre `nome` ligada em `saida`; enquanto carrega (ou se falhar), inst = null (toca a corda)
+function instanciaMidi(chave, nome, saida) {
+  let r = instanciasMidi.get(chave);
+  if (r && r.timbre === nome && r.saida === saida) return r;
+  if (r && r.inst) r.inst.soltar();
+  r = { timbre: nome, saida, inst: null, erro: "", carregando: null };
+  instanciasMidi.set(chave, r);
+  if (nome === "corda") return r;
+  r.carregando = (async () => {
+    try {
+      if (!window.Tone) await carregarScript("/instrumentos/Tone.js");
+      if (Tone.getContext().rawContext !== ctx) Tone.setContext(ctx);
+      const inst = await INSTRUMENTOS[nome].criar(saida);
+      const { ataque, sustain } = envelopeMidi();
+      inst.envelope(ataque, sustain);
+      if (instanciasMidi.get(chave) === r) r.inst = inst;
+    } catch (e) {
+      r.erro = e.message;
+      console.warn(`Timbre ${nome} (${chave}):`, e);
+    }
+  })();
+  return r;
+}
+
+function descartarInstanciasMidi() {
+  for (const r of instanciasMidi.values()) if (r.inst) r.inst.soltar();
+  instanciasMidi.clear();
+  for (const g of volumesMidi.values()) g.disconnect();
+  volumesMidi.clear();
+}
+
+// Troca o timbre de uma gravação MIDI (tabela das faixas e aba Mixagem)
+function definirTimbreMidi(fonte, valor) {
+  TIMBRES_MIDI[fonte.slice(5)] = TIMBRES.includes(valor) ? valor : "corda";
+  if (ctx) instanciaMidi(fonte, timbreDaFonte(fonte), saidaMidiDe(fonte));  // já carrega, antes do play
+  for (const sel of document.querySelectorAll(`select[data-fonte="${fonte}"]`)) sel.value = timbreDaFonte(fonte);
+  salvarPreferencias();
+}
+
+// <select> de timbre de uma gravação MIDI (as mesmas opções do Timbre do player)
+function seletorTimbreMidi(fonte, id) {
+  const sel = document.createElement("select");
+  sel.id = id;
+  sel.dataset.fonte = fonte;
+  sel.title = "Timbre desta gravação MIDI";
+  sel.setAttribute("aria-label", sel.title);
+  for (const o of $("timbre").options) {
+    const c = document.createElement("option");
+    c.id = `${id}-${o.value}`;
+    c.value = o.value;
+    c.textContent = o.textContent;
+    sel.appendChild(c);
+  }
+  sel.value = timbreDaFonte(fonte);
+  sel.addEventListener("change", () => { garantirAudio(); definirTimbreMidi(fonte, sel.value); });
+  return sel;
+}
+
 function definirTimbre(valor) {
   valor = TIMBRES.includes(valor) ? valor : "corda";  // timbres que não existem mais viram corda
   const anterior = instrumentoAtivo();
   if (anterior && valor !== timbre) anterior.soltar();
   timbre = valor;
   $("timbre").value = timbre;
+  for (const sel of document.querySelectorAll("select[data-fonte]")) sel.value = timbreDaFonte(sel.dataset.fonte);
   envelopePadrao();
   prepararTimbre();
   dicaTimbre();
@@ -1699,7 +1935,7 @@ const DERIVA_MAXIMA = 0.3, INTERVALO_SALTO = 3000;  // só para o modo <audio>
 const modoBuffer = () => velocidade === 1;
 
 function indicarCarregando(nome, carregando) {
-  const rotulo = $("faixa-" + nome);
+  const rotulo = $("faixa-" + nome + "-nome");
   if (!rotulo) return;
   let aviso = $("faixa-" + nome + "-carregando");
   if (carregando && !aviso) {
@@ -1861,7 +2097,7 @@ function ligarFaixa(nome, ligada) {
 }
 
 function desligarTodasFaixas() {
-  for (const cb of $("faixa").querySelectorAll("input")) cb.checked = false;
+  for (const cb of $("faixa").querySelectorAll('input[id$="-marcar"]')) cb.checked = false;
   for (const nome of [...faixasAtivas.keys()]) ligarFaixa(nome, false);
 }
 
@@ -2546,7 +2782,7 @@ function desfazerNota() {
       }
     }
     if (!tocando) { irPara(nota.t); notaSelecionada = acao.tipo === "criar" ? null : nota; }  // mostra a nota que voltou
-  } else descricao += ` (em ${ROTULOS[fonte] || fonte})`;
+  } else descricao += ` (em ${nomeFonte(fonte)})`;
   notasAlteradas("desfeito: " + descricao, fonte);
 }
 
@@ -2672,13 +2908,16 @@ function destacar(botoes, anterior, i, caixa) {
 // Todas as fontes marcadas são exibidas, tocadas e editadas juntas (NOTAS junta as notas delas, que
 // continuam sendo os objetos de DADOS.melodias[fonte]); com mais de uma, cada fonte tem a sua cor
 // na linha do tempo (legenda). Cada nota sabe de que fonte veio, para a edição salvar no lugar certo.
-const fontesMarcadas = new Set();
+const fontesMarcadas = new Set();  // melodias e gravações MIDI ("midi:<id>") marcadas em "Notas"
 const fonteDaNota = new WeakMap();
-const nomeFonte = f => f === "solo" ? "Solo (faixa escolhida automaticamente)"
-  : String(f).startsWith("midi:") ? "MIDI: " + ((gravacaoMidiDe(f) || {}).nome || f.slice(5)) : (ROTULOS[f] || f);
-// gravação MIDI exibida (uma por vez, no seletor "Gravações MIDI"); null = nenhuma
-let midiExibida = null;
+let NOMES = {};  // nomes dados na tabela das faixas (preferências da música); as gravações MIDI guardam o delas
+const nomePadrao = f => f === "solo" ? "Solo (faixa escolhida automaticamente)" : ROTULOS[f] || f;
+const rotuloFonte = f => String(f).startsWith("midi:") ? (gravacaoMidiDe(f) || {}).nome || f.slice(5) : NOMES[f] || nomePadrao(f);
+const nomeFonte = f => String(f).startsWith("midi:") ? "MIDI: " + rotuloFonte(f) : rotuloFonte(f);
 const gravacaoMidiDe = fonte => String(fonte).startsWith("midi:") ? (DADOS.midi || {})[fonte.slice(5)] : null;
+// ids das gravações MIDI, da mais antiga para a mais nova
+const idsMidi = () => Object.entries(DADOS.midi || {})
+  .sort((a, b) => String(a[1].criado_em).localeCompare(String(b[1].criado_em))).map(([id]) => id);
 // lista de notas de uma fonte (melodia ou gravação MIDI); criar=true cria a lista vazia se faltar
 function notasDaFonte(fonte, criar = false) {
   const g = gravacaoMidiDe(fonte);
@@ -2689,41 +2928,236 @@ function definirNotasDaFonte(fonte, lista) {
   const g = gravacaoMidiDe(fonte);
   if (g) g.notas = lista; else DADOS.melodias[fonte] = lista;
 }
-// na ordem da lista (a mesma de DADOS.melodias)
-const fontesSelecionadas = () => Object.keys(DADOS.melodias || {}).filter(f => fontesMarcadas.has(f));
-// as marcadas e a gravação MIDI exibida (o que toca, aparece na linha do tempo e vai para o vídeo)
-const fontesEmUso = () => [...fontesSelecionadas(), ...(midiExibida && gravacaoMidiDe("midi:" + midiExibida) ? ["midi:" + midiExibida] : [])];
+// todas as fontes de notas, na ordem da tabela: as melodias (a mesma ordem de DADOS.melodias) e as gravações MIDI
+const todasFontes = () => [...Object.keys(DADOS.melodias || {}), ...idsMidi().map(id => "midi:" + id)];
+// as marcadas (o que toca, aparece na linha do tempo e vai para o vídeo)
+const fontesSelecionadas = () => todasFontes().filter(f => fontesMarcadas.has(f));
+const fontesEmUso = fontesSelecionadas;
 const fonteDa = n => fonteDaNota.get(n) || fontesSelecionadas()[0] || "solo";
 const variasFontes = () => fontesEmUso().length > 1;
+const baseLinhaFaixa = fonte => gravacaoMidiDe(fonte) ? "faixa-midi-" + fonte.slice(5) : "faixa-" + fonte;
 
 function montarFontesNotas(marcadas) {
-  const caixa = $("fonteNotas");
-  caixa.textContent = "";
   fontesMarcadas.clear();
   for (const f of marcadas) fontesMarcadas.add(f);
-  for (const fonte of Object.keys(DADOS.melodias || {})) {
-    const linha = document.createElement("label");
-    linha.className = "fonteNota";
-    linha.id = `fonteNotas-${fonte}`;
-    const marcar = document.createElement("input");
-    marcar.type = "checkbox";
-    marcar.id = `fonteNotas-${fonte}-marcar`;
-    marcar.checked = fontesMarcadas.has(fonte);
-    marcar.addEventListener("change", () => {
-      if (marcar.checked) fontesMarcadas.add(fonte); else fontesMarcadas.delete(fonte);
-      aplicarFontes();
-      salvarPreferencias();
-    });
+  montarTabelaFaixas();
+}
+
+// ---------- tabela das faixas (Player): notas, áudio real e gravações MIDI numa só lista ----------
+// Uma linha por faixa: as melodias (notas extraídas), as faixas separadas (WAV) — a mesma faixa tem as
+// duas coisas — e as gravações MIDI (em azul-anil, com timbre próprio). Todas podem ser renomeadas
+// (duplo clique no nome ou o lápis) e apagadas.
+function montarTabelaFaixas() {
+  const corpo = $("faixa-corpo");
+  corpo.textContent = "";
+  if (!MUSICA) return;
+  const melodias = Object.keys(DADOS.melodias || {}), audios = DADOS.faixas || [];
+  const linhas = [
+    ...[...melodias, ...audios.filter(n => !melodias.includes(n))]
+      .map(n => ({ fonte: n, notas: melodias.includes(n), audio: audios.includes(n) })),
+    ...idsMidi().map(id => ({ fonte: "midi:" + id, notas: true, audio: false, midi: true })),
+  ];
+  const celula = (tr, id, classe = "") => {
+    const td = document.createElement("td");
+    td.id = id;
+    if (classe) td.className = classe;
+    tr.appendChild(td);
+    return td;
+  };
+  const vazio = (tr, id) => {
+    const td = celula(tr, id, "centro semItem");
+    td.textContent = "—";
+    td.title = "Esta faixa não tem isso";
+  };
+  if (!linhas.length) {
+    const tr = document.createElement("tr");
+    tr.id = "faixa-vazia";
+    const td = celula(tr, "faixa-vazia-texto", "semItem");
+    td.colSpan = 5;
+    td.textContent = "Nenhuma faixa: processe a música ou grave pelo teclado MIDI (REC MIDI).";
+    corpo.appendChild(tr);
+    return;
+  }
+  for (const l of linhas) {
+    const { fonte } = l, base = baseLinhaFaixa(fonte), g = gravacaoMidiDe(fonte);
+    const tr = document.createElement("tr");
+    tr.id = base;
+    if (l.midi) tr.className = "midi";
+
+    const caixaNome = document.createElement("div");
+    caixaNome.className = "celulaNome";
+    caixaNome.id = base + "-nome";  // indicarCarregando põe o "carregando…" aqui
     const amostra = document.createElement("i");
-    amostra.id = `fonteNotas-${fonte}-cor`;
+    amostra.className = "cor";
+    amostra.id = base + "-cor";
     amostra.style.background = corFonte(fonte);
     const nome = document.createElement("span");
     nome.className = "nome";
-    nome.id = `fonteNotas-${fonte}-nome`;
-    nome.textContent = nomeFonte(fonte);
-    linha.append(marcar, amostra, nome);
-    caixa.appendChild(linha);
+    nome.id = base + "-rotulo";
+    nome.textContent = rotuloFonte(fonte);
+    nome.title = "Duplo clique para renomear";
+    nome.addEventListener("dblclick", () => editarNomeFonte(fonte, nome));
+    caixaNome.append(amostra, nome);
+    if (l.midi) {
+      const tipo = document.createElement("span");
+      tipo.className = "marcaMidi";
+      tipo.id = base + "-tipo";
+      tipo.textContent = "MIDI";
+      tipo.title = "Gravação do teclado MIDI (REC MIDI)";
+      caixaNome.appendChild(tipo);
+    }
+    const detalhe = document.createElement("small");
+    detalhe.id = base + "-detalhe";
+    detalhe.textContent = l.midi ? `${(g.notas || []).length} notas` : l.audio ? fonte + ".wav" : "só notas";
+    caixaNome.appendChild(detalhe);
+    celula(tr, base + "-celula-nome").appendChild(caixaNome);
+
+    if (l.notas) {
+      const cb = document.createElement("input");
+      cb.type = "checkbox";
+      cb.id = base + "-notas";
+      cb.checked = fontesMarcadas.has(fonte);
+      cb.title = "Exibir na linha do tempo e tocar as notas desta faixa";
+      cb.setAttribute("aria-label", `Notas: ${rotuloFonte(fonte)}`);
+      cb.addEventListener("change", () => marcarNotas(fonte, cb.checked));
+      celula(tr, base + "-celula-notas", "centro").appendChild(cb);
+    } else vazio(tr, base + "-celula-notas");
+
+    if (l.audio) {
+      const cb = document.createElement("input");
+      cb.type = "checkbox";
+      cb.id = "faixa-" + fonte + "-marcar";
+      cb.value = fonte;
+      cb.checked = faixasAtivas.has(fonte);
+      cb.title = `Tocar junto a faixa separada (${fonte}.wav)`;
+      cb.setAttribute("aria-label", `Áudio: ${rotuloFonte(fonte)}`);
+      cb.addEventListener("change", () => ligarFaixa(fonte, cb.checked));
+      celula(tr, base + "-celula-audio", "centro").appendChild(cb);
+    } else vazio(tr, base + "-celula-audio");
+
+    const tdTimbre = celula(tr, base + "-celula-timbre", "timbreFaixa");
+    if (l.midi) tdTimbre.appendChild(seletorTimbreMidi(fonte, base + "-timbre"));
+    else if (l.notas) {
+      const geral = document.createElement("span");
+      geral.className = "geral";
+      geral.id = base + "-timbre-geral";
+      geral.textContent = "o Timbre do player";
+      tdTimbre.appendChild(geral);
+    }
+
+    const acoes = celula(tr, base + "-celula-acoes", "acoes");
+    const botao = (sufixo, icone, titulo, acao) => {
+      const b = document.createElement("button");
+      b.className = "icone";
+      b.id = base + "-" + sufixo;
+      b.title = titulo;
+      b.setAttribute("aria-label", titulo);
+      const i = document.createElement("i");
+      i.className = "bi " + icone;
+      i.id = base + "-" + sufixo + "-icone";
+      b.appendChild(i);
+      b.addEventListener("click", acao);
+      acoes.appendChild(b);
+    };
+    botao("renomear", "bi-pencil", "Renomear a faixa", () => editarNomeFonte(fonte, $(base + "-rotulo")));
+    botao("excluir", "bi-trash", l.midi ? "Apagar a gravação MIDI" : "Apagar a faixa (áudio e notas)", () => excluirFonte(fonte));
+    corpo.appendChild(tr);
   }
+}
+
+// Marca/desmarca as notas de uma faixa (tabela do Player e pistas MIDI da Mixagem)
+function marcarNotas(fonte, marcada) {
+  if (marcada) fontesMarcadas.add(fonte); else fontesMarcadas.delete(fonte);
+  const cb = $(baseLinhaFaixa(fonte) + "-notas");
+  if (cb) cb.checked = marcada;
+  aplicarFontes();
+  salvarPreferencias();
+}
+
+// Troca o nome por um campo de texto: Enter (ou sair do campo) salva, Esc desiste
+function editarNomeFonte(fonte, span) {
+  if (!span || !span.isConnected) return;
+  const campo = document.createElement("input");
+  campo.type = "text";
+  campo.id = span.id + "-editar";
+  campo.maxLength = 60;
+  campo.value = rotuloFonte(fonte);
+  campo.setAttribute("aria-label", "Nome da faixa");
+  span.replaceWith(campo);
+  campo.focus();
+  campo.select();
+  let feito = false;
+  const concluir = salvar => {
+    if (feito) return;
+    feito = true;
+    if (salvar) renomearFonte(fonte, campo.value); else montarTabelaFaixas();
+  };
+  campo.addEventListener("keydown", e => {
+    e.stopPropagation();  // os atalhos do player não valem aqui
+    if (e.key === "Enter") { e.preventDefault(); concluir(true); }
+    else if (e.key === "Escape") { e.preventDefault(); concluir(false); }
+  });
+  campo.addEventListener("blur", () => concluir(true));
+}
+
+async function renomearFonte(fonte, nome) {
+  nome = String(nome).replace(/\s+/g, " ").trim().slice(0, 60);
+  const g = gravacaoMidiDe(fonte);
+  if (g) {  // o nome da gravação MIDI fica nela (dados\<id>.json)
+    if (nome && nome !== g.nome && MUSICA) {
+      try {
+        await api(`/api/musicas/${MUSICA.id}/midi/${fonte.slice(5)}`, { method: "PUT", body: JSON.stringify({ nome, notas: g.notas }) });
+        g.nome = nome;
+      } catch (e) { statusNotas("Não renomeada: " + e.message, "erro"); }
+    }
+  } else {  // as demais: nas preferências da música (vazio volta ao nome original)
+    if (!nome || nome === nomePadrao(fonte)) delete NOMES[fonte]; else NOMES[fonte] = nome;
+    salvarPreferencias();
+  }
+  montarTabelaFaixas();
+  atualizarLegenda();
+  if (abaAtual === "mixagem") renderMixagem();
+}
+
+// Apaga uma faixa: a gravação MIDI, ou a faixa separada inteira (WAV e notas extraídas dela)
+async function excluirFonte(fonte) {
+  if (!MUSICA) return;
+  const id = MUSICA.id, g = gravacaoMidiDe(fonte);
+  if (g) {
+    if (!confirm(`Apagar a gravação MIDI "${g.nome}" (${(g.notas || []).length} notas)?`)) return;
+    try { await api(`/api/musicas/${id}/midi/${fonte.slice(5)}`, { method: "DELETE" }); }
+    catch (e) { statusNotas("Não apagada: " + e.message, "erro"); return; }
+    delete DADOS.midi[fonte.slice(5)];
+    delete TIMBRES_MIDI[fonte.slice(5)];
+    const volume = volumesMidi.get(fonte);
+    if (volume) { volume.disconnect(); volumesMidi.delete(fonte); }
+    const r = instanciasMidi.get(fonte);
+    if (r) { if (r.inst) r.inst.soltar(); instanciasMidi.delete(fonte); }
+    delete MIXAGEM[fonte];
+    descartarCanal(fonte);
+  } else {
+    const temAudio = (DADOS.faixas || []).includes(fonte), temNotas = !!(DADOS.melodias || {})[fonte];
+    const partes = [temNotas && "as notas dela", temAudio && `o arquivo faixas\\${id}\\${fonte}.wav`].filter(Boolean).join(" e ");
+    if (!confirm(`Apagar a faixa "${rotuloFonte(fonte)}"?\nSerão excluídos ${partes}.\n` +
+                 "Para recuperá-la, processe a música de novo: o solo.py refaz as faixas e as notas automáticas.")) return;
+    if (temAudio) ligarFaixa(fonte, false);
+    try { await api(`/api/musicas/${id}/faixas/${fonte}?notas=1`, { method: "DELETE" }); }
+    catch (e) { statusNotas("Não apagada: " + e.message, "erro"); verificarServidor(); return; }
+    DADOS.faixas = (DADOS.faixas || []).filter(n => n !== fonte);
+    if (DADOS.melodias) delete DADOS.melodias[fonte];
+    delete NOMES[fonte];
+    delete MIXAGEM[chaveFaixa(fonte)];
+    descartarCanal(chaveFaixa(fonte));
+    if (fonte === "vocals") { extensao = calcularExtensao(); atualizarExtensao(); }
+  }
+  clearTimeout(salvamentosNotas.get(id + "/" + fonte));  // edição ainda não salva: não grava mais
+  salvamentosNotas.delete(id + "/" + fonte);
+  for (let i = historicoNotas.length - 1; i >= 0; i--) if (historicoNotas[i].fonte === fonte) historicoNotas.splice(i, 1);
+  fontesMarcadas.delete(fonte);
+  montarTabelaFaixas();
+  aplicarFontes();
+  salvarPreferencias();
+  if (abaAtual === "mixagem") renderMixagem();
 }
 
 // Junta em NOTAS as notas das fontes marcadas (lembrando a fonte de cada uma)
@@ -2799,7 +3233,7 @@ function atualizarLegenda() {
     const i = document.createElement("i");
     s.id = "legenda-" + f;
     i.style.background = corFonte(f);
-    s.append(i, ROTULOS[f] || f);
+    s.append(i, rotuloFonte(f));
     leg.appendChild(s);
   }
 }
@@ -2811,9 +3245,10 @@ function salvarPreferencias() {
   const id = MUSICA.id;
   const corpo = {
     transposicao: transp,
-    preferencias: { velocidade, fontesNotas: fontesSelecionadas(), fonteNotas: fontesSelecionadas()[0] || "solo", midiExibida,
+    preferencias: { velocidade, fontesNotas: fontesSelecionadas(),
+                    fonteNotas: fontesSelecionadas().find(f => !gravacaoMidiDe(f)) || "solo",
                     faixas: [...faixasAtivas.keys()], mudo, timbre, envelope: { ...envelopeNotas }, mixagem: MIXAGEM,
-                    marcas: MARCAS },
+                    marcas: MARCAS, nomes: NOMES, timbresMidi: TIMBRES_MIDI, envelopeMidi: { ...envelopeMidiCfg } },
   };
   clearTimeout(temporizadorPreferencias);
   temporizadorPreferencias = setTimeout(async () => {
@@ -2868,6 +3303,7 @@ async function abrirMusica(id) {
   desligarTodasFaixas();
   aplicandoPreferencias = false;
   desligarTodasGravacoes();
+  descartarInstanciasMidi();
   descartarCanais();
   historicoNotas.length = 0;  // o desfazer vale só para a música aberta
   GRAVACOES = [];
@@ -2897,28 +3333,18 @@ async function abrirMusica(id) {
   if (canais.get(CHAVE_NOTAS)) aplicarMix(canais.get(CHAVE_NOTAS));
 
   DADOS.midi = DADOS.midi || {};
-  midiExibida = pref.midiExibida && DADOS.midi[pref.midiExibida] ? pref.midiExibida : null;
-  preencherSeletorMidi();
-  const salvas = (pref.fontesNotas || [pref.fonteNotas]).filter(f => DADOS.melodias[f]);
-  montarFontesNotas(salvas.length ? salvas : ["solo"]);
+  DADOS.melodias = DADOS.melodias || {};
+  NOMES = pref.nomes && typeof pref.nomes === "object" ? { ...pref.nomes } : {};
+  TIMBRES_MIDI = pref.timbresMidi && typeof pref.timbresMidi === "object" ? { ...pref.timbresMidi } : {};
+  // antes as gravações MIDI eram uma por vez ("midiExibida"): ela continua marcada
+  const salvas = [...(pref.fontesNotas || [pref.fonteNotas]), ...(pref.midiExibida ? ["midi:" + pref.midiExibida] : [])]
+    .filter(f => DADOS.melodias[f] || gravacaoMidiDe(f));
   definirMudo(!!pref.mudo);
   definirTimbre(pref.timbre);
   definirMarcas(pref.marcas);
   if (pref.envelope) definirEnvelope(pref.envelope.ataque, pref.envelope.sustain);
-
-  const caixaFaixas = $("faixa");
-  caixaFaixas.textContent = "";
-  for (const nome of DADOS.faixas || []) {
-    const rotulo = document.createElement("label");
-    const cb = document.createElement("input");
-    rotulo.id = "faixa-" + nome;
-    cb.id = "faixa-" + nome + "-marcar";
-    cb.type = "checkbox";
-    cb.value = nome;
-    cb.addEventListener("change", () => ligarFaixa(nome, cb.checked));
-    rotulo.append(cb, `${ROTULOS[nome] || nome} (${nome}.wav)`);
-    caixaFaixas.appendChild(rotulo);
-  }
+  definirEnvelopeMidi((pref.envelopeMidi || {}).controles, (pref.envelopeMidi || {}).sustain);
+  montarFontesNotas(salvas.length ? salvas : ["solo"]);
 
   aplicarFontes();
   aplicarTransposicao(MUSICA.transposicao || 0);
@@ -3611,28 +4037,33 @@ $("btnCorteFimAqui").addEventListener("click", () => {
 // offline (mais rápido que tempo real), no tom original (o áudio do vídeo não é transposto) e com o
 // volume na mesma proporção em relação às faixas que se ouve no player (as faixas entram no vídeo em
 // 100%; o limitador do FFmpeg segura os picos). Volta um WAV mono float32 do trecho [ini, fim].
-async function renderizarNotasVideo(ini, fim) {
+// lista: as notas a tocar; nome: o timbre; envelope: {ataque, sustain}; pronto: o timbre carregou no player
+// (senão toca a corda, como no player). Sem argumentos: as notas sintetizadas (sem as gravações MIDI).
+async function renderizarNotasVideo(ini, fim, lista, nome = timbre, envelope = envelopeNotas, pronto) {
   garantirAudio();
   const taxa = ctx.sampleRate, dur = Math.max(0.1, fim - ini);
   const ganho = 1;  // o volume das notas é aplicado na mistura (renderizarMisturaVideo)
-  const notas = NOTAS.filter(n => n.t < fim && n.t + n.d > ini)
+  const notas = (lista || NOTAS.filter(n => !gravacaoMidiDe(fonteDa(n)))).filter(n => n.t < fim && n.t + n.d > ini)
     .map(n => ({ midi: n.midi, t: Math.max(0, n.t - ini), d: n.t + n.d - Math.max(n.t, ini), v: forcaDaNota(n) }));
-  if (timbre !== "corda") await prepararTimbre();
+  if (pronto === undefined) {
+    if (nome !== "corda") await prepararTimbre();
+    pronto = !!(carregados[nome] && carregados[nome].pronto);
+  }
   let buffer;
-  if (timbre !== "corda" && carregados[timbre] && carregados[timbre].pronto && INSTRUMENTOS[timbre].nativo) {
+  if (nome !== "corda" && pronto && INSTRUMENTOS[nome].nativo) {
     const off = new OfflineAudioContext(1, Math.ceil(dur * taxa), taxa);
     const saida = off.createGain();
     saida.gain.value = ganho;
     saida.connect(off.destination);
-    const inst = await INSTRUMENTOS[timbre].criar(saida);
-    inst.envelope(envelopeNotas.ataque, envelopeNotas.sustain);
+    const inst = await INSTRUMENTOS[nome].criar(saida);
+    inst.envelope(envelope.ataque, envelope.sustain);
     for (const n of notas) inst.tocar(n.midi, Math.max(0.05, n.d), n.t, n.v);
     buffer = await off.startRendering();
-  } else if (timbre !== "corda" && carregados[timbre] && carregados[timbre].pronto) {
+  } else if (nome !== "corda" && pronto) {
     const tb = await Tone.Offline(async () => {
       const saida = new Tone.Gain(ganho).toDestination();
-      const inst = await INSTRUMENTOS[timbre].criar(saida);
-      inst.envelope(envelopeNotas.ataque, envelopeNotas.sustain);  // o mesmo ataque/sustentação do player
+      const inst = await INSTRUMENTOS[nome].criar(saida);
+      inst.envelope(envelope.ataque, envelope.sustain);  // o mesmo ataque/sustentação do player
       for (const n of notas) inst.tocar(n.midi, Math.max(0.05, n.d), n.t, n.v);
     }, dur, 1, taxa);
     buffer = tb.get();
@@ -3646,7 +4077,7 @@ async function renderizarNotasVideo(ini, fim) {
       const corda = cordaDe(n.midi), fonte = off.createBufferSource(), g = off.createGain();
       fonte.buffer = corda.buffer;
       fonte.playbackRate.value = corda.taxa;
-      const fimNota = envelopeCorda(g.gain, n.t, 0.45 * n.v);
+      const fimNota = envelopeCorda(g.gain, n.t, 0.45 * n.v, envelope);
       if (anterior && n.t - anterior.t > 0.02) {
         anterior.g.gain.cancelScheduledValues(n.t);
         anterior.g.gain.setTargetAtTime(0, n.t, 0.015);
@@ -3680,7 +4111,8 @@ async function renderizarMisturaVideo(ini, fim, avisar = () => {}) {
   const barramento = ganho => { const g = off.createGain(); g.gain.value = ganho; g.connect(lim); return g; };
   const bFaixas = barramento(parseFloat($("volumeFaixa").value));
   const bGravacoes = barramento(parseFloat($("volumeGravacoes").value));
-  const chaves = [...[...faixasAtivas.keys()].map(chaveFaixa), ...gravacoesAtivas.keys(), CHAVE_NOTAS];
+  const fontesMidi = fontesEmUso().filter(f => gravacaoMidiDe(f));  // cada gravação MIDI no seu canal
+  const chaves = [...[...faixasAtivas.keys()].map(chaveFaixa), ...gravacoesAtivas.keys(), CHAVE_NOTAS, ...fontesMidi];
   if (chaves.some(k => mix(k).ruido > 0)) {  // supressão de ruído: o mesmo AudioWorklet do player
     await off.audioWorklet.addModule(URL.createObjectURL(new Blob([CODIGO_PORTAO], { type: "application/javascript" })));
   }
@@ -3696,7 +4128,7 @@ async function renderizarMisturaVideo(ini, fim, avisar = () => {}) {
     fonte.start(Math.max(0, noVideo), Math.max(0, deBuffer));
   };
   for (const [nome, f] of faixasAtivas) {
-    avisar(`preparando o áudio: ${ROTULOS[nome] || nome}…`);
+    avisar(`preparando o áudio: ${rotuloFonte(nome)}…`);
     const buffer = f.buffer || await carregar(`/faixas/${MUSICA.id}/${nome}.wav`);
     const inicio = ini - deslocFaixa(nome);  // ponto da faixa que toca no começo do trecho
     tocar(buffer, canal(chaveFaixa(nome), bFaixas).entrada, inicio, -inicio);
@@ -3708,12 +4140,22 @@ async function renderizarMisturaVideo(ini, fim, avisar = () => {}) {
     // a gravação começa no instante g.inicio da música; gravada em g.velocidade
     tocar(buffer, canal(chave, bGravacoes).entrada, (ini - a.g.inicio) / a.g.velocidade, a.g.inicio - ini, 1 / a.g.velocidade);
   }
-  if (!mudo && volumeSintetizado() > 0 && NOTAS.length) {
+  if (!mudo && volumeSintetizado() > 0 && NOTAS.some(n => !gravacaoMidiDe(fonteDa(n)))) {
     avisar("gerando o som das notas (timbre escolhido)…");
     const notas = await renderizarNotasVideo(ini, fim);
     const volume = off.createGain();
     volume.gain.value = volumeSintetizado();
     volume.connect(canal(CHAVE_NOTAS, lim).entrada);
+    tocar(notas, volume, 0);
+  }
+  for (const fonte of mudo || volumeSintetizado() <= 0 ? [] : fontesMidi) {
+    avisar(`gerando o som de ${nomeFonte(fonte)}…`);
+    const nome = timbreDaFonte(fonte), r = instanciaMidi(fonte, nome, saidaMidiDe(fonte));
+    if (r.carregando) await r.carregando;  // o mesmo timbre que toca no player
+    const notas = await renderizarNotasVideo(ini, fim, notasDaFonte(fonte), nome, envelopeMidi(), !!r.inst);
+    const volume = off.createGain();
+    volume.gain.value = volumeSintetizado();
+    volume.connect(canal(fonte, lim).entrada);
     tocar(notas, volume, 0);
   }
   avisar("mixando o áudio…");
@@ -3788,8 +4230,8 @@ async function criarVideo(m, formato) {
       avisoVideo(m, formato, "Aguarde salvar as notas editadas (um instante) e tente de novo.", "erro");
       return;
     }
-    const { ini, fim, inteira } = limitesCorte();
-    const corpo = { faixas, inicio: inteira ? 0 : ini, fim: inteira ? null : fim, notas: fontesEmUso().join(","), formato };
+    // o vídeo é desenhado aqui, como na aba do formato no player (letra, trecho e notas de agora)
+    const modelo = modeloVideo(), { ini, fim } = modelo.tr;
     // o áudio do vídeo é a mistura do player (faixas, gravações, notas, mixagem e efeitos)
     try {
       const wav = await renderizarMisturaVideo(ini, fim,
@@ -3798,22 +4240,16 @@ async function criarVideo(m, formato) {
       const r = await fetch(`/api/musicas/${m.id}/video/notas?formato=${formato}`,
                             { method: "PUT", headers: { "Content-Type": "audio/wav" }, body: wav });
       if (!r.ok) throw new Error((await r.json().catch(() => ({}))).erro || `HTTP ${r.status}`);
-      corpo.audioMixado = true;
     } catch (e) {
       avisoVideo(m, formato, "Não foi possível gerar o áudio do vídeo: " + e.message, "erro");
       return;
     }
     try {
-      const r = await api(`/api/musicas/${m.id}/video`, { method: "POST", body: JSON.stringify(corpo) });
-      PROCESSOS = r.processamentos || PROCESSOS;
-      if (corpo.audioMixado && r.audio !== true) {
-        avisoVideo(m, formato, "Atenção: o servidor não usou a mistura do player (servidor desatualizado?); " +
-          "reinicie o SOLO.bat e gere de novo.", "erro");
-        acompanharProcessos();
-        return;
-      }
+      await renderizarQuadrosVideo(m, formato, modelo, texto => avisoVideo(m, formato, texto));
     } catch (e) {
-      avisoVideo(m, formato, "Não foi possível iniciar: " + e.message, "erro");
+      avisoVideo(m, formato, "Não foi possível criar o vídeo: " + e.message +
+        (/não encontrado|404/.test(e.message) ? " (reinicie o SOLO.bat: o servidor é antigo)" : ""), "erro");
+      acompanharProcessos();
       return;
     }
     avisoVideo(m, formato, "");
@@ -3840,7 +4276,8 @@ function preencherCelulaVideo(td, m) {
     b.disabled = ativo || !!criandoVideo;
     b.setAttribute("aria-label", f.dica);
     b.innerHTML = `<i class="bi ${ativo ? "bi-hourglass-split" : f.icone}"></i>`;
-    let dica = f.dica + " com as faixas marcadas, o trecho da barra de corte e as notas do player";
+    let dica = f.dica + " com as faixas marcadas, o trecho da barra de corte e as notas do player, desenhado como na aba \"" +
+      (formato === "instagram" ? "Vídeo do Instagram" : "Vídeo do YouTube") + "\" do player";
     if (aviso) {
       linhas.push({ texto: aviso.texto, tipo: aviso.tipo });
     } else if (processoAtivo(proc)) {
@@ -3871,6 +4308,532 @@ function atualizarCelulasVideo() {
     const td = $(`bib-${m.id}-video`);
     if (td) preencherCelulaVideo(td, m);
   }
+}
+
+// ---------- vídeos desenhados em HTML (canvas) ----------
+// O mesmo desenho serve para a prévia (abas "Vídeo do YouTube" e "Vídeo do Instagram" do player, no
+// tempo atual da música, com a letra/notas como estão agora, inclusive edições não salvas) e para os
+// quadros do vídeo (botões da coluna Vídeo da Biblioteca: o navegador desenha cada quadro e o servidor
+// só junta com o áudio no FFmpeg). Fundo preto, letra rolando para cima (frase atual branca no centro,
+// palavras já cantadas em amarelo, as demais em cinza), ♪ ♪ ♪ nos silêncios da voz, abertura com
+// título/artista/tom e, na base, o violão e o teclado com o acorde e a nota — no tom original.
+const QPS_VIDEO = 30;
+const DESENHO_VIDEO = {
+  padrao: { LARGURA: 1280, ALTURA: 720, ALTURA_LINHA: 92, TAM_ATUAL: 58, TAM_OUTRAS: 46, MARGEM_LATERAL: 60,
+            FADE_BORDAS: 110, FAIXA_INSTRUMENTOS: 150, FAIXA_MARCA: 34, MARGEM_PIANO: 10, TAM_TITULO: 76,
+            TAM_SUBTITULO: 38, LATERAL_PIANO: 190, TAM_ROTULO_PIANO: 64, ROTULOS_NO_TOPO: false },
+  instagram: { LARGURA: 1080, ALTURA: 1920, ALTURA_LINHA: 124, TAM_ATUAL: 72, TAM_OUTRAS: 56, MARGEM_LATERAL: 50,
+               FADE_BORDAS: 260, FAIXA_INSTRUMENTOS: 210, FAIXA_MARCA: 0, MARGEM_PIANO: 24, TAM_TITULO: 96,
+               TAM_SUBTITULO: 50, LATERAL_PIANO: 30, TAM_ROTULO_PIANO: 96, ROTULOS_NO_TOPO: true },
+};
+for (const F of Object.values(DESENHO_VIDEO)) {
+  F.FAIXA_PIANO = F.FAIXA_INSTRUMENTOS + F.FAIXA_MARCA;  // violão + teclado (+ marca d'água), na base
+  F.ALTURA_LETRA = F.ALTURA - F.FAIXA_PIANO;             // a frase atual fica no meio dessa área
+}
+const V_CINZA = "rgb(110,110,110)", V_CANTADA = "rgb(255,215,0)";
+const V_TRANSICAO = 0.4;                  // s de rolagem antes da próxima frase começar
+const V_INTERVALO = 3.0;                  // silêncio da voz (s) a partir do qual aparecem as notas ♪ ♪ ♪
+const V_ABERTURA = 4.0, V_FADE = 0.6;     // título, artista e tom no começo do vídeo
+const V_INTRO_MINIMA = 6.0;               // s antes da primeira frase; se faltar, entra silêncio no começo
+const V_COR = { noCampo: "rgb(81,207,102)", foraCampo: "rgb(255,107,107)", noAcorde: "rgb(151,117,250)",
+                "": "rgb(255,122,61)", suave: "rgb(154,154,162)", braco: "rgb(225,225,230)", casas: "rgb(120,120,128)" };
+const V_MARCA = "@Louvores.Karaoke";
+const LARGURA_VIOLAO_MM = 7 * BRANCA_L;  // o violão ocupa o lugar de uma oitava do teclado
+const fonteVideo = px => `600 ${px}px "Segoe UI", system-ui, sans-serif`;
+const fonteSimbolos = px => `${px}px "Segoe UI Symbol", "Segoe UI", sans-serif`;
+const suavizarVideo = x => { x = limitar(x, 0, 1); return x * x * (3 - 2 * x); };
+
+// Trecho do vídeo (barra de corte) e o silêncio que entra no começo se a letra começa cedo demais
+function trechoVideo() {
+  const { ini, fim } = limitesCorte();
+  const frases = LETRA.filter(f => f.texto.trim());
+  const noTrecho = frases.filter(f => ini < f.fim && f.t < fim);
+  const silencio = noTrecho.length ? Math.max(0, V_INTRO_MINIMA - Math.max(0, noTrecho[0].t - ini)) : 0;
+  return { ini, fim, silencio, inicioVideo: ini - silencio };
+}
+
+// Linhas da letra do vídeo (frases e ♪ ♪ ♪ nos silêncios), refeitas só quando a letra ou o trecho mudam
+let cacheVideo = { chave: null, modelo: null };
+function modeloVideo() {
+  const tr = trechoVideo(), fimVideo = fimMusica();
+  const frases = LETRA.filter(f => f.texto.trim());
+  const chave = JSON.stringify([MUSICA && MUSICA.id, tr.inicioVideo, fimVideo, frases.map(f => [f.t, f.fim, f.texto]),
+                                (DADOS.letraPalavras || []).length]);
+  if (chave === cacheVideo.chave) return { ...cacheVideo.modelo, tr };
+  const itens = [];
+  let cursor = tr.inicioVideo;
+  for (const f of frases) {
+    if (f.t - cursor >= V_INTERVALO) itens.push({ t: cursor + (itens.length ? 0.3 : 0), fim: f.t, texto: null });
+    const n = f.texto.split(/\s+/).filter(Boolean).length;
+    let palavras = palavrasDe(f);
+    if (palavras.length !== n) palavras = estimarPalavras(f);  // uma posição por palavra do texto
+    const fins = [...f.texto.matchAll(/\S+/g)].map(p => p.index + p[0].length);
+    itens.push({ t: f.t, fim: f.fim, texto: f.texto, frase: f, tempos: palavras.map(w => w.t), fins, tam: {} });
+    cursor = Math.max(cursor, f.fim);
+  }
+  if (fimVideo - cursor >= V_INTERVALO) itens.push({ t: cursor + (itens.length ? 0.3 : 0), fim: fimVideo, texto: null });
+  const tom = MUSICA && MUSICA.tom_tonica != null ? { tonica: MUSICA.tom_tonica, modo: MUSICA.tom_modo } : DADOS.tom;
+  const modelo = {
+    itens,
+    titulo: MUSICA ? MUSICA.titulo || MUSICA.arquivo.replace(/\.[^.]+$/, "") : "",
+    artista: MUSICA ? MUSICA.artista || "" : "",
+    tom: tom ? textoTomVideo(tom) : "",
+  };
+  cacheVideo = { chave, modelo };
+  return { ...modelo, tr };
+}
+
+function textoTomVideo(tom) {
+  const letra = (tom.modo === "maior" ? TOM_MAIOR : TOM_MENOR)[pc(tom.tonica)];
+  const acid = letra.includes("#") ? " sustenido" : letra.includes("b") ? " bemol" : "";
+  return `Tom: ${cifraTom(tom.tonica, tom.modo)} (${PT[letra[0]]}${acid} ${tom.modo})`;
+}
+
+// Tamanho da fonte que cabe na largura (diminui de 2 em 2 px, até 20)
+function tamanhoQueCabe(g, texto, tamanho, F) {
+  g.font = fonteVideo(tamanho);
+  while (tamanho > 20 && g.measureText(texto).width > F.LARGURA - 2 * F.MARGEM_LATERAL) {
+    tamanho -= 2;
+    g.font = fonteVideo(tamanho);
+  }
+  return tamanho;
+}
+
+function rolagemVideo(itens, t) {
+  const i = indiceEm(itens, t);  // a última linha já iniciada
+  const prox = i + 1 < itens.length ? itens[i + 1].t : null;
+  const fracao = prox !== null ? suavizarVideo((t - (prox - V_TRANSICAO)) / V_TRANSICAO) : 0;
+  return { atual: i, s: i + fracao };
+}
+
+const camadasLetra = {};  // formato -> canvas da área da letra (para o esmaecimento no alto e embaixo)
+function camadaLetra(formato) {
+  const F = DESENHO_VIDEO[formato];
+  if (!camadasLetra[formato]) {
+    const cv = document.createElement("canvas");
+    cv.width = F.LARGURA;
+    cv.height = F.ALTURA_LETRA;
+    const g = cv.getContext("2d");
+    const fade = g.createLinearGradient(0, 0, 0, F.ALTURA_LETRA);
+    const borda = F.FADE_BORDAS / F.ALTURA_LETRA;
+    fade.addColorStop(0, "rgba(0,0,0,0)");
+    fade.addColorStop(borda, "#000");
+    fade.addColorStop(1 - borda, "#000");
+    fade.addColorStop(1, "rgba(0,0,0,0)");
+    camadasLetra[formato] = { cv, g, fade };
+  }
+  return camadasLetra[formato];
+}
+
+function desenharLetraVideo(formato, modelo, t) {
+  const F = DESENHO_VIDEO[formato], { cv, g, fade } = camadaLetra(formato), itens = modelo.itens;
+  g.globalCompositeOperation = "source-over";
+  g.clearRect(0, 0, cv.width, cv.height);
+  g.textAlign = "center";
+  g.textBaseline = "middle";
+  const { atual, s } = rolagemVideo(itens, t), meio = F.LARGURA / 2;
+  for (let k = Math.max(0, Math.trunc(s) - 5); k < Math.min(itens.length, Math.trunc(s) + 7); k++) {
+    const item = itens[k], y = F.ALTURA_LETRA / 2 + (k - s) * F.ALTURA_LINHA;
+    const evidencia = k === atual && t <= item.fim + 0.3;
+    if (!item.texto) {  // só música tocando: ♪ ♪ ♪
+      g.font = fonteSimbolos(Math.trunc((evidencia ? F.TAM_ATUAL : F.TAM_OUTRAS) * 1.1));
+      g.fillStyle = evidencia ? "#fff" : V_CINZA;
+      g.fillText("♪   ♪   ♪", meio, y);
+      continue;
+    }
+    const tam = item.tam[formato] || (item.tam[formato] = {
+      atual: tamanhoQueCabe(g, item.texto, F.TAM_ATUAL, F), outras: tamanhoQueCabe(g, item.texto, F.TAM_OUTRAS, F) });
+    g.font = fonteVideo(evidencia ? tam.atual : tam.outras);
+    g.fillStyle = evidencia ? "#fff" : V_CINZA;
+    g.fillText(item.texto, meio, y);
+    if (!evidencia) continue;
+    const n = item.tempos.filter(inicio => inicio <= t).length;  // palavras já cantadas: amarelas
+    if (!n) continue;
+    const x0 = meio - g.measureText(item.texto).width / 2;
+    const xc = x0 + g.measureText(item.texto.slice(0, item.fins[n - 1])).width + 1;
+    g.save();
+    g.beginPath();
+    g.rect(0, y - F.ALTURA_LINHA / 2, xc, F.ALTURA_LINHA);
+    g.clip();
+    g.fillStyle = V_CANTADA;
+    g.fillText(item.texto, meio, y);
+    g.restore();
+  }
+  g.globalCompositeOperation = "destination-in";  // esmaece perto do alto e de baixo da área da letra
+  g.fillStyle = fade;
+  g.fillRect(0, 0, cv.width, cv.height);
+  return cv;
+}
+
+function ativoEm(lista, t) {
+  const i = indiceEm(lista, t);
+  return i >= 0 && t < lista[i].t + lista[i].d ? lista[i] : null;
+}
+
+// Nomes do tom original (sem a transposição do player: o áudio do vídeo não é transposto)
+function textosInstrumentosVideo(nota, acorde) {
+  const tom = DADOS.tom;
+  const bemol = !!tom && (tom.modo === "maior" ? [5, 10, 3, 8, 1] : [2, 7, 0, 5, 10, 3]).includes(pc(tom.tonica));
+  const nomes = bemol ? BEMOIS : SUSTENIDOS;
+  return {
+    acorde: acorde ? [nomes[pc(acorde.raiz)] + acorde.tipo, V_COR.noAcorde] : ["—", V_COR.suave],
+    nota: nota ? [nomes[pc(nota.midi)] + (Math.floor(nota.midi / 12) - 1), V_COR[classeCampo(nota, acorde)]] : ["—", V_COR.suave],
+  };
+}
+
+function tracoVideo(g, xa, ya, xb, yb, largura, cor) {
+  g.strokeStyle = cor;
+  g.lineWidth = largura;
+  g.beginPath();
+  g.moveTo(xa, ya);
+  g.lineTo(xb, yb);
+  g.stroke();
+}
+
+// Diagrama de 5 casas (como o do player) com o topo dos X/○ em yTopo e a última casa em yTopo + altura
+function desenharViolaoVideo(g, xMeio, yTopo, altura, acorde, tamCasa) {
+  const forma = acorde && FORMAS_VIOLAO[acorde.tipo] ? FORMAS_VIOLAO[acorde.tipo][pc(acorde.raiz)] : null;
+  const esp = altura / (CASAS_VIOLAO * 1.4 + 1.25), casa = 1.4 * esp;
+  const topoGrade = yTopo + altura - CASAS_VIOLAO * casa;
+  const x0 = xMeio - 3.1 * esp;  // um pouco à esquerda do meio: à direita fica o espaço do "4fr"
+  const linha = Math.max(1, Math.round(esp * 0.09));
+  const corLinha = forma ? V_COR.braco : V_COR.casas;
+  const casas = forma ? forma.filter(c => c > 0) : [];
+  const maior = casas.length ? Math.max(...casas) : 0, menor = casas.length ? Math.min(...casas) : 0;
+  const posicao = maior > CASAS_VIOLAO ? menor : 1;
+  for (let i = 0; i < 6; i++) tracoVideo(g, x0 + i * esp, topoGrade, x0 + i * esp, topoGrade + CASAS_VIOLAO * casa, linha, corLinha);
+  for (let f = 0; f <= CASAS_VIOLAO; f++) {  // o primeiro traste é a pestana do braço quando começa na 1ª casa
+    const y = topoGrade + f * casa;
+    tracoVideo(g, x0, y, x0 + 5 * esp, y, f === 0 && posicao === 1 ? Math.max(linha * 3, Math.round(esp * 0.28)) : linha, corLinha);
+  }
+  if (!forma) return;
+  if (posicao > 1) {
+    g.font = fonteVideo(tamCasa);
+    g.fillStyle = V_COR.braco;
+    g.textAlign = "left";
+    g.textBaseline = "middle";
+    g.fillText(`${posicao}fr`, x0 + 5 * esp + esp * 0.45, topoGrade + casa / 2);
+  }
+  const centro = c => topoGrade + (c - posicao + 1 - 0.5) * casa, raio = 0.75 * esp / 2;
+  const grave = forma.findIndex(c => c >= 0);
+  const pestana = !forma.includes(0) && menor > 0 && forma[grave] === menor && forma[5] === menor;
+  g.fillStyle = V_COR.noAcorde;
+  if (pestana) {
+    const y = centro(menor);
+    g.beginPath();
+    const [x, w] = [x0 + grave * esp - raio, (5 - grave) * esp + 2 * raio];
+    if (g.roundRect) g.roundRect(x, y - raio, w, 2 * raio, raio); else g.rect(x, y - raio, w, 2 * raio);
+    g.fill();
+  }
+  const yInd = yTopo + 0.4 * esp;
+  forma.forEach((c, i) => {
+    const x = x0 + i * esp;
+    if (c < 0) {  // não tocar: X
+      const r = 0.26 * esp;
+      tracoVideo(g, x - r, yInd - r, x + r, yInd + r, linha + 1, V_COR.braco);
+      tracoVideo(g, x - r, yInd + r, x + r, yInd - r, linha + 1, V_COR.braco);
+    } else if (c === 0) {  // solta: ○
+      g.strokeStyle = V_COR.braco;
+      g.lineWidth = linha + 1;
+      g.beginPath();
+      g.arc(x, yInd, 0.3 * esp, 0, Math.PI * 2);
+      g.stroke();
+    } else if (!(pestana && c === menor)) {
+      g.fillStyle = V_COR.noAcorde;
+      g.beginPath();
+      g.arc(x, centro(c), raio, 0, Math.PI * 2);
+      g.fill();
+    }
+  });
+}
+
+// Faixa da base (FAIXA_PIANO de altura, a partir de y = 0): violão + teclado com o acorde (mão
+// esquerda) e a nota da melodia, nas cores da interface; acorde à esquerda e nota à direita
+function desenharInstrumentosVideo(g, F, nota, acorde) {
+  const totalMm = LARGURA_VIOLAO_MM + LARGURA_PIANO;
+  const k = Math.min((F.LARGURA - 2 * F.LATERAL_PIANO) / totalMm, (F.FAIXA_INSTRUMENTOS - 2 * F.MARGEM_PIANO) / BRANCA_A);
+  const xv = (F.LARGURA - totalMm * k) / 2, x0 = xv + LARGURA_VIOLAO_MM * k;
+  const y0 = F.FAIXA_INSTRUMENTOS - F.MARGEM_PIANO - BRANCA_A * k;
+  g.fillStyle = "#000";
+  g.fillRect(0, 0, F.LARGURA, F.FAIXA_PIANO);
+  const marcadas = new Map();  // midi -> {cor, melodia}
+  if (acorde && NOTAS_DO_ACORDE[acorde.tipo]) {
+    for (const i of NOTAS_DO_ACORDE[acorde.tipo]) marcadas.set(36 + pc(acorde.raiz) + i, { cor: V_COR.noAcorde, melodia: false });
+  }
+  if (nota) marcadas.set(nota.midi, { cor: V_COR[classeCampo(nota, acorde)], melodia: true });
+  for (const preta of [false, true]) {  // brancas primeiro, pretas por cima
+    for (let m = PIANO_MIN; m <= PIANO_MAX; m++) {
+      if (ePreta(m) !== preta) continue;
+      const x = x0 + teclaX(m) * k, w = (preta ? PRETA_L : BRANCA_L) * k, h = (preta ? PRETA_A : BRANCA_A) * k;
+      const marca = marcadas.get(m);
+      g.fillStyle = marca ? marca.cor : preta ? "rgb(31,31,34)" : "rgb(251,250,246)";
+      g.fillRect(x, y0, w, h);
+      if (!preta) {
+        g.strokeStyle = "rgb(138,138,138)";
+        g.lineWidth = 1;
+        g.strokeRect(x + 0.5, y0 + 0.5, w - 1, h - 1);
+      }
+      if (marca && marca.melodia) {  // bolinha branca, como no player
+        g.fillStyle = "#fff";
+        g.beginPath();
+        g.arc(x + w / 2, y0 + h - Math.min(w * 0.5, 10), Math.max(2, Math.min(w * 0.22, 5)), 0, Math.PI * 2);
+        g.fill();
+      }
+      if (!preta && pc(m) === 0 && !marca && w >= 12) {
+        g.font = fonteVideo(Math.max(9, Math.trunc(BRANCA_L * k * 0.5)));
+        g.fillStyle = "rgb(138,138,138)";
+        g.textAlign = "center";
+        g.textBaseline = "alphabetic";
+        g.fillText("C" + (Math.floor(m / 12) - 1), x + w / 2, y0 + h - 3);
+      }
+    }
+  }
+  g.fillStyle = "rgb(122,31,31)";  // feltro vermelho em cima do teclado
+  g.fillRect(x0, y0, LARGURA_PIANO * k, Math.max(2, 3 * k));
+  desenharViolaoVideo(g, xv + LARGURA_VIOLAO_MM * k / 2, y0, BRANCA_A * k, acorde, Math.max(10, Math.trunc(BRANCA_A * k * 0.11)));
+  if (!F.ROTULOS_NO_TOPO) {  // acorde à esquerda e nota à direita, centralizados nas laterais
+    const cy = y0 + BRANCA_A * k / 2, txt = textosInstrumentosVideo(nota, acorde);
+    g.font = fonteVideo(F.TAM_ROTULO_PIANO);
+    g.textAlign = "center";
+    g.textBaseline = "middle";
+    g.fillStyle = txt.acorde[1];
+    g.fillText(txt.acorde[0], xv / 2, cy);
+    g.fillStyle = txt.nota[1];
+    g.fillText(txt.nota[0], F.LARGURA - xv / 2, cy);
+  }
+}
+
+// Logo do YouTube + @canal, pequena, no canto esquerdo embaixo do teclado (só no vídeo padrão)
+function desenharMarcaVideo(g, F) {
+  const e = 0.75, logoL = Math.round(34 * e), logoA = Math.round(24 * e), espaco = Math.round(9 * e), altura = Math.round(30 * e);
+  const x = 24, y = F.ALTURA - F.FAIXA_MARCA + Math.floor((F.FAIXA_MARCA - altura) / 2), yl = y + Math.floor((altura - logoA) / 2);
+  g.save();
+  g.globalAlpha = 0.6;
+  g.fillStyle = "#f00";
+  g.beginPath();
+  if (g.roundRect) g.roundRect(x, yl, logoL, logoA, Math.round(7 * e)); else g.rect(x, yl, logoL, logoA);
+  g.fill();
+  const cx = x + logoL / 2 + e, cy = yl + logoA / 2;
+  g.fillStyle = "#fff";
+  g.beginPath();
+  g.moveTo(cx - 5 * e, cy - 6.5 * e);
+  g.lineTo(cx - 5 * e, cy + 6.5 * e);
+  g.lineTo(cx + 7 * e, cy);
+  g.fill();
+  g.font = fonteVideo(Math.round(22 * e));
+  g.textAlign = "left";
+  g.textBaseline = "middle";
+  g.fillText(V_MARCA, x + logoL + espaco, y + altura / 2);
+  g.restore();
+}
+
+function desenharAberturaVideo(g, F, modelo) {
+  const linhas = [{ texto: modelo.titulo, tam: F.TAM_TITULO, cor: "#fff", altura: Math.trunc(F.TAM_TITULO * 1.6) },
+    ...[modelo.artista, modelo.tom].filter(Boolean).map(texto => (
+      { texto, tam: F.TAM_SUBTITULO, cor: "rgb(200,200,200)", altura: Math.trunc(F.TAM_SUBTITULO * 1.7) }))];
+  let y = Math.floor((F.ALTURA - linhas.reduce((s, l) => s + l.altura, 0)) / 2);
+  g.textAlign = "center";
+  g.textBaseline = "middle";
+  for (const l of linhas) {
+    g.font = fonteVideo(tamanhoQueCabe(g, l.texto, l.tam, F));
+    g.fillStyle = l.cor;
+    g.fillText(l.texto, F.LARGURA / 2, y + l.altura / 2);
+    y += l.altura;
+  }
+}
+
+// Um quadro do vídeo: t = tempo da música, tv = tempo no vídeo (para a abertura e os fades);
+// notas = as notas do teclado (as exibidas no player)
+function desenharQuadroVideo(g, formato, modelo, t, tv, notas) {
+  const F = DESENHO_VIDEO[formato];
+  g.setTransform(1, 0, 0, 1, 0, 0);
+  g.globalAlpha = 1;
+  g.globalCompositeOperation = "source-over";
+  g.fillStyle = "#000";
+  g.fillRect(0, 0, F.LARGURA, F.ALTURA);
+  g.drawImage(desenharLetraVideo(formato, modelo, t), 0, 0);
+  const nota = ativoEm(notas, t), acorde = ativoEm(ACORDES, t);
+  g.save();
+  g.translate(0, F.ALTURA_LETRA);
+  desenharInstrumentosVideo(g, F, nota, acorde);
+  g.restore();
+  if (F.ROTULOS_NO_TOPO) {  // acorde no canto superior esquerdo e nota no direito
+    const altura = Math.trunc(F.TAM_ROTULO_PIANO * 1.6), txt = textosInstrumentosVideo(nota, acorde);
+    g.globalCompositeOperation = "lighten";
+    g.font = fonteVideo(F.TAM_ROTULO_PIANO);
+    g.textBaseline = "middle";
+    g.textAlign = "left";
+    g.fillStyle = txt.acorde[1];
+    g.fillText(txt.acorde[0], F.MARGEM_LATERAL, altura / 2 + F.MARGEM_PIANO);
+    g.textAlign = "right";
+    g.fillStyle = txt.nota[1];
+    g.fillText(txt.nota[0], F.LARGURA - F.MARGEM_LATERAL, altura / 2 + F.MARGEM_PIANO);
+    g.globalCompositeOperation = "source-over";
+  }
+  if (F.FAIXA_MARCA) desenharMarcaVideo(g, F);
+  const opLetra = limitar((tv - V_ABERTURA) / V_FADE, 0, 1);  // a letra entra quando a abertura termina
+  if (opLetra < 1) {
+    g.globalAlpha = 1 - opLetra;
+    g.fillStyle = "#000";
+    g.fillRect(0, 0, F.LARGURA, F.ALTURA);
+    g.globalAlpha = 1;
+  }
+  const opAbertura = Math.max(0, Math.min(1, tv / V_FADE, (V_ABERTURA - tv) / V_FADE));
+  if (opAbertura > 0) {
+    g.globalCompositeOperation = "lighten";
+    g.globalAlpha = opAbertura;
+    desenharAberturaVideo(g, F, modelo);
+    g.globalAlpha = 1;
+    g.globalCompositeOperation = "source-over";
+  }
+}
+
+const notasDoVideo = () => NOTAS.length ? NOTAS : ((DADOS.melodias || {}).solo || []);
+
+// ---------- abas da linha do tempo: Linha do tempo | Vídeo do YouTube | Vídeo do Instagram ----------
+const ABAS_LINHA = { linha: null, youtube: "padrao", instagram: "instagram" };  // aba -> formato da prévia
+const CANVAS_PREVIA = { padrao: "previaYoutube", instagram: "previaInstagram" };
+const SUFIXO_PREVIA = { padrao: "Youtube", instagram: "Instagram" };
+let abaLinha = "linha";
+
+function mostrarAbaLinha(nome) {
+  if (!(nome in ABAS_LINHA)) nome = "linha";
+  abaLinha = nome;
+  for (const n of Object.keys(ABAS_LINHA)) {
+    $("tabLinha-" + n).setAttribute("aria-selected", String(n === nome));
+    $("painelLinha-" + n).hidden = n !== nome;
+  }
+  guardar("abaLinha", nome);
+  if (nome === "linha") {  // voltou a aparecer: redesenha nas medidas atuais
+    redimensionar();
+    dimensionarPiano();
+    violaoDesenhado = null;
+  }
+}
+for (const n of Object.keys(ABAS_LINHA)) $("tabLinha-" + n).addEventListener("click", () => mostrarAbaLinha(n));
+if ((recuperar("abaLinha") || "linha") !== "linha") mostrarAbaLinha(recuperar("abaLinha"));
+
+// Desenha a prévia da aba aberta no tempo t da música (chamada a cada quadro da tela)
+function desenharPrevia(t) {
+  const formato = ABAS_LINHA[abaLinha];
+  if (!formato || !MUSICA) return;
+  const cv = $(CANVAS_PREVIA[formato]);
+  const modelo = modeloVideo(), tr = modelo.tr;
+  const fora = t < tr.ini - 0.001 || t > tr.fim + 0.001;
+  // fora do trecho: mostra como ficaria a letra (sem abertura nem fades) e avisa
+  desenharQuadroVideo(cv.getContext("2d"), formato, modelo, t, fora ? Infinity : t - tr.inicioVideo, notasDoVideo());
+  const sufixo = SUFIXO_PREVIA[formato];
+  $("fora" + sufixo).hidden = !fora;
+  const F = DESENHO_VIDEO[formato], duracao = tr.fim - tr.ini + tr.silencio;
+  const info = `${F.LARGURA}×${F.ALTURA} · vídeo de ${formatarTempo(duracao).slice(0, 5)}` +
+    (tr.silencio > 0.01 ? ` (com ${tr.silencio.toFixed(1).replace(".", ",")} s de silêncio no começo)` : "") +
+    " · clique numa frase para editá-la; no teclado, para editar as notas";
+  if ($("info" + sufixo).textContent !== info) $("info" + sufixo).textContent = info;
+}
+
+// Clique na prévia: numa frase, abre a edição da letra nela; no violão/teclado, volta à linha do tempo
+// para editar as notas
+for (const [formato, id] of Object.entries(CANVAS_PREVIA)) {
+  $(id).addEventListener("click", e => {
+    const cv = $(id), r = cv.getBoundingClientRect(), F = DESENHO_VIDEO[formato];
+    const y = (e.clientY - r.top) * F.ALTURA / r.height;
+    const topo = F.ROTULOS_NO_TOPO ? Math.trunc(F.TAM_ROTULO_PIANO * 1.6) + F.MARGEM_PIANO : 0;
+    if (y >= F.ALTURA_LETRA || y < topo) { mostrarAbaLinha("linha"); return; }
+    const modelo = modeloVideo(), { s } = rolagemVideo(modelo.itens, tempoOuvido());
+    const item = modelo.itens[Math.round(s + (y - F.ALTURA_LETRA / 2) / F.ALTURA_LINHA)];
+    if (!item || !item.frase) return;
+    const i = LETRA.indexOf(item.frase);
+    if (i < 0) return;
+    pausar();
+    irPara(item.frase.t);
+    if (!editandoLetra) $("btnEditarLetra").click();
+    setTimeout(() => focarFrase(i), 0);
+  });
+}
+
+// ---------- quadros do vídeo, desenhados aqui e enviados ao servidor (que junta com o áudio) ----------
+// A compressão em JPEG roda em Workers: no canvas da página o Chrome atrasa o toBlob em ~1 s por quadro
+// quando a aba não está visível; nos Workers leva ~30 ms, em paralelo.
+const CODIGO_JPEG = `self.onmessage = async e => {
+  const { id, bmp } = e.data;
+  try {
+    const oc = new OffscreenCanvas(bmp.width, bmp.height);
+    oc.getContext("2d").drawImage(bmp, 0, 0);
+    bmp.close();
+    self.postMessage({ id, blob: await oc.convertToBlob({ type: "image/jpeg", quality: 0.92 }) });
+  } catch (erro) { self.postMessage({ id, erro: String(erro) }); }
+};`;
+
+function codificadorJpeg() {
+  const n = Math.max(2, Math.min(6, (navigator.hardwareConcurrency || 4) - 1));
+  const url = URL.createObjectURL(new Blob([CODIGO_JPEG], { type: "text/javascript" }));
+  const pendentes = new Map();
+  let proximo = 0;
+  const workers = Array.from({ length: n }, () => {
+    const w = new Worker(url);
+    w.onmessage = e => {
+      const p = pendentes.get(e.data.id);
+      pendentes.delete(e.data.id);
+      if (p) e.data.erro ? p.falha(new Error(e.data.erro)) : p.ok(e.data.blob);
+    };
+    return w;
+  });
+  return {
+    codificar: bmp => new Promise((ok, falha) => {
+      const id = proximo++;
+      pendentes.set(id, { ok, falha });
+      workers[id % n].postMessage({ id, bmp }, [bmp]);
+    }),
+    fechar: () => { workers.forEach(w => w.terminate()); URL.revokeObjectURL(url); },
+  };
+}
+
+async function renderizarQuadrosVideo(m, formato, modelo, avisar) {
+  const F = DESENHO_VIDEO[formato], tr = modelo.tr;
+  const comWorkers = typeof OffscreenCanvas !== "undefined" && typeof Worker !== "undefined";
+  const cv = comWorkers ? new OffscreenCanvas(F.LARGURA, F.ALTURA) : document.createElement("canvas");
+  cv.width = F.LARGURA;
+  cv.height = F.ALTURA;
+  const g = cv.getContext("2d"), notas = notasDoVideo().slice();
+  const jpeg = comWorkers ? codificadorJpeg() : null;
+  const quadroJpeg = () => jpeg ? jpeg.codificar(cv.transferToImageBitmap())
+    : new Promise((ok, falha) => cv.toBlob(b => b ? ok(b) : falha(new Error("quadro não gerado")), "image/jpeg", 0.92));
+  const total = Math.max(1, Math.round((tr.fim - tr.ini + tr.silencio) * QPS_VIDEO));
+  const r = await api(`/api/musicas/${m.id}/video`, { method: "POST", body: JSON.stringify(
+    { html: true, formato, total, silencio: tr.silencio, duracao: tr.fim - tr.ini }) });
+  PROCESSOS = r.processamentos || PROCESSOS;
+  const sessao = r.sessao;
+  const enviar = async lote => {
+    const resp = await fetch(`/api/musicas/${m.id}/video/quadros?formato=${formato}&sessao=${sessao}&n=${lote.length}`,
+                             { method: "PUT", headers: { "Content-Type": "image/jpeg" }, body: new Blob(lote, { type: "image/jpeg" }) });
+    if (!resp.ok) throw new Error((await resp.json().catch(() => ({}))).erro || `HTTP ${resp.status}`);
+  };
+  try {
+    let envio = null, mostrado = -1;
+    for (let q0 = 0; q0 < total; q0 += QPS_VIDEO) {  // um segundo de vídeo por lote
+      const lote = [];
+      for (let q = q0; q < Math.min(total, q0 + QPS_VIDEO); q++) {
+        const tv = q / QPS_VIDEO;
+        desenharQuadroVideo(g, formato, modelo, tr.inicioVideo + tv, tv, notas);
+        lote.push(quadroJpeg());  // comprimidos em paralelo; a ordem é a do lote
+      }
+      const blobs = await Promise.all(lote);
+      if (envio) await envio;  // um lote viajando enquanto o próximo é desenhado
+      envio = enviar(blobs);
+      envio.catch(() => {});  // o erro é tratado no próximo await
+      const pct = Math.floor(Math.min(total, q0 + QPS_VIDEO) * 100 / total);
+      if (pct !== mostrado) { mostrado = pct; avisar(`desenhando o ${FORMATOS_VIDEO[formato].nome}: ${pct}%`); }
+    }
+    if (envio) await envio;
+  } catch (e) {
+    await api(`/api/musicas/${m.id}/video/cancelar`, { method: "POST", body: JSON.stringify({ formato, sessao, motivo: e.message }) })
+      .catch(() => {});
+    throw e;
+  } finally {
+    if (jpeg) jpeg.fechar();
+  }
+  const fim = await api(`/api/musicas/${m.id}/video/concluir`, { method: "POST", body: JSON.stringify({ formato, sessao }) });
+  PROCESSOS = fim.processamentos || PROCESSOS;
 }
 
 // ---------- configuração da gravação (guardada neste navegador) ----------
@@ -4120,11 +5083,14 @@ function teclaMidiApertada(m, forca) {
   garantirAudio();
   teclasMidi.set(m, { inicio: tempoMidi(), forca: Math.round(forca * volumeMidi * expressaoMidi) || 1 });
   if (configMidi.monitor) {
-    const inst = instrumentoAtivo(), v = curvaForca(forca / 127) * volumeMidi * expressaoMidi;
+    const inst = instrumentoAoVivo(), v = curvaForca(forca / 127) * volumeMidi * expressaoMidi;
     if (inst && inst.iniciar) inst.iniciar(m, ctx.currentTime, v);
-    else tocarCordaSint(m, ctx.currentTime, v);  // corda dedilhada (ou timbre ainda carregando)
+    else tocarCordaSint(m, ctx.currentTime, v, mestre, envelopeMidi());  // corda dedilhada (ou timbre ainda carregando)
   }
 }
+
+// O Timbre do player, numa instância só do teclado (com o envelope do teclado MIDI)
+const instrumentoAoVivo = () => ctx ? instanciaMidi(CHAVE_AO_VIVO, timbre, mestre).inst : null;
 
 function teclaMidiSolta(m) {
   if (!teclasMidi.has(m)) return;
@@ -4138,7 +5104,7 @@ function finalizarTeclaMidi(m) {
   teclasMidi.delete(m);
   sustentadas.delete(m);
   if (configMidi.monitor) {
-    const inst = instrumentoAtivo();
+    const inst = instrumentoAoVivo();
     if (inst && inst.parar && ctx) inst.parar(m, ctx.currentTime);
   }
   if (tecla && gravacaoMidi && MUSICA && MUSICA.id === gravacaoMidi.id) {
@@ -4159,24 +5125,58 @@ function controleMidi(cc, valor) {
 function soltarTodasTeclasMidi() { for (const m of [...teclasMidi.keys()]) finalizarTeclaMidi(m); }
 
 // ---------- REC MIDI ----------
+// Clique: 3 s de contagem e então a gravação começa (a música começa a tocar, se estiver parada).
+// Clicar de novo (na contagem ou gravando), pausar ou mover a linha do tempo encerra; o botão
+// também pausa a música. Cada gravação vira uma faixa MIDI nova na tabela das faixas.
+const CONTAGEM_REC_MIDI = 3;
+let contagemMidi = null;  // {restante, relogio} durante a contagem antes do REC MIDI
+
 function atualizarBotaoGravarMidi() {
-  const b = $("btnGravarMidi"), esta = !!gravacaoMidi;
+  const b = $("btnGravarMidi"), esta = !!gravacaoMidi || !!contagemMidi;
   b.classList.toggle("gravando", esta);
   b.setAttribute("aria-pressed", String(esta));
   b.firstElementChild.className = "bi " + (esta ? "bi-stop-fill" : "bi-music-note-beamed");
-  b.title = esta ? "Parar o REC MIDI (a gravação vai para \"Gravações MIDI\")"
-    : "REC MIDI: gravar o que for tocado no teclado MIDI junto com a música (configure na aba Gravação)";
+  b.title = contagemMidi ? "Cancelar o REC MIDI (contagem)"
+    : gravacaoMidi ? "Parar o REC MIDI e pausar a música (a gravação vira uma faixa MIDI)"
+    : `REC MIDI: gravar o que for tocado no teclado MIDI junto com a música, depois de ${CONTAGEM_REC_MIDI} s (configure na aba Gravação)`;
   b.setAttribute("aria-label", b.title);
 }
 
+function cancelarContagemMidi() {
+  if (!contagemMidi) return false;
+  clearInterval(contagemMidi.relogio);
+  contagemMidi = null;
+  atualizarBotaoGravarMidi();
+  return true;
+}
+
 async function alternarGravacaoMidi() {
-  if (gravacaoMidi) { pararGravacaoMidi(); return; }
+  if (contagemMidi) { cancelarContagemMidi(); statusGravacao("REC MIDI cancelado."); return; }
+  if (gravacaoMidi) {  // parar pelo botão também pausa a música (pausar() encerra e salva a gravação)
+    if (tocando) pausar(); else pararGravacaoMidi();
+    return;
+  }
   if (!MUSICA) return;
   garantirAudio();  // dentro do clique
   if (!(await ativarMidi())) { statusGravacao("Ative o teclado MIDI na aba Gravação (Controlador MIDI).", "erro"); return; }
   if (![...acessoMidi.inputs.values()].length) { statusGravacao("Nenhum teclado MIDI ligado.", "erro"); return; }
+  const id = MUSICA.id;
+  contagemMidi = { restante: CONTAGEM_REC_MIDI, relogio: 0 };
+  const mostrar = () => statusGravacao(`REC MIDI em ${contagemMidi.restante}…`, "gravando");
+  mostrar();
+  contagemMidi.relogio = setInterval(() => {
+    if (!contagemMidi) return;
+    contagemMidi.restante--;
+    if (contagemMidi.restante > 0) { mostrar(); return; }
+    cancelarContagemMidi();
+    if (MUSICA && MUSICA.id === id) iniciarGravacaoMidi();
+  }, 1000);
+  atualizarBotaoGravarMidi();
+}
+
+function iniciarGravacaoMidi() {
   if (!tocando) tocar();  // antes de marcar: tocar() reancora o relógio (e encerraria a gravação)
-  gravacaoMidi = { id: MUSICA.id, notas: [], inicioPerf: performance.now(), relogio: 0 };
+  gravacaoMidi = { id: MUSICA.id, notas: [], inicioPerf: performance.now(), relogio: 0, timbre };
   gravacaoMidi.relogio = setInterval(() => {
     if (!gravacaoMidi) return;
     statusGravacao(`● REC MIDI ${formatarTempo((performance.now() - gravacaoMidi.inicioPerf) / 1000).slice(0, 5)} · ` +
@@ -4187,6 +5187,7 @@ async function alternarGravacaoMidi() {
 
 // Encerra o REC MIDI (pausar, mover a linha do tempo ou o botão) e salva como uma nova gravação
 async function pararGravacaoMidi() {
+  if (cancelarContagemMidi()) statusGravacao("REC MIDI cancelado.");
   if (!gravacaoMidi) return;
   soltarTodasTeclasMidi();  // as teclas ainda apertadas terminam aqui
   const g = gravacaoMidi;
@@ -4202,67 +5203,18 @@ async function pararGravacaoMidi() {
     if (MUSICA && MUSICA.id === g.id) {
       DADOS.midi = DADOS.midi || {};
       DADOS.midi[id] = { nome: r.gravacao.nome, criado_em: r.gravacao.criado_em, notas: g.notas.sort(porTempo) };
-      midiExibida = id;  // a nova já aparece na linha do tempo
-      preencherSeletorMidi();
+      TIMBRES_MIDI[id] = g.timbre;  // o timbre que se ouvia ao gravar
+      fontesMarcadas.add("midi:" + id);  // a nova já aparece na linha do tempo e toca
+      montarTabelaFaixas();
       aplicarFontes();
       salvarPreferencias();
+      if (abaAtual === "mixagem") renderMixagem();
     }
     statusGravacao(`✓ ${nome} salva (${g.notas.length} notas)`, "ok");
   } catch (e) {
     statusGravacao("Gravação MIDI não salva: " + e.message, "erro");
   }
 }
-
-// ---------- seletor "Gravações MIDI" ----------
-function preencherSeletorMidi() {
-  const sel = $("seletorMidi"), lista = Object.entries(DADOS.midi || {})
-    .sort((a, b) => String(a[1].criado_em).localeCompare(String(b[1].criado_em)));
-  sel.textContent = "";
-  const nenhuma = document.createElement("option");
-  nenhuma.id = "seletorMidi-nenhuma"; nenhuma.value = "";
-  nenhuma.textContent = lista.length ? "— nenhuma —" : "— nenhuma gravação (REC MIDI) —";
-  sel.appendChild(nenhuma);
-  for (const [id, g] of lista) {
-    const o = document.createElement("option");
-    o.id = "seletorMidi-" + id; o.value = id;
-    const quando = g.criado_em ? new Date(g.criado_em).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" }) : "";
-    o.textContent = `${g.nome} · ${(g.notas || []).length} notas${quando ? " · " + quando : ""}`;
-    sel.appendChild(o);
-  }
-  sel.value = midiExibida && DADOS.midi[midiExibida] ? midiExibida : "";
-  $("btnRenomearMidi").disabled = $("btnExcluirMidi").disabled = !sel.value;
-}
-
-$("seletorMidi").addEventListener("change", e => {
-  midiExibida = e.target.value || null;
-  $("btnRenomearMidi").disabled = $("btnExcluirMidi").disabled = !midiExibida;
-  aplicarFontes();
-  salvarPreferencias();
-});
-$("btnRenomearMidi").addEventListener("click", async () => {
-  const g = midiExibida && DADOS.midi[midiExibida];
-  if (!g || !MUSICA) return;
-  const nome = window.prompt("Nome da gravação MIDI:", g.nome);
-  if (!nome || !nome.trim()) return;
-  try {
-    await api(`/api/musicas/${MUSICA.id}/midi/${midiExibida}`, { method: "PUT", body: JSON.stringify({ nome: nome.trim(), notas: g.notas }) });
-    g.nome = nome.trim();
-    preencherSeletorMidi();
-    atualizarLegenda();
-  } catch (e) { statusNotas("Não renomeada: " + e.message, "erro"); }
-});
-$("btnExcluirMidi").addEventListener("click", async () => {
-  const g = midiExibida && DADOS.midi[midiExibida];
-  if (!g || !MUSICA || !window.confirm(`Apagar a gravação "${g.nome}" (${(g.notas || []).length} notas)?`)) return;
-  try {
-    await api(`/api/musicas/${MUSICA.id}/midi/${midiExibida}`, { method: "DELETE" });
-    delete DADOS.midi[midiExibida];
-    midiExibida = null;
-    preencherSeletorMidi();
-    aplicarFontes();
-    salvarPreferencias();
-  } catch (e) { statusNotas("Não apagada: " + e.message, "erro"); }
-});
 
 // ---------- configuração (aba Gravação) ----------
 (function () {
@@ -4971,7 +5923,7 @@ function alterarMix(chave, campo, valor) {
 let PISTAS = [];  // [{tipo: faixa|audio|video, chave, nome | g, rotulo, detalhe, canvas, urlPicos}]
 let mixJanela = 30;  // segundos visíveis
 const PICOS = new Map(), picosPedidos = new Set();  // url -> {taxa, picos} | null (indisponível)
-const COR_PISTA = { faixa: "--mx-ia", audio: "--mx-audio", video: "--mx-video" };
+const COR_PISTA = { faixa: "--mx-ia", audio: "--mx-audio", video: "--mx-video", midi: "--f-midi" };
 const pct = v => Math.round(v * 100) + "%";
 const EFEITOS = [  // [campo, nome, mín, máx, passo, formato, dica]
   ["volume", "Volume", 0, 1.5, 0.01, pct, "Volume na mistura"],
@@ -4988,14 +5940,20 @@ const DESLOCAMENTOS = [-5, -1, -0.1, -0.01, 0.01, 0.1, 1, 5];
 function listaPistas() {
   if (!MUSICA) return [];
   const faixas = (DADOS.faixas || []).map(nome => ({ tipo: "faixa", nome, chave: chaveFaixa(nome),
-    rotulo: ROTULOS[nome] || nome, detalhe: nome + ".wav" }));
+    rotulo: rotuloFonte(nome), detalhe: nome + ".wav" }));
   const gravadas = GRAVACOES.map(g => ({ tipo: g.tipo, g, chave: chaveGravacao(g),
     rotulo: (g.tipo === "video" ? "Vídeo" : "Áudio") + " de " + dataGravacao(g), detalhe: g.arquivo }));
-  return [...faixas, ...gravadas];
+  // gravações MIDI: o canal é o da própria fonte ("midi:<id>"); ligada = notas marcadas
+  const midis = idsMidi().map(id => ({ tipo: "midi", fonte: "midi:" + id, chave: "midi:" + id,
+    rotulo: rotuloFonte("midi:" + id), detalhe: `MIDI · ${(DADOS.midi[id].notas || []).length} notas` }));
+  return [...faixas, ...gravadas, ...midis];
 }
-const pistaLigada = p => p.tipo === "faixa" ? faixasAtivas.has(p.nome) : gravacoesAtivas.has(p.chave);
+const pistaLigada = p => p.tipo === "faixa" ? faixasAtivas.has(p.nome)
+  : p.tipo === "midi" ? fontesMarcadas.has(p.fonte) : gravacoesAtivas.has(p.chave);
+const inicioMidi = p => { const n = notasDaFonte(p.fonte); return n.length ? Math.min(...n.map(x => x.t)) : 0; };
 const textoDeslocamento = p => p.tipo === "faixa"
   ? (deslocFaixa(p.nome) < 0 ? "−" : "+") + Math.abs(deslocFaixa(p.nome)).toFixed(2) + " s"
+  : p.tipo === "midi" ? formatarTempo(inicioMidi(p))
   : (p.g.inicio < 0 ? "−" : "") + formatarTempo(Math.abs(p.g.inicio));
 
 function renderMixagem() {
@@ -5018,7 +5976,9 @@ function renderMixagem() {
     titulo.id = base + "-titulo";
     const rotulo = document.createElement("label");
     rotulo.id = base + "-rotulo";
-    rotulo.title = p.tipo === "faixa" ? "Faixa separada da música original pela IA (Demucs)" : `midias\\${MUSICA.id}\\${p.tipo}\\${p.detalhe}`;
+    rotulo.title = p.tipo === "faixa" ? "Faixa separada da música original pela IA (Demucs)"
+      : p.tipo === "midi" ? "Gravação do teclado MIDI: marcada, aparece na linha do tempo e toca no timbre escolhido"
+      : `midias\\${MUSICA.id}\\${p.tipo}\\${p.detalhe}`;
     const cb = document.createElement("input");
     cb.type = "checkbox";
     cb.id = base + "-tocar";
@@ -5034,10 +5994,21 @@ function renderMixagem() {
     const excluir = document.createElement("button");
     excluir.id = base + "-excluir";
     excluir.textContent = "🗑";
-    excluir.title = p.tipo === "faixa" ? "Apagar esta faixa" : "Apagar esta gravação";
+    excluir.title = p.tipo === "faixa" ? "Apagar esta faixa" : p.tipo === "midi" ? "Apagar esta gravação MIDI" : "Apagar esta gravação";
     excluir.setAttribute("aria-label", excluir.title);
     excluir.addEventListener("click", () => excluirPista(p));
     titulo.append(rotulo, excluir);
+    let timbreMidi = null;
+    if (p.tipo === "midi") {  // o timbre da gravação (o mesmo da tabela das faixas no Player)
+      timbreMidi = document.createElement("div");
+      timbreMidi.className = "pistaTimbre";
+      timbreMidi.id = base + "-timbre-caixa";
+      const rotuloTimbre = document.createElement("label");
+      rotuloTimbre.id = base + "-timbre-rotulo";
+      rotuloTimbre.htmlFor = base + "-timbre";
+      rotuloTimbre.textContent = "Timbre";
+      timbreMidi.append(rotuloTimbre, seletorTimbreMidi(p.fonte, base + "-timbre"));
+    }
 
     const efeitos = document.createElement("div");
     efeitos.className = "efeitos";
@@ -5072,7 +6043,7 @@ function renderMixagem() {
     deslocamento.id = base + "-deslocamento";
     const rotuloDesloc = document.createElement("span");
     rotuloDesloc.id = base + "-desloc-rotulo";
-    rotuloDesloc.textContent = p.tipo === "faixa" ? "Deslocar:" : "Começa em:";
+    rotuloDesloc.textContent = p.tipo === "faixa" ? "Deslocar:" : p.tipo === "midi" ? "Primeira nota:" : "Começa em:";
     deslocamento.appendChild(rotuloDesloc);
     const valorDesloc = document.createElement("span");
     valorDesloc.className = "valor";
@@ -5088,7 +6059,7 @@ function renderMixagem() {
       deslocamento.appendChild(b);
     });
 
-    controles.append(titulo, efeitos, deslocamento);
+    controles.append(...[titulo, timbreMidi, efeitos, deslocamento].filter(Boolean));
     const onda = document.createElement("canvas");
     onda.id = base + "-onda";
     navegacaoMixagem(onda);
@@ -5102,7 +6073,8 @@ function renderMixagem() {
 }
 
 function ligarPista(p, ligada) {
-  if (p.tipo === "faixa") {
+  if (p.tipo === "midi") marcarNotas(p.fonte, ligada);  // também marca na tabela das faixas
+  else if (p.tipo === "faixa") {
     const cb = $(`faixa-${p.nome}-marcar`);  // mantém o Player igual
     if (cb) cb.checked = ligada;
     ligarFaixa(p.nome, ligada);
@@ -5115,6 +6087,7 @@ function ligarPista(p, ligada) {
 }
 
 function deslocarPista(p, delta, rotulo) {
+  if (p.tipo === "midi") { deslocarMidi(p.fonte, delta); rotulo.textContent = textoDeslocamento(p); return; }
   if (p.tipo !== "faixa") { ajustarInicioGravacao(p.g, delta, rotulo); return; }
   alterarMix(p.chave, "desloc", Math.round((deslocFaixa(p.nome) + delta) * 1000) / 1000);
   rotulo.textContent = textoDeslocamento(p);
@@ -5125,8 +6098,21 @@ function deslocarPista(p, delta, rotulo) {
   }
 }
 
+// Gravação MIDI: deslocar = mover todas as notas dela no tempo (salva sozinho, como a edição de notas)
+function deslocarMidi(fonte, delta) {
+  const notas = notasDaFonte(fonte);
+  if (!notas.length) return;
+  delta = Math.max(delta, -Math.min(...notas.map(n => n.t)));  // não passa do começo da música
+  if (!delta) return;
+  for (const n of notas) n.t = Math.round((n.t + delta) * 1000) / 1000;
+  for (let i = historicoNotas.length - 1; i >= 0; i--) if (historicoNotas[i].fonte === fonte) historicoNotas.splice(i, 1);
+  if (fontesMarcadas.has(fonte)) { montarNotas(); if (tocando) iniciarDe(tempoAtual()); }
+  notasAlteradas(`${nomeFonte(fonte)} ${delta > 0 ? "atrasada" : "adiantada"} ${Math.abs(delta).toFixed(2).replace(".", ",")} s`, fonte);
+}
+
 async function excluirPista(p) {
   if (!MUSICA) return;
+  if (p.tipo === "midi") { await excluirFonte(p.fonte); return; }
   if (p.tipo !== "faixa") {
     await excluirGravacao(p.g);  // pede confirmação e recarrega a lista
     if (!GRAVACOES.some(g => chaveGravacao(g) === p.chave)) {
@@ -5148,8 +6134,7 @@ async function excluirPista(p) {
     return;
   }
   DADOS.faixas = (DADOS.faixas || []).filter(n => n !== p.nome);
-  const rotuloPlayer = $("faixa-" + p.nome);
-  if (rotuloPlayer) rotuloPlayer.remove();
+  montarTabelaFaixas();  // a linha continua no Player se a faixa tiver notas
   delete MIXAGEM[p.chave];
   descartarCanal(p.chave);
   salvarPreferencias();
@@ -5157,6 +6142,7 @@ async function excluirPista(p) {
 }
 
 function carregarPicos(p) {
+  if (p.tipo === "midi") return;  // desenhada a partir das notas
   p.urlPicos = `/api/musicas/${MUSICA.id}/picos/` +
     (p.tipo === "faixa" ? "faixa/" + p.nome : p.tipo + "/" + encodeURIComponent(p.g.arquivo));
   const url = p.urlPicos;
@@ -5196,7 +6182,7 @@ function desenharMixagem(t) {
   $("mixTempo").textContent = formatarTempo(t);
   $("mixTotal").textContent = formatarTempo(fim);
   const cores = { cabeca: cor("--cabeca"), grade: cor("--grade-forte"), suave: cor("--suave"),
-                  faixa: cor("--mx-ia"), audio: cor("--mx-audio"), video: cor("--mx-video") };
+                  faixa: cor("--mx-ia"), audio: cor("--mx-audio"), video: cor("--mx-video"), midi: cor("--f-midi") };
   const passo = mixJanela <= 8 ? 1 : mixJanela <= 40 ? 5 : mixJanela <= 150 ? 10 : 30;
   const r = prepararCanvas($("mixRegua"));
   if (r) {
@@ -5224,6 +6210,7 @@ function desenharPista(p, t, t0, passo, cores) {
   g.fillStyle = cores.grade;
   for (let s = Math.ceil(t0 / passo) * passo; s <= t0 + mixJanela; s += passo) if (s >= 0) g.fillRect(Math.round(xDe(s)), 0, 1, H);
 
+  if (p.tipo === "midi") { desenharPistaMidi(p, d, t, xDe, cores); return; }
   const ligada = pistaLigada(p), { base, escala, duracao, dados } = geometriaPista(p);
   const xi = xDe(base), xf = xDe(base + duracao * escala);
   if (duracao > 0 && xf > 0 && xi < W) {
@@ -5246,6 +6233,26 @@ function desenharPista(p, t, t0, passo, cores) {
       g.font = "12px system-ui, sans-serif";
       g.textBaseline = "middle";
       g.fillText(PICOS.has(p.urlPicos) ? "forma de onda indisponível" : "carregando forma de onda…", Math.max(xi, 0) + 8, H / 2);
+    }
+    g.globalAlpha = 1;
+  }
+  g.fillStyle = cores.cabeca;
+  g.fillRect(xDe(t) - 1, 0, 2, H);
+}
+
+// Gravação MIDI na pista: as notas como num rolo de piano (altura pela nota, opacidade pela força)
+function desenharPistaMidi(p, { g, W, H }, t, xDe, cores) {
+  const notas = notasDaFonte(p.fonte), ligada = pistaLigada(p);
+  if (notas.length) {
+    let mn = 127, mx = 0;
+    for (const n of notas) { if (n.midi < mn) mn = n.midi; if (n.midi > mx) mx = n.midi; }
+    const faixas = mx - mn + 3, alt = Math.max(1.5, (H - 6) / faixas);
+    g.fillStyle = cores.midi;
+    for (const n of notas) {
+      const xi = xDe(n.t), xf = xDe(n.t + n.d);
+      if (xf < 0 || xi > W) continue;
+      g.globalAlpha = (ligada ? 0.45 : 0.15) + (ligada ? 0.5 : 0.2) * (n.v || 100) / 127;
+      g.fillRect(xi, 3 + (mx + 1 - n.midi) * (H - 6) / faixas, Math.max(1.5, xf - xi), alt);
     }
     g.globalAlpha = 1;
   }
@@ -5348,12 +6355,14 @@ function quadro() {
   destacarLetra(t);
 
   if (tocando) sincronizarFaixa();
-  desenhar(t, ativo, acordeAtivo);
+  if (abaLinha === "linha") desenhar(t, ativo, acordeAtivo);
+  else desenharPrevia(t);  // aba "Vídeo do YouTube" / "Vídeo do Instagram"
 }
 
 // ---------- biblioteca ----------
 const STATUS = ["", "Quero aprender", "Aprendendo", "Praticando", "Pronta"];
 const COLUNAS = [
+  { campo: "selecionar", titulo: "", tipo: "selecionar" },
   { campo: "abrir", titulo: "", tipo: "abrir" },
   { campo: "favorito", titulo: "⭐", tipo: "favorito" },
   { campo: "youtube", titulo: "YT", tipo: "youtube" },
@@ -5372,6 +6381,7 @@ const COLUNAS = [
   { campo: "processado_em", titulo: "Processada em", tipo: "ro",
     valor: m => m.processado_em ? new Date(m.processado_em).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" }) : "—" },
   { campo: "id", titulo: "Id", tipo: "id" },
+  { campo: "excluir", titulo: "", tipo: "excluir" },
 ];
 let ordem = { campo: "titulo", direcao: 1 };
 try { ordem = JSON.parse(recuperar("bibliotecaOrdem")) || ordem; } catch (e) { /* padrão */ }
@@ -5391,7 +6401,18 @@ function montarCabecalho() {
     th.textContent = col.titulo;
     if (col.tipo === "youtube") th.title = "Publicar no YouTube o vídeo de karaokê da música";
     if (col.tipo === "video") th.title = "Criar o vídeo de karaokê (videos\\) ou o do Instagram (videos\\instagram), cada um separado";
-    if (col.tipo !== "abrir" && col.tipo !== "youtube" && col.tipo !== "video") {
+    if (col.tipo === "excluir") th.title = "Apagar a música";
+    if (col.tipo === "selecionar") {
+      th.className = "colSelecao";
+      const caixa = document.createElement("input");
+      caixa.type = "checkbox";
+      caixa.id = "selecionarTodas";
+      caixa.title = "Marcar / desmarcar todas as linhas visíveis";
+      caixa.setAttribute("aria-label", caixa.title);
+      caixa.addEventListener("change", () => marcarTodas(caixa.checked));
+      th.appendChild(caixa);
+    }
+    if (!["selecionar", "abrir", "youtube", "video", "excluir"].includes(col.tipo)) {
       th.addEventListener("click", () => {
         ordem = { campo: col.campo, direcao: ordem.campo === col.campo ? -ordem.direcao : 1 };
         guardar("bibliotecaOrdem", JSON.stringify(ordem));
@@ -5504,6 +6525,7 @@ function acompanharProcessos() {
 function atualizarCelulasProcesso() {
   atualizarCelulasYoutube();
   atualizarCelulasVideo();
+  atualizarBotaoProcessarTodos();
   for (const p of AUDIOS_PENDENTES) {
     const td = $(`bib-${p.chave}-status`), b = $(`bib-${p.chave}-abrir-botao`);
     if (td) preencherSituacao(td, p);
@@ -5515,7 +6537,10 @@ function preencherSituacao(td, p) {
   const proc = PROCESSOS[p.arquivo];
   td.title = "";
   if (!proc) td.textContent = "Não processada";
-  else if (proc.estado === "na fila") td.textContent = "Na fila…";
+  else if (proc.estado === "na fila") {
+    td.textContent = /tentar de novo/.test(proc.etapa || "") ? "Falhou; " + proc.etapa.replace(/^falhou; /, "") : "Na fila…";
+    if ((proc.log || []).length) td.title = proc.log.join("\n");
+  }
   else if (proc.estado === "processando") td.textContent = proc.etapa || "Processando…";
   else if (proc.estado === "concluido") td.textContent = "Concluída";
   else { td.textContent = "Erro ao processar (passe o mouse)"; td.title = (proc.log || []).join("\n") || proc.etapa; }
@@ -5530,7 +6555,9 @@ function configurarBotaoProcessar(b, p) {
 function celulaPendente(p, col) {
   const td = document.createElement("td");
   td.id = `bib-${p.chave}-${col.campo}`;
-  if (col.tipo === "abrir") {
+  if (col.tipo === "selecionar") {
+    preencherCelulaSelecao(td, p);
+  } else if (col.tipo === "abrir") {
     const b = document.createElement("button");
     b.id = `bib-${p.chave}-abrir-botao`;
     b.className = "pequeno";
@@ -5544,6 +6571,8 @@ function celulaPendente(p, col) {
   } else if (col.tipo === "status") {
     td.className = "ro";
     preencherSituacao(td, p);
+  } else if (col.tipo === "excluir") {
+    td.appendChild(botaoExcluirMusica(p, `bib-${p.chave}-excluir-botao`));
   } else {
     td.className = "ro";
     td.textContent = ["favorito", "youtube", "video"].includes(col.tipo) ? "" : "—";
@@ -5571,7 +6600,9 @@ function celula(m, col) {
   const td = document.createElement("td");
   td.id = `bib-${m.id}-${col.campo}`;
   const base = `bib-${m.id}-${col.campo}`;
-  if (col.tipo === "abrir") {
+  if (col.tipo === "selecionar") {
+    preencherCelulaSelecao(td, m);
+  } else if (col.tipo === "abrir") {
     const b = document.createElement("button");
     b.id = base + "-abrir";
     b.className = "pequeno";
@@ -5636,6 +6667,8 @@ function celula(m, col) {
     preencherCelulaYoutube(td, m);
   } else if (col.tipo === "video") {
     preencherCelulaVideo(td, m);
+  } else if (col.tipo === "excluir") {
+    td.appendChild(botaoExcluirMusica(m, base + "-botao"));
   } else if (col.tipo === "id") {
     td.className = "ro";
     const c = document.createElement("code");
@@ -5648,6 +6681,188 @@ function celula(m, col) {
   }
   return td;
 }
+
+// ---------- apagar uma música (ou um áudio ainda não processado) ----------
+function botaoExcluirMusica(m, id) {
+  const b = document.createElement("button");
+  b.id = id;
+  b.className = "icone";
+  b.title = m.pendente ? `Apagar o arquivo ${m.arquivo} da pasta audio` : "Apagar a música";
+  b.setAttribute("aria-label", b.title);
+  const i = document.createElement("i");
+  i.id = id + "-icone";
+  i.className = "bi bi-trash";
+  b.appendChild(i);
+  b.addEventListener("click", () => abrirExcluir([m]));
+  return b;
+}
+
+let excluindo = [];  // as músicas (ou áudios pendentes) da janela "Apagar"
+function abrirExcluir(itens) {
+  excluindo = itens.slice();
+  if (!excluindo.length) return;
+  const m = excluindo[0], varias = excluindo.length > 1;
+  const pendentes = excluindo.filter(x => x.pendente).length, processadas = excluindo.length - pendentes;
+  $("excNome").textContent = varias ? `${excluindo.length} selecionadas` : `"${m.titulo || m.arquivo}"`;
+  if (varias) {
+    $("excTexto").textContent = [
+      processadas ? `${processadas} música(s) processada(s): saem do banco de dados o cadastro e, das pastas, ` +
+        "as notas, acordes e gravações MIDI (dados\\), as faixas separadas (faixas\\), as gravações de áudio e " +
+        "vídeo (midias\\) e a letra (letras\\). Os vídeos já criados na pasta videos\\ ficam." : "",
+      pendentes ? `${pendentes} áudio(s) ainda não processado(s): o arquivo da pasta audio\\ é excluído.` : "",
+    ].filter(Boolean).join(" ");
+  } else if (m.pendente) {
+    $("excTexto").textContent = `O arquivo audio\\${m.arquivo} (ainda não processado) será excluído do computador.`;
+  } else {
+    $("excTexto").textContent = "Saem da biblioteca: o cadastro, as notas, acordes e gravações MIDI " +
+      `(dados\\${m.id}.json), as faixas separadas (faixas\\${m.id}\\), as gravações de áudio e vídeo ` +
+      `(midias\\${m.id}\\) e a letra. Os vídeos já criados na pasta videos\\ ficam.`;
+  }
+  const lista = $("excLista");
+  lista.textContent = "";
+  lista.hidden = !varias;
+  if (varias) excluindo.forEach((x, k) => {
+    const li = document.createElement("li");
+    li.id = "excLista-" + k;
+    li.textContent = (x.titulo || x.arquivo) + (x.pendente ? " (não processada)" : "");
+    lista.appendChild(li);
+  });
+  // várias de uma vez: por padrão apaga tudo da música, inclusive o áudio original
+  $("excAudio").checked = !processadas || varias;
+  $("excAudio").disabled = !processadas;
+  $("excAudioTexto").textContent = !processadas ? (varias ? "Apagar os arquivos da pasta audio\\" : `Apagar audio\\${m.arquivo}`)
+    : varias ? 'Apagar também os áudios originais (pasta audio\\); desmarcado, eles voltam à lista como "Não processada"'
+    : `Apagar também o áudio original (audio\\${m.arquivo}); desmarcado, ele volta à lista como "Não processada"`;
+  $("excStatus").textContent = "";
+  $("excConfirmar").disabled = false;
+  $("janelaExcluir").showModal();
+}
+
+async function confirmarExcluir() {
+  if (!excluindo.length) return;
+  $("excConfirmar").disabled = true;
+  const comAudio = $("excAudio").checked;
+  const aberta = MUSICA && excluindo.some(m => !m.pendente && m.id === MUSICA.id);
+  if (aberta) {  // a música aberta no player: fecha antes
+    pausar();
+    desligarTodasFaixas();
+    desligarTodasGravacoes();
+  }
+  const falhas = [];
+  let apagouAberta = false;
+  for (const [k, m] of excluindo.entries()) {
+    if (excluindo.length > 1) $("excStatus").textContent = `apagando ${k + 1} de ${excluindo.length}…`;
+    else $("excStatus").textContent = "apagando…";
+    try {
+      if (m.pendente) await api(`/api/audios?arquivo=${encodeURIComponent(m.arquivo)}`, { method: "DELETE" });
+      else {
+        await api(`/api/musicas/${m.id}${comAudio ? "?audio=1" : ""}`, { method: "DELETE" });
+        if (MUSICA && MUSICA.id === m.id) apagouAberta = true;
+      }
+      SELECIONADAS.delete(chaveLinha(m));
+    } catch (e) {
+      falhas.push({ m, erro: e.message });
+    }
+  }
+  if (apagouAberta) {
+    MUSICA = null;
+    guardar("ultimaMusica", "");
+    guardar("aba", "biblioteca");
+    location.reload();  // recomeça sem ela (o player abre a primeira música da biblioteca)
+    return;
+  }
+  if (falhas.length) {
+    const rotaNova = falhas.some(f => /404|não encontrado/.test(f.erro));
+    $("excStatus").textContent = (excluindo.length > 1 ? `${falhas.length} não puderam ser apagadas: ` : "Não foi possível apagar: ") +
+      falhas.map(f => (excluindo.length > 1 ? `${f.m.titulo || f.m.arquivo}: ` : "") + f.erro).join("; ") +
+      (rotaNova ? " (reinicie o SOLO.bat: a rota de apagar é nova)" : "");
+    excluindo = falhas.map(f => f.m);  // confirmar de novo tenta só as que falharam
+    $("excConfirmar").disabled = false;
+    verificarServidor();
+    await atualizarBiblioteca();
+    return;
+  }
+  excluindo = [];
+  $("janelaExcluir").close();
+  await atualizarBiblioteca();
+}
+
+// ---------- seleção de linhas (marcar todas / excluir selecionadas) ----------
+const SELECIONADAS = new Set();  // id da música ou chave do áudio pendente
+let LINHAS_VISIVEIS = [];        // as linhas mostradas na tabela (após filtros)
+const chaveLinha = m => m.pendente ? m.chave : m.id;
+
+function preencherCelulaSelecao(td, m) {
+  td.className = "colSelecao";
+  const caixa = document.createElement("input");
+  caixa.type = "checkbox";
+  caixa.id = `bib-${chaveLinha(m)}-selecionar-caixa`;
+  caixa.checked = SELECIONADAS.has(chaveLinha(m));
+  caixa.setAttribute("aria-label", "Selecionar " + (m.titulo || m.arquivo));
+  caixa.addEventListener("change", () => {
+    if (caixa.checked) SELECIONADAS.add(chaveLinha(m)); else SELECIONADAS.delete(chaveLinha(m));
+    atualizarSelecao();
+  });
+  td.appendChild(caixa);
+}
+
+function marcarTodas(marcar) {
+  if (marcar) LINHAS_VISIVEIS.forEach(m => SELECIONADAS.add(chaveLinha(m)));
+  else SELECIONADAS.clear();
+  for (const m of LINHAS_VISIVEIS) {
+    const c = $(`bib-${chaveLinha(m)}-selecionar-caixa`);
+    if (c) c.checked = marcar;
+  }
+  atualizarSelecao();
+}
+
+// Reflete a seleção: destaque das linhas, caixa do cabeçalho, contagem e botão "Excluir selecionadas"
+function atualizarSelecao() {
+  const marcadas = LINHAS_VISIVEIS.filter(m => SELECIONADAS.has(chaveLinha(m)));
+  for (const m of LINHAS_VISIVEIS) {
+    const tr = $("bib-" + chaveLinha(m));
+    if (tr) tr.classList.toggle("selecionada", SELECIONADAS.has(chaveLinha(m)));
+  }
+  const todas = $("selecionarTodas");
+  if (todas) {
+    todas.checked = marcadas.length > 0 && marcadas.length === LINHAS_VISIVEIS.length;
+    todas.indeterminate = marcadas.length > 0 && marcadas.length < LINHAS_VISIVEIS.length;
+  }
+  $("contagemSelecionadas").textContent = marcadas.length ? `${marcadas.length} selecionada(s)` : "";
+  $("btnExcluirSelecionadas").disabled = !marcadas.length;
+  $("btnMarcarTodas").disabled = !LINHAS_VISIVEIS.length || marcadas.length === LINHAS_VISIVEIS.length;
+  $("btnDesmarcarTodas").disabled = !marcadas.length;
+}
+
+$("btnMarcarTodas").addEventListener("click", () => marcarTodas(true));
+$("btnDesmarcarTodas").addEventListener("click", () => marcarTodas(false));
+$("btnExcluirSelecionadas").addEventListener("click", () =>
+  abrirExcluir(LINHAS_VISIVEIS.filter(m => SELECIONADAS.has(chaveLinha(m)))));
+
+// ---------- processar todos os áudios ainda não processados ----------
+const aguardandoProcessar = () => AUDIOS_PENDENTES.filter(p => !processoAtivo(PROCESSOS[p.arquivo]));
+
+function atualizarBotaoProcessarTodos() {
+  const n = aguardandoProcessar().length;
+  const b = $("btnProcessarTodos");
+  b.disabled = !n;
+  b.lastChild.textContent = n ? ` Processar todos os não processados (${n})`
+    : AUDIOS_PENDENTES.length ? " Processando os não processados…" : " Processar todos os não processados";
+}
+
+$("btnProcessarTodos").addEventListener("click", async () => {
+  $("btnProcessarTodos").disabled = true;
+  try {
+    const r = await api("/api/processar", { method: "POST", body: JSON.stringify({ todos: true }) });
+    PROCESSOS = r.processamentos || PROCESSOS;
+  } catch (e) {
+    mensagem("Não foi possível iniciar o processamento: " + e.message);
+  }
+  atualizarCelulasProcesso();
+  acompanharProcessos();
+});
+$("excCancelar").addEventListener("click", () => $("janelaExcluir").close());
+$("excConfirmar").addEventListener("click", confirmarExcluir);
 
 function renderBiblioteca() {
   preencherFiltros();
@@ -5675,9 +6890,16 @@ function renderBiblioteca() {
     for (const col of COLUNAS) tr.appendChild(m.pendente ? celulaPendente(m, col) : celula(m, col));
     corpo.appendChild(tr);
   }
+  // a seleção só guarda o que ainda existe (apagadas/processadas saem dela)
+  const existentes = new Set([...MUSICAS, ...AUDIOS_PENDENTES].map(chaveLinha));
+  for (const k of [...SELECIONADAS]) if (!existentes.has(k)) SELECIONADAS.delete(k);
+  LINHAS_VISIVEIS = visiveis;
+  atualizarSelecao();
+  atualizarBotaoProcessarTodos();
   const total = MUSICAS.length + AUDIOS_PENDENTES.length;
   $("bibliotecaVazia").hidden = total > 0;
   $("tabelaMusicas").hidden = total === 0;
+  $("acoesBiblioteca").hidden = total === 0;
   $("contagemMusicas").textContent = total
     ? `${visiveis.length} de ${total} músicas` + (AUDIOS_PENDENTES.length ? ` · ${AUDIOS_PENDENTES.length} não processada(s)` : "")
     : "";
@@ -6026,7 +7248,7 @@ function definirVolumeSint(v) {
   v = limitar(Number.isFinite(v) ? v : 1, 0, 3);
   $("volumeSint").value = v;
   $("volumeSintValor").textContent = Math.round(v * 100) + "%";
-  if (mestre) mestre.gain.setTargetAtTime(volumeSintetizado(), ctx.currentTime, 0.02);
+  atualizarVolumesSint();
   guardar("volumeSint", String(v));  // lembrado neste navegador
 }
 $("volumeSint").addEventListener("input", e => definirVolumeSint(parseFloat(e.target.value)));
@@ -6055,6 +7277,13 @@ for (const id of ["ataque", "sustain"]) {
   $(id).addEventListener("change", salvarPreferencias);
   $(id).addEventListener("dblclick", () => { envelopePadrao(); salvarPreferencias(); });
 }
+$("midiSustainControles").addEventListener("change", e => {
+  definirEnvelopeMidi(e.target.checked, envelopeMidiCfg.sustain);
+  salvarPreferencias();
+});
+$("sustainMidi").addEventListener("input", e => definirEnvelopeMidi(envelopeMidiCfg.controles, parseFloat(e.target.value)));
+$("sustainMidi").addEventListener("change", salvarPreferencias);
+$("sustainMidi").addEventListener("dblclick", () => { definirEnvelopeMidi(envelopeMidiCfg.controles, 0.4); salvarPreferencias(); });
 definirVolumeSint(parseFloat(recuperar("volumeSint") ?? "1"));
 $("btnMudo").addEventListener("click", () => { definirMudo(!mudo); salvarPreferencias(); });
 $("timbre").addEventListener("change", e => {
@@ -6070,7 +7299,7 @@ $("volumeFaixa").addEventListener("input", e => {
 });
 $("btnFaixasNenhuma").addEventListener("click", desligarTodasFaixas);
 $("btnFaixasTodas").addEventListener("click", () => {
-  for (const cb of $("faixa").querySelectorAll("input")) {
+  for (const cb of $("faixa").querySelectorAll('input[id$="-marcar"]')) {
     if (!cb.checked) { cb.checked = true; ligarFaixa(cb.value, true); }
   }
 });

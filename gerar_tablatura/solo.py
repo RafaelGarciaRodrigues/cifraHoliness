@@ -19,9 +19,18 @@ import sys
 import tempfile
 from collections import Counter
 
-import librosa
-import numpy as np
-import soundfile as sf
+try:
+    import librosa
+    import numpy as np
+    import soundfile as sf
+except ImportError as erro_importacao:  # aparece no log da Biblioteca (passe o mouse em "Erro ao processar")
+    print(f"Erro: dependência não instalada ({erro_importacao.name}) no Python {sys.version.split()[0]} "
+          f"({sys.executable}).")
+    print("Na pasta gerar_tablatura, execute:")
+    print("  python -m pip install -r requirements.txt")
+    print("  python -m pip install --no-deps basic-pitch==0.4.0")
+    print("e clique em \"Tentar de novo\".")
+    sys.exit(1)
 
 import banco
 import letra
@@ -145,6 +154,9 @@ def verificar_dependencias():
         print("Aviso: faster-whisper não instalado; a letra não será transcrita "
               "(python -m pip install faster-whisper).")
     faltando = []
+    import importlib.util
+    if importlib.util.find_spec("demucs") is None:  # importado só na separação: sem isso só falharia no meio
+        faltando.append("demucs")
     try:
         import basic_pitch  # noqa: F401
     except ImportError:

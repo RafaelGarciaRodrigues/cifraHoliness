@@ -11,6 +11,8 @@ mir_eval
 resampy
 # transcrição da letra (opcional: sem ele o solo.py só pula a letra)
 faster-whisper
+# ctranslate2 4.8 derruba o processo (access violation) ao carregar o modelo nesta máquina
+ctranslate2==4.4.0
 # encaixe da letra pela voz (encaixe.py; modelo wav2vec2 de português, ~1,2 GB baixado na 1ª vez)
 transformers
 # vídeo de karaokê (video.py)

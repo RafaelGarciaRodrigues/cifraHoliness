@@ -46,19 +46,27 @@ def picos(caminho):
     return resultado
 
 
-def excluir_faixa(pasta_faixas, pasta_dados, id_musica, nome):
-    """Apaga faixas/<id>/<nome>.wav e tira a faixa da lista em dados/<id>.json.
-    Reprocessar a música (solo.py) separa de novo as faixas que faltarem."""
+def excluir_faixa(pasta_faixas, pasta_dados, id_musica, nome, notas=False):
+    """Apaga faixas/<id>/<nome>.wav e tira a faixa da lista em dados/<id>.json; com notas=True
+    (tabela das faixas do Player) apaga também as notas dela (melodias[nome]).
+    Reprocessar a música (solo.py) separa de novo as faixas e refaz as notas que faltarem."""
     caminho = os.path.join(pasta_faixas, id_musica, nome + ".wav")
-    if not os.path.isfile(caminho):
-        return False
-    os.remove(caminho)
+    apagou = False
+    if os.path.isfile(caminho):
+        os.remove(caminho)
+        apagou = True
     caminho_dados = os.path.join(pasta_dados, f"{id_musica}.json")
     if os.path.isfile(caminho_dados):
         with open(caminho_dados, encoding="utf-8") as f:
             dados = json.load(f)
+        alterado = False
         if nome in dados.get("faixas", []):
             dados["faixas"].remove(nome)
+            alterado = True
+        if notas and nome in dados.get("melodias", {}):
+            del dados["melodias"][nome]
+            alterado = apagou = True
+        if alterado:
             with open(caminho_dados, "w", encoding="utf-8") as f:
                 json.dump(dados, f, ensure_ascii=False)
-    return True
+    return apagou

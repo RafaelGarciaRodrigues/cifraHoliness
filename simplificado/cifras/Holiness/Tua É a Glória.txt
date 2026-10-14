@@ -1,41 +1,9 @@
 ﻿Tua É a Glória
 TOM:C
 
+<yt>https://www.youtube.com/watch?v=UJKNjAjMf44</yt>
 
-C9
-Am7
-        F           C/E
-Dm7             F/G F7
-
-C9      Am7          F7/E
-Tua é a glória e o poder
-            C      G
-Tu és pra sempre Rei
-C9           Am7         F7/E        F/G
-Honra e majestade estão diante do Senhor
-     Am         Am7/G#          Am7/G      D/F#
-Não existe nenhum Deus que seja   digno como Tu
-      F         C/E
-Nada vai me separar de Ti
-   Dm7             G
-Tu  és  a própria vida em mim
-
-C  Am7  F
-
-
-C9      Am7          F7/E
-Tua é a glória e o poder
-            C      G
-Tu és pra sempre Rei
-C9           Am7         F7/E        G
-Honra e majestade estão diante do Senhor
-     Am         Am7/G#          Am7/G      D/F#
-Não existe nenhum Deus que seja   digno como Tu
-     Dm7/E   C/E
-Nada vai me separar de Ti
-     F              G
-Tu  és  a própria vida em mim
---
+<intro>
 C9
 Não deixarei de te louvar
 Am7
@@ -44,7 +12,49 @@ Não deixarei de te buscar
 És a razão da minha  vi-da
 Dm7             F/G
 Vi-vo pra te exaltar
---
+</intro>
+
+C9      Am7          F7/E
+Tua é a glória e o poder
+            C      G
+Tu és pra sempre Rei
+C9           Am7         F7/E        G
+Honra e majestade estão diante do Senhor
+     Am         Am7/G#         
+Não existe nenhum Deus que seja
+ Am7/G      D/F#
+   digno como Tu
+      F         C/E
+Nada vai me separar de Ti
+   Dm7             G
+Tu  és  a própria vida em mim
+
+
+C9      Am7          F7/E
+Tua é a glória e o poder
+            C      G
+Tu és pra sempre Rei
+C9           Am7         F7/E        G
+Honra e majestade estão diante do Senhor
+     Am         Am7/G#         
+Não existe nenhum Deus que seja
+ Am7/G      D/F#
+   digno como Tu
+     Dm7/E   C/E
+Nada vai me separar de Ti
+     F              G
+Tu  és  a própria vida em mim
+
+<refrao>
+
+C9
+Não deixarei de te louvar
+Am7
+Não deixarei de te buscar
+        F           C/E
+És a razão da minha  vi-da
+Dm7             F/G
+Vi-vo pra te exaltar
 C9
 Não deixarei de te louvar
 Am7
@@ -53,9 +63,9 @@ Não deixarei de te buscar
 És a razão da minha  vi-da
 Dm7           F/G
 Vivo pra te adorar
---
-C  Am7  F
---
+
+C  Am7  F  G  A7
+
 D9
 Não deixarei de te louvar
 Bm7
@@ -64,7 +74,7 @@ Não deixarei de te buscar
 És a razão da minha  vi-da
 Em7             G/A
 Vi-vo pra te exaltar
---
+
 D9
 Não deixarei de te louvar
 Bm7
@@ -73,3 +83,5 @@ Não deixarei de te buscar
 És a razão da minha  vi-da
 Em7           G/A
 Vivo pra te adorar
+
+<refrao>

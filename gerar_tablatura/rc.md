@@ -965,3 +965,43 @@ if __name__ == "__main__":
 - para isso, quero passar sem os modelos, pois quando rodar no outo computador pela primeira vez deverá baixar os modelos
 - e deve enviar sem os arquivos de música e videos (que são pesados)
 - já está dessa maneira?
+
+# GRAVAÇÃO midi
+
+- já existe um botão que incia a grabação de MIDI id="a1f6c3"
+- para iniciar a gravação aguarda 3 segundos antes de começar (depois de apertar o botão)
+- para parar a gravação pode apertar no mesmo botão ou em Pausar (id="btnPlay")
+- se apertar em id="a1f6c3", automaticamente pausa a música
+- na gravação do MIDI posso ajustar o Sustain. Pode ter um Checkbox que se flegado assume o Sustain dos controles já existentes
+
+- não precisa existir id="seletorMidi"
+- as gravações de midi podem estar em id="faixa"
+- mas agora id="faixa" deve:
+-- indicar de cor diferente que é um MIDI gravado
+-- permitir editar o nome de todas as faixas
+-- permitir deletar todas as faixas
+-- quero transformar id="faixa" e id="fonteNotas" em uma só tabela com as mesmas funcionalidades
+-- ou seja, posso selecioar as faixas que são todas e as notas que aparecem (incluindo as midis gravadas)
+-- para as midis gravas posso escolher outros timbres (ou seja, um id="timbre" para cada faixa de MIDI gravada)
+- as faixas midi gravads devem aparecer em id="aba-mixagem" e lá também posso mudar o timbre
+
+# INTERFACE
+- id="tabelaMusicas" deve permitir deletar
+- estou tentando processar a única musica dentro da pasta audio e está dando erro
+
+- id="aba-biblioteca" deve ter opção de marcar e desmarcar todas as linhas (e selecionar algumas com checkbox)
+- ter uma opção excluir selecionadas
+-- a exclusão deve limpar os dados no banco de dados e os arquivos correlacionados
+- deve ter uma opçã de processar todas os audios que ainda não foram processados
+-- se der erro, deve tentar de novo
+
+# QUERO ORGANIZAR A LINHA EM TABS
+- na primeira tab é exatamente como está, formada por 
+-- id="linha"
+-- id="instrumentos"
+- a segunda tab é a renderização de como ficará o video do youtube, para permitir visualizar
+- a tarceira tab é o video do instagram, também para visualizar. por ele ser vertical pode ficar menor ocupando o centro da tab, é apenas para visualização
+- os videos devem ser renderizados em html mesmo e não no formato de video (para ser mais rápido) e poder editar se algo der errado
+- hoje preciso gerar os videos para identificar erros e depois editar
+- quando clicar em um dos botões de id="bib-08736966-video" os videos serão renderizados como estão no html, cada um no seu formato específico
+- id="barra" e id="corte" ficam de fora das tabs, na posição onde estão para controlar a visualização

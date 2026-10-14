@@ -114,6 +114,15 @@ def atualizar(id_musica, campos):
         return _linha(con.execute("SELECT * FROM musicas WHERE id = ?", (id_musica,)).fetchone())
 
 
+def excluir(id_musica):
+    """Tira a música do cadastro; devolve o registro apagado (ou None se não existia)."""
+    with conectar() as con:
+        row = con.execute("SELECT * FROM musicas WHERE id = ?", (id_musica,)).fetchone()
+        if row is not None:
+            con.execute("DELETE FROM musicas WHERE id = ?", (id_musica,))
+        return _linha(row)
+
+
 def atualizar_qtd_frases(id_musica, qtd):
     with conectar() as con:
         con.execute("UPDATE musicas SET qtd_frases = ? WHERE id = ?", (qtd, id_musica))

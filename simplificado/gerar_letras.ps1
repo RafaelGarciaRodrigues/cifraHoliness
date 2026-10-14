@@ -153,8 +153,8 @@ $utf8SemBom = New-Object System.Text.UTF8Encoding($false)
 # carregar (uso real via NodeMCU), so o fallback fica valendo e mostra os caracteres Unicode no
 # lugar. Cobre os 9 icones listados no rc.md (secao ICONES) + bi-x (limpar selecao), bi-check2
 # (feedback de "link copiado" do botao compartilhar), bi-node-plus-fill (icone de grupos, secao
-# GRUPOS) e bi-youtube (link do YouTube por musica, secao LINK YOUTUBE), que usam o mesmo tipo de
-# fallback. bi-share NAO esta aqui: foi pedido pros dois
+# GRUPOS), bi-youtube (link do YouTube por musica, secao LINK YOUTUBE) e bi-download (baixar mp3 no
+# modal do YouTube, secao DOWNLOAD DO YOUTUBE), que usam o mesmo tipo de fallback. bi-share NAO esta aqui: foi pedido pros dois
 # arquivos (telaCel.html e index.html), entao o fallback dele vive direto em telaCel.html (ver
 # <style> antes do <link> do CDN la) e chega em index.html automaticamente por ja estar no
 # conteudo copiado - duplicar aqui so arriscaria os dois valores divergirem no futuro.
@@ -177,6 +177,7 @@ $fallbackIcones = @'
 .bi-check2::before { content: "\2713"; }
 .bi-node-plus-fill::before { content: "\2630"; }
 .bi-youtube::before { content: "\25B6"; }
+.bi-download::before { content: "\2913"; }
 </style>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 '@
