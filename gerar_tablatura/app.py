@@ -30,12 +30,14 @@ from datetime import datetime
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, unquote, urlparse
 
+import afinar
 import banco
 import gravacoes
 import encaixe
 import letra
 import mixagem
 import pastas
+import tonalidade
 import youtube
 
 BASE_DIR = pastas.BASE_DIR
@@ -349,6 +351,7 @@ ROTA_FAIXA_API = re.compile(rf"^/api/musicas/{ID}/faixas/([a-z]+)$")
 ROTA_INSTRUMENTO = re.compile(r"^/instrumentos/((?:[a-z0-9_-]+/)?[A-Za-z0-9_#.-]+\.(?:js|mp3|wav|ogg))$")
 ROTA_NOTAS = re.compile(rf"^/api/musicas/{ID}/notas/([a-z]+)$")
 ROTA_MIDI = re.compile(rf"^/api/musicas/{ID}/midi/([a-z0-9]{{1,20}})$")  # gravações do teclado MIDI
+ROTA_REPROCESSAR = re.compile(rf"^/api/musicas/{ID}/reprocessar/([a-z]+)$")  # varinha mágica (afinar.py)
 TRAVA_DADOS = threading.Lock()  # dados/<id>.json é regravado por mais de uma rota
 INICIO_SERVIDOR = time.time()
 
@@ -495,6 +498,8 @@ class Manipulador(BaseHTTPRequestHandler):
             return self._publicar_youtube(m.group(1))
         if m := ROTA_ENCAIXE.match(caminho):
             return self._encaixar_letra(m.group(1))
+        if m := ROTA_REPROCESSAR.match(caminho):
+            return self._reprocessar_notas(*m.groups())
         if caminho == "/api/youtube/desconectar":
             youtube.desconectar()
             return self._json({"ok": True})
@@ -930,6 +935,20 @@ class Manipulador(BaseHTTPRequestHandler):
             return self._erro(500, f"falha no encaixe: {e}")
         self._json({"trechos": trechos})
 
+    def _reprocessar_notas(self, id_musica, fonte):
+        """Varinha mágica: notas novas de uma faixa (afinar.py). Não grava: a interface aplica e salva."""
+        if banco.obter(id_musica) is None or not os.path.isfile(os.path.join(PASTA_DADOS, f"{id_musica}.json")):
+            return self._erro(404, "música não encontrada")
+        try:
+            notas, metodo = afinar.reprocessar(id_musica, fonte)
+        except KeyError as e:
+            return self._erro(404, str(e.args[0]))
+        except FileNotFoundError as e:
+            return self._erro(400, str(e))
+        except Exception as e:  # librosa, memória...
+            return self._erro(500, f"falha ao reprocessar: {e}")
+        self._json({"notas": notas, "metodo": metodo})
+
     def _publicar_youtube(self, id_musica):
         registro = banco.obter(id_musica)
         if registro is None:
@@ -967,7 +986,26 @@ class Manipulador(BaseHTTPRequestHandler):
             return self._erro(404, "música não encontrada; rode o solo.py novamente")
         with open(caminho_dados, encoding="utf-8") as f:
             dados = json.load(f)
+        if "tons" not in dados:
+            dados, registro = self._detectar_tons(id_musica, caminho_dados, registro)
         self._json({"musica": registro, "dados": dados})
+
+    def _detectar_tons(self, id_musica, caminho_dados, registro):
+        """Músicas processadas antes da detecção de modulação: calcula o tom de cada trecho pelos
+        acordes (instantâneo) e grava; se a música modula, o tom dela passa a ser o do início."""
+        with TRAVA_DADOS:
+            with open(caminho_dados, encoding="utf-8") as f:
+                dados = json.load(f)
+            tons = tonalidade.detectar_modulacoes(dados.get("acordes") or [], dados.get("tom"), dados.get("duracao"))
+            dados["tons"] = tons
+            if len(tons) > 1:
+                dados["tom"] = {"tonica": tons[0]["tonica"], "modo": tons[0]["modo"]}
+            with open(caminho_dados, "w", encoding="utf-8") as f:
+                json.dump(dados, f, ensure_ascii=False)
+        if len(tons) > 1:
+            banco.atualizar_tom(id_musica, dados["tom"])
+            registro = banco.obter(id_musica)
+        return dados, registro
 
     def _letra(self, id_musica):
         caminho = letra.localizar(PASTA_LETRAS, id_musica)

@@ -123,6 +123,12 @@ def excluir(id_musica):
         return _linha(row)
 
 
+def atualizar_tom(id_musica, tom):
+    """Tom do cadastro (o tom em que a música começa, quando ela modula)."""
+    with conectar() as con:
+        con.execute("UPDATE musicas SET tom_tonica = ?, tom_modo = ? WHERE id = ?", (tom["tonica"], tom["modo"], id_musica))
+
+
 def atualizar_qtd_frases(id_musica, qtd):
     with conectar() as con:
         con.execute("UPDATE musicas SET qtd_frases = ? WHERE id = ?", (qtd, id_musica))

@@ -1,0 +1,45 @@
+# Letra: Tua é a glória (id 7dff3523)
+# Formato: [início - fim] frase · linhas começando com # são ignoradas
+
+[00:21.22 - 00:26.23] Tua é a glória e o poder
+[00:26.69 - 00:29.77] Tu és pra sempre Rei
+[00:30.43 - 00:33.99] Honra e majestade estão
+[00:34.70 - 00:38.26] Diante do Senhor
+[00:38.98 - 00:43.65] Não existe nenhum Deus que seja
+[00:44.51 - 00:46.07] Digno como Tu
+[00:48.07 - 00:51.99] Nada vai me separar de Ti
+[00:52.97 - 00:56.72] Tu és a própria vida em mim
+[01:09.21 - 01:14.24] Tua é a glória e o poder
+[01:14.72 - 01:17.72] Tu és pra sempre Rei
+[01:18.40 - 01:21.96] Honra e majestade estão
+[01:22.67 - 01:26.35] Diante do Senhor
+[01:26.93 - 01:31.59] Não existe nenhum Deus que seja
+[01:32.48 - 01:34.10] Digno como Tu
+[01:36.10 - 01:40.00] Nada vai me separar de Ti
+[01:40.96 - 01:45.43] Tu és a própria vida em mim
+[01:45.81 - 01:49.31] Não deixarei de te louvar
+[01:50.37 - 01:53.50] Não deixarei de te buscar
+[01:53.88 - 01:57.78] És a razão da minha vida
+[01:59.50 - 02:01.75] Vivo para te exaltar
+[02:04.09 - 02:07.47] Não deixarei de te louvar
+[02:08.69 - 02:11.82] Não deixarei de te buscar
+[02:12.14 - 02:16.16] És a razão da minha vida
+[02:17.96 - 02:20.00] Vivo pra te adorar
+[02:34.02 - 02:36.26] Diante do Senhor
+[02:40.69 - 02:44.05] Não deixarei de te louvar
+[02:45.21 - 02:48.37] Não deixarei de te buscar
+[02:48.73 - 02:52.74] És a razão da minha vida
+[02:54.36 - 02:56.66] Vivo para te exaltar
+[02:58.96 - 03:02.41] Não deixarei de te louvar
+[03:03.51 - 03:06.67] Não deixarei de te buscar
+[03:07.03 - 03:11.06] És a razão da minha vida
+[03:12.68 - 03:14.76] Vivo pra te adorar
+[03:21.43 - 03:22.85] Diante do Senhor
+[03:30.56 - 03:32.28] És a razão da minha vida
+[03:35.52 - 03:39.01] Não deixarei de te louvar
+[03:40.11 - 03:43.25] Não deixarei de te buscar
+[03:43.61 - 03:47.55] És a razão da minha vida
+[03:49.52 - 03:51.42] Vivo para te exaltar
+[03:53.82 - 03:59.31] Não deixarei de te louvar
+[04:01.87 - 04:06.27] És a razão da minha vida
+[04:07.47 - 04:09.64] Vivo pra te adorar

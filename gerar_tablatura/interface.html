@@ -64,6 +64,7 @@
   #notaAtual.foraCampo { color: var(--erro); }
   .notaEditavel { display: flex; align-items: center; gap: 6px; }
   .ajusteNota { display: flex; flex-direction: column; gap: 2px; }
+  .cabecalhoMarcar { display: inline-flex; align-items: center; gap: 4px; cursor: pointer; font: inherit; margin: 0; }
   #linha:focus-visible { outline: 2px solid #4a90d9; outline-offset: 2px; }
   button.mini { padding: 0 6px; min-width: 0; font-size: .8rem; line-height: 1.35; }
   .proximo.ok { color: var(--ok); }
@@ -389,6 +390,9 @@
                 <button id="btnNotaCima" class="mini" title="Subir a nota meio tom (↑ ou Q; Shift: uma oitava)" aria-label="Subir a nota" disabled><i id="e7b2c5" class="bi bi-caret-up-fill"></i></button>
                 <button id="btnNotaBaixo" class="mini" title="Descer a nota meio tom (↓ ou W; Shift: uma oitava)" aria-label="Descer a nota" disabled><i id="f4c8a1" class="bi bi-caret-down-fill"></i></button>
               </div>
+              <div id="e5a9c2" class="ajusteNota">
+                <button id="btnAutotune" class="mini" title="Autotune: leva as notas fora do tom visíveis na linha do tempo para a nota mais próxima dentro do tom (Ctrl+Z desfaz)" aria-label="Autotune das notas visíveis" disabled><i id="b7d4e9" class="bi bi-bullseye"></i></button>
+              </div>
               <div id="b8e3f2" class="ajusteNota">
                 <button id="btnNotaExcluir" class="mini" title="Apagar a nota (Delete ou A)" aria-label="Apagar a nota" disabled><i id="a8d3e6" class="bi bi-trash"></i></button>
                 <button id="btnNotaUnir" class="mini" title="Unir com a nota anterior: apaga esta e estende a anterior até o fim dela (S)" aria-label="Unir com a nota anterior" disabled><i id="c4f9d1" class="bi bi-arrow-bar-left"></i></button>
@@ -532,7 +536,7 @@ clique na régua de tempo (embaixo da linha do tempo) para marcar um ponto (de n
             <thead id="faixa-cabecalho"><tr id="faixa-cabecalho-linha">
               <th id="faixa-col-nome">Faixa</th>
               <th id="faixa-col-notas" title="Notas exibidas na linha do tempo, tocadas e editáveis">Notas</th>
-              <th id="faixa-col-audio" title="Tocar junto a faixa separada (áudio real)">Áudio</th>
+              <th id="faixa-col-audio" title="Tocar junto a faixa separada (áudio real)"><label id="faixa-col-audio-rotulo" class="cabecalhoMarcar"><input type="checkbox" id="faixa-audio-todas" title="Marcar/desmarcar o áudio de todas as faixas separadas" aria-label="Áudio: marcar ou desmarcar todas"> Áudio</label></th>
               <th id="faixa-col-timbre" title="Timbre das notas (as gravações MIDI têm o seu; as demais usam o Timbre ao lado)">Timbre</th>
               <th id="faixa-col-acoes"><span class="somenteLeitor" id="faixa-col-acoes-texto">Ações</span></th>
             </tr></thead>
@@ -542,6 +546,7 @@ clique na régua de tempo (embaixo da linha do tempo) para marcar um ponto (de n
         <div id="c6b1b6" class="grupo" style="margin-top:6px">
           <button id="btnFaixasNenhuma" class="pequeno" title="Desliga o áudio de todas as faixas separadas">Áudio: desmarcar todas</button>
           <button id="btnFaixasTodas" class="pequeno" title="Liga o áudio de todas as faixas separadas">Áudio: marcar todas</button>
+          <button id="btnVarinha" class="pequeno" title="Varinha mágica: marque só uma faixa em Notas" disabled><i id="c2f7a9" class="bi bi-magic"></i> Reprocessar notas</button>
         </div>
       </div>
       <div id="a7e2c4">
@@ -1090,9 +1095,25 @@ const TOM_MENOR = ["C", "C#", "D", "Eb", "E", "F", "F#", "G", "G#", "A", "Bb", "
 const PT = { C: "Dó", D: "Ré", E: "Mi", F: "Fá", G: "Sol", A: "Lá", B: "Si" };
 let transp = 0;
 const pc = m => ((m % 12) + 12) % 12;
-const tomAtual = () => DADOS.tom ? { tonica: pc(DADOS.tom.tonica + transp), modo: DADOS.tom.modo } : null;
+// Tom (dos dados, sem transposição) em vigor no instante t: a música pode modular (DADOS.tons, um
+// item por trecho); sem modulação é sempre DADOS.tom
+function tomNoTempo(t) {
+  let atual = DADOS.tom || null;
+  for (const s of DADOS.tons || []) {
+    if (s.t <= t + 1e-6) atual = { tonica: s.tonica, modo: s.modo };
+    else break;
+  }
+  return atual;
+}
+const modula = () => (DADOS.tons || []).length > 1;
+// tom exibido em "Tom" (com a transposição): o do trecho onde o cursor está
+const tomAtual = (t = tempoOuvido()) => {
+  const tom = tomNoTempo(t);
+  return tom ? { tonica: pc(tom.tonica + transp), modo: tom.modo } : null;
+};
+// grafia (sustenidos/bemóis) pelo tom da música, para os nomes não mudarem no meio dela
 function usaBemol() {
-  const tom = tomAtual();
+  const tom = DADOS.tom ? { tonica: pc(DADOS.tom.tonica + transp), modo: DADOS.tom.modo } : null;
   if (!tom) return false;
   return (tom.modo === "maior" ? [5, 10, 3, 8, 1] : [2, 7, 0, 5, 10, 3]).includes(tom.tonica);
 }
@@ -2093,12 +2114,23 @@ function ligarFaixa(nome, ligada) {
     if (tocando && !modoBuffer()) iniciarElemento(f);
   }
   atualizarAvisoFaixas();
+  atualizarMarcarTodosAudio();
   salvarPreferencias();
+}
+
+// Checkbox do cabeçalho "Áudio": marcado com todas ligadas, "meio marcado" com só algumas
+function atualizarMarcarTodosAudio() {
+  const caixas = [...$("faixa").querySelectorAll('tbody input[id$="-marcar"]')];
+  const ligadas = caixas.filter(cb => cb.checked).length, todas = $("faixa-audio-todas");
+  todas.disabled = !caixas.length;
+  todas.checked = !!caixas.length && ligadas === caixas.length;
+  todas.indeterminate = ligadas > 0 && ligadas < caixas.length;
 }
 
 function desligarTodasFaixas() {
   for (const cb of $("faixa").querySelectorAll('input[id$="-marcar"]')) cb.checked = false;
   for (const nome of [...faixasAtivas.keys()]) ligarFaixa(nome, false);
+  atualizarMarcarTodosAudio();
 }
 
 function atualizarAvisoFaixas() {
@@ -2203,6 +2235,18 @@ function desenhar(t, indiceAtivo, acordeAtivo) {
     g2d.fillStyle = i === acordeAtivo ? "#fff" : c.texto;
     g2d.font = "600 13px system-ui, sans-serif";
     if (xf - x > 20) g2d.fillText(nomeAcorde(a), x + 6, ALT_ACORDES / 2);
+    g2d.font = "11px system-ui, sans-serif";
+  }
+
+  // mudança de tom: linha tracejada e o tom novo
+  for (const s of (DADOS.tons || []).slice(1)) {
+    if (s.t < t0 || s.t > t1) continue;
+    const x = xDoTempo(s.t, t0, W);
+    g2d.strokeStyle = c.acordeAtivo; g2d.lineWidth = 2; g2d.setLineDash([5, 4]);
+    g2d.beginPath(); g2d.moveTo(x, 0); g2d.lineTo(x, H); g2d.stroke();
+    g2d.setLineDash([]); g2d.lineWidth = 1;
+    g2d.fillStyle = c.acordeAtivo; g2d.font = "600 12px system-ui, sans-serif";
+    g2d.fillText("Tom: " + cifraTom(s.tonica + transp, s.modo), x + 4, topoNotas + 10);
     g2d.font = "11px system-ui, sans-serif";
   }
 
@@ -2624,9 +2668,10 @@ const ESCALA_DO_TOM = { maior: [0, 2, 4, 5, 7, 9, 11], menor: [0, 2, 3, 5, 7, 8,
 // "foraCampo" ou "" (sem tom detectado e fora do acorde)
 function classeCampo(nota, acorde) {
   const notasAcorde = nota && acorde ? NOTAS_DO_ACORDE[acorde.tipo] : null;
-  const escala = nota && DADOS.tom ? ESCALA_DO_TOM[DADOS.tom.modo] : null;
+  const tom = nota ? tomNoTempo(nota.t) : null;  // o tom do trecho da nota (a música pode modular)
+  const escala = tom ? ESCALA_DO_TOM[tom.modo] : null;
   const noAcorde = !!notasAcorde && notasAcorde.includes(pc(nota.midi - acorde.raiz));
-  const noTom = escala ? escala.includes(pc(nota.midi - DADOS.tom.tonica)) : null;
+  const noTom = escala ? escala.includes(pc(nota.midi - tom.tonica)) : null;
   // o tom vem primeiro: azul só para nota do acorde que está fora do tom (ex.: acorde emprestado)
   return noTom === true ? "noCampo" : noAcorde ? "noAcorde" : noTom === false ? "foraCampo" : "";
 }
@@ -2640,18 +2685,19 @@ function acordeDaNota(n) {
 let campoMostrado = "";
 function mostrarCampoHarmonico(nota, acorde) {
   const notasAcorde = nota && acorde ? NOTAS_DO_ACORDE[acorde.tipo] : null;
-  const escala = nota && DADOS.tom ? ESCALA_DO_TOM[DADOS.tom.modo] : null;
-  const noTom = escala ? escala.includes(pc(nota.midi - DADOS.tom.tonica)) : null;
+  const tomNota = nota ? tomNoTempo(nota.t) : null;
+  const escala = tomNota ? ESCALA_DO_TOM[tomNota.modo] : null;
+  const noTom = escala ? escala.includes(pc(nota.midi - tomNota.tonica)) : null;
   const classe = classeCampo(nota, acorde);
-  const chave = nota ? `${classe}/${nota.midi}/${acorde ? acorde.raiz + acorde.tipo : ""}/${transp}` : "";
+  const chave = nota ? `${classe}/${nota.midi}/${acorde ? acorde.raiz + acorde.tipo : ""}/${transp}/${tomNota ? tomNota.tonica : ""}` : "";
   if (chave === campoMostrado) return;  // só mexe no DOM quando muda
   campoMostrado = chave;
   const el = $("notaAtual");
   for (const c of ["noAcorde", "noCampo", "foraCampo"]) el.classList.toggle(c, c === classe);
   if (!classe) { el.title = ""; return; }
   const nomes = usaBemol() ? BEMOIS : SUSTENIDOS, nome = nomeNota(nota.midi);
-  const tom = cifraTom(DADOS.tom ? DADOS.tom.tonica + transp : 0, DADOS.tom ? DADOS.tom.modo : "maior");
-  const notasTom = escala ? escala.map(i => nomes[pc(DADOS.tom.tonica + transp + i)]).join(" ") : "";
+  const tom = cifraTom(tomNota ? tomNota.tonica + transp : 0, tomNota ? tomNota.modo : "maior");
+  const notasTom = escala ? escala.map(i => nomes[pc(tomNota.tonica + transp + i)]).join(" ") : "";
   el.title = classe === "noAcorde"
     ? `${nome} está fora do tom ${tom}, mas é nota do acorde ${nomeAcorde(acorde)} (${notasAcorde.map(i => nomes[pc(acorde.raiz + transp + i)]).join(" ")})`
     : `${nome} ${noTom ? "faz parte" : "está fora"} do campo harmônico do tom ${tom} (${notasTom})`;
@@ -2659,6 +2705,8 @@ function mostrarCampoHarmonico(nota, acorde) {
 
 function atualizarBotoesNota(alvo) {
   if ($("btnNotaNova").disabled === !!NOTAS.length) $("btnNotaNova").disabled = !NOTAS.length;  // copia uma nota existente
+  const semTom = !NOTAS.length || !DADOS.tom;
+  if ($("btnAutotune").disabled !== semTom) $("btnAutotune").disabled = semTom;
   if (alvo === alvoNotaMostrado) return;
   alvoNotaMostrado = alvo;
   for (const id of ["btnNotaCima", "btnNotaBaixo", "btnNotaExcluir"]) $(id).disabled = !alvo;
@@ -2680,6 +2728,45 @@ function alterarNota(delta) {
   if (!tocando) notaSelecionada = n;  // os próximos cliques continuam nesta nota
   tocarCorda(n.midi + transp);
   notasAlteradas(`${nomeNota(n.midi)} em ${formatarTempo(n.t)}`, fonteDa(n));
+}
+
+// Autotune: percorre nota a nota as visíveis na linha do tempo e leva as que estão fora do tom
+// (vermelhas) para a nota mais próxima dentro da escala. Empate (meio tom para cima ou para baixo):
+// a que for do acorde; senão a mais perto da nota anterior; senão para baixo. Um Ctrl+Z desfaz tudo.
+function autotuneVisiveis() {
+  if (!NOTAS.length || !DADOS.tom) return;
+  const t0 = inicioJanela(tempoOuvido()), t1 = t0 + janela;
+  const mudancas = [];
+  let anterior = null;
+  for (const n of NOTAS) {
+    if (n.t > t1) break;
+    if (n.t + n.d < t0) { anterior = n; continue; }
+    if (classeCampo(n, acordeDaNota(n)) === "foraCampo") {
+      const tom = tomNoTempo(n.t), escala = ESCALA_DO_TOM[tom.modo];  // o tom do trecho (a música pode modular)
+      const noTom = m => escala.includes(pc(m - tom.tonica));
+      const acorde = acordeDaNota(n), notasAcorde = acorde ? NOTAS_DO_ACORDE[acorde.tipo] : null;
+      let melhor = null;
+      for (let dist = 1; dist <= 6 && melhor == null; dist++) {
+        const candidatas = [n.midi - dist, n.midi + dist].filter(m => m >= 0 && m <= 127 && noTom(m));
+        if (!candidatas.length) continue;
+        const doAcorde = notasAcorde ? candidatas.filter(m => notasAcorde.includes(pc(m - acorde.raiz))) : [];
+        if (doAcorde.length === 1) melhor = doAcorde[0];
+        else if (anterior && candidatas.length === 2 && anterior.midi !== n.midi)
+          melhor = Math.abs(candidatas[0] - anterior.midi) <= Math.abs(candidatas[1] - anterior.midi) ? candidatas[0] : candidatas[1];
+        else melhor = candidatas[0];
+      }
+      if (melhor != null && melhor !== n.midi) {
+        mudancas.push({ nota: n, midiAntes: n.midi, fonte: fonteDa(n) });
+        n.midi = melhor;
+      }
+    }
+    anterior = n;
+  }
+  if (!mudancas.length) { statusNotas("autotune: nenhuma nota fora do tom na linha do tempo", "ok"); return; }
+  registrarDesfazer({ tipo: "autotune", nota: mudancas[0].nota, mudancas });
+  const fontes = [...new Set(mudancas.map(m => m.fonte))].sort((x, y) => (y === "vocals") - (x === "vocals"));  // a voz primeiro: recalcula a extensão
+  for (const f of fontes.slice(1)) salvarNotasDepois(f);
+  notasAlteradas(`autotune: ${mudancas.length} nota${mudancas.length > 1 ? "s" : ""} ajustada${mudancas.length > 1 ? "s" : ""} ao tom`, fontes[0]);
 }
 
 function removerNota(n) {
@@ -2742,6 +2829,49 @@ function novaNota() {
   notasAlteradas(`${nomeNota(n.midi)} criada em ${formatarTempo(n.t)}`, fonte);
 }
 
+// ---------- varinha mágica: reprocessa as notas de UMA faixa (afinar.py) ----------
+// Voz: detector de altura monofônico (pYIN) no vocals.wav; instrumentos e solo: limpeza das notas do
+// basic-pitch (une notas quebradas, corta o fim quando o som cai, tira notas curtas fora do tom).
+// Substitui todas as notas da faixa; Ctrl+Z volta as anteriores.
+let reprocessando = false;
+function fonteDaVarinha() {
+  const marcadas = fontesSelecionadas();
+  return marcadas.length === 1 && !gravacaoMidiDe(marcadas[0]) ? marcadas[0] : null;
+}
+function atualizarVarinha() {
+  const fonte = MUSICA ? fonteDaVarinha() : null, b = $("btnVarinha");
+  b.disabled = !fonte || reprocessando;
+  b.title = reprocessando ? "Reprocessando…"
+    : fonte ? `Varinha mágica: reprocessar as notas de "${rotuloFonte(fonte)}" para acertar as notas (Ctrl+Z desfaz)`
+    : "Varinha mágica: marque só uma faixa em Notas (gravações MIDI não)";
+}
+async function reprocessarNotas() {
+  const fonte = fonteDaVarinha();
+  if (!fonte || reprocessando || !MUSICA) return;
+  const id = MUSICA.id;
+  reprocessando = true;
+  atualizarVarinha();
+  statusNotas(`reprocessando ${rotuloFonte(fonte)}…${fonte === "vocals" ? " (a voz leva por volta de meio minuto)" : ""}`);
+  try {
+    const r = await api(`/api/musicas/${id}/reprocessar/${fonte}`, { method: "POST" });
+    if (!MUSICA || MUSICA.id !== id) return;  // trocou de música no meio
+    const antes = notasDaFonte(fonte);
+    // as edições anteriores desta faixa apontam para notas que saem: só a troca inteira pode ser desfeita
+    for (let i = historicoNotas.length - 1; i >= 0; i--) if (historicoNotas[i].fonte === fonte) historicoNotas.splice(i, 1);
+    historicoNotas.push({ tipo: "substituir", fonte, antes });
+    if (historicoNotas.length > MAXIMO_DESFAZER) historicoNotas.shift();
+    definirNotasDaFonte(fonte, r.notas);
+    aplicarFontes();
+    notasAlteradas(`${r.metodo}: ${antes.length} → ${r.notas.length} notas (Ctrl+Z desfaz)`, fonte);
+  } catch (e) {
+    statusNotas("Não foi possível reprocessar: " + e.message, "erro");
+    verificarServidor();  // servidor aberto antes de existir esta rota
+  } finally {
+    reprocessando = false;
+    atualizarVarinha();
+  }
+}
+
 // ---------- desfazer (Ctrl+Z) as edições de notas, uma de cada vez ----------
 // Cada edição guarda o que precisa para voltar; desfazer também é salvo sozinho. Vale para a
 // música aberta (trocar de música limpa o histórico), mesmo que a fonte de notas tenha mudado.
@@ -2756,6 +2886,19 @@ function desfazerNota() {
   const acao = historicoNotas.pop();
   if (!acao) { statusNotas("nada para desfazer"); return; }
   const { fonte, nota } = acao;
+  if (acao.tipo === "substituir") {  // varinha mágica: volta as notas de antes
+    definirNotasDaFonte(fonte, acao.antes);
+    if (fontesEmUso().includes(fonte)) aplicarFontes();
+    notasAlteradas(`desfeito: notas de ${rotuloFonte(fonte)} antes da varinha (${acao.antes.length})`, fonte);
+    return;
+  }
+  if (acao.tipo === "autotune") {
+    for (const m of acao.mudancas) m.nota.midi = m.midiAntes;
+    const fontes = [...new Set(acao.mudancas.map(m => m.fonte))].sort((x, y) => (y === "vocals") - (x === "vocals"));
+    for (const f of fontes.slice(1)) salvarNotasDepois(f);
+    notasAlteradas(`desfeito: autotune de ${acao.mudancas.length} nota${acao.mudancas.length > 1 ? "s" : ""}`, fontes[0]);
+    return;
+  }
   const lista = notasDaFonte(fonte, true);
   let descricao;
   if (acao.tipo === "altura") {
@@ -2861,6 +3004,7 @@ $("btnNotaBaixo").addEventListener("click", e => alterarNota(e.shiftKey ? -12 : 
 $("btnNotaExcluir").addEventListener("click", excluirNota);
 $("btnNotaUnir").addEventListener("click", unirComAnterior);
 $("btnNotaNova").addEventListener("click", novaNota);
+$("btnAutotune").addEventListener("click", autotuneVisiveis);
 
 // ---------- listas (rolagem só dentro da própria caixa, nunca da página) ----------
 function rolarDentro(caixa, el, fracao = 0.5) {
@@ -2950,6 +3094,7 @@ function montarFontesNotas(marcadas) {
 function montarTabelaFaixas() {
   const corpo = $("faixa-corpo");
   corpo.textContent = "";
+  atualizarMarcarTodosAudio();
   if (!MUSICA) return;
   const melodias = Object.keys(DADOS.melodias || {}), audios = DADOS.faixas || [];
   const linhas = [
@@ -3063,6 +3208,8 @@ function montarTabelaFaixas() {
     botao("excluir", "bi-trash", l.midi ? "Apagar a gravação MIDI" : "Apagar a faixa (áudio e notas)", () => excluirFonte(fonte));
     corpo.appendChild(tr);
   }
+  atualizarMarcarTodosAudio();
+  atualizarVarinha();
 }
 
 // Marca/desmarca as notas de uma faixa (tabela do Player e pistas MIDI da Mixagem)
@@ -3173,6 +3320,7 @@ function montarNotas() {
 }
 
 function aplicarFontes() {
+  atualizarVarinha();
   notaSelecionada = null;
   montarNotas();
   recalcularFaixaMidi();
@@ -3188,11 +3336,25 @@ function anteriorMesmaFonte(n) {
   return null;
 }
 
+// "Tom" mostra o tom do trecho onde o cursor está; quando a música modula, avisa a mudança
+let tomMostrado = "";
+function mostrarTom(t) {
+  const tom = tomAtual(t), original = tomNoTempo(t);
+  const chave = tom ? `${tom.tonica}/${tom.modo}/${transp}/${modula()}` : "";
+  if (chave === tomMostrado) return;
+  tomMostrado = chave;
+  $("tomAtual").textContent = nomeTom(tom);
+  const partes = [];
+  if (transp !== 0 && original) partes.push("original: " + nomeTom(original));
+  if (modula()) partes.push("modula: " + DADOS.tons.map(s => `${cifraTom(s.tonica + transp, s.modo)} em ${formatarTempo(s.t).slice(0, 5)}`).join(" → "));
+  $("tomOriginal").textContent = partes.join(" · ");
+}
+
 function aplicarTransposicao(valor) {
   transp = limitar(valor, -12, 12);
   $("transpValor").textContent = transp > 0 ? "+" + transp : String(transp);
-  $("tomAtual").textContent = nomeTom(tomAtual());
-  $("tomOriginal").textContent = transp !== 0 && DADOS.tom ? "original: " + nomeTom(DADOS.tom) : "";
+  tomMostrado = "";
+  mostrarTom(tempoOuvido());
   recalcularFaixaMidi();
   montarListas();
   atualizarAvisoFaixas();
@@ -6340,6 +6502,7 @@ function quadro() {
   mostrarCampoHarmonico(alvo, acordeAtivo >= 0 ? ACORDES[acordeAtivo] : null);
   desenharPiano(alvo, acordeAtivo >= 0 ? ACORDES[acordeAtivo] : null);
   atualizarBotoesNota(alvo);
+  mostrarTom(t);
   $("acordeAtual").textContent = acordeAtivo >= 0 ? nomeAcorde(ACORDES[acordeAtivo]) : "—";
   $("acordeAtual").classList.toggle("vazia", acordeAtivo < 0);
   $("proximoAcorde").textContent = ia + 1 < ACORDES.length ? nomeAcorde(ACORDES[ia + 1]) : "—";
@@ -7298,11 +7461,15 @@ $("volumeFaixa").addEventListener("input", e => {
   if (saidaFaixas) saidaFaixas.gain.setTargetAtTime(v, ctx.currentTime, 0.02);
 });
 $("btnFaixasNenhuma").addEventListener("click", desligarTodasFaixas);
-$("btnFaixasTodas").addEventListener("click", () => {
-  for (const cb of $("faixa").querySelectorAll('input[id$="-marcar"]')) {
+function ligarTodasFaixas() {
+  for (const cb of $("faixa").querySelectorAll('tbody input[id$="-marcar"]')) {
     if (!cb.checked) { cb.checked = true; ligarFaixa(cb.value, true); }
   }
-});
+  atualizarMarcarTodosAudio();
+}
+$("btnFaixasTodas").addEventListener("click", ligarTodasFaixas);
+$("btnVarinha").addEventListener("click", reprocessarNotas);
+$("faixa-audio-todas").addEventListener("change", e => e.target.checked ? ligarTodasFaixas() : desligarTodasFaixas());
 // Leva a linha do tempo ao início da primeira vez que a nota é cantada (as mesmas notas que contam
 // na extensão: sem as muito curtas) e, com a voz nas notas exibidas e a música parada, seleciona-a
 function irParaNotaVocal(midi) {

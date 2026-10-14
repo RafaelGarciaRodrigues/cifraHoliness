@@ -34,6 +34,7 @@ except ImportError as erro_importacao:  # aparece no log da Biblioteca (passe o 
 
 import banco
 import letra
+import tonalidade
 from pastas import BASE_DIR, PASTA_AUDIO, listar_audios
 
 PASTA_TABLATURAS = os.path.join(BASE_DIR, "tablaturas")
@@ -538,7 +539,12 @@ def exportar_txt(solo, acordes, tom, caminho_musica, nome_base):
     return caminho_txt
 
 
-def exportar_dados(id_musica, solo, melodias, trechos, acordes, tom, caminho_musica, caminhos_faixas,
+def acordes_json(acordes):
+    return [{"t": round(a["inicio"], 3), "d": round(a["fim"] - a["inicio"], 3),
+             "raiz": a["raiz"], "tipo": a["tipo"]} for a in acordes]
+
+
+def exportar_dados(id_musica, solo, melodias, trechos, acordes, tom, tons, caminho_musica, caminhos_faixas,
                    duracao, letra_palavras):
     """Grava dados/<id>.json, lido pela interface (app.py)."""
     os.makedirs(PASTA_DADOS, exist_ok=True)
@@ -558,8 +564,8 @@ def exportar_dados(id_musica, solo, melodias, trechos, acordes, tom, caminho_mus
         "melodias": {"solo": notas_json(solo), **{f: notas_json(m) for f, m in melodias.items()}},
         "trechosSolo": [{"t": round(s["inicio"], 3), "d": round(s["fim"] - s["inicio"], 3), "f": s["fonte"]}
                         for s in trechos],
-        "acordes": [{"t": round(a["inicio"], 3), "d": round(a["fim"] - a["inicio"], 3),
-                     "raiz": a["raiz"], "tipo": a["tipo"]} for a in acordes],
+        "acordes": acordes_json(acordes),
+        "tons": tons,  # [{t, d, tonica, modo}]: o tom de cada trecho (mais de um quando a música modula)
         # tempos palavra a palavra da transcrição, usados no destaque estilo karaokê
         "letraPalavras": letra_palavras,
     }
@@ -614,7 +620,13 @@ def analisar_faixas(caminhos):
     print("[4/6] Detectando acordes e tom da música...")
     acordes, croma_total = detectar_acordes(audios)
     tom = detectar_tom(croma_total, acordes)
-    return solo, melodias, trechos, acordes, tom, duracao
+    # modulação: o tom de cada trecho; o tom da música passa a ser o do início (o tom único da
+    # música inteira mistura os dois e pode não ser nenhum deles)
+    tons = tonalidade.detectar_modulacoes(acordes_json(acordes), tom, duracao)
+    if len(tons) > 1:
+        tom = {"tonica": tons[0]["tonica"], "modo": tons[0]["modo"]}
+        print("      Mudança de tom: " + " -> ".join(f"{nome_tom(s).split()[0]} em {formatar_tempo(s['t'])}" for s in tons))
+    return solo, melodias, trechos, acordes, tom, tons, duracao
 
 
 def executar_pipeline(caminho_musica):
@@ -641,7 +653,7 @@ def executar_pipeline(caminho_musica):
         finally:
             shutil.rmtree(pasta_trabalho, ignore_errors=True)
 
-    solo, melodias, trechos, acordes, tom, duracao = analisar_faixas(caminhos)
+    solo, melodias, trechos, acordes, tom, tons, duracao = analisar_faixas(caminhos)
 
     print("[5/6] Letra da música...")
     cadastro = banco.obter(id_musica)
@@ -650,7 +662,7 @@ def executar_pipeline(caminho_musica):
 
     print("[6/6] Gravando transcrição, dados e cadastro...")
     caminho_txt = exportar_txt(solo, acordes, tom, caminho_musica, nome_base)
-    caminho_dados = exportar_dados(id_musica, solo, melodias, trechos, acordes, tom, caminho_musica,
+    caminho_dados = exportar_dados(id_musica, solo, melodias, trechos, acordes, tom, tons, caminho_musica,
                                    caminhos, duracao, letra_palavras)
     banco.registrar_processamento(id_musica, arquivo, nome_base, tom, duracao, len(solo), len(acordes), qtd_frases)
 

@@ -30,6 +30,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 import banco
 import letra
+import tonalidade
 from pastas import BASE_DIR, base_video
 
 PASTA_FAIXAS = os.path.join(BASE_DIR, "faixas")
@@ -400,12 +401,13 @@ def desenhar_violao(d, x_meio, y_topo, altura, acorde, fonte_casa):
 class Piano:
     """Faixa da base do vídeo (FAIXA_PIANO × LARGURA, RGB) no instante t; refeita só quando muda."""
 
-    def __init__(self, notas, acordes, tom):
+    def __init__(self, notas, acordes, tom, tons=None):
         self.notas = sorted(notas, key=lambda n: n["t"])
         self.acordes = sorted(acordes, key=lambda a: a["t"])
         self.inicios_notas = [n["t"] for n in self.notas]
         self.inicios_acordes = [a["t"] for a in self.acordes]
-        self.tom = tom
+        self.tom = self.tom_geral = tom
+        self.tons = tons or []  # tom de cada trecho (a música pode modular)
         bemois = [5, 10, 3, 8, 1] if tom and tom["modo"] == "maior" else [2, 7, 0, 5, 10, 3]
         self.nomes = BEMOIS if tom and tom["tonica"] % 12 in bemois else SUSTENIDOS
         largura = LARGURA - 2 * LATERAL_PIANO
@@ -433,7 +435,9 @@ class Piano:
     def faixa(self, t):
         nota = self._ativo(self.notas, self.inicios_notas, t)
         acorde = self._ativo(self.acordes, self.inicios_acordes, t)
-        chave = (nota["midi"] if nota else None, (acorde["raiz"], acorde["tipo"]) if acorde else None)
+        self.tom = tonalidade.tom_em(self.tons, self.tom_geral, t)
+        chave = (nota["midi"] if nota else None, (acorde["raiz"], acorde["tipo"]) if acorde else None,
+                 (self.tom["tonica"], self.tom["modo"]) if self.tom else None)
         if chave != self.chave:
             self.chave, self.imagem = chave, self._desenhar(nota, acorde)
             if ROTULOS_NO_TOPO:
@@ -619,7 +623,8 @@ def renderizar(formato, saida, w, rotulo_progresso, rotulo_final):
     notas = [n for fonte in w["notas"].split(",")
              for n in ((gravacoes_midi.get(fonte[5:]) or {}).get("notas") if fonte.startswith("midi:")
                        else melodias.get(fonte)) or []]  # várias fontes: juntas
-    piano = Piano(notas or melodias.get("solo") or [], dados.get("acordes") or [], dados.get("tom"))
+    piano = Piano(notas or melodias.get("solo") or [], dados.get("acordes") or [], dados.get("tom"),
+                  dados.get("tons"))
     abertura = renderizar_abertura(w["titulo"], w["artista"], w["tom"])  # tom original: as faixas não são transpostas
     temporario = saida + ".parcial.mp4"
 
