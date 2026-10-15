@@ -1,39 +1,32 @@
-# Letra: Rachel Novaes - Tua é a Glória (id 7f954864)
+# Letra: Tua é a Glória (id 7f954864)
 # Formato: [início - fim] frase · linhas começando com # são ignoradas
 
-[00:33.23 - 00:34.51] estão
-[00:39.70 - 00:40.72] este
-[00:47.66 - 00:55.20] nada vai me separar de ti tu és apronte
-[01:05.76 - 01:07.00] senhor
-[01:08.82 - 01:10.30] tua
-[01:15.39 - 01:17.07] pra ser
-[01:20.66 - 01:21.28] esta
-[01:21.28 - 01:34.20] gestão diante do senhor não existe nenhum deus que seja digno como
-[01:35.70 - 01:36.10] tu
-[01:36.10 - 01:40.88] Nada vai me separar de ti
-[01:40.88 - 01:43.78] Tu és a própria eu
-[01:45.38 - 01:48.64] Não deixarei de ti
+[00:47.66 - 00:52.90] Nada vai me separar de Ti
+[00:52.90 - 00:55.20] Tu és a própria vida em mim
+[01:05.76 - 01:07.00] Diante do Senhor
+[01:15.39 - 01:22.68] Honra e majestade estão
+[01:22.68 - 01:26.54] Diante do Senhor
+[01:26.54 - 01:32.22] Não existe nenhum Deus que seja
+[01:32.22 - 01:36.10] Digno como Tu
+[01:36.10 - 01:40.88] Nada vai me separar de Ti
+[01:40.88 - 01:43.78] Tu és a própria vida em mim
+[01:45.38 - 01:48.64] Não deixarei de te louvar
 [01:50.24 - 01:53.66] Não deixarei de te buscar
-[01:53.66 - 01:55.64] Essa razão
-[02:00.57 - 02:01.91] Antes eu não
-[02:04.34 - 02:08.56] deixarei de te louvar
+[01:53.66 - 01:55.64] És a razão da minha vida
+[02:00.57 - 02:01.63] Vivo para te exaltar
+[02:01.63 - 02:08.56] Não deixarei de te louvar
 [02:08.56 - 02:11.88] Não deixarei de te buscar
-[02:11.88 - 02:13.72] Essa razão
-[02:17.91 - 02:19.87] Digo pra te adorar
-[02:37.18 - 02:39.00] Você pode declarar isso mais forte.
-[02:39.12 - 02:40.44] Não deixarei.
-[02:40.44 - 02:45.04] Não deixarei de te louvar.
-[02:45.34 - 02:48.46] Não deixarei de te buscar.
-[02:49.08 - 02:51.82] Essa razão da minha
-[02:53.74 - 02:54.22] vida.
-[02:54.26 - 02:56.92] Vivo pra te exaltar.
-[02:59.26 - 03:01.78] Não deixarei de te
-[03:03.63 - 03:03.83] louvar.
-[03:03.83 - 03:06.15] Não deixarei de te
-[03:13.54 - 03:13.80] buscar.
-[03:14.40 - 03:14.64] Te adoro
-[03:37.24 - 03:38.30] de ti.
-[03:42.04 - 03:42.62] De ti.
-[03:44.47 - 03:45.35] Razão
-[03:50.28 - 03:51.50] da te exaltar.
-[03:53.87 - 03:56.69] Não deixarei de te...
+[02:11.88 - 02:13.72] És a razão da minha vida
+[02:17.91 - 02:19.87] Vivo pra te adorar
+[02:37.18 - 02:38.20] Não deixarei de te louvar
+[02:39.12 - 02:40.44] Não deixarei de te buscar
+[02:40.44 - 02:45.04] Não deixarei de te louvar
+[02:45.34 - 02:48.46] Não deixarei de te buscar
+[02:49.08 - 02:54.22] És a razão da minha vida
+[02:54.26 - 02:56.92] Vivo para te exaltar
+[02:59.26 - 03:03.83] Não deixarei de te louvar
+[03:03.83 - 03:06.15] Não deixarei de te buscar
+[03:13.54 - 03:14.64] Vivo pra te adorar
+[03:42.04 - 03:45.35] És a razão da minha vida
+[03:50.28 - 03:51.50] Vivo para te exaltar
+[03:53.87 - 03:56.69] Não deixarei de te louvar

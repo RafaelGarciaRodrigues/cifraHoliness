@@ -3994,7 +3994,7 @@ async function encaixarLetra() {
   try {
     trechos = (await api(`/api/musicas/${id}/letra/encaixar`, { method: "POST", body: JSON.stringify({ linhas }) })).trechos;
   } catch (e) {
-    aviso = ` (encaixe pela voz indisponível: ${e.message}; usada a transcrição)`;
+    aviso = `⚠ Encaixe pela voz falhou (${e.message}). Usada a transcrição do Whisper, que erra muito: confira tudo. `;
   } finally {
     encaixando = false;
     botao.disabled = false;
@@ -4005,7 +4005,7 @@ async function encaixarLetra() {
     const palavras = (DADOS.letraPalavras || []).flatMap(p => p.palavras || [])
       .filter(w => normalizar(w.texto)).sort((a, b) => a.inicio - b.inicio);
     if (!palavras.length) {
-      atualizarStatusLetra("Não foi possível encaixar" + aviso.replace("; usada a transcrição", "") + " e não há transcrição da voz.");
+      atualizarStatusLetra(aviso.replace(/ Usada .*$/, "") + " Não há transcrição da voz para encaixar.");
       return;
     }
     metodo = "pela transcrição";
@@ -4047,8 +4047,8 @@ function aplicarEncaixe(linhas, trechos, metodo, aviso) {
   const semLetra = trechosVozSemLetra().map(([a, b]) => `${formatarTempo(a)}–${formatarTempo(b)}`);
   const qtdRepetidas = frases.length - new Set(frases.map(f => f.linha)).size;
   const curta = l => l.length > 30 ? l.slice(0, 30) + "…" : l;
-  atualizarStatusLetra(`Encaixadas ${metodo} ${frases.length} frases de ${linhas.length} linhas` +
-    (qtdRepetidas ? ` (${qtdRepetidas} repetida(s) pela música)` : "") + aviso +
+  atualizarStatusLetra(aviso + `Encaixadas ${metodo} ${frases.length} frases de ${linhas.length} linhas` +
+    (qtdRepetidas ? ` (${qtdRepetidas} repetida(s) pela música)` : "") +
     (novas.length ? `; ${novas.length} entre as vizinhas, sem tempo exato` : "") +
     (naoAchadas.length ? `; não achadas (adicione à mão): ${naoAchadas.slice(0, 3).map(l => `"${curta(l)}"`).join(", ")}${naoAchadas.length > 3 ? ` e mais ${naoAchadas.length - 3}` : ""}` : "") +
     (semLetra.length ? `. Voz sem letra em ${semLetra.slice(0, 3).join(", ")}${semLetra.length > 3 ? " e outros" : ""}` : "") +

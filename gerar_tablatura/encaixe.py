@@ -44,18 +44,44 @@ VAO_MAXIMO = 4.0       # letras de uma mesma linha separadas por mais que isso (
 SEGURAR = 0.1          # por quadro segurando a mesma letra (evita letra "esticada" sobre o silêncio)
 
 
-def disponivel():
+def _sem_torchvision_quebrado():
+    """O transformers importa o torchvision se ele estiver instalado; um torchvision de outra versão do
+    torch quebra o import do wav2vec2 ("operator torchvision::nms does not exist"). O wav2vec2 não usa
+    o torchvision: se ele não carrega, fica marcado como ausente."""
+    if "torchvision" in sys.modules:
+        return
     try:
-        import transformers  # noqa: F401
+        import torchvision  # noqa: F401
+    except Exception:
+        for nome in [m for m in sys.modules if m == "torchvision" or m.startswith("torchvision.")]:
+            del sys.modules[nome]
+        sys.modules["torchvision"] = None  # find_spec devolve None: o transformers trata como não instalado
+
+
+def _classes_wav2vec2():
+    _sem_torchvision_quebrado()
+    from transformers import Wav2Vec2ForCTC, Wav2Vec2Processor
+    return Wav2Vec2ForCTC, Wav2Vec2Processor
+
+
+ERRO_IMPORT = None  # por que o encaixe pela voz não está disponível (mostrado na interface)
+
+
+def disponivel():
+    global ERRO_IMPORT
+    try:
         import torch  # noqa: F401
+        _classes_wav2vec2()
+        ERRO_IMPORT = None
         return True
-    except ImportError:
+    except Exception as e:  # ImportError, ou um pacote quebrado (RuntimeError...)
+        ERRO_IMPORT = f"{type(e).__name__}: {e}"
         return False
 
 
 # ---------------------------------------------------------------- probabilidades (CTC)
 def _carregar_modelo():
-    from transformers import Wav2Vec2ForCTC, Wav2Vec2Processor
+    Wav2Vec2ForCTC, Wav2Vec2Processor = _classes_wav2vec2()
     processador = Wav2Vec2Processor.from_pretrained(MODELO)
     modelo = Wav2Vec2ForCTC.from_pretrained(MODELO)
     modelo.eval()

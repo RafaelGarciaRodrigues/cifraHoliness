@@ -928,7 +928,8 @@ class Manipulador(BaseHTTPRequestHandler):
         if not os.path.isfile(os.path.join(PASTA_FAIXAS, id_musica, "vocals.wav")):
             return self._erro(400, "faixa de voz (vocals.wav) não encontrada; processe a música de novo")
         if not encaixe.disponivel():
-            return self._erro(400, "instale o transformers (pip install transformers) para o encaixe pela voz")
+            return self._erro(400, "o modelo de voz não carrega (pip install transformers torch): "
+                                   f"{encaixe.ERRO_IMPORT}")
         try:
             trechos = encaixe.encaixar_musica(id_musica, linhas)
         except Exception as e:  # download do modelo, memória...

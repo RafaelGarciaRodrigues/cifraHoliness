@@ -1085,3 +1085,12 @@ varinha reduz bastante a edição manual, mas não a elimina. Sugestão de ordem
 -- 3:06.98
 -- 3:43.53
 - notei ue são as mesmas notas, em um refrão que rse repete e sempre nesse pequeno trecho tem erro
+
+# ENCAIXAR LETRA
+- a função chamada por id="f3b9d4" não está funcionando como deveriam
+- quando especifiquei ela, descrevi que em trechos repetidos da música, a letra inicialmente inserida na caixa de texto não teria essas repetições e a função deveria encontrar as frases e ENCAIXAR
+- por exemplo a música Tua é a Glória 7f954864 está com falhas justamente nas repetições
+- além disso essa mesma música começou errado
+- enfim, essa função possui muitas falhas e não está servindo ao seu propósito
+
+
