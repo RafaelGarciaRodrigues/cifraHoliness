@@ -2,6 +2,12 @@
 TOM:A {A}
 
 
+
+
+
+
+
+
 <intro>
 D/A                  A
       És fiel em todo tempo

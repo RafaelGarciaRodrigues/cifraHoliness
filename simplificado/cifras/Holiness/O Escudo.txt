@@ -4,6 +4,10 @@ TOM:D {D}
 <yt>https://www.youtube.com/watch?v=9It9irbLMnU</yt>
 <t>24</t>
 
+
+
+
+
 <intro>
 D           Bm          F#m
 Não há ferrolhos, nem portas
@@ -107,6 +111,8 @@ E a tempes___tade se acalma
 Na voz daquele que tudo criou
           A/C#  Bm      F#m
 Pois sua pa____lavra é pura
+        G        A2       D2
+Escudo para os que nele creem
         G        A2       D2
 Escudo para os que nele creem
 </refrao>

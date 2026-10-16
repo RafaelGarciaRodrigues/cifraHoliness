@@ -671,6 +671,10 @@ TOM:Bm
 <yt>https://www.youtube.com/watch?v=QC780wTNfKg</yt>
 <t>24</t>
 
+
+
+
+
 <intro>
           G  A9(11)
 A Ele a Glória
@@ -1172,6 +1176,9 @@ TOM:E
 https://www.youtube.com/watch?v=I0Ye-ESc7KM
 </yt>
 
+
+
+
 <intro>
    D         G  
 Adorado, exaltado és Senhor
@@ -1268,6 +1275,7 @@ TOM:C
 <yt>
 https://www.youtube.com/watch?v=hIrw_wRXAfk
 </yt>
+
 
 <t>15</t>
 
@@ -1504,6 +1512,12 @@ Bondade de Deus
 TOM:A {A}
 
 
+
+
+
+
+
+
 <intro>
 D/A                  A
       És fiel em todo tempo
@@ -1724,6 +1738,8 @@ TOM:F
 <yt>
 https://www.youtube.com/watch?v=Su_FLj8KX5Q
 </yt>
+
+
 
 
 <intro>
@@ -2065,6 +2081,13 @@ E o louvor,   ao rei,      Jesus
 Deus de Amor
 TOM:G {A}
 
+
+
+
+
+
+
+
 <intro>
 G
 Deus de Amor
@@ -2207,7 +2230,22 @@ Deus Está Aqui
 TOM:A
 
 
-A
+
+
+
+
+
+
+<intro>
+ A   E/G#  F#m7  F#4(7/9)  F#m7
+Deus está aqui
+     D              E/G#     A
+Tão certo como ar que eu respiro
+     D           E/D            C#7      F#m7
+Tão certo como o amanhã que se levan.....tará
+     Bm7             E4                A4
+Tão certo como eu te falo e podes me ouvir
+</intro>
 
  A   E/G#  F#m7  F#4(7/9)  F#m7
 Deus está aqui
@@ -2235,14 +2273,14 @@ Tão certo como ar que eu respiro
 Tão certo como o amanhã que se levan.....tará
      Bm7             E4                A
 Tão certo como eu te falo e podes me ouvir
-----
+
      D                E/D
 Tão certo como eu te falo
      C#7              F#m7
 Tão certo como eu te falo
      Bm7              E               A4
 Tão certo como eu te falo podes me ouvir
----
+
  A   E/G#  F#m7  F#4(7/9)  F#m7
 Deus está  aqui
      D              E/G#     A
@@ -2251,7 +2289,7 @@ Tão certo como ar que eu respiro
 Tão certo como o amanhã que se levan.....tará
      Bm7             E4                A
 Tão certo como eu te falo e podes me ouvir
-----
+
      D                E/D
 Tão certo como eu te falo
      C#7              F#m7
@@ -3688,6 +3726,9 @@ TOM:D
 https://www.youtube.com/watch?v=R0dMT-M-J3o
 </yt>
 
+
+
+
 <intro>
        A              D  G    D
 O que darei a ti Senhor
@@ -4387,6 +4428,11 @@ TOM:E
 
 <t>24</t>
 
+
+
+
+
+
 <intro>
        E
 Sejam luz
@@ -4817,6 +4863,7 @@ TOM:A {C#}
 <t>26</t>
 
 <yt>https://www.youtube.com/watch?v=nR_Wd-is3cw</yt>
+
 
 
 
@@ -5337,6 +5384,10 @@ TOM:D {D}
 <yt>https://www.youtube.com/watch?v=9It9irbLMnU</yt>
 <t>24</t>
 
+
+
+
+
 <intro>
 D           Bm          F#m
 Não há ferrolhos, nem portas
@@ -5440,6 +5491,8 @@ E a tempes___tade se acalma
 Na voz daquele que tudo criou
           A/C#  Bm      F#m
 Pois sua pa____lavra é pura
+        G        A2       D2
+Escudo para os que nele creem
         G        A2       D2
 Escudo para os que nele creem
 </refrao>
@@ -11887,9 +11940,9 @@ Você vai discar várias vezes, telefone mudo não pode chamar
 	// ===== Grupos (subpastas de \cifras): painel de botoes + icone de alternancia em nav-alfabeto =====
 	// (gruposDisponiveis/grupoAtivo em si ja foram calculados mais acima, antes do primeiro
 	// aplicarFiltro() possivel - ver comentario proximo a essas variaveis.)
-	var botaoParaGrupo = {}; // fora do if: o menu de musicas (abaixo) tambem troca o grupo ativo
 	if (gruposDisponiveis.length) {
 		var gruposPainel = document.getElementById("grupos-painel");
+		var botaoParaGrupo = {};
 
 		gruposDisponiveis.forEach(function (nomeGrupo) {
 			var botao = document.createElement("div");
@@ -11923,9 +11976,9 @@ Você vai discar várias vezes, telefone mudo não pode chamar
 	}
 
 	// ===== Menu de musicas (ver rc.md secao MENU) =====
-	// Icone hamburguer logo abaixo do grupo-toggle: abre a lista com o nome de todas as musicas.
-	// Clicar numa delas "abre todas de novo" (desliga o filtro do funil e, se a musica for de outro
-	// grupo, troca pro grupo dela) e rola ate o topo da musica clicada.
+	// Icone hamburguer logo abaixo do grupo-toggle: abre a lista com o nome das musicas do grupo
+	// selecionado. Clicar numa delas "abre todas de novo" (desliga o filtro do funil) e rola ate o
+	// topo da musica clicada.
 	var menuMusicas = document.getElementById("menu-musicas");
 	var menuLista = menuMusicas.querySelector(".lista");
 
@@ -11934,13 +11987,6 @@ Você vai discar várias vezes, telefone mudo não pode chamar
 		var secao = document.getElementById("musica-" + idx);
 		if (!musica || !secao) return;
 		filtroAtivo = false;
-		if ((musica.grupo || "") !== grupoAtivo) {
-			grupoAtivo = musica.grupo || "";
-			salvarGrupoAtivo(grupoAtivo);
-			Object.keys(botaoParaGrupo).forEach(function (g) {
-				botaoParaGrupo[g].classList.toggle("ativo", g === grupoAtivo);
-			});
-		}
 		aplicarFiltro();
 		atualizarNavAlfabeto();
 		menuMusicas.classList.remove("visivel");
@@ -11975,7 +12021,9 @@ Você vai discar várias vezes, telefone mudo não pode chamar
 		// destaca e centraliza na lista a musica que esta na tela no momento
 		var secaoAtual = musicaAtual();
 		var idxAtual = secaoAtual ? parseInt(secaoAtual.id.replace("musica-", ""), 10) : -1;
+		// so as musicas do grupo selecionado (grupo "" = sem grupo, igual ao aplicarFiltro)
 		Array.prototype.forEach.call(menuLista.children, function (item, i) {
+			item.hidden = (musicas[i].grupo || "") !== grupoAtivo;
 			item.classList.toggle("atual", i === idxAtual);
 			if (i === idxAtual) item.scrollIntoView({ block: "center" });
 		});

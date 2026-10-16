@@ -1,6 +1,13 @@
 ﻿Deus de Amor
 TOM:G {A}
 
+
+
+
+
+
+
+
 <intro>
 G
 Deus de Amor

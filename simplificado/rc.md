@@ -535,3 +535,5 @@ curl --request GET \
 - abaixo do botão class="grupo-toggle"
 - insira um botão apenas com icone (pode ser o "hamburguer" 3 linhas horizontais que quando clicado
 - mostra um menu apenas com o nome das músicas que clicando na música abre todas elas de novo mas posicionado no topo da música clicada
+
+- mostre somente as músicas do grupi selecionado
