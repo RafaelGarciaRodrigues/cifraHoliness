@@ -272,6 +272,44 @@
 		border-top: 1px solid #444;
 		padding-top: 6px;
 	}
+	/* Menu de musicas (ver rc.md secao MENU): icone hamburguer logo abaixo do grupo-toggle */
+	#nav-alfabeto a.menu-toggle {
+		color: #ffcc66;
+		margin-top: 4px;
+		border-top: 1px solid #444;
+		padding-top: 6px;
+	}
+	#menu-musicas {
+		position: fixed;
+		inset: 0;
+		display: none;
+		background: rgba(0, 0, 0, 0.4);
+		z-index: 16;
+	}
+	#menu-musicas.visivel {
+		display: block;
+	}
+	#menu-musicas .lista {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		right: 0;
+		width: min(320px, 85vw);
+		overflow-y: auto;
+		background: rgba(16, 16, 16, 0.95);
+		border-left: 1px solid #333;
+		padding: 8px 0;
+	}
+	#menu-musicas .item {
+		padding: 10px 16px;
+		color: #f0f0f0;
+		border-bottom: 1px solid #222;
+		cursor: pointer;
+		user-select: none;
+	}
+	#menu-musicas .item.atual {
+		color: #f60;
+	}
 	#grupos-painel {
 		position: fixed;
 		top: 0;
@@ -336,6 +374,7 @@
 <body>
 <nav id="nav-alfabeto"></nav>
 <div id="grupos-painel"></div>
+<div id="menu-musicas"><div class="lista"></div></div>
 <div id="linha-demarcatoria" hidden></div>
 <div id="controles-velocidade">
 	<div id="velocidade-menos-btn" class="botao-circular pequeno" hidden><i class="bi bi-music-note"></i></div>
@@ -11830,9 +11869,9 @@ Você vai discar várias vezes, telefone mudo não pode chamar
 	// ===== Grupos (subpastas de \cifras): painel de botoes + icone de alternancia em nav-alfabeto =====
 	// (gruposDisponiveis/grupoAtivo em si ja foram calculados mais acima, antes do primeiro
 	// aplicarFiltro() possivel - ver comentario proximo a essas variaveis.)
+	var botaoParaGrupo = {}; // fora do if: o menu de musicas (abaixo) tambem troca o grupo ativo
 	if (gruposDisponiveis.length) {
 		var gruposPainel = document.getElementById("grupos-painel");
-		var botaoParaGrupo = {};
 
 		gruposDisponiveis.forEach(function (nomeGrupo) {
 			var botao = document.createElement("div");
@@ -11864,6 +11903,66 @@ Você vai discar várias vezes, telefone mudo não pode chamar
 		});
 		nav.appendChild(grupoToggle);
 	}
+
+	// ===== Menu de musicas (ver rc.md secao MENU) =====
+	// Icone hamburguer logo abaixo do grupo-toggle: abre a lista com o nome de todas as musicas.
+	// Clicar numa delas "abre todas de novo" (desliga o filtro do funil e, se a musica for de outro
+	// grupo, troca pro grupo dela) e rola ate o topo da musica clicada.
+	var menuMusicas = document.getElementById("menu-musicas");
+	var menuLista = menuMusicas.querySelector(".lista");
+
+	function abrirMusicaDoMenu(idx) {
+		var musica = musicas[idx];
+		var secao = document.getElementById("musica-" + idx);
+		if (!musica || !secao) return;
+		filtroAtivo = false;
+		if ((musica.grupo || "") !== grupoAtivo) {
+			grupoAtivo = musica.grupo || "";
+			salvarGrupoAtivo(grupoAtivo);
+			Object.keys(botaoParaGrupo).forEach(function (g) {
+				botaoParaGrupo[g].classList.toggle("ativo", g === grupoAtivo);
+			});
+		}
+		aplicarFiltro();
+		atualizarNavAlfabeto();
+		menuMusicas.classList.remove("visivel");
+		secao.scrollIntoView({ behavior: "auto", block: "start" });
+	}
+
+	musicas.forEach(function (musica, idx) {
+		var item = document.createElement("div");
+		item.className = "item";
+		item.textContent = musica.titulo;
+		item.addEventListener("click", function (e) {
+			e.stopPropagation();
+			abrirMusicaDoMenu(idx);
+		});
+		menuLista.appendChild(item);
+	});
+
+	// clique no fundo escurecido (fora da lista) fecha o menu
+	menuMusicas.addEventListener("click", function (e) {
+		if (e.target === menuMusicas) menuMusicas.classList.remove("visivel");
+	});
+
+	var menuToggle = document.createElement("a");
+	menuToggle.href = "#";
+	menuToggle.className = "menu-toggle";
+	menuToggle.innerHTML = '<i class="bi bi-list"></i>';
+	menuToggle.addEventListener("click", function (e) {
+		e.preventDefault();
+		var abrindo = !menuMusicas.classList.contains("visivel");
+		menuMusicas.classList.toggle("visivel");
+		if (!abrindo) return;
+		// destaca e centraliza na lista a musica que esta na tela no momento
+		var secaoAtual = musicaAtual();
+		var idxAtual = secaoAtual ? parseInt(secaoAtual.id.replace("musica-", ""), 10) : -1;
+		Array.prototype.forEach.call(menuLista.children, function (item, i) {
+			item.classList.toggle("atual", i === idxAtual);
+			if (i === idxAtual) item.scrollIntoView({ block: "center" });
+		});
+	});
+	nav.appendChild(menuToggle);
 
 	// Aplica o grupo ativo (persistido ou padrao "sem grupo") logo na carga da pagina.
 	aplicarFiltro();

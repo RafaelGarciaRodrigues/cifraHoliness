@@ -529,3 +529,9 @@ curl --request GET \
 	--url 'https://youtube-mp310.p.rapidapi.com/download/mp3?url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DUJKNjAjMf44' \
 	--header 'x-rapidapi-host: youtube-mp310.p.rapidapi.com' \
 	--header 'x-rapidapi-key: 5e3551cd2amsha0360125fbb2dd1p1179aajsn77b637ba0e8a'
+	
+	
+# MENU
+- abaixo do botão class="grupo-toggle"
+- insira um botão apenas com icone (pode ser o "hamburguer" 3 linhas horizontais que quando clicado
+- mostra um menu apenas com o nome das músicas que clicando na música abre todas elas de novo mas posicionado no topo da música clicada
