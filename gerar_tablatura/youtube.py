@@ -20,7 +20,7 @@ import threading
 import time
 from datetime import datetime
 
-from pastas import BASE_DIR, base_video
+from pastas import BASE_DIR, padrao_videos
 
 # o retorno do OAuth é http://localhost (local), não https
 os.environ.setdefault("OAUTHLIB_INSECURE_TRANSPORT", "1")
@@ -38,8 +38,8 @@ ROTA_RETORNO = "/api/youtube/retorno"
 PRIVACIDADES = ("private", "unlisted", "public")
 CATEGORIAS = {"10": "Música", "22": "Pessoas e blogs", "24": "Entretenimento", "27": "Educação"}
 CONFIG_PADRAO = {
-    "titulo": "{titulo} - {artista} (Karaokê)",
-    "descricao": "{titulo}\nArtista: {artista}\nTom: {tom}\nExtensão vocal: {extensao}"
+    "titulo": "{titulo} - {artista} (Karaokê) - {voz}",
+    "descricao": "{titulo}\nArtista: {artista}\nTom: {tom}\nExtensão vocal: {extensao}\nCategoria vocal: {voz}"
                  "\n\nVídeo de karaokê com a letra sincronizada."
                  "\n\nLetra:\n{letra}",
     "tags": "karaokê, letra, {artista}, {titulo}",
@@ -127,7 +127,7 @@ def videos_da_musica(registro):
     ao mais antigo. A base vem do título/artista atuais do cadastro."""
     if not os.path.isdir(PASTA_VIDEOS):
         return []
-    padrao = re.compile(re.escape(base_video(registro)) + r"( \(\d+\))?\.mp4", re.IGNORECASE)
+    padrao = padrao_videos(registro)  # todos os tons ("... - Tom F#.mp4") e os antigos, sem o tom
     nomes = [n for n in os.listdir(PASTA_VIDEOS) if padrao.fullmatch(n)]
     return sorted(nomes, key=lambda n: os.path.getmtime(os.path.join(PASTA_VIDEOS, n)), reverse=True)
 

@@ -1,6 +1,8 @@
 ﻿Meus Filhos São Teus
 TOM:E
 
+<t>24</t>
+
 <intro>
        E
 Sejam luz
@@ -107,6 +109,7 @@ Trazendo o sabor
 Meus filhos   
  E       E  A
 são teus
+<refrao>
 A
 Que tua graça 
 os livre do mal
@@ -157,3 +160,4 @@ A     F#m
 Meus filhos 
   B    E
 são teus
+</refrao>

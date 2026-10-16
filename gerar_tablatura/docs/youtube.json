@@ -1,16 +1,15 @@
 {
   "config": {
-    "titulo": "{titulo} - {artista} (Playback Karaokê Letra Piano)",
-    "descricao": "{titulo}\nArtista: {artista}\nTom: {tom}\nExtensão vocal: {extensao}\n\nTutorial Piano Violão\n\n\nLetra:\n{letra}\n\nEste vídeo foi produzido para auxiliar igrejas nos ensaios do grupo de louvor e nos cultos",
+    "titulo": "{titulo} - {artista} - Playback - TOM: {tom} - {voz}",
+    "descricao": "{titulo}\nArtista: {artista}\nTom: {tom}\nExtensão vocal: {extensao}\nCategoria vocal: {voz}\n\nTutorial Piano Violão\nPiano Visualizer\nFalling Notes\nPiano Roll \n\n\nLetra:\n{letra}\n\nEste vídeo foi produzido para auxiliar igrejas nos ensaios do grupo de louvor e nos cultos",
     "tags": "playback, cifra, violão, piano, karaokê, letra, {artista}, {titulo}",
-    "hashtags": "#{titulo} #{artista} #karaoke #playback #letra #piano #cifra #louvor #gospel #worship #pianotutorial #tutorialpiano #violao #acordes #jesus #alma",
+    "hashtags": "#{titulo} #{artista} #karaoke #playback #letra #piano #cifra #louvor #gospel #worship #pianotutorial #tutorialpiano #violao #acordes #jesus #alma #pianovisualizer",
     "categoria": "10",
     "privacidade": "public",
     "infantil": false,
     "idioma": "pt-BR",
     "notificar": false
   },
-  "canal": "LouvoresKaraoke",
   "publicados": {
     "Esther Duran - Acalma o Meu Coração (2).mp4": {
       "id_musica": "0dd0be11",
@@ -93,6 +92,39 @@
       "titulo": "Acalma o Meu Coração - Esther Duran (Playback Karaokê Letra Piano)",
       "privacidade": "public",
       "publicado_em": "2026-10-09T16:45:49"
+    },
+    "Rachel Novaes - Tua é a glória.mp4": {
+      "id_musica": "7dff3523",
+      "video_id": "C-PlF1yMfYY",
+      "url": "https://youtu.be/C-PlF1yMfYY",
+      "titulo": "Tua é a glória - Rachel Novaes - Playback - TOM: E - Mezzo-soprano · Feminino",
+      "privacidade": "public",
+      "publicado_em": "2026-10-15T13:09:57"
+    },
+    "Luciano Camargo - O Escudo (2).mp4": {
+      "id_musica": "a4fbd477",
+      "video_id": "-dljYo1nwNs",
+      "url": "https://youtu.be/-dljYo1nwNs",
+      "titulo": "O Escudo - Luciano Camargo - Playback - TOM: B - Tenor · Masculino",
+      "privacidade": "public",
+      "publicado_em": "2026-10-15T13:56:48"
+    },
+    "Luciano Camargo - O Escudo.mp4": {
+      "id_musica": "a4fbd477",
+      "video_id": "C79WGiL1Ho8",
+      "url": "https://youtu.be/C79WGiL1Ho8",
+      "titulo": "O Escudo - Luciano Camargo - Playback - TOM: B - Tenor · Masculino",
+      "privacidade": "public",
+      "publicado_em": "2026-10-15T14:38:34"
+    },
+    "Rachel Novaes - Tua é a glória - Tom C.mp4": {
+      "id_musica": "7dff3523",
+      "video_id": "4aVSduNNANE",
+      "url": "https://youtu.be/4aVSduNNANE",
+      "titulo": "Tua é a glória - Rachel Novaes - Playback - TOM: C - Contralto · Feminino",
+      "privacidade": "public",
+      "publicado_em": "2026-10-15T15:32:48"
     }
-  }
+  },
+  "canal": "LouvoresKaraoke"
 }

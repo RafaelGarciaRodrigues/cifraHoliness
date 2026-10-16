@@ -9,9 +9,15 @@ mesmas notas. Aqui a 2ª passada usa outro caminho:
   altura se mantiver por TROCA_MINIMA). Resolve notas que não existem, notas quebradas e notas longas
   demais (a nota acaba quando a voz para). As palavras da letra (letraPalavras) indicam onde uma
   sílaba nova começa na mesma altura.
-- Instrumentos (e o solo, faixa a faixa): as notas do basic-pitch ficam, mas passam por limpeza:
-  notas iguais seguidas sem novo ataque são unidas, o fim de cada nota é cortado quando o som cai e
-  notas muito curtas fora do tom são descartadas.
+  Coro (várias vozes juntas): o pYIN só segue uma voz e diz "sem voz" com a faixa forte. Nesses
+  trechos entram as notas polifônicas do basic-pitch da própria faixa de voz: em cada ataque, entre as
+  fortes, a mais próxima da linha que vinha sendo cantada.
+- Instrumentos (e o solo, faixa a faixa): as notas polifônicas do basic-pitch (guardadas em cache em
+  faixas/<id>/basicpitch_<faixa>.json) viram melodia POR ATAQUE: em cada grupo de notas que começam
+  juntas fica a mais aguda entre as fortes, e ela dura até o próximo ataque. A extração do solo.py fica
+  com a nota mais aguda que está SOANDO; num dedilhado, a corda aguda que ressoa (ex.: um F#4 solto)
+  esconde todas as outras notas. Depois, limpeza: o fim de cada nota é cortado quando o som cai e notas
+  muito curtas fora do tom são descartadas.
 
 Nada é gravado aqui: o app.py devolve as notas para a interface, que aplica (com Ctrl+Z) e salva.
 
@@ -58,6 +64,11 @@ JUNTAR_INSTRUMENTO = 0.08   # notas iguais separadas por menos que isso, sem nov
 ATAQUE_MINIMO_DB = 3        # subida de energia que indica um ataque de verdade
 QUEDA_FIM_DB = 18           # a nota acaba quando o som cai isso abaixo do pico dela
 CURTA_FORA_DO_TOM = 0.1     # notas fora do tom mais curtas que isso são descartadas
+ATAQUE_JUNTO = 0.04         # notas que começam a menos disso uma da outra são o mesmo ataque
+FORCA_RELATIVA = 0.7        # no ataque, concorrem as notas com pelo menos essa fração da mais forte
+AMPLITUDE_MINIMA = 0.3      # notas do basic-pitch mais fracas que isso são ignoradas
+CORO_DURACAO = 1.0          # segundos de voz forte sem altura (pYIN) para ser um trecho de coro
+CORO_ILHA = 0.3             # pedaços com altura mais curtos que isso, dentro do coro, são do coro
 
 
 def _carregar(caminho):
@@ -128,7 +139,8 @@ def _ha_silaba(inicios, t0, t1):
     return len(inicios) and np.any((inicios > t0) & (inicios < t1))
 
 
-def notas_voz(caminho, escala_em, letra_palavras=None):
+def notas_voz(caminho, escala_em, letra_palavras=None, polifonicas=None):
+    """polifonicas: função que devolve as notas do basic-pitch da faixa (só chamada se houver coro)."""
     import librosa
     from scipy.signal import medfilt
 
@@ -195,9 +207,82 @@ def notas_voz(caminho, escala_em, letra_palavras=None):
                 continue
         notas.append((a, b, midi))
     notas = _absorver_deslizes(notas, suave, silabas)
+    if polifonicas:
+        notas = _preencher_coro(notas, ativo, db, polifonicas, silabas)
 
     return [{"t": round(float(a * PASSO), 3), "d": round(float((b - a) * PASSO), 3), "midi": int(midi)}
             for a, b, midi in notas if (b - a) * PASSO >= DURACAO_MINIMA and 0 <= midi <= 127]
+
+
+def _trechos_coro(ativo, db):
+    """[(quadro inicial, final)] em que a voz está forte e o pYIN não acha altura (várias vozes)."""
+    sem_altura = ~ativo & (db > LIMIAR_VOZ_FORTE_DB)
+    ilha = round(CORO_ILHA / PASSO)
+    trechos = []
+    for a, b in _trechos(sem_altura):
+        if trechos and a - trechos[-1][1] < ilha:
+            trechos[-1] = (trechos[-1][0], b)  # pedaço curto com altura no meio: é o mesmo coro
+        else:
+            trechos.append((a, b))
+    return [(a, b) for a, b in trechos if (b - a) * PASSO >= CORO_DURACAO]
+
+
+def _preencher_coro(notas, ativo, db, polifonicas, silabas):
+    """Completa os trechos de coro com as notas do basic-pitch: uma por ataque, entre as fortes a mais
+    perto da nota anterior (a linha da melodia continua; a mais aguda seria a voz de cima do coro).
+    O que o pYIN achou ali fica se o basic-pitch confirmar a altura (a até 1 semitom de uma nota que soa
+    junto); os fragmentos que ele não confirma (oitava errada, outra voz) saem. As notas do basic-pitch
+    só ocupam o tempo que ficou vazio. Iguais seguidas, sem sílaba nova entre elas, viram uma só."""
+    trechos = _trechos_coro(ativo, db)
+    if not trechos:
+        return notas
+    try:
+        poli = [n for n in polifonicas() if n["amp"] >= AMPLITUDE_MINIMA]
+    except Exception as e:  # sem o basic-pitch: fica o que o pYIN deu
+        print(f"Coro sem preencher: {e}", flush=True)
+        return notas
+    dentro = lambda a, b: any(min(b, cb) - max(a, ca) > (b - a) / 2 for ca, cb in trechos)
+    confirmada = lambda a, b, m: any(n["inicio"] < b * PASSO and n["fim"] > a * PASSO and abs(n["midi"] - m) <= 1
+                                     for n in poli)
+    notas = [n for n in notas if not dentro(n[0], n[1]) or confirmada(*n)]
+    novas = []
+    for ca, cb in trechos:
+        t0, t1 = ca * PASSO, cb * PASSO
+        cand = sorted((n for n in poli if t0 - 0.05 <= n["inicio"] < t1), key=lambda n: n["inicio"])
+        grupos = []
+        for n in cand:
+            if grupos and n["inicio"] - grupos[-1][0]["inicio"] <= ATAQUE_JUNTO:
+                grupos[-1].append(n)
+            else:
+                grupos.append([n])
+        escolhidas = []
+        for g in grupos:
+            linha = [(a * PASSO, m) for a, b, m in notas if a * PASSO <= g[0]["inicio"]] + [(e[0], e[2]) for e in escolhidas]
+            ref = max(linha)[1] if linha else None  # a nota mais recente da melodia, do pYIN ou daqui
+            forte = max(x["amp"] for x in g)
+            fortes = [x for x in g if x["amp"] >= FORCA_RELATIVA * forte]
+            x = min(fortes, key=lambda x: (abs(x["midi"] - ref), -x["amp"])) if ref is not None \
+                else max(fortes, key=lambda x: x["amp"])
+            if ref is not None and abs(x["midi"] - ref) > 7:
+                continue  # salto grande num ataque isolado: é outra voz do coro
+            escolhidas.append([max(x["inicio"], t0), min(x["fim"], t1), x["midi"]])
+        for atual, proxima in zip(escolhidas, escolhidas[1:]):
+            atual[1] = min(atual[1], proxima[0])
+        livres = []  # só o tempo que nenhuma nota do pYIN ocupa
+        for a, b, m in escolhidas:
+            pedacos = [(a, b)]
+            for na, nb, _ in notas:
+                na, nb = na * PASSO, nb * PASSO
+                pedacos = [q for pa, pb in pedacos for q in ((pa, min(pb, na)), (max(pa, nb), pb)) if q[1] > q[0]]
+            livres += [[pa, pb, m] for pa, pb in pedacos if pb - pa >= DURACAO_MINIMA]
+        unidas = []
+        for a, b, m in livres:
+            if unidas and unidas[-1][2] == m and a - unidas[-1][1] < JUNTAR_ATE and not _ha_silaba(silabas, unidas[-1][1] - 0.05, a + 0.05):
+                unidas[-1][1] = b
+            else:
+                unidas.append([a, b, m])
+        novas += [(round(a / PASSO), round(b / PASSO), m) for a, b, m in unidas]
+    return sorted(notas + novas)
 
 
 def _absorver_deslizes(notas, suave, silabas):
@@ -235,8 +320,47 @@ def _absorver_deslizes(notas, suave, silabas):
     return notas
 
 
-def limpar_instrumento(notas, db, escala_em):
-    """Pós-processamento das notas do basic-pitch de uma faixa de instrumento (db: energia da faixa)."""
+def _basic_pitch(id_musica, fonte, caminho):
+    """Notas polifônicas do basic-pitch ({inicio, fim, midi, amp}), com cache (refeito se o .wav mudar)."""
+    cache = os.path.join(PASTA_FAIXAS, id_musica, f"basicpitch_{fonte}.json")
+    marca = os.path.getmtime(caminho)
+    try:
+        with open(cache, encoding="utf-8") as f:
+            salvo = json.load(f)
+        if salvo.get("wav_mtime") == marca:
+            return salvo["notas"]
+    except (OSError, ValueError, KeyError):
+        pass
+    import solo  # o basic-pitch só é carregado aqui (demora)
+    notas = solo.transcrever_notas({fonte: caminho}, [fonte])[fonte]
+    with open(cache, "w", encoding="utf-8") as f:
+        json.dump({"wav_mtime": marca, "notas": notas}, f)
+    return notas
+
+
+def melodia_por_ataque(notas):
+    """Uma nota por ataque: a mais aguda entre as fortes do grupo que começa junto; dura até o próximo."""
+    notas = sorted((n for n in notas if n["amp"] >= AMPLITUDE_MINIMA), key=lambda n: n["inicio"])
+    grupos = []
+    for n in notas:
+        if grupos and n["inicio"] - grupos[-1][0]["inicio"] <= ATAQUE_JUNTO:
+            grupos[-1].append(n)
+        else:
+            grupos.append([n])
+    melodia = []
+    for g in grupos:
+        forte = max(x["amp"] for x in g)
+        escolhida = max((x for x in g if x["amp"] >= FORCA_RELATIVA * forte), key=lambda x: x["midi"])
+        melodia.append({"t": g[0]["inicio"], "fim": escolhida["fim"], "midi": escolhida["midi"]})
+    for atual, proxima in zip(melodia, melodia[1:]):
+        atual["fim"] = min(atual["fim"], proxima["t"])
+    return [{"t": round(n["t"], 3), "d": round(n["fim"] - n["t"], 3), "midi": int(n["midi"])}
+            for n in melodia if n["fim"] - n["t"] >= DURACAO_MINIMA]
+
+
+def limpar_instrumento(notas, db, escala_em, unir=True):
+    """Pós-processamento das notas de uma faixa de instrumento (db: energia da faixa). unir=False quando
+    cada nota já é um ataque detectado (melodia por ataque): notas iguais seguidas são toques repetidos."""
     total = len(db)
     notas = sorted((dict(n) for n in notas), key=lambda n: n["t"])
 
@@ -250,7 +374,7 @@ def limpar_instrumento(notas, db, escala_em):
         if unidas:
             p = unidas[-1]
             fim = p["t"] + p["d"]
-            if p["midi"] == n["midi"] and n["t"] - fim < JUNTAR_INSTRUMENTO and not ataque(n["t"]):
+            if unir and p["midi"] == n["midi"] and n["t"] - fim < JUNTAR_INSTRUMENTO and not ataque(n["t"]):
                 p["d"] = round(max(fim, n["t"] + n["d"]) - p["t"], 3)
                 continue
         unidas.append(n)
@@ -287,7 +411,9 @@ def reprocessar(id_musica, fonte):
     if fonte == "vocals":
         if not os.path.isfile(wav("vocals")):
             raise FileNotFoundError("faixa de voz (vocals.wav) não encontrada; processe a música de novo")
-        return notas_voz(wav("vocals"), escala_em, dados.get("letraPalavras")), "voz: detector de altura pYIN"
+        return (notas_voz(wav("vocals"), escala_em, dados.get("letraPalavras"),
+                          lambda: _basic_pitch(id_musica, "vocals", wav("vocals"))),
+                "voz: detector de altura pYIN (coros: basic-pitch)")
 
     energias = {}
 
@@ -298,15 +424,21 @@ def reprocessar(id_musica, fonte):
             energias[f] = _carregar(wav(f))[1]
         return energias[f]
 
-    notas = melodias[fonte]
+    def por_ataque(f):
+        return limpar_instrumento(melodia_por_ataque(_basic_pitch(id_musica, f, wav(f))), energia(f), escala_em, unir=False)
+
     if fonte != "solo":
-        return limpar_instrumento(notas, energia(fonte), escala_em), "instrumento: limpeza das notas"
-    # solo: cada nota veio de uma faixa (f); limpa cada faixa com a energia dela
+        energia(fonte)  # confere o .wav antes do basic-pitch
+        return por_ataque(fonte), "instrumento: uma nota por ataque (dedilhado)"
+    # solo: em cada trecho, as notas da faixa que o solo usa ali (trechosSolo)
+    trechos = dados.get("trechosSolo") or []
     resultado = []
-    for f in sorted({n.get("f") for n in notas if n.get("f")}):
-        resultado += [{**n, "f": f} for n in limpar_instrumento([n for n in notas if n.get("f") == f], energia(f), escala_em)]
-    resultado += [n for n in notas if not n.get("f")]
-    return sorted(resultado, key=lambda n: n["t"]), "solo: limpeza das notas, faixa a faixa"
+    for f in sorted({s["f"] for s in trechos}):
+        meus = [(s["t"], s["t"] + s["d"]) for s in trechos if s["f"] == f]
+        resultado += [{**n, "f": f} for n in por_ataque(f) if any(a <= n["t"] < b for a, b in meus)]
+    if not resultado:  # sem trechos: só limpa as notas que já existem
+        resultado = melodias[fonte]
+    return sorted(resultado, key=lambda n: n["t"]), "solo: uma nota por ataque, faixa a faixa"
 
 
 if __name__ == "__main__":

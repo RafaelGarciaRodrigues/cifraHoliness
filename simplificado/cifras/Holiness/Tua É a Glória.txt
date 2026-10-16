@@ -1,5 +1,6 @@
 ﻿Tua É a Glória
 TOM:C
+<t>15</t>
 
 <yt>https://www.youtube.com/watch?v=UJKNjAjMf44</yt>
 
@@ -64,7 +65,9 @@ Não deixarei de te buscar
 Dm7           F/G
 Vivo pra te adorar
 
-C  Am7  F  G  A7
+C  Am7  F  
+
+G  A7
 
 D9
 Não deixarei de te louvar

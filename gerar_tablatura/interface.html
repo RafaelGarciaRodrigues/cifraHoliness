@@ -39,6 +39,9 @@
   .categoriaVoz { font-size: .85rem; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--borda);
                   background: var(--grade); white-space: nowrap; cursor: help; }
   .categoriaVoz.vazia { color: var(--suave); }
+  #tomFaixas { font-variant-numeric: tabular-nums; }
+  .tomFaixasEstado { font-size: .8rem; color: var(--suave); }
+  .tomFaixasEstado.erro { color: var(--erro); }
   .abas { display: flex; gap: 4px; background: var(--grade); padding: 3px; border-radius: 10px; }
   .abas button { border: 0; background: transparent; padding: 6px 14px; min-width: 0; }
   .ajuda { display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 16px; align-items: start; }
@@ -84,6 +87,7 @@
   .instrumentos { display: flex; align-items: flex-start; gap: 10px; margin-top: 8px; }
   .abasLinha { display: inline-flex; margin-bottom: 8px; }
   .abasLinha button { font-size: .85rem; padding: 4px 12px; }
+  .opcaoRolo { display: inline-flex; align-items: center; gap: 4px; margin-left: 12px; font-size: .85rem; cursor: pointer; vertical-align: top; }
   .previaVideo { display: flex; flex-direction: column; align-items: center; gap: 6px; }
   .quadroPrevia { position: relative; width: 100%; background: #000; border-radius: 8px; overflow: hidden; line-height: 0; }
   .quadroPrevia canvas { display: block; width: 100%; height: auto; cursor: pointer; }
@@ -426,6 +430,8 @@
               title="Prévia do vídeo do Instagram (vertical 1080×1920), desenhada no tempo atual da música">
               <i id="c1f8a6" class="bi bi-instagram"></i> Vídeo do Instagram</button>
           </div>
+          <label id="rotuloRolo" class="opcaoRolo" title="Notas caindo até o teclado (piano roll), atrás da letra, nos dois vídeos e nas prévias">
+            <input type="checkbox" id="mostrarRolo" checked> <i id="d2a6f8" class="bi bi-music-note-beamed"></i> Notas caindo</label>
           <div id="painelLinha-linha" role="tabpanel" aria-labelledby="tabLinha-linha">
             <canvas id="linha" tabindex="0" aria-label="Linha do tempo (atalhos: Q sobe, W desce, A apaga, S une, D cria nota)"></canvas>
             <div id="instrumentos" class="instrumentos">
@@ -465,6 +471,9 @@
         </div>
         <div id="b13d76" class="controles">
           <div id="a202be" class="grupo">
+            <button id="btnNotasAtrasar" class="pequeno" title="Recuar 0,01 s as notas das faixas marcadas em Notas (tocam mais cedo; Ctrl+Z desfaz)" aria-label="Recuar as notas 0,01 s" disabled><i id="e4b8d2" class="bi bi-chevron-double-left"></i> 0,01 s</button>
+            <span id="deslocamentoNotas" class="valor" title="Quanto as notas das faixas marcadas já foram deslocadas"></span>
+            <button id="btnNotasAdiantar" class="pequeno" title="Avançar 0,01 s as notas das faixas marcadas em Notas (tocam mais tarde; Ctrl+Z desfaz)" aria-label="Avançar as notas 0,01 s" disabled>0,01 s <i id="f1c7a3" class="bi bi-chevron-double-right"></i></button>
             <button id="btnInicio" title="Voltar ao início (Home)">⏮</button>
             <button id="btnVoltar5" title="Voltar 5 s (,)">−5 s</button>
             <button id="btnVoltar1" title="Voltar 0,1 s (,)">−0,1 s</button>
@@ -488,12 +497,18 @@
             <button id="btnZoomMenos" title="Afastar linha do tempo (−)">−</button>
             <button id="btnZoomMais" title="Aproximar linha do tempo (+)">+</button>
           </div>
-          <div id="extensaoVocal" class="grupo" title="Extensão vocal: nota mais grave e mais aguda cantadas (faixa de voz, já com a transposição)">
+          <div id="extensaoVocal" class="grupo" title="Nota mais grave e mais aguda da música inteira nas fontes marcadas em Notas (já com a transposição)">
             Voz
             <button id="btnVozGrave" disabled>—</button>
             <button id="btnVozAguda" disabled>—</button>
             <button id="btnLimparMarcas" class="icone" title="Remover as marcações da linha do tempo" aria-label="Remover as marcações" disabled><i id="f5a2c8" class="bi bi-bookmark-x"></i></button>
             <span id="categoriaVoz" class="categoriaVoz vazia" tabindex="0">—</span>
+          </div>
+          <div id="grupoTomFaixas" class="grupo" title="Mudar o tom das faixas de áudio (cópias transpostas; as originais não são alteradas)">
+            <select id="tomFaixas" aria-label="Transposição das faixas, em semitons, com o tom e a categoria da voz que resultam" disabled></select>
+            <button id="btnRenderizarTom" class="icone" disabled aria-label="Renderizar as faixas no tom escolhido"><i id="c8e1a4" class="bi bi-soundwave"></i></button>
+            <button id="btnTomOriginal" class="icone" disabled aria-label="Voltar as faixas ao tom original"><i id="d4b9f2" class="bi bi-arrow-counterclockwise"></i></button>
+            <span id="tomFaixasEstado" class="tomFaixasEstado" role="status"></span>
           </div>
         </div>
         <div id="d51023" class="dica">
@@ -708,7 +723,8 @@ clique na régua de tempo (embaixo da linha do tempo) para marcar um ponto (de n
     <div id="c5b3e7" class="dica">No título, descrição e tags podem entrar: <code id="d2f8a6">{titulo}</code>
       <code id="e7a1c3">{artista}</code> <code id="f4c9d1">{tom}</code> <code id="a9b5e2">{categoria}</code>
       <code id="b4d2f7">{tags}</code> (os campos da Biblioteca), <code id="a3f7c2">{extensao}</code> (extensão vocal,
-      ex.: C#3 a G4, a dos botões "Voz" do player, no tom original) e <code id="c6e1a9">{letra}</code>
+      ex.: C#3 a G4, a dos botões "Voz" do player, no tom original), <code id="b8e3d5">{voz}</code> (categoria
+      da voz, ex.: Mezzo-soprano · Feminino, no tom original) e <code id="c6e1a9">{letra}</code>
       (a letra salva, uma frase por linha). Nas palavras-chave, <code id="d8c4a1">#{titulo}</code> e
       <code id="e2f9b6">#{artista}</code> entram tudo junto, sem espaço. Antes de cada envio dá para ajustar o texto.</div>
     <div id="ytConfigStatus" class="dica"></div>
@@ -1737,15 +1753,31 @@ function calcularExtensao(vocais = DADOS.melodias && DADOS.melodias.vocals) {
   return { grave, aguda, p10: percentil(0.1), mediana: percentil(0.5), p90: percentil(0.9) };
 }
 
-function atualizarExtensao() {
+// Botões grave/aguda: a nota mais grave e a mais aguda que existem de fato na linha do tempo, na
+// música inteira, somando todas as fontes marcadas em Notas (sem filtro: o que estiver na linha conta)
+let extremosNotas = null;  // {grave, aguda} em MIDI, sem transposição
+function atualizarExtremosNotas() {
+  extremosNotas = NOTAS.length ? NOTAS.reduce((e, n) => ({ grave: Math.min(e.grave, n.midi), aguda: Math.max(e.aguda, n.midi) }),
+                                              { grave: Infinity, aguda: -Infinity }) : null;
+  const fontes = fontesEmUso().map(nomeFonte).join(", ");
   for (const [id, chave, rotulo] of [["btnVozGrave", "grave", "mais grave"], ["btnVozAguda", "aguda", "mais aguda"]]) {
     const b = $(id);
-    b.disabled = !extensao;
-    b.textContent = extensao ? nomeNota(extensao[chave]) : "—";
-    b.title = extensao ? `Nota ${rotulo} cantada: ${nomeNota(extensao[chave])}. Clique para ir à primeira vez que ela aparece e ouvi-la por 5 s.` : "Sem faixa de voz";
+    b.disabled = !extremosNotas;
+    b.textContent = extremosNotas ? nomeNota(extremosNotas[chave]) : "—";
+    b.title = extremosNotas ? `Nota ${rotulo} da música (${fontes}): ${nomeNota(extremosNotas[chave])}. Clique para ir à primeira vez que ela aparece e ouvi-la por 5 s.`
+                            : "Nenhuma nota nas fontes marcadas em Notas";
   }
-  mostrarCategoriaVoz();
 }
+
+function atualizarExtensao() {
+  atualizarExtremosNotas();
+  mostrarCategoriaVoz();
+  preencherSeletorTom();  // a categoria da voz de cada opção depende da extensão
+}
+
+// a extensão (e a tessitura) n semitons acima/abaixo
+const deslocarExtensao = (ext, n) => ext && { ...ext, grave: ext.grave + n, aguda: ext.aguda + n,
+                                               p10: ext.p10 + n, mediana: ext.mediana + n, p90: ext.p90 + n };
 
 // ---------- categoria da voz (ao lado das marcações) ----------
 // Pela tessitura da faixa de voz (onde ela fica a maior parte do tempo), já com a transposição, como
@@ -1781,6 +1813,14 @@ function categoriaVoz(p10, mediana, p90) {
   return [doGenero[0], doGenero[1], outros[0]];
 }
 
+// "♀ Mezzo-soprano · Feminino" (como em "categoriaVoz"), da extensão recebida (o vídeo e o YouTube
+// passam a do tom das faixas, sem a transposição do player). simbolo=false no texto do YouTube
+function textoCategoriaVoz(ext, simbolo = true) {
+  if (!ext) return "";
+  const [melhor] = categoriaVoz(ext.p10, ext.mediana, ext.p90);
+  return `${simbolo ? (melhor.genero === "Masculino" ? "♂ " : "♀ ") : ""}${melhor.nome} · ${melhor.genero}`;
+}
+
 function mostrarCategoriaVoz() {
   const el = $("categoriaVoz");
   if (!extensao) {
@@ -1801,6 +1841,131 @@ function mostrarCategoriaVoz() {
     `Também pode servir: ${segundo.nome} (${faixa(segundo)}). Na outra voz: ${outroGenero.nome} (${outroGenero.genero}).\n\n` +
     TIPOS_VOZ.map(t => `${t.nome}: ${faixa(t)}`).join(" · ");
   el.setAttribute("aria-label", "Categoria da voz: " + el.textContent);
+}
+
+// ---------- mudar o tom das faixas (transpor.py) ----------
+// As faixas separadas (menos a bateria) são transpostas no servidor com o Rubber Band, em cópias
+// (faixas/<id>/tom±N_<hora>/): as originais nunca são alteradas, e "voltar ao original" apaga as cópias. Sempre
+// a partir das originais (trocar de +2 para +3 não transpõe a cópia de novo). Com as faixas
+// transpostas, o player mostra notas e acordes nesse tom ("Meu tom") e o vídeo sai nele.
+const LIMITE_TOM_FAIXAS = 12, TOM_FAIXAS_SEGURO = 4;  // além de ±4 semitons o som começa a perder qualidade
+let tomFaixas = 0;      // semitons das faixas que tocam (0 = as originais)
+let tarefaTom = null;   // {id, timer} enquanto a transposição roda no servidor
+const sinalSemitons = n => n > 0 ? "+" + n : String(n);
+const urlFaixa = nome => `/faixas/${MUSICA.id}/${nome}.wav?tom=${tomFaixas}`;
+
+// Opções de +12 a −12: semitons · tom que resulta · categoria da voz nesse tom (⚠ = perde qualidade)
+function preencherSeletorTom() {
+  const sel = $("tomFaixas"), tom = DADOS && DADOS.tom, anterior = sel.value;
+  sel.replaceChildren();
+  for (let n = LIMITE_TOM_FAIXAS; n >= -LIMITE_TOM_FAIXAS; n--) {
+    const o = document.createElement("option");
+    o.id = "tomFaixas-" + (n < 0 ? "menos" + -n : n);
+    o.value = n;
+    const partes = [n === 0 ? "0 original" : sinalSemitons(n)];
+    if (tom) partes.push(cifraTom(tom.tonica + n, tom.modo));
+    if (extensao) partes.push(textoCategoriaVoz(deslocarExtensao(extensao, n)).replace(/ · .*/, ""));
+    o.textContent = partes.join(" · ") + (Math.abs(n) > TOM_FAIXAS_SEGURO ? " ⚠" : "") + (n === tomFaixas && n ? " ✓" : "");
+    o.title = n === 0 ? "As faixas originais" : `${Math.abs(n)} semitom(ns) ${n > 0 ? "acima" : "abaixo"}` +
+      (Math.abs(n) > TOM_FAIXAS_SEGURO ? " — acima de 4 semitons a transposição começa a deixar marcas no som (ataques, grave)" : "");
+    sel.appendChild(o);
+  }
+  sel.value = anterior !== "" && tarefaTom ? anterior : String(tomFaixas);
+  atualizarBotoesTom();
+}
+
+function atualizarBotoesTom() {
+  const sel = $("tomFaixas"), escolhido = parseInt(sel.value, 10) || 0;
+  const rodando = !!tarefaTom, temFaixas = !!(MUSICA && DADOS && (DADOS.faixas || []).length);
+  sel.disabled = rodando || !temFaixas;
+  const render = $("btnRenderizarTom"), volta = $("btnTomOriginal");
+  render.disabled = rodando || !temFaixas || escolhido === 0 || escolhido === tomFaixas;
+  volta.disabled = rodando || !tomFaixas;
+  render.title = !temFaixas ? "A música não tem faixas separadas"
+    : escolhido === 0 ? "Escolha quantos semitons subir ou descer"
+    : escolhido === tomFaixas ? `As faixas já estão em ${sinalSemitons(tomFaixas)}`
+    : `Renderizar as faixas em ${sinalSemitons(escolhido)} semitom(ns) (cópias; as originais ficam intactas; leva uns 30 s a 1 min)`;
+  volta.title = tomFaixas ? `Voltar ao tom original: apaga as faixas transpostas (${sinalSemitons(tomFaixas)}) e as originais voltam a valer`
+    : "As faixas já estão no tom original";
+  sel.title = tomFaixas ? `Faixas transpostas em ${sinalSemitons(tomFaixas)} semitom(ns)` : "Faixas no tom original";
+}
+
+function estadoTom(texto, tipo = "") {
+  const el = $("tomFaixasEstado");
+  el.textContent = texto;
+  el.className = "tomFaixasEstado" + (tipo ? " " + tipo : "");
+}
+
+async function renderizarTom() {
+  const n = parseInt($("tomFaixas").value, 10) || 0, id = MUSICA && MUSICA.id;
+  if (!id || !n || n === tomFaixas || tarefaTom) return;
+  try {
+    await api(`/api/musicas/${id}/tom`, { method: "POST", body: JSON.stringify({ semitons: n }) });
+  } catch (e) {
+    estadoTom("Não transposta: " + e.message, "erro");
+    verificarServidor();
+    return;
+  }
+  acompanharTom(id);
+}
+
+function acompanharTom(id) {
+  if (tarefaTom) clearInterval(tarefaTom.timer);
+  tarefaTom = { id, timer: setInterval(() => verificarTom(id), 1500) };
+  atualizarBotoesTom();
+  verificarTom(id);
+}
+
+function pararAcompanharTom() {
+  if (tarefaTom) clearInterval(tarefaTom.timer);
+  tarefaTom = null;
+}
+
+// Situação da transposição no servidor: acompanha enquanto roda e aplica o tom quando termina
+async function verificarTom(id) {
+  let r;
+  try { r = await api(`/api/musicas/${id}/tom`); } catch (e) { return; }
+  if (!MUSICA || MUSICA.id !== id) { if (tarefaTom && tarefaTom.id === id) pararAcompanharTom(); return; }
+  if (r.estado === "na fila" || r.estado === "processando") {
+    if (!tarefaTom) { acompanharTom(id); return; }
+    estadoTom(r.estado === "na fila" ? "transposição na fila (espera o processamento em andamento)…"
+                                     : "transpondo as faixas… " + ((r.etapa || "").match(/\[\d+\/\d+\]/) || [""])[0]);
+    return;
+  }
+  const acompanhava = !!tarefaTom;
+  pararAcompanharTom();
+  if (acompanhava && r.estado === "erro") estadoTom("A transposição falhou: " + (r.erro || r.etapa), "erro");
+  else if (acompanhava) estadoTom(r.semitons ? `faixas em ${sinalSemitons(r.semitons)}` : "");
+  definirTomFaixas(r.semitons || 0);
+}
+
+// Passa a tocar as faixas no tom n: recarrega as que estão ligadas e põe notas e acordes no mesmo tom
+function definirTomFaixas(n) {
+  const mudou = n !== tomFaixas;
+  tomFaixas = n;
+  if (MUSICA) MUSICA.tom_faixas = n;
+  const m = MUSICAS.find(x => MUSICA && x.id === MUSICA.id);
+  if (m) m.tom_faixas = n;
+  preencherSeletorTom();
+  if (!mudou || !MUSICA) return;
+  if (transp !== n) aplicarTransposicao(n);  // notas e acordes acompanham o tom das faixas
+  for (const nome of [...faixasAtivas.keys()]) { ligarFaixa(nome, false); ligarFaixa(nome, true); }
+  salvarPreferencias();  // grava também a transposição ("Meu tom" da Biblioteca)
+  atualizarAvisoFaixas();
+}
+
+async function voltarTomOriginal() {
+  const id = MUSICA && MUSICA.id;
+  if (!id || !tomFaixas || tarefaTom) return;
+  try {
+    await api(`/api/musicas/${id}/tom`, { method: "DELETE" });
+  } catch (e) {
+    estadoTom("Não voltou: " + e.message, "erro");
+    verificarServidor();
+    return;
+  }
+  estadoTom("");
+  definirTomFaixas(0);
 }
 
 // Voz sintética cantando "A": onda dente-de-serra (rica em harmônicos, como as pregas vocais)
@@ -1974,7 +2139,7 @@ function criarFaixa(nome) {
               elemento: null, noElemento: null, saltoEm: 0 };
   f.ganho.connect(obterCanal(chaveFaixa(nome), saidaFaixas).entrada);  // canal da mixagem
   indicarCarregando(nome, true);
-  fetch(`/faixas/${MUSICA.id}/${nome}.wav`)
+  fetch(urlFaixa(nome))
     .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.arrayBuffer(); })
     .then(dados => ctx.decodeAudioData(dados))
     .then(buffer => {
@@ -2031,7 +2196,7 @@ function elementoDe(f) {
       faixasComErro.add(f.nome);
       atualizarAvisoFaixas();
     });
-    a.src = `/faixas/${MUSICA.id}/${f.nome}.wav`;
+    a.src = urlFaixa(f.nome);
     f.noElemento = ctx.createMediaElementSource(a);  // o som vai pelo mesmo ganho e limitador
     f.noElemento.connect(f.ganho);
     f.elemento = a;
@@ -2139,8 +2304,10 @@ function atualizarAvisoFaixas() {
     msgs.push("Não foi possível abrir: " + [...faixasComErro].map(n => n + ".wav").join(", ") +
               " (a pasta faixas foi movida?)");
   }
-  if (faixasAtivas.size && transp !== 0) {
-    msgs.push("As faixas reais não são transpostas; apenas as notas e acordes exibidos.");
+  if (faixasAtivas.size && transp !== tomFaixas) {
+    msgs.push(tomFaixas
+      ? `As faixas reais estão em ${sinalSemitons(tomFaixas)} semitom(ns); as notas e acordes exibidos, em ${transp ? sinalSemitons(transp) : "tom original"}.`
+      : "As faixas reais não são transpostas; apenas as notas e acordes exibidos. Para mudar o tom delas, use o seletor ao lado da categoria da voz.");
   }
   $("avisoFaixa").hidden = !msgs.length;
   $("avisoFaixa").textContent = msgs.join(" ");
@@ -2343,6 +2510,24 @@ const pianoCanvas = $("piano"), pianoG = pianoCanvas.getContext("2d");
 let pianoGeo = null, pianoDesenhado = "";
 
 const ePreta = m => pc(m) in PRETAS_X;
+
+// Extensão vocal no teclado: as teclas fora da nota mais grave e da mais aguda da faixa de voz (a
+// música inteira, sem transposição) ficam com uma leve sombra por cima. As teclas marcadas (acorde,
+// melodia, MIDI) não recebem sombra: a cor delas, às vezes escura, precisa contrastar com o cinza.
+// Sem faixa de voz, nada é sombreado.
+const SOMBRA_FORA_VOZ = { branca: "rgba(0,0,0,0.2)", preta: "rgba(0,0,0,0.45)" };
+function faixaDaVoz() {
+  const vocais = DADOS && DADOS.melodias && DADOS.melodias.vocals;
+  if (!vocais || !vocais.length) return null;
+  return vocais.reduce((e, n) => ({ grave: Math.min(e.grave, n.midi), aguda: Math.max(e.aguda, n.midi) }),
+                       { grave: Infinity, aguda: -Infinity });
+}
+const foraDaVoz = (faixa, m) => !!faixa && (m < faixa.grave || m > faixa.aguda);
+function sombrearTecla(g, faixa, m, x, y, w, h) {
+  if (!foraDaVoz(faixa, m)) return;
+  g.fillStyle = ePreta(m) ? SOMBRA_FORA_VOZ.preta : SOMBRA_FORA_VOZ.branca;
+  g.fillRect(x, y, w, h);
+}
 function teclaX(m) {  // borda esquerda da tecla, em mm a partir do C2
   const oitava = Math.floor((m - PIANO_MIN) / 12) * 7 * BRANCA_L, p = pc(m);
   return oitava + (ePreta(m) ? PRETAS_X[p] : BRANCAS_I[p] * BRANCA_L);
@@ -2518,7 +2703,8 @@ function desenharPiano(alvo, acorde) {
     marcadas.set(m, { classe: "midi", melodia: !!(marcadas.get(m) || {}).melodia });
   }
   const tema = cor("--ok") + cor("--erro") + cor("--acorde-ativo");
-  const chave = tema + JSON.stringify([...marcadas]);
+  const voz = faixaDaVoz(), faixa = voz && { grave: voz.grave + transp, aguda: voz.aguda + transp };  // como soa no player
+  const chave = tema + JSON.stringify([...marcadas]) + JSON.stringify(faixa);
   if (chave === pianoDesenhado) return;
   pianoDesenhado = chave;
 
@@ -2548,6 +2734,7 @@ function desenharPiano(alvo, acorde) {
         g.fillRect(x + (preta ? 1 : 0.5), 0, w - (preta ? 2 : 1), h - (preta ? 1 : 0.5));
         if (marca.melodia) bolinha(x, w, h - Math.min(w * 0.5, 10));
       }
+      if (!marca) sombrearTecla(g, faixa, m, x, 0, w, h);
       if (!preta) {
         g.strokeStyle = "#8a8a8a";
         g.lineWidth = 1;
@@ -2830,15 +3017,54 @@ function novaNota() {
 }
 
 // ---------- varinha mágica: reprocessa as notas de UMA faixa (afinar.py) ----------
-// Voz: detector de altura monofônico (pYIN) no vocals.wav; instrumentos e solo: limpeza das notas do
-// basic-pitch (une notas quebradas, corta o fim quando o som cai, tira notas curtas fora do tom).
+// Voz: detector de altura monofônico (pYIN) no vocals.wav; instrumentos e solo: uma nota por ataque
+// (acerta dedilhados), com o fim cortado quando o som cai e sem notas curtas fora do tom.
 // Substitui todas as notas da faixa; Ctrl+Z volta as anteriores.
 let reprocessando = false;
 function fonteDaVarinha() {
   const marcadas = fontesSelecionadas();
   return marcadas.length === 1 && !gravacaoMidiDe(marcadas[0]) ? marcadas[0] : null;
 }
+// ---------- deslocar no tempo as notas das faixas marcadas (acertar atraso das notas sintetizadas) ----------
+// Move todas as notas das fontes marcadas em "Notas" (gravações MIDI também) em ±0,01 s e salva.
+const PASSO_DESLOCAMENTO = 0.01;
+const deslocamentos = new Map();  // "<id da música>/<fonte>" -> total deslocado (s); salvo nas preferências da música
+function atualizarDeslocamento() {
+  const fontes = MUSICA ? fontesSelecionadas() : [];
+  $("btnNotasAtrasar").disabled = $("btnNotasAdiantar").disabled = !fontes.length;
+  const totais = [...new Set(fontes.map(f => deslocamentos.get(MUSICA.id + "/" + f) || 0))];
+  const texto = totais.length === 1 && totais[0] !== 0 ? (totais[0] > 0 ? "+" : "") + totais[0].toFixed(2).replace(".", ",") + " s" : "";
+  $("deslocamentoNotas").textContent = texto;
+}
+function aplicarDeslocamento(fontes, delta) {
+  for (const f of fontes) {
+    for (const n of notasDaFonte(f)) n.t = Math.round((n.t + delta) * 1000) / 1000;
+    const chave = MUSICA.id + "/" + f;
+    deslocamentos.set(chave, Math.round(((deslocamentos.get(chave) || 0) + delta) * 1000) / 1000);
+  }
+  salvarPreferencias();
+  montarNotas();  // com várias fontes a ordem entre elas muda
+  if (tocando) {  // continua agendando a partir de onde está, sem repetir notas já agendadas
+    const limite = tempoAtual() + 0.15 * velocidade;
+    proximoIndice = NOTAS.findIndex(n => n.t >= limite);
+    if (proximoIndice < 0) proximoIndice = NOTAS.length;
+  }
+  atualizarDeslocamento();
+}
+function deslocarNotas(delta) {
+  const fontes = fontesSelecionadas();
+  if (!fontes.length || !MUSICA) return;
+  const primeira = Math.min(...fontes.map(f => notasDaFonte(f).reduce((m, n) => Math.min(m, n.t), Infinity)));
+  if (primeira + delta < 0) { statusNotas("a primeira nota já está no início: não dá para recuar mais", "erro"); return; }
+  aplicarDeslocamento(fontes, delta);
+  historicoNotas.push({ tipo: "deslocar", fonte: fontes[0], fontes, delta });
+  if (historicoNotas.length > MAXIMO_DESFAZER) historicoNotas.shift();
+  for (const f of fontes.slice(1)) salvarNotasDepois(f);
+  notasAlteradas(`notas ${delta > 0 ? "avançadas" : "recuadas"} 0,01 s (${fontes.map(rotuloFonte).join(", ")})`, fontes[0]);
+}
+
 function atualizarVarinha() {
+  atualizarDeslocamento();
   const fonte = MUSICA ? fonteDaVarinha() : null, b = $("btnVarinha");
   b.disabled = !fonte || reprocessando;
   b.title = reprocessando ? "Reprocessando…"
@@ -2851,7 +3077,7 @@ async function reprocessarNotas() {
   const id = MUSICA.id;
   reprocessando = true;
   atualizarVarinha();
-  statusNotas(`reprocessando ${rotuloFonte(fonte)}…${fonte === "vocals" ? " (a voz leva por volta de meio minuto)" : ""}`);
+  statusNotas(`reprocessando ${rotuloFonte(fonte)}…${fonte === "vocals" ? " (a voz leva por volta de meio minuto)" : " (na 1ª vez de cada faixa leva uns 15 s)"}`);
   try {
     const r = await api(`/api/musicas/${id}/reprocessar/${fonte}`, { method: "POST" });
     if (!MUSICA || MUSICA.id !== id) return;  // trocou de música no meio
@@ -2860,6 +3086,9 @@ async function reprocessarNotas() {
     for (let i = historicoNotas.length - 1; i >= 0; i--) if (historicoNotas[i].fonte === fonte) historicoNotas.splice(i, 1);
     historicoNotas.push({ tipo: "substituir", fonte, antes });
     if (historicoNotas.length > MAXIMO_DESFAZER) historicoNotas.shift();
+    // a faixa já tinha sido deslocada (acerto do atraso): as notas novas recebem o mesmo deslocamento
+    const desloc = deslocamentos.get(id + "/" + fonte) || 0;
+    if (desloc) for (const n of r.notas) n.t = Math.max(0, Math.round((n.t + desloc) * 1000) / 1000);
     definirNotasDaFonte(fonte, r.notas);
     aplicarFontes();
     notasAlteradas(`${r.metodo}: ${antes.length} → ${r.notas.length} notas (Ctrl+Z desfaz)`, fonte);
@@ -2886,6 +3115,12 @@ function desfazerNota() {
   const acao = historicoNotas.pop();
   if (!acao) { statusNotas("nada para desfazer"); return; }
   const { fonte, nota } = acao;
+  if (acao.tipo === "deslocar") {
+    aplicarDeslocamento(acao.fontes, -acao.delta);
+    for (const f of acao.fontes.slice(1)) salvarNotasDepois(f);
+    notasAlteradas(`desfeito: deslocamento de ${acao.delta > 0 ? "+" : "−"}0,01 s`, acao.fontes[0]);
+    return;
+  }
   if (acao.tipo === "substituir") {  // varinha mágica: volta as notas de antes
     definirNotasDaFonte(fonte, acao.antes);
     if (fontesEmUso().includes(fonte)) aplicarFontes();
@@ -3036,6 +3271,7 @@ function montarListas() {
   destaqueNota = destaqueAcorde = -1;
   $("qtdNotas").textContent = NOTAS.length;
   $("qtdAcordes").textContent = ACORDES.length;
+  atualizarExtremosNotas();  // qualquer alteração nas notas ou nas fontes marcadas passa por aqui
 }
 
 function destacar(botoes, anterior, i, caixa) {
@@ -3410,7 +3646,9 @@ function salvarPreferencias() {
     preferencias: { velocidade, fontesNotas: fontesSelecionadas(),
                     fonteNotas: fontesSelecionadas().find(f => !gravacaoMidiDe(f)) || "solo",
                     faixas: [...faixasAtivas.keys()], mudo, timbre, envelope: { ...envelopeNotas }, mixagem: MIXAGEM,
-                    marcas: MARCAS, nomes: NOMES, timbresMidi: TIMBRES_MIDI, envelopeMidi: { ...envelopeMidiCfg } },
+                    marcas: MARCAS, nomes: NOMES, timbresMidi: TIMBRES_MIDI, envelopeMidi: { ...envelopeMidiCfg },
+                    deslocamentos: Object.fromEntries([...deslocamentos]
+                      .filter(([k, v]) => k.startsWith(id + "/") && v).map(([k, v]) => [k.slice(id.length + 1), v])) },
   };
   clearTimeout(temporizadorPreferencias);
   temporizadorPreferencias = setTimeout(async () => {
@@ -3484,6 +3722,9 @@ async function abrirMusica(id) {
   TRECHOS = (DADOS.trechosSolo || []).slice().sort(porTempo);
   ROTULOS = DADOS.rotulos || {};
   extensao = calcularExtensao();
+  tomFaixas = MUSICA.tom_faixas || 0;  // antes de ligar as faixas: elas vêm no tom delas
+  pararAcompanharTom();
+  estadoTom("");
   if (ctx) pararVogal();
   posicao = 0;
   guardar("ultimaMusica", id);
@@ -3498,6 +3739,9 @@ async function abrirMusica(id) {
   DADOS.melodias = DADOS.melodias || {};
   NOMES = pref.nomes && typeof pref.nomes === "object" ? { ...pref.nomes } : {};
   TIMBRES_MIDI = pref.timbresMidi && typeof pref.timbresMidi === "object" ? { ...pref.timbresMidi } : {};
+  for (const [fonte, v] of Object.entries(pref.deslocamentos || {})) {  // quanto cada faixa já foi deslocada
+    if (typeof v === "number") deslocamentos.set(id + "/" + fonte, v);
+  }
   // antes as gravações MIDI eram uma por vez ("midiExibida"): ela continua marcada
   const salvas = [...(pref.fontesNotas || [pref.fonteNotas]), ...(pref.midiExibida ? ["midi:" + pref.midiExibida] : [])]
     .filter(f => DADOS.melodias[f] || gravacaoMidiDe(f));
@@ -3516,6 +3760,8 @@ async function abrirMusica(id) {
     if (cb) { cb.checked = true; ligarFaixa(nome, true); }
   }
   aplicandoPreferencias = false;
+  preencherSeletorTom();
+  verificarTom(id);  // transposição ainda rodando (a página foi recarregada no meio): volta a acompanhar
 
   atualizarCabecalhoMusica();
   preencherSeletor();
@@ -4196,7 +4442,7 @@ $("btnCorteFimAqui").addEventListener("click", () => {
 
 // ---------- criar vídeo de karaokê ----------
 // Som das notas sintetizadas para o vídeo: o mesmo timbre do player, renderizado aqui num contexto
-// offline (mais rápido que tempo real), no tom original (o áudio do vídeo não é transposto) e com o
+// offline (mais rápido que tempo real), no tom das faixas (tomFaixas; sem a transposição do player) e com o
 // volume na mesma proporção em relação às faixas que se ouve no player (as faixas entram no vídeo em
 // 100%; o limitador do FFmpeg segura os picos). Volta um WAV mono float32 do trecho [ini, fim].
 // lista: as notas a tocar; nome: o timbre; envelope: {ataque, sustain}; pronto: o timbre carregou no player
@@ -4206,7 +4452,7 @@ async function renderizarNotasVideo(ini, fim, lista, nome = timbre, envelope = e
   const taxa = ctx.sampleRate, dur = Math.max(0.1, fim - ini);
   const ganho = 1;  // o volume das notas é aplicado na mistura (renderizarMisturaVideo)
   const notas = (lista || NOTAS.filter(n => !gravacaoMidiDe(fonteDa(n)))).filter(n => n.t < fim && n.t + n.d > ini)
-    .map(n => ({ midi: n.midi, t: Math.max(0, n.t - ini), d: n.t + n.d - Math.max(n.t, ini), v: forcaDaNota(n) }));
+    .map(n => ({ midi: n.midi + tomFaixas, t: Math.max(0, n.t - ini), d: n.t + n.d - Math.max(n.t, ini), v: forcaDaNota(n) }));
   if (pronto === undefined) {
     if (nome !== "corda") await prepararTimbre();
     pronto = !!(carregados[nome] && carregados[nome].pronto);
@@ -4291,7 +4537,7 @@ async function renderizarMisturaVideo(ini, fim, avisar = () => {}) {
   };
   for (const [nome, f] of faixasAtivas) {
     avisar(`preparando o áudio: ${rotuloFonte(nome)}…`);
-    const buffer = f.buffer || await carregar(`/faixas/${MUSICA.id}/${nome}.wav`);
+    const buffer = f.buffer || await carregar(urlFaixa(nome));
     const inicio = ini - deslocFaixa(nome);  // ponto da faixa que toca no começo do trecho
     tocar(buffer, canal(chaveFaixa(nome), bFaixas).entrada, inicio, -inicio);
   }
@@ -4483,10 +4729,10 @@ const QPS_VIDEO = 30;
 const DESENHO_VIDEO = {
   padrao: { LARGURA: 1280, ALTURA: 720, ALTURA_LINHA: 92, TAM_ATUAL: 58, TAM_OUTRAS: 46, MARGEM_LATERAL: 60,
             FADE_BORDAS: 110, FAIXA_INSTRUMENTOS: 150, FAIXA_MARCA: 34, MARGEM_PIANO: 10, TAM_TITULO: 76,
-            TAM_SUBTITULO: 38, LATERAL_PIANO: 190, TAM_ROTULO_PIANO: 64, ROTULOS_NO_TOPO: false },
+            TAM_SUBTITULO: 38, LATERAL_PIANO: 190, TAM_ROTULO_PIANO: 64, ROTULOS_NO_TOPO: false, QUEDA: 2.5 },
   instagram: { LARGURA: 1080, ALTURA: 1920, ALTURA_LINHA: 124, TAM_ATUAL: 72, TAM_OUTRAS: 56, MARGEM_LATERAL: 50,
                FADE_BORDAS: 260, FAIXA_INSTRUMENTOS: 210, FAIXA_MARCA: 0, MARGEM_PIANO: 24, TAM_TITULO: 96,
-               TAM_SUBTITULO: 50, LATERAL_PIANO: 30, TAM_ROTULO_PIANO: 96, ROTULOS_NO_TOPO: true },
+               TAM_SUBTITULO: 50, LATERAL_PIANO: 30, TAM_ROTULO_PIANO: 96, ROTULOS_NO_TOPO: true, QUEDA: 4 },
 };
 for (const F of Object.values(DESENHO_VIDEO)) {
   F.FAIXA_PIANO = F.FAIXA_INSTRUMENTOS + F.FAIXA_MARCA;  // violão + teclado (+ marca d'água), na base
@@ -4500,6 +4746,13 @@ const V_INTRO_MINIMA = 6.0;               // s antes da primeira frase; se falta
 const V_COR = { noCampo: "rgb(81,207,102)", foraCampo: "rgb(255,107,107)", noAcorde: "rgb(151,117,250)",
                 "": "rgb(255,122,61)", suave: "rgb(154,154,162)", braco: "rgb(225,225,230)", casas: "rgb(120,120,128)" };
 const V_MARCA = "@Louvores.Karaoke";
+// Piano roll (notas caindo): cada nota desce até a tecla dela e chega no instante em que começa a soar;
+// QUEDA (no DESENHO_VIDEO) = segundos que uma nota leva do alto da área da letra até o teclado
+const V_ROLO_ALFA = 0.34;     // opacidade do feixe (baixa: a letra continua legível por cima)
+const V_ROLO_DECAI = 0.35;    // fração da opacidade que sobra no fim da nota (o feixe vai sumindo)
+const V_ROLO_CAUDA = 0.5;     // s de esmaecimento depois do fim da nota (o decaimento do som)
+const V_ROLO_ALFA_ACORDE = 0.2;  // as notas do acorde (as mesmas que acendem no teclado) ficam mais apagadas
+let roloAtivo = recuperar("mostrarRolo") !== "0";  // checkbox "Notas caindo" (vale para as prévias e os vídeos)
 const LARGURA_VIOLAO_MM = 7 * BRANCA_L;  // o violão ocupa o lugar de uma oitava do teclado
 const fonteVideo = px => `600 ${px}px "Segoe UI", system-ui, sans-serif`;
 const fonteSimbolos = px => `${px}px "Segoe UI Symbol", "Segoe UI", sans-serif`;
@@ -4519,8 +4772,9 @@ let cacheVideo = { chave: null, modelo: null };
 function modeloVideo() {
   const tr = trechoVideo(), fimVideo = fimMusica();
   const frases = LETRA.filter(f => f.texto.trim());
+  const voz = textoCategoriaVoz(deslocarExtensao(extensao, tomFaixas));  // categoria da voz no tom das faixas
   const chave = JSON.stringify([MUSICA && MUSICA.id, tr.inicioVideo, fimVideo, frases.map(f => [f.t, f.fim, f.texto]),
-                                (DADOS.letraPalavras || []).length]);
+                                (DADOS.letraPalavras || []).length, voz, tomFaixas]);
   if (chave === cacheVideo.chave) return { ...cacheVideo.modelo, tr };
   const itens = [];
   let cursor = tr.inicioVideo;
@@ -4539,7 +4793,8 @@ function modeloVideo() {
     itens,
     titulo: MUSICA ? MUSICA.titulo || MUSICA.arquivo.replace(/\.[^.]+$/, "") : "",
     artista: MUSICA ? MUSICA.artista || "" : "",
-    tom: tom ? textoTomVideo(tom) : "",
+    tom: tom ? textoTomVideo({ ...tom, tonica: pc(tom.tonica + tomFaixas) }) : "",
+    voz: voz ? "Voz: " + voz : "",
   };
   cacheVideo = { chave, modelo };
   return { ...modelo, tr };
@@ -4587,6 +4842,72 @@ function camadaLetra(formato) {
   return camadasLetra[formato];
 }
 
+// Camada das notas caindo: desenhada atrás da letra, esmaecendo no alto (as notas surgem suavemente)
+const camadasRolo = {};
+function desenharRoloVideo(formato, notas, t) {
+  const F = DESENHO_VIDEO[formato], H = F.ALTURA_LETRA;
+  let camada = camadasRolo[formato];
+  if (!camada) {
+    const cv = document.createElement("canvas");
+    cv.width = F.LARGURA;
+    cv.height = H;
+    const g = cv.getContext("2d");
+    const fade = g.createLinearGradient(0, 0, 0, H);
+    fade.addColorStop(0, "rgba(0,0,0,0)");
+    fade.addColorStop(Math.min(0.45, F.FADE_BORDAS * 1.6 / H), "#000");
+    fade.addColorStop(1, "#000");
+    camada = camadasRolo[formato] = { cv, g, fade };
+  }
+  const { cv, g, fade } = camada;
+  g.globalCompositeOperation = "source-over";
+  g.clearRect(0, 0, cv.width, cv.height);
+  // mesma geometria do teclado de desenharInstrumentosVideo
+  const totalMm = LARGURA_VIOLAO_MM + LARGURA_PIANO;
+  const k = Math.min((F.LARGURA - 2 * F.LATERAL_PIANO) / totalMm, (F.FAIXA_INSTRUMENTOS - 2 * F.MARGEM_PIANO) / BRANCA_A);
+  const x0 = (F.LARGURA - totalMm * k) / 2 + LARGURA_VIOLAO_MM * k;
+  const pxs = H / F.QUEDA;  // pixels por segundo
+  const rgba = (cor, a) => cor.replace("rgb(", "rgba(").replace(")", `,${a.toFixed(3)})`);
+  // um feixe: tecla midi, de inicio a fim (s), na cor e opacidade dadas
+  const feixe = (midi, inicio, fim, cor, alfaBase) => {
+    if (fim + V_ROLO_CAUDA < t || inicio > t + F.QUEDA || midi < PIANO_MIN || midi > PIANO_MAX) return;
+    const preta = ePreta(midi), w = (preta ? PRETA_L : BRANCA_L) * k, x = x0 + teclaX(midi) * k;
+    const yIni = H - (inicio - t) * pxs, yFim = H - (fim - t) * pxs, yCauda = yFim - V_ROLO_CAUDA * pxs;
+    const soando = inicio <= t && t < fim, alfa = alfaBase * (soando ? 1.35 : 1);
+    // forte no ataque (embaixo), decaindo até o fim da nota e sumindo na cauda (decaimento do som)
+    const grad = g.createLinearGradient(0, yIni, 0, yCauda);
+    const pFim = (yIni - yFim) / Math.max(1, yIni - yCauda);
+    grad.addColorStop(0, rgba(cor, alfa));
+    grad.addColorStop(pFim, rgba(cor, alfa * V_ROLO_DECAI));
+    grad.addColorStop(1, rgba(cor, 0));
+    g.fillStyle = grad;
+    const raio = Math.min(w / 2, 6);
+    g.beginPath();
+    if (g.roundRect) g.roundRect(x + 1, yCauda, w - 2, yIni - yCauda, raio); else g.rect(x + 1, yCauda, w - 2, yIni - yCauda);
+    g.fill();
+    if (soando) {  // brilho suave onde a nota encosta no teclado
+      const brilho = g.createRadialGradient(x + w / 2, H, 0, x + w / 2, H, w * 1.6);
+      brilho.addColorStop(0, rgba(cor, 0.45));
+      brilho.addColorStop(1, rgba(cor, 0));
+      g.fillStyle = brilho;
+      g.fillRect(x - w * 1.6, H - w * 1.6, w * 4.2, w * 1.6);
+    }
+  };
+  // acordes primeiro (atrás), nas mesmas teclas que o teclado acende (mão esquerda, a partir do C2)
+  for (let i = Math.max(0, indiceEm(ACORDES, t - 30)); i < ACORDES.length && ACORDES[i].t <= t + F.QUEDA; i++) {
+    const a = ACORDES[i];
+    for (const iv of NOTAS_DO_ACORDE[a.tipo] || []) feixe(36 + pc(a.raiz + tomFaixas) + iv, a.t, a.t + a.d, V_COR.noAcorde, V_ROLO_ALFA_ACORDE);
+  }
+  for (let i = Math.max(0, indiceEm(notas, t - 12)); i < notas.length && notas[i].t <= t + F.QUEDA; i++) {
+    const n = notas[i];
+    feixe(n.midi + tomFaixas, n.t, n.t + n.d, V_COR[classeCampo(n, acordeDaNota(n))] || V_COR[""], V_ROLO_ALFA);
+  }
+  g.globalCompositeOperation = "destination-in";
+  g.fillStyle = fade;
+  g.fillRect(0, 0, cv.width, cv.height);
+  g.globalCompositeOperation = "source-over";
+  return cv;
+}
+
 function desenharLetraVideo(formato, modelo, t) {
   const F = DESENHO_VIDEO[formato], { cv, g, fade } = camadaLetra(formato), itens = modelo.itens;
   g.globalCompositeOperation = "source-over";
@@ -4632,14 +4953,14 @@ function ativoEm(lista, t) {
   return i >= 0 && t < lista[i].t + lista[i].d ? lista[i] : null;
 }
 
-// Nomes do tom original (sem a transposição do player: o áudio do vídeo não é transposto)
+// Nomes no tom das faixas (tomFaixas; sem a transposição do player, que não entra no áudio do vídeo)
 function textosInstrumentosVideo(nota, acorde) {
-  const tom = DADOS.tom;
-  const bemol = !!tom && (tom.modo === "maior" ? [5, 10, 3, 8, 1] : [2, 7, 0, 5, 10, 3]).includes(pc(tom.tonica));
+  const tom = DADOS.tom, k = tomFaixas;
+  const bemol = !!tom && (tom.modo === "maior" ? [5, 10, 3, 8, 1] : [2, 7, 0, 5, 10, 3]).includes(pc(tom.tonica + k));
   const nomes = bemol ? BEMOIS : SUSTENIDOS;
   return {
-    acorde: acorde ? [nomes[pc(acorde.raiz)] + acorde.tipo, V_COR.noAcorde] : ["—", V_COR.suave],
-    nota: nota ? [nomes[pc(nota.midi)] + (Math.floor(nota.midi / 12) - 1), V_COR[classeCampo(nota, acorde)]] : ["—", V_COR.suave],
+    acorde: acorde ? [nomes[pc(acorde.raiz + k)] + acorde.tipo, V_COR.noAcorde] : ["—", V_COR.suave],
+    nota: nota ? [nomes[pc(nota.midi + k)] + (Math.floor((nota.midi + k) / 12) - 1), V_COR[classeCampo(nota, acorde)]] : ["—", V_COR.suave],
   };
 }
 
@@ -4718,11 +5039,12 @@ function desenharInstrumentosVideo(g, F, nota, acorde) {
   const y0 = F.FAIXA_INSTRUMENTOS - F.MARGEM_PIANO - BRANCA_A * k;
   g.fillStyle = "#000";
   g.fillRect(0, 0, F.LARGURA, F.FAIXA_PIANO);
-  const marcadas = new Map();  // midi -> {cor, melodia}
+  const marcadas = new Map(), kt = tomFaixas;  // midi -> {cor, melodia}; no tom das faixas
   if (acorde && NOTAS_DO_ACORDE[acorde.tipo]) {
-    for (const i of NOTAS_DO_ACORDE[acorde.tipo]) marcadas.set(36 + pc(acorde.raiz) + i, { cor: V_COR.noAcorde, melodia: false });
+    for (const i of NOTAS_DO_ACORDE[acorde.tipo]) marcadas.set(36 + pc(acorde.raiz + kt) + i, { cor: V_COR.noAcorde, melodia: false });
   }
-  if (nota) marcadas.set(nota.midi, { cor: V_COR[classeCampo(nota, acorde)], melodia: true });
+  if (nota) marcadas.set(nota.midi + kt, { cor: V_COR[classeCampo(nota, acorde)], melodia: true });  // a classe não muda com o tom
+  const voz = faixaDaVoz(), faixa = voz && { grave: voz.grave + kt, aguda: voz.aguda + kt };
   for (const preta of [false, true]) {  // brancas primeiro, pretas por cima
     for (let m = PIANO_MIN; m <= PIANO_MAX; m++) {
       if (ePreta(m) !== preta) continue;
@@ -4730,6 +5052,7 @@ function desenharInstrumentosVideo(g, F, nota, acorde) {
       const marca = marcadas.get(m);
       g.fillStyle = marca ? marca.cor : preta ? "rgb(31,31,34)" : "rgb(251,250,246)";
       g.fillRect(x, y0, w, h);
+      if (!marca) sombrearTecla(g, faixa, m, x, y0, w, h);
       if (!preta) {
         g.strokeStyle = "rgb(138,138,138)";
         g.lineWidth = 1;
@@ -4752,7 +5075,8 @@ function desenharInstrumentosVideo(g, F, nota, acorde) {
   }
   g.fillStyle = "rgb(122,31,31)";  // feltro vermelho em cima do teclado
   g.fillRect(x0, y0, LARGURA_PIANO * k, Math.max(2, 3 * k));
-  desenharViolaoVideo(g, xv + LARGURA_VIOLAO_MM * k / 2, y0, BRANCA_A * k, acorde, Math.max(10, Math.trunc(BRANCA_A * k * 0.11)));
+  desenharViolaoVideo(g, xv + LARGURA_VIOLAO_MM * k / 2, y0, BRANCA_A * k, acorde && { ...acorde, raiz: acorde.raiz + kt },
+                      Math.max(10, Math.trunc(BRANCA_A * k * 0.11)));
   if (!F.ROTULOS_NO_TOPO) {  // acorde à esquerda e nota à direita, centralizados nas laterais
     const cy = y0 + BRANCA_A * k / 2, txt = textosInstrumentosVideo(nota, acorde);
     g.font = fonteVideo(F.TAM_ROTULO_PIANO);
@@ -4791,7 +5115,7 @@ function desenharMarcaVideo(g, F) {
 
 function desenharAberturaVideo(g, F, modelo) {
   const linhas = [{ texto: modelo.titulo, tam: F.TAM_TITULO, cor: "#fff", altura: Math.trunc(F.TAM_TITULO * 1.6) },
-    ...[modelo.artista, modelo.tom].filter(Boolean).map(texto => (
+    ...[modelo.artista, modelo.tom, modelo.voz].filter(Boolean).map(texto => (
       { texto, tam: F.TAM_SUBTITULO, cor: "rgb(200,200,200)", altura: Math.trunc(F.TAM_SUBTITULO * 1.7) }))];
   let y = Math.floor((F.ALTURA - linhas.reduce((s, l) => s + l.altura, 0)) / 2);
   g.textAlign = "center";
@@ -4813,6 +5137,7 @@ function desenharQuadroVideo(g, formato, modelo, t, tv, notas) {
   g.globalCompositeOperation = "source-over";
   g.fillStyle = "#000";
   g.fillRect(0, 0, F.LARGURA, F.ALTURA);
+  if (roloAtivo) g.drawImage(desenharRoloVideo(formato, notas, t), 0, 0);  // notas caindo, atrás da letra
   g.drawImage(desenharLetraVideo(formato, modelo, t), 0, 0);
   const nota = ativoEm(notas, t), acorde = ativoEm(ACORDES, t);
   g.save();
@@ -4873,6 +5198,8 @@ function mostrarAbaLinha(nome) {
   }
 }
 for (const n of Object.keys(ABAS_LINHA)) $("tabLinha-" + n).addEventListener("click", () => mostrarAbaLinha(n));
+$("mostrarRolo").checked = roloAtivo;
+$("mostrarRolo").addEventListener("change", e => { roloAtivo = e.target.checked; guardar("mostrarRolo", roloAtivo ? "1" : "0"); });
 if ((recuperar("abaLinha") || "linha") !== "linha") mostrarAbaLinha(recuperar("abaLinha"));
 
 // Desenha a prévia da aba aberta no tempo t da música (chamada a cada quadro da tela)
@@ -4962,7 +5289,7 @@ async function renderizarQuadrosVideo(m, formato, modelo, avisar) {
     : new Promise((ok, falha) => cv.toBlob(b => b ? ok(b) : falha(new Error("quadro não gerado")), "image/jpeg", 0.92));
   const total = Math.max(1, Math.round((tr.fim - tr.ini + tr.silencio) * QPS_VIDEO));
   const r = await api(`/api/musicas/${m.id}/video`, { method: "POST", body: JSON.stringify(
-    { html: true, formato, total, silencio: tr.silencio, duracao: tr.fim - tr.ini }) });
+    { html: true, formato, total, silencio: tr.silencio, duracao: tr.fim - tr.ini, semitons: tomFaixas }) });
   PROCESSOS = r.processamentos || PROCESSOS;
   const sessao = r.sessao;
   const enviar = async lote => {
@@ -7142,12 +7469,13 @@ const rotuloPrivacidade = p => ({ private: "privado", unlisted: "não listado", 
 
 // Troca {titulo}, {artista}... pelos campos da música e limpa o que ficou sem valor.
 // A {letra} entra só depois da limpeza (para não mexer nas frases); sem letra, some junto com o "Letra:"
-function preencherModelo(modelo, m, letra = "", extensao = "") {
+function preencherModelo(modelo, m, letra = "", extensao = "", voz = "") {
   const campos = {
-    extensao,  // "C#3 a G4": a dos botões de extensão vocal, no tom original
+    extensao,  // "C#3 a G4": a extensão vocal, no tom das faixas (o do vídeo)
+    voz,       // "Mezzo-soprano · Feminino": a categoria da voz (a de "categoriaVoz"), no tom das faixas
     titulo: m.titulo || (m.arquivo || "").replace(/\.[^.]+$/, ""),
     artista: m.artista || "",
-    tom: m.tom_tonica == null ? "" : cifraTom(m.tom_tonica, m.tom_modo),  // o vídeo sai no tom original
+    tom: m.tom_tonica == null ? "" : cifraTom(m.tom_tonica + (m.tom_faixas || 0), m.tom_modo),  // o vídeo sai no tom das faixas
     categoria: m.categoria || "",
     tags: m.tags || "",
   };
@@ -7171,19 +7499,22 @@ function preencherHashtags(modelo, m) {
     .join(" ");
 }
 
-// Extensão vocal da música para a descrição: a mesma regra dos botões de extensão vocal, no tom
-// original (o vídeo não é transposto), com bemóis nos tons que os usam. Vazia sem faixa de voz.
+// Extensão vocal da música para a descrição, no tom das faixas (o do vídeo; m.tom_faixas), com bemóis
+// nos tons que os usam. Vazia sem faixa de voz.
+async function vocaisDe(m) {
+  if (MUSICA && MUSICA.id === m.id) return DADOS.melodias && DADOS.melodias.vocals;
+  try { return ((await api(`/api/musicas/${m.id}`)).dados.melodias || {}).vocals; }
+  catch (e) { return null; }
+}
+// Categoria da voz para o YouTube ({voz}), no tom das faixas; vazia sem faixa de voz
+async function textoVoz(m) {
+  return textoCategoriaVoz(deslocarExtensao(calcularExtensao(await vocaisDe(m)), m.tom_faixas || 0), false);
+}
 async function textoExtensao(m) {
-  let vocais;
-  if (MUSICA && MUSICA.id === m.id) vocais = DADOS.melodias && DADOS.melodias.vocals;
-  else {
-    try { vocais = ((await api(`/api/musicas/${m.id}`)).dados.melodias || {}).vocals; }
-    catch (e) { return ""; }
-  }
-  const ext = calcularExtensao(vocais);
+  const ext = deslocarExtensao(calcularExtensao(await vocaisDe(m)), m.tom_faixas || 0);
   if (!ext) return "";
   const bemol = m.tom_tonica != null &&
-    (m.tom_modo === "menor" ? [2, 7, 0, 5, 10, 3] : [5, 10, 3, 8, 1]).includes(pc(m.tom_tonica));
+    (m.tom_modo === "menor" ? [2, 7, 0, 5, 10, 3] : [5, 10, 3, 8, 1]).includes(pc(m.tom_tonica + (m.tom_faixas || 0)));
   const nome = midi => (bemol ? BEMOIS : SUSTENIDOS)[pc(midi)] + (Math.floor(midi / 12) - 1);
   return `${nome(ext.grave)} a ${nome(ext.aguda)}`;
 }
@@ -7220,10 +7551,27 @@ function mostrarAvisoRepublicar(publicado) {
   a.textContent = "YouTube Studio";
   aviso.append(a, ".");
 }
+// Semitons em que o vídeo foi feito, pelo tom no nome do arquivo ("... - Tom F#.mp4"): o título e a
+// descrição ({tom}, {voz}, {extensao}) descrevem o vídeo publicado, mesmo que as faixas já estejam em
+// outro tom. O nome não diz a oitava (+2 e −10 dão o mesmo tom): fica a do tom atual das faixas, se
+// bater, senão o deslocamento menor. Vídeos antigos, sem o tom no nome: o tom atual das faixas.
+function semitonsDoVideo(m, arquivo) {
+  const t = String(arquivo || "").match(/ - Tom ([A-G][#b]?)m?(?: \(\d+\))?\.mp4$/i);
+  const atual = m.tom_faixas || 0;
+  if (!t || m.tom_tonica == null) return atual;
+  const nota = t[1][0].toUpperCase() + t[1].slice(1);
+  const i = SUSTENIDOS.includes(nota) ? SUSTENIDOS.indexOf(nota) : BEMOIS.indexOf(nota);
+  if (i < 0) return atual;
+  const d = pc(i - m.tom_tonica);  // 0..11
+  if (pc(atual) === d) return atual;
+  return d <= 6 ? d : d - 12;
+}
+
 async function abrirPublicacao(m) {
   const video = YOUTUBE && YOUTUBE.videos[m.id];
   if (!video) return;
   if (!YOUTUBE.conectado) { abrirConfigYoutube("Conecte a conta do YouTube antes de publicar."); return; }
+  m = { ...m, tom_faixas: semitonsDoVideo(m, video.arquivo) };  // os textos no tom do vídeo
   const cfg = YOUTUBE.config;
   const letra = /\{letra\}/.test(cfg.titulo + cfg.descricao + cfg.tags) ? await textoLetra(m.id) : "";
   publicando = m;
@@ -7231,8 +7579,9 @@ async function abrirPublicacao(m) {
   mostrarAvisoRepublicar(video.publicado);
   const usaExtensao = /\{extensao\}/.test(cfg.titulo + cfg.descricao + cfg.tags);
   const extensaoTexto = usaExtensao ? await textoExtensao(m) : "";
-  $("pubTitulo").value = preencherModelo(cfg.titulo, m, "", extensaoTexto).replace(/\s+/g, " ").slice(0, 100);
-  const descricao = preencherModelo(cfg.descricao, m, letra, extensaoTexto);
+  const vozTexto = /\{voz\}/.test(cfg.titulo + cfg.descricao + cfg.tags) ? await textoVoz(m) : "";
+  $("pubTitulo").value = preencherModelo(cfg.titulo, m, "", extensaoTexto, vozTexto).replace(/\s+/g, " ").slice(0, 100);
+  const descricao = preencherModelo(cfg.descricao, m, letra, extensaoTexto, vozTexto);
   $("pubDescricao").value = descricao;
   $("pubTags").value = preencherModelo(cfg.tags, m).split(",").map(t => t.trim()).filter(Boolean).join(", ");
   $("pubHashtags").value = preencherHashtags(cfg.hashtags, m);
@@ -7378,6 +7727,8 @@ $("seletorMusica").addEventListener("change", e => abrirMusica(e.target.value));
 // ---------- controles ----------
 $("btnPlay").addEventListener("click", alternar);
 $("btnInicio").addEventListener("click", () => irPara(0));
+$("btnNotasAtrasar").addEventListener("click", () => deslocarNotas(-PASSO_DESLOCAMENTO));
+$("btnNotasAdiantar").addEventListener("click", () => deslocarNotas(PASSO_DESLOCAMENTO));
 $("btnVoltar5").addEventListener("click", () => irPara(tempoAtual() - 5));
 $("btnVoltar1").addEventListener("click", () => irPara(tempoAtual() - 0.1));
 $("btnAvancar1").addEventListener("click", () => irPara(tempoAtual() + 0.1));
@@ -7470,22 +7821,24 @@ function ligarTodasFaixas() {
 $("btnFaixasTodas").addEventListener("click", ligarTodasFaixas);
 $("btnVarinha").addEventListener("click", reprocessarNotas);
 $("faixa-audio-todas").addEventListener("change", e => e.target.checked ? ligarTodasFaixas() : desligarTodasFaixas());
-// Leva a linha do tempo ao início da primeira vez que a nota é cantada (as mesmas notas que contam
-// na extensão: sem as muito curtas) e, com a voz nas notas exibidas e a música parada, seleciona-a
+// Leva a linha do tempo à primeira vez que a nota aparece nas notas exibidas e, com a música parada,
+// seleciona-a
 function irParaNotaVocal(midi) {
   if (midi == null) return;
-  const n = (DADOS.melodias && DADOS.melodias.vocals || []).filter(x => x.d >= DURACAO_MINIMA_EXTENSAO && x.midi === midi)
-    .reduce((a, x) => !a || x.t < a.t ? x : a, null);
+  const n = NOTAS.find(x => x.midi === midi);  // NOTAS está em ordem de tempo
   if (!n) return;
   irPara(n.t);
   if (!tocando && NOTAS.includes(n)) notaSelecionada = n;
 }
 $("btnLimparMarcas").addEventListener("click", () => { definirMarcas([]); salvarPreferencias(); });
+$("tomFaixas").addEventListener("change", atualizarBotoesTom);
+$("btnRenderizarTom").addEventListener("click", renderizarTom);
+$("btnTomOriginal").addEventListener("click", voltarTomOriginal);
 for (const [id, chave] of [["btnVozGrave", "grave"], ["btnVozAguda", "aguda"]]) {
   $(id).addEventListener("click", () => {
-    if (!extensao) return;
-    irParaNotaVocal(extensao[chave]);
-    cantarNota(extensao[chave], $(id));
+    if (!extremosNotas) return;
+    irParaNotaVocal(extremosNotas[chave]);
+    cantarNota(extremosNotas[chave], $(id));
   });
 }
 

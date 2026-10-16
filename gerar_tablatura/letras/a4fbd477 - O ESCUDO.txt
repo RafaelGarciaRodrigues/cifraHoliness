@@ -1,47 +1,48 @@
 # Letra: O Escudo (id a4fbd477)
 # Formato: [início - fim] frase · linhas começando com # são ignoradas
 
-[00:14.64 - 00:18.22] Por toda a minha vida
-[00:20.73 - 00:24.34] Ó Senhor, te louvarei
-[00:26.74 - 00:30.67] Pois teu fôlego é a minha vida
-[00:33.23 - 00:36.78] E nunca me cansarei
-[00:39.66 - 00:43.98] Posso ouvir a Tua voz
-[00:45.77 - 00:49.22] É mais doce do que o mel
-[00:52.08 - 00:55.87] Que me tira dessa cova
-[00:58.49 - 01:01.98] E me leva para o céu
-[01:04.78 - 01:09.28] Já vi fogo e terremoto
-[01:11.00 - 01:14.07] Vento forte que passou
-[01:17.53 - 01:21.82] Já vi tantos perigos
-[01:23.48 - 01:27.49] Mas tua voz me acalmou
-[01:30.33 - 01:35.38] Tu dás ordem às estrelas
-[01:36.35 - 01:40.08] E ao mar os seus limites
-[01:42.65 - 01:45.95] Eu me sinto tão seguro
-[01:49.09 - 01:53.63] No teu colo Ó Altíssimo
-[01:55.66 - 01:59.31] Não há ferrolho
-[01:59.53 - 02:01.65] Nem portas
-[02:03.06 - 02:08.11] Que se fechem diante da tua voz
-[02:08.27 - 02:12.18] Não há doença,
-[02:12.18 - 02:14.93] nem culpa
-[02:16.08 - 02:20.78] Que fiquem de pé diante de nós
-[02:20.84 - 02:25.11] E a tempestade
-[02:25.11 - 02:27.65] se acalma
-[02:28.41 - 02:32.65] Na voz daquele que tudo criou
-[02:33.29 - 02:36.47] Pois sua palavra
-[02:36.47 - 02:39.91] É pura
-[02:40.85 - 02:45.00] És tudo para o que nele crê
-[02:58.25 - 03:04.33] Tu dás ordem e as estrelas
-[03:04.33 - 03:08.47] E ao mar os seus limites
-[03:10.05 - 03:14.35] Eu me sinto tão seguro
-[03:14.35 - 03:16.51] meu Jesus
-[03:17.19 - 03:21.61] no teu colo, ó, altíssimo,
-[03:24.25 - 03:25.71] Não há Ferrolho
-[03:27.81 - 03:30.76] nem portas
-[03:31.40 - 03:36.68] que se fechem diante da tua voz
-[03:36.68 - 03:40.20] não há doença
-[03:40.76 - 03:43.30] nem culpa
-[03:43.30 - 03:49.10] Que fiquem de pé diante de nós
-[03:49.10 - 03:55.64] E a tempestade se acalma
-[03:56.64 - 04:00.02] Na voz daquele que tudo criou
-[04:01.56 - 04:08.42] Pois tua palavra é pura
-[04:09.74 - 04:14.68] És tudo para o que Dele crê
-[04:15.75 - 04:28.85] És tudo para o que Dele crê
+[00:14.44 - 00:18.00] Por toda a minha vida
+[00:20.52 - 00:23.47] Ó Senhor, te louvarei
+[00:26.61 - 00:29.55] Pois meu fôlego é a tua vida
+[00:33.12 - 00:35.84] E nunca me cansarei
+[00:39.44 - 00:43.93] Posso ouvir a tua voz
+[00:45.81 - 00:48.51] É mais doce do que o mel
+[00:51.96 - 00:54.74] Que me tira desta cova
+[00:58.46 - 01:00.99] E me leva até o céu
+[01:04.73 - 01:09.49] Já vi fogo e terremotos
+[01:10.97 - 01:14.00] Vento forte que passou
+[01:17.28 - 01:21.55] Já vivi tantos perigos
+[01:23.45 - 01:26.33] Mas Tua voz me acalmou
+[01:29.98 - 01:35.00] Tu dás ordem às estrelas
+[01:36.34 - 01:39.01] E ao mar, os seus limites
+[01:42.61 - 01:45.19] Eu me sinto tão seguro
+[01:48.78 - 01:51.64] No Teu colo, oh, Altíssimo
+[01:55.66 - 01:58.73] Não há ferrolhos
+[01:59.67 - 02:02.25] Nem portas
+[02:02.99 - 02:07.78] Que se fechem diante da Tua voz
+[02:08.26 - 02:10.28] Não há doenças
+[02:12.26 - 02:13.78] Nem culpa
+[02:15.76 - 02:20.45] Que fiquem de pé diante de nós
+[02:20.83 - 02:26.00] E a tempestade, ela se acalma
+[02:28.40 - 02:32.10] Na voz d'Aquele que tudo criou
+[02:33.48 - 02:38.81] Pois Sua palavra é pura
+[02:41.03 - 02:47.20] Escudo para os que n'Ele creem
+[02:47.24 - 02:48.62] Eu ainda creio
+[02:58.41 - 03:01.29] Tu dás ordem às estrelas
+[03:04.78 - 03:09.02] E ao mar, os seus limites
+[03:11.00 - 03:13.77] Eu me sinto tão seguro
+[03:14.91 - 03:17.11] Nem portas
+[03:17.41 - 03:20.21] No Teu colo, oh, Altíssimo
+[03:24.10 - 03:26.96] Não há ferrolhos
+[03:28.08 - 03:30.84] Nem portas
+[03:31.44 - 03:36.19] Que se fechem diante da Tua voz
+[03:36.75 - 03:40.01] Não há doenças
+[03:40.73 - 03:42.32] Nem culpa
+[03:44.18 - 03:48.70] Que fiquem de pé diante de nós
+[03:49.24 - 03:54.41] E a tempestade, ela se acalma
+[03:56.83 - 04:00.78] Na voz d'Aquele que tudo criou
+[04:00.88 - 04:07.44] Pois Sua palavra é pura
+[04:09.53 - 04:14.71] Escudo para os que n'Ele creem
+[04:15.99 - 04:18.29] Escudo para os que
+[04:20.90 - 04:25.42] Já vi fogo e terremotos
+[04:25.90 - 04:28.23] E ao mar, os seus limites

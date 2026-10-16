@@ -1093,4 +1093,64 @@ varinha reduz bastante a edição manual, mas não a elimina. Sugestão de ordem
 - além disso essa mesma música começou errado
 - enfim, essa função possui muitas falhas e não está servindo ao seu propósito
 
+- percebi que as notas sintetizadas estão com pequeno atraso, não consigo quantificar apenas ouvindo, mas algo em torno de micrsegundos
+- para resolver isso de forma mais assertiva, gostaria de botões antes de id="btnInicio" que eu possa avançar ou recuar na linha de tempo 0.01s toda faixa das notas sintetizadas apenas das faixas selecionadas em id="faixa-col-notas"
 
+- na musica 7dff3523 na faixa Guitarra / violão existe um dedilhado
+- as notas sintetzadas só aparece um F#4 de forma constante (o que está errado)
+- tentei reprocessar e não deu certo
+- sem quebrar o que já fizemos para voz (que funcionou) é possível melhorar a identificação do dedilhado?
+
+# VISUAL Piano
+- em ambos os vídeos quero fazer um recurso de Piano Visualizer com falling notes (piano roll)
+- mas quero que os feixes de notas sejam mais opacas para não atrapalhar a visualização da letra da música e apareçam atrás da letra (de forma suave)
+- no final de cada nota quero um gradiente suave, mostrando o decaimento da nota
+
+- as notas dos acordes não estão aparecendo no visualizer
+- além disso quero um checkbox que habilite ou não a visualização do falling notes
+
+- no inicio do video, onde é mostrado o nome, cantor e tom, abaixo do tom informe id="categoriaVoz"
+- o mesmo em id="ytDescricao" abaixo de Extensão vocal: {extensao}
+- e o mesmo em id="ytTitulo" no final
+
+- já havíamos corrigido isso, id="btnVozGrave" e id="btnVozAguda" não estão trazendo os valores corretos
+- a música 7dff3523 mostra id="btnVozGrave" mas tem um F#2 na linha
+- deve considerar a música inteira de todas as id="faixa-col-notas" selecionadas
+- havendo alteração nas notas deve refletir automaticamente 
+
+- no teclado (tanto na interface quanto nos videos) gostaria de criar uma leve "sombra" nas notas fora da extensão vocal apenas das notas da faixa da voz
+- ou seja, nessa faixa o teclado fica como está
+- nos demais fica essa sombra
+- a ideia é mostrar a xtensão vocal no teclado mas sem esconder as outras notas
+
+- ficou bom, mas o cinza escuto não deixa visie a tecla do acorde que tbm é escura, precisa ter um contraste
+
+# MUDAR O TOM
+- quero avaliar uma forma de mudar o tom das músicas
+- sei que é algo complexo porque estou misturando MIDI com faixas dos instrumentos com notas sintetizadas
+- mas no resultado final, nunca uso a voz, logo:
+-- notas sintetizadas é fácil
+-- percussão não precisa
+-- o foco é na harmonia base, pads, violão, baixo, piano....
+-- é possível mudar o tom mantendo uma qualidade?
+-- não implemente nada, apenas vamos avaliar a possibilidade
+## CONCLUSÃO (mudar o tom)
+- é possível; pelo que se sabe do Rubber Band, a qualidade é boa em até ±2/3 semitons; acima de ±4 começam artefatos (ataques "borrados", grave com leve fase)
+- ferramenta: Rubber Band (já disponível no ffmpeg instalado, filtro `rubberband`); costuma soar melhor que o librosa (vocoder de fase simples)
+- teste em 7dff3523 (30 s, +2 semitons, cada faixa separada e depois misturada; bateria sem transpor): amostras em scratchpad/tom
+- custo: ~18 s por faixa de 5 min; 5 faixas ~1,5 min (paralelo menos); feito uma vez e guardado em cache (faixas/<id>/tom+N/)
+- não dá para fazer em tempo real no navegador com essa qualidade: as faixas seriam pré-renderizadas no servidor ao escolher a transposição
+- transpor cada faixa separada tende a soar melhor que transpor a mistura (falta confirmar ouvindo) (o vazamento da voz nas faixas também sobe, mas a voz não é usada)
+- quanto menor o deslocamento, melhor: subir 5 soa melhor que descer 7 (mesmo tom, uma oitava de diferença); ±6 é o pior caso
+- notas sintetizadas e MIDI: só somar a transposição (já é feito no player); bateria: não transpor
+- o vídeo usaria as faixas transpostas na mistura (OfflineAudioContext) e o teclado/acordes no tom novo
+
+- crie um select com as possibilidades de transposição: em semitons para cima e para baixo e ao lado de cada um a nova categoria de voz qe vai ficar o resultado
+- coloque ao lado de id="categoriaVoz"
+- e ao lado um botão para renderizar
+- e ao lado um botão que retorna ao original
+- não deve sobrescrever os arquivos originais, voltar para o original apaga as faixas transpostas de audio e volta a valer as originais, para hão haver perda de qualidade ou distorções pela mudança
+
+- quando pressionar id="bib-7dff3523-video-padrao" ou id="bib-7dff3523-video-instagram" e os arquivos já existirem deve sobrescrever. atualmente está riando uma cópia
+
+- a musica c5630915 em 00:50 aproximadamente entra um coro de voz e as notas não foram capturadas no reprocessamento, deixando uma parte da musica sem notas

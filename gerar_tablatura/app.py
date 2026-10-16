@@ -38,12 +38,14 @@ import letra
 import mixagem
 import pastas
 import tonalidade
+import transpor
 import youtube
 
 BASE_DIR = pastas.BASE_DIR
 INTERFACE = os.path.join(BASE_DIR, "interface.html")
 SCRIPT_SOLO = os.path.join(BASE_DIR, "solo.py")
 SCRIPT_VIDEO = os.path.join(BASE_DIR, "video.py")
+SCRIPT_TRANSPOR = os.path.join(BASE_DIR, "transpor.py")
 SCRIPT_YOUTUBE = os.path.join(BASE_DIR, "youtube.py")
 PASTA_FAIXAS = os.path.join(BASE_DIR, "faixas")
 PASTA_DADOS = os.path.join(BASE_DIR, "dados")
@@ -163,13 +165,20 @@ class SessoesVideo:
         threading.Thread(target=self._vigiar, daemon=True).start()
 
     @staticmethod
-    def nome_arquivo(registro, pasta):
-        base = pastas.base_video(registro)
-        caminho, n = os.path.join(pasta, base + ".mp4"), 2
-        while os.path.exists(caminho):  # não sobrescreve vídeos anteriores
-            caminho = os.path.join(pasta, f"{base} ({n}).mp4")
+    def nome_arquivo(registro, pasta, semitons=0):
+        """<Artista> - <Título> - Tom <tom do vídeo>.mp4: um arquivo por tom; criar de novo no mesmo
+        tom substitui o anterior (só no fim, quando o novo ficou pronto; se falhar no meio, o anterior
+        continua lá)."""
+        return os.path.join(pasta, pastas.base_video(registro, semitons) + ".mp4")
+
+    @staticmethod
+    def copia_livre(caminho):
+        """<base> (2).mp4, (3)...: usado só quando o anterior não pode ser substituído (aberto em
+        outro programa), para não perder o vídeo recém-gerado."""
+        base, n = caminho[:-4], 2
+        while os.path.exists(f"{base} ({n}).mp4"):
             n += 1
-        return caminho
+        return f"{base} ({n}).mp4"
 
     def _estado(self, chave, **campos):
         with PROCESSAMENTOS.trava:
@@ -180,7 +189,7 @@ class SessoesVideo:
                 del info["log"][:-200]
             info.update(campos)
 
-    def iniciar(self, registro, formato, total, silencio, duracao):
+    def iniciar(self, registro, formato, total, silencio, duracao, semitons=0):
         """Abre o FFmpeg para receber `total` quadros; devolve o token da sessão (ou lança ValueError)."""
         if shutil.which("ffmpeg") is None:
             raise ValueError("FFmpeg não encontrado no PATH do sistema")
@@ -193,7 +202,7 @@ class SessoesVideo:
                 raise RuntimeError("este vídeo já está sendo criado")
             pasta = self.PASTAS[formato]
             os.makedirs(pasta, exist_ok=True)
-            saida = self.nome_arquivo(registro, pasta)
+            saida = self.nome_arquivo(registro, pasta, semitons)
             temporario = saida + ".parcial.mp4"
             largura, altura = self.MEDIDAS[formato]
             atraso = f",adelay=delays={int(round(silencio * 1000))}:all=1" if silencio > 0 else ""
@@ -269,10 +278,16 @@ class SessoesVideo:
                 self._estado(chave, estado="erro", etapa=f"falhou (código {codigo}); veja o log",
                              linha=f"Erro: o FFmpeg falhou ao gerar o vídeo. {erro}".strip())
                 return
-            os.replace(s["temporario"], s["saida"])
+            aviso = ""
+            try:
+                os.replace(s["temporario"], s["saida"])  # substitui o vídeo anterior, se houver
+            except PermissionError:  # o anterior está aberto (num player, por exemplo): salva ao lado
+                aberto, s["saida"] = s["saida"], self.copia_livre(s["saida"])
+                os.replace(s["temporario"], s["saida"])
+                aviso = f" (o anterior, {os.path.basename(aberto)}, está aberto em outro programa e não pôde ser substituído)"
             marcador = FORMATOS_VIDEO[s["formato"]][1]
             self._estado(chave, estado="concluido", etapa="concluído",
-                         linha=f"{marcador}! {os.path.relpath(s['saida'], BASE_DIR)}")
+                         linha=f"{marcador}! {os.path.relpath(s['saida'], BASE_DIR)}{aviso}")
 
         threading.Thread(target=terminar, daemon=True).start()
 
@@ -352,8 +367,26 @@ ROTA_INSTRUMENTO = re.compile(r"^/instrumentos/((?:[a-z0-9_-]+/)?[A-Za-z0-9_#.-]
 ROTA_NOTAS = re.compile(rf"^/api/musicas/{ID}/notas/([a-z]+)$")
 ROTA_MIDI = re.compile(rf"^/api/musicas/{ID}/midi/([a-z0-9]{{1,20}})$")  # gravações do teclado MIDI
 ROTA_REPROCESSAR = re.compile(rf"^/api/musicas/{ID}/reprocessar/([a-z]+)$")  # varinha mágica (afinar.py)
+ROTA_TOM = re.compile(rf"^/api/musicas/{ID}/tom$")  # faixas transpostas (transpor.py)
 TRAVA_DADOS = threading.Lock()  # dados/<id>.json é regravado por mais de uma rota
 INICIO_SERVIDOR = time.time()
+
+
+def com_tom_faixas(registro):
+    """Registro da música com "tom_faixas": semitons das faixas transpostas em vigor (0 = originais)."""
+    if registro is None:
+        return None
+    info = transpor.ler_transposicao(registro["id"])
+    return {**registro, "tom_faixas": info["semitons"] if info else 0}
+
+
+def situacao_tom(id_musica):
+    """Tom das faixas e a situação da transposição na fila ("tom:<id>")."""
+    info = transpor.ler_transposicao(id_musica)
+    tarefa = PROCESSAMENTOS.instantaneo().get(f"tom:{id_musica}", {})
+    return {"semitons": info["semitons"] if info else 0, "faixas": sorted(info["fontes"]) if info else [],
+            "estado": tarefa.get("estado", ""), "etapa": tarefa.get("etapa", ""),
+            "erro": next((l for l in reversed(tarefa.get("log", [])) if l.startswith("Erro")), "")}
 
 
 def servidor_desatualizado():
@@ -451,7 +484,7 @@ class Manipulador(BaseHTTPRequestHandler):
                 self.send_header("Content-Length", "0")
                 return self.end_headers()
             if caminho == "/api/musicas":
-                return self._json(banco.listar())
+                return self._json([com_tom_faixas(r) for r in banco.listar()])
             if caminho == "/api/servidor":
                 return self._json({"desatualizado": servidor_desatualizado()})
             if caminho == "/api/youtube":
@@ -468,8 +501,11 @@ class Manipulador(BaseHTTPRequestHandler):
                 return self._musica(m.group(1))
             if m := ROTA_LETRA.match(caminho):
                 return self._letra(m.group(1))
+            if m := ROTA_TOM.match(caminho):
+                return self._json(situacao_tom(m.group(1)))
             if m := ROTA_FAIXA.match(caminho):
-                arquivo = os.path.join(PASTA_FAIXAS, m.group(1), m.group(2) + ".wav")
+                # com o tom mudado, a cópia transposta no lugar da original (que fica intacta)
+                arquivo = transpor.faixa_transposta(*m.groups()) or os.path.join(PASTA_FAIXAS, m.group(1), m.group(2) + ".wav")
                 if os.path.isfile(arquivo):
                     return self._arquivo(arquivo, "audio/wav")
             if m := ROTA_GRAVACOES.match(caminho):
@@ -500,6 +536,8 @@ class Manipulador(BaseHTTPRequestHandler):
             return self._encaixar_letra(m.group(1))
         if m := ROTA_REPROCESSAR.match(caminho):
             return self._reprocessar_notas(*m.groups())
+        if m := ROTA_TOM.match(caminho):
+            return self._transpor_faixas(m.group(1))
         if caminho == "/api/youtube/desconectar":
             youtube.desconectar()
             return self._json({"ok": True})
@@ -541,7 +579,7 @@ class Manipulador(BaseHTTPRequestHandler):
             return self._erro(400, str(e))
         if registro is None:
             return self._erro(404, "música não cadastrada")
-        self._json(registro)
+        self._json(com_tom_faixas(registro))
 
     def do_PUT(self):
         caminho = urlparse(self.path).path
@@ -583,6 +621,8 @@ class Manipulador(BaseHTTPRequestHandler):
         caminho = url.path
         if m := ROTA_MIDI.match(caminho):
             return self._excluir_midi(*m.groups())
+        if m := ROTA_TOM.match(caminho):
+            return self._voltar_tom_original(m.group(1))
         if m := ROTA_MUSICA.match(caminho):
             return self._excluir_musica(m.group(1), parse_qs(url.query).get("audio") == ["1"])
         if caminho == "/api/audios":
@@ -604,7 +644,7 @@ class Manipulador(BaseHTTPRequestHandler):
     # ------------------------------------------------------------ excluir (aba Biblioteca)
     def _processando(self, arquivo=None, id_musica=None):
         """Há processamento (ou vídeo/publicação) desta música na fila ou rodando?"""
-        chaves = {arquivo} | ({f"{p}:{id_musica}" for p in ("video", "instagram", "youtube")} if id_musica else set())
+        chaves = {arquivo} | ({f"{p}:{id_musica}" for p in ("video", "instagram", "youtube", "tom")} if id_musica else set())
         return any(e["estado"] in ("na fila", "processando")
                    for c, e in PROCESSAMENTOS.instantaneo().items() if c in chaves)
 
@@ -836,12 +876,15 @@ class Manipulador(BaseHTTPRequestHandler):
             total = int(corpo["total"])
             silencio = max(0.0, float(corpo.get("silencio") or 0))
             duracao = float(corpo["duracao"])
+            semitons = int(corpo.get("semitons") or 0)  # tom das faixas com que a interface desenhou o vídeo
         except (KeyError, ValueError, TypeError) as e:
             return self._erro(400, f"parâmetros inválidos: {e}")
+        if abs(semitons) > transpor.LIMITE:
+            return self._erro(400, "semitons inválido")
         if not 0 < total <= 30 * 60 * 60 or duracao <= 0:
             return self._erro(400, "duração do vídeo inválida")
         try:
-            chave, token = SESSOES_VIDEO.iniciar(registro, formato, total, silencio, duracao)
+            chave, token = SESSOES_VIDEO.iniciar(registro, formato, total, silencio, duracao, semitons)
         except RuntimeError as e:
             return self._erro(409, str(e))
         except (ValueError, OSError) as e:
@@ -936,6 +979,32 @@ class Manipulador(BaseHTTPRequestHandler):
             return self._erro(500, f"falha no encaixe: {e}")
         self._json({"trechos": trechos})
 
+    # ------------------------------------------------------------ mudar o tom das faixas (transpor.py)
+    def _transpor_faixas(self, id_musica):
+        """Põe na fila a transposição das faixas (chave "tom:<id>"); a interface acompanha pelo GET."""
+        if banco.obter(id_musica) is None:
+            return self._erro(404, "música não cadastrada")
+        try:
+            semitons = int(self._ler_json().get("semitons"))
+        except (ValueError, TypeError):
+            return self._erro(400, "semitons inválido")
+        if not semitons or abs(semitons) > transpor.LIMITE:
+            return self._erro(400, f"escolha de -{transpor.LIMITE} a {transpor.LIMITE} semitons (0 é o original)")
+        if not os.path.isdir(os.path.join(PASTA_FAIXAS, id_musica)):
+            return self._erro(400, "a música não tem faixas separadas")
+        PROCESSAMENTOS.enfileirar(f"tom:{id_musica}", [SCRIPT_TRANSPOR, id_musica, str(semitons)], "Transposição finalizada")
+        self._json(situacao_tom(id_musica))
+
+    def _voltar_tom_original(self, id_musica):
+        """Apaga as faixas transpostas: as originais (nunca alteradas) voltam a valer."""
+        if PROCESSAMENTOS.instantaneo().get(f"tom:{id_musica}", {}).get("estado") in ("na fila", "processando"):
+            return self._erro(409, "a transposição está em andamento: espere terminar")
+        try:
+            transpor.apagar(id_musica)
+        except OSError as e:
+            return self._erro(500, f"não foi possível apagar as faixas transpostas: {e}")
+        self._json(situacao_tom(id_musica))
+
     def _reprocessar_notas(self, id_musica, fonte):
         """Varinha mágica: notas novas de uma faixa (afinar.py). Não grava: a interface aplica e salva."""
         if banco.obter(id_musica) is None or not os.path.isfile(os.path.join(PASTA_DADOS, f"{id_musica}.json")):
@@ -989,7 +1058,7 @@ class Manipulador(BaseHTTPRequestHandler):
             dados = json.load(f)
         if "tons" not in dados:
             dados, registro = self._detectar_tons(id_musica, caminho_dados, registro)
-        self._json({"musica": registro, "dados": dados})
+        self._json({"musica": com_tom_faixas(registro), "dados": dados})
 
     def _detectar_tons(self, id_musica, caminho_dados, registro):
         """Músicas processadas antes da detecção de modulação: calcula o tom de cada trecho pelos

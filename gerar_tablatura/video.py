@@ -401,7 +401,10 @@ def desenhar_violao(d, x_meio, y_topo, altura, acorde, fonte_casa):
 class Piano:
     """Faixa da base do vídeo (FAIXA_PIANO × LARGURA, RGB) no instante t; refeita só quando muda."""
 
-    def __init__(self, notas, acordes, tom, tons=None):
+    def __init__(self, notas, acordes, tom, tons=None, vocais=None):
+        # extensão vocal: teclas fora da nota mais grave/mais aguda da faixa de voz ficam com leve sombra
+        alturas = [n["midi"] for n in vocais or []]
+        self.faixa_voz = (min(alturas), max(alturas)) if alturas else None
         self.notas = sorted(notas, key=lambda n: n["t"])
         self.acordes = sorted(acordes, key=lambda a: a["t"])
         self.inicios_notas = [n["t"] for n in self.notas]
@@ -482,6 +485,9 @@ class Piano:
                     continue
                 cor, melodia = marcadas.get(m, (None, False))
                 fundo = cor or ((31, 31, 34) if preta else (251, 250, 246))
+                if not cor and self.faixa_voz and not self.faixa_voz[0] <= m <= self.faixa_voz[1]:  # marcada: sem sombra
+                    sombra = 0.45 if preta else 0.2  # como o rgba(0,0,0,a) da interface
+                    fundo = tuple(round(c * (1 - sombra)) for c in fundo)
                 d.rectangle([x, y0, x + w - 1, y0 + h - 1], fill=fundo,
                             outline=None if preta else (138, 138, 138))
                 if melodia:  # bolinha branca, como no player
@@ -540,12 +546,7 @@ class MarcaDagua:
 def nome_arquivo(registro, pasta=None):
     pasta = pasta or PASTA_VIDEOS
     base = base_video(registro)
-    caminho = os.path.join(pasta, base + ".mp4")
-    n = 2
-    while os.path.exists(caminho):  # não sobrescreve vídeos anteriores
-        caminho = os.path.join(pasta, f"{base} ({n}).mp4")
-        n += 1
-    return caminho
+    return os.path.join(pasta, base + ".mp4")  # criar de novo substitui o anterior (no fim, com os.replace)
 
 
 def main(argumentos):
@@ -624,7 +625,7 @@ def renderizar(formato, saida, w, rotulo_progresso, rotulo_final):
              for n in ((gravacoes_midi.get(fonte[5:]) or {}).get("notas") if fonte.startswith("midi:")
                        else melodias.get(fonte)) or []]  # várias fontes: juntas
     piano = Piano(notas or melodias.get("solo") or [], dados.get("acordes") or [], dados.get("tom"),
-                  dados.get("tons"))
+                  dados.get("tons"), melodias.get("vocals"))
     abertura = renderizar_abertura(w["titulo"], w["artista"], w["tom"])  # tom original: as faixas não são transpostas
     temporario = saida + ".parcial.mp4"
 

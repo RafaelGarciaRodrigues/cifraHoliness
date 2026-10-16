@@ -1,7 +1,7 @@
 ﻿Noites Traiçoeiras
 TOM:A {C#}  
 
-<t>34</t>
+<t>26</t>
 
 <yt>https://www.youtube.com/watch?v=nR_Wd-is3cw</yt>
 
