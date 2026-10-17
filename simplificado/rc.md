@@ -537,3 +537,17 @@ curl --request GET \
 - mostra um menu apenas com o nome das músicas que clicando na música abre todas elas de novo mas posicionado no topo da música clicada
 
 - mostre somente as músicas do grupi selecionado
+
+# PAD
+- usando Tone.js (samplers, pads, efeitos): tonejs.github.io
+- quero que no modo play id="play-pause-btn"
+- soe um warm pad na nota que estiver entre {} ao lado do tom, ex: {D}
+- se nao tiver a indicaçã9o entre {} toca a tonica do tom
+## Implementado (pad no play)
+- telaCel.html: com o play (play-pause-btn) ligado soa um warm pad na nota entre {} ao lado do tom
+  (ex.: "TOM:E {G#}" -> G#); sem {} toca a tônica do tom (Bm -> B); já transposta com a música
+- Tone.js 14.8.49 (CDN jsdelivr): PolySynth de serras "fat" (3 vozes desafinadas) nas oitavas 3 e 4,
+  passa-baixas em 950 Hz, chorus lento e reverb longo; attack 7 s (entra respirando), release 4 s
+- troca de nota sozinho quando a música sob o play muda (rolagem) ou é transposta; pausar solta o pad
+- sem internet (rede do NodeMCU) o CDN não carrega (desiste em 5 s) e o mesmo pad é sintetizado
+  direto via Web Audio

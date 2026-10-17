@@ -1154,3 +1154,59 @@ varinha reduz bastante a edição manual, mas não a elimina. Sugestão de ordem
 - quando pressionar id="bib-7dff3523-video-padrao" ou id="bib-7dff3523-video-instagram" e os arquivos já existirem deve sobrescrever. atualmente está riando uma cópia
 
 - a musica c5630915 em 00:50 aproximadamente entra um coro de voz e as notas não foram capturadas no reprocessamento, deixando uma parte da musica sem notas
+
+# TECLADO INTERATIVO
+- quero eu mesmo corrigir algumas notas em alguns trechos
+- para isso quero que o teclado do computador posso soar notas
+- quero um botão com icone apenas antes de id="btnNotasAtrasar" que habilite essa função
+- ao habilitar quero que as teclas do teclado atuem somente no tom da música ou no tom do trecho da música
+- por exemplo, se o tom for C:
+-- Q: C2
+-- W: D2
+-- E: E2
+-- R: F2
+-- T: G2
+-- Y: A2
+-- U: B2
+-- I: C3
+-- O: D3
+-- P: E3
+-- A: F3
+-- S: G3
+-- D: A3
+-- F: B3
+-- G: C4
+-- H: D4
+-- J: E4
+-- K: F4
+-- L: G4
+-- Ç: A4
+-- Z: BAIXO UMA OITAVA
+-- X: SUBO UMA OITAVA
+-- C: BAIXO UMA NOTA
+-- V: SUBO UMA NOTA
+-- B: habilita/desabilita sustain
+-- ESPAÇO: enquanto segura habilita sustain
+- ao habilitar deve mostrar o atalho de teclas em id="piano" e ocultar o atalho quando desabilitado
+- mas o atalho de teclas não deve ser mostrado nos videos gerados
+- reconhece maiuscula e minuscula
+- pode ser polifonico (permite "gravar" duas ou mais notas ao mesmo tempo na linha
+- o teclado do computador não permite a sensibilidade, mas permite segurar a nota
+- o som que deve soar é o mesmo escolhido em id="timbre"
+
+- para gravar
+- quando eu estiver pausado e selecionar id="btnGravarMidi" continua pausado
+- mas se id="b7e3c9" também estiver selecionado deve:
+-- iniciar a tocar e gravar a faixa midi no exato momento que eu apertar qqr tecla do teckado, ou seja, começa a gravar no momento que começa a tocar
+-- a letra "N" pausa novamente a musica e para a gravação salvando a nova faixa MIDI
+- não quero mais isso: B: habilita/desabilita sustain está atralahando. Espaço deve ser para e continua o play, como antes
+
+- quero uma funcionalidade de copiar e colar as notas midi gravadas
+- em pause, coloco o cursor na linha em uma posição
+- seguro shift e com left/right e <, > do teclado eu vou selecionando as notas
+- quando seleciono elas, copio com ctrl+c
+- depois vou na posição da linha em que quero colar as notas
+- pressino ctrl+v e elas são coladas
+
+- eu já fiz ajuste de letra varias vezes, mas por que sempre mostra (Encaixando a letra pela voz… na 1ª vez de cada música o modelo analisa a faixa de voz (1 a 3 min; na 1ª vez de todas ainda baixa o modelo, ~1,2 GB).)
+- baixa o modelo 1.2G todas as vezes?

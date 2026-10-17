@@ -11623,6 +11623,7 @@ Você vai discar várias vezes, telefone mudo não pode chamar
 			delete mapa[musica.titulo];
 		}
 		salvarTranspostos(mapa);
+		atualizarPad();
 	}
 
 	// ===== Rolagem automatica (play/pause) =====
@@ -11801,6 +11802,7 @@ Você vai discar várias vezes, telefone mudo não pode chamar
 			ultimoTimestamp = null;
 			scrollRAF = requestAnimationFrame(passoScroll);
 		}
+		atualizarPad();
 	}
 
 	function pararScroll() {
@@ -11824,12 +11826,14 @@ Você vai discar várias vezes, telefone mudo não pode chamar
 		if (scrollRAF) cancelAnimationFrame(scrollRAF);
 		scrollRAF = null;
 		ultimoTimestamp = null;
+		atualizarPad();
 	}
 
 	botaoPlayPause.addEventListener("click", function () {
 		if (tocando) {
 			pararScroll();
 		} else {
+			obterAudioCtx(); // dentro do clique: libera o audio do pad (ver secao Pad no modo play)
 			iniciarScroll();
 		}
 	});
@@ -12277,13 +12281,20 @@ Você vai discar várias vezes, telefone mudo não pode chamar
 		return buf;
 	}
 
+	// AudioContext unico da pagina (nota clicada e pad do play). Precisa ser criado/retomado dentro
+	// de um clique do usuario, senao o navegador (principalmente no celular) o deixa mudo.
+	function obterAudioCtx() {
+		var Ctx = window.AudioContext || window.webkitAudioContext;
+		if (!Ctx) return null;
+		if (!audioCtx) audioCtx = new Ctx();
+		if (audioCtx.state === "suspended") audioCtx.resume();
+		return audioCtx;
+	}
+
 	function tocarNota(nota) {
 		var raiz = parseRoot(nota);
 		if (!raiz) return;
-		var Ctx = window.AudioContext || window.webkitAudioContext;
-		if (!Ctx) return;
-		if (!audioCtx) audioCtx = new Ctx();
-		if (audioCtx.state === "suspended") audioCtx.resume();
+		if (!obterAudioCtx()) return;
 		if (!reverbImpulso) reverbImpulso = criarImpulsoReverb(audioCtx, 3.5, 2.5);
 		if (somNotaAtual) {
 			somNotaAtual.stop();
@@ -12410,6 +12421,139 @@ Você vai discar várias vezes, telefone mudo não pode chamar
 			if (!parado) { parado = true; master.disconnect(); }
 		}, (duracao + 3.6) * 1000);
 	}
+
+	// ===== Pad no modo play (ver rc.md secao PAD) =====
+	// Enquanto o play (play-pause-btn) estiver ligado soa um warm pad na nota "{X}" ao lado do tom
+	// da musica atual (ou na tonica do tom, se nao houver "{X}"), ja transposta. Troca de nota
+	// quando a musica sob o play muda ou e transposta, e solta (release longo) ao pausar.
+	// Usa Tone.js (CDN); sem internet (rede do NodeMCU) o CDN nao carrega e o pad e sintetizado
+	// direto via Web Audio, com o mesmo desenho (serras desafinadas, passa-baixa, reverb).
+	var TONE_URL = "https://cdn.jsdelivr.net/npm/tone@14.8.49/build/Tone.js";
+	var TOM_PAD_RE = /^TOM:\s*(\S+)[ \t]*(?:\{\s*([A-G](?:#|b)?)\s*\})?/im;
+	var padNota = null;   // nota que deve soar agora (null = silencio)
+	var padAtual = null;  // { soltar() } do pad soando
+	var motorPad = null;  // Promise de function(nota) -> { soltar() }
+	var saidaPadTone = null;
+
+	function notaDoPad() {
+		var secao = musicaAtual();
+		if (!secao) return null;
+		var musica = musicas[parseInt(secao.id.replace("musica-", ""), 10)];
+		if (!musica) return null;
+		var m = musica.conteudo.match(TOM_PAD_RE);
+		if (!m) return null;
+		var raiz = parseRoot(m[2] || m[1]);
+		if (!raiz || n2i(raiz) < 0) return null;
+		return i2n(n2i(raiz) + (musica.semis || 0));
+	}
+
+	function carregarTone() {
+		if (window.Tone) return Promise.resolve(window.Tone);
+		return new Promise(function (ok, falha) {
+			var s = document.createElement("script");
+			// Na rede do NodeMCU a requisicao pode ficar pendurada: desiste em 5 s e usa o Web Audio
+			var limite = setTimeout(falha, 5000);
+			s.src = TONE_URL;
+			s.async = true;
+			s.onload = function () { clearTimeout(limite); window.Tone ? ok(window.Tone) : falha(); };
+			s.onerror = function () { clearTimeout(limite); falha(); };
+			document.head.appendChild(s);
+		});
+	}
+
+	function criarPadTone(Tone) {
+		Tone.setContext(audioCtx); // mesmo contexto ja liberado pelo clique no play
+		if (!saidaPadTone) {
+			var reverb = new Tone.Reverb({ decay: 7, wet: 0.5 }).toDestination();
+			var chorus = new Tone.Chorus({ frequency: 0.35, delayTime: 3.5, depth: 0.6, wet: 0.45 }).connect(reverb).start();
+			var filtro = new Tone.Filter({ type: "lowpass", frequency: 950, rolloff: -24, Q: 0.5 }).connect(chorus);
+			saidaPadTone = new Tone.Volume(-14).connect(filtro);
+		}
+		return function (nota) {
+			var notas = [nota + "3", nota + "4"];
+			var synth = new Tone.PolySynth(Tone.Synth, {
+				oscillator: { type: "fatsawtooth", count: 3, spread: 28 },
+				envelope: { attack: 7, decay: 1, sustain: 0.85, release: 4 }
+			}).connect(saidaPadTone);
+			synth.triggerAttack(notas);
+			return {
+				soltar: function () {
+					synth.triggerRelease(notas);
+					setTimeout(function () { synth.dispose(); }, 5000);
+				}
+			};
+		};
+	}
+
+	function criarPadWebAudio() {
+		var ctx = audioCtx;
+		var impulso = criarImpulsoReverb(ctx, 5, 2.2);
+		return function (nota) {
+			var f = 440 * Math.pow(2, (n2i(nota) - 9) / 12) / 2; // oitava 3
+			var t0 = ctx.currentTime + 0.02;
+			var master = ctx.createGain();
+			master.gain.setValueAtTime(0.0001, t0);
+			master.gain.linearRampToValueAtTime(0.07, t0 + 7);
+			master.connect(ctx.destination);
+			var reverb = ctx.createConvolver();
+			reverb.buffer = impulso;
+			var molhado = ctx.createGain();
+			molhado.gain.value = 0.7;
+			reverb.connect(molhado);
+			molhado.connect(ctx.destination);
+			master.connect(reverb);
+			var filtro = ctx.createBiquadFilter();
+			filtro.type = "lowpass"; filtro.frequency.value = 950; filtro.Q.value = 0.5;
+			filtro.connect(master);
+			var fontes = [];
+			[[f, -12], [f, 0], [f, 11], [f * 2, -9], [f * 2, 8]].forEach(function (p) {
+				var o = ctx.createOscillator();
+				o.type = "sawtooth";
+				o.frequency.value = p[0];
+				o.detune.value = p[1];
+				o.connect(filtro);
+				o.start(t0);
+				fontes.push(o);
+			});
+			return {
+				soltar: function () {
+					var t = ctx.currentTime;
+					master.gain.cancelScheduledValues(t);
+					master.gain.setValueAtTime(master.gain.value, t);
+					master.gain.linearRampToValueAtTime(0.0001, t + 4);
+					fontes.forEach(function (o) { o.stop(t + 4.1); });
+					setTimeout(function () { master.disconnect(); molhado.disconnect(); }, 8000);
+				}
+			};
+		};
+	}
+
+	function prepararMotorPad() {
+		if (!motorPad) {
+			motorPad = carregarTone().then(criarPadTone).catch(function () {
+				return criarPadWebAudio();
+			});
+		}
+		return motorPad;
+	}
+
+	function atualizarPad() {
+		var nota = tocando ? notaDoPad() : null;
+		if (nota === padNota) return;
+		padNota = nota;
+		if (padAtual) {
+			padAtual.soltar();
+			padAtual = null;
+		}
+		if (!nota || !audioCtx) return;
+		prepararMotorPad().then(function (criar) {
+			// a nota pode ter mudado (ou o play parado) enquanto o Tone.js carregava
+			if (padNota !== nota || padAtual) return;
+			padAtual = criar(nota);
+		});
+	}
+
+	window.addEventListener("scroll", atualizarPad);
 
 	lista.addEventListener("click", function (e) {
 		var notaInicial = e.target.closest(".nota-inicial");

@@ -81,11 +81,41 @@ def disponivel():
 
 # ---------------------------------------------------------------- probabilidades (CTC)
 def _carregar_modelo():
+    """O modelo é baixado uma vez só (~1,2 GB, no cache do Hugging Face, em ~/.cache/huggingface);
+    já baixado, carrega direto do disco, sem consultar a internet."""
     Wav2Vec2ForCTC, Wav2Vec2Processor = _classes_wav2vec2()
-    processador = Wav2Vec2Processor.from_pretrained(MODELO)
-    modelo = Wav2Vec2ForCTC.from_pretrained(MODELO)
+    try:
+        processador = Wav2Vec2Processor.from_pretrained(MODELO, local_files_only=True)
+        modelo = Wav2Vec2ForCTC.from_pretrained(MODELO, local_files_only=True)
+    except OSError:  # ainda não baixado (ou baixado pela metade): baixa
+        processador = Wav2Vec2Processor.from_pretrained(MODELO)
+        modelo = Wav2Vec2ForCTC.from_pretrained(MODELO)
     modelo.eval()
     return processador, modelo
+
+
+def modelo_baixado():
+    """O modelo já está no cache do Hugging Face (não precisa baixar)?"""
+    try:
+        from huggingface_hub import try_to_load_from_cache
+    except ImportError:
+        return False
+    tem = lambda arquivo: isinstance(try_to_load_from_cache(MODELO, arquivo), str)
+    return tem("config.json") and (tem("pytorch_model.bin") or tem("model.safetensors"))
+
+
+def voz_analisada(id_musica):
+    """A faixa de voz desta música já passou pelo modelo (cache válido em faixas/<id>/encaixe_ctc.npz)?
+    Então o encaixe leva segundos."""
+    pasta = os.path.join(PASTA_FAIXAS, id_musica)
+    voz, cache = os.path.join(pasta, "vocals.wav"), os.path.join(pasta, ARQUIVO_CACHE)
+    try:
+        if os.path.getmtime(cache) < os.path.getmtime(voz):
+            return False
+        with np.load(cache, allow_pickle=False) as d:
+            return str(d["modelo"]) == MODELO and "db" in d
+    except (OSError, KeyError, ValueError):
+        return False
 
 
 def _energia_db(y, passo, quadros):

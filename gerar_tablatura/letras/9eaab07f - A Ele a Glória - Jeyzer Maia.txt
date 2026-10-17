@@ -1,0 +1,40 @@
+# Letra: A Ele a Glória - Jeyzer Maia (id 9eaab07f)
+# Formato: [início - fim] frase · linhas começando com # são ignoradas
+
+[00:16.36 - 00:20.64] Porque Dele e por Ele
+[00:21.54 - 00:26.49] Para Ele são todas as coisas
+[00:31.55 - 00:35.92] Porque Dele e por Ele
+[00:36.82 - 00:42.60] Para Ele são todas as coisas
+[00:46.83 - 00:51.11] Porque Dele e por Ele
+[00:52.01 - 00:57.64] Para Ele são todas as coisas
+[01:02.02 - 01:05.45] Porque Dele e por Ele
+[01:07.23 - 01:14.40] Para Ele são todas as coisas
+[01:18.30 - 01:24.01] A Ele a Glória
+[01:24.01 - 01:31.13] A Ele a Glória
+[01:31.13 - 01:39.36] A Ele a Glória
+[01:40.50 - 01:43.71] Pra sempre, amém
+[01:48.77 - 01:54.48] A Ele a Glória
+[01:56.38 - 02:01.59] A Ele a Glória
+[02:03.95 - 02:09.25] A Ele a Glória
+[02:11.01 - 02:13.94] Pra sempre, amém
+[02:18.24 - 02:23.03] Quão profundas riquezas
+[02:23.49 - 02:28.53] O saber e o conhecer de Deus
+[02:34.18 - 02:37.86] Quão insondáveis
+[02:38.68 - 02:46.81] Seus juízos e os Seus caminhos
+[02:48.69 - 02:53.50] Quão profundas riquezas
+[02:54.10 - 03:00.61] O saber e o conhecer de Deus
+[03:04.89 - 03:08.57] Quão insondáveis
+[03:09.13 - 03:18.66] Seus juízos e os Seus caminhos
+[03:20.19 - 03:25.95] A Ele a Glória
+[03:27.75 - 03:33.04] A Ele a Glória
+[03:35.40 - 03:40.73] A Ele a Glória
+[03:42.45 - 03:47.11] Pra sempre, amém
+[03:48.71 - 03:50.66] A Ele a
+[03:50.96 - 03:56.42] A Ele a Glória
+[03:58.28 - 04:03.51] A Ele a Glória
+[04:05.89 - 04:11.14] A Ele a Glória
+[04:12.90 - 04:15.90] Pra sempre, amém
+[04:21.21 - 04:26.35] A Ele a Glória
+[04:28.80 - 04:34.02] A Ele a Glória
+[04:36.34 - 04:41.77] A Ele a Glória
+[04:43.47 - 04:47.62] Pra sempre, amém

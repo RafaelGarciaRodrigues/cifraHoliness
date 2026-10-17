@@ -471,6 +471,8 @@
         </div>
         <div id="b13d76" class="controles">
           <div id="a202be" class="grupo">
+            <button id="btnTecladoPC" class="icone" aria-pressed="false" title="Teclado do computador: tocar notas no tom da música (Q…P e A…Ç; Z/X oitava, C/V nota, N pausa e salva o REC MIDI)" aria-label="Tocar notas pelo teclado do computador"><i id="b7e3c9" class="bi bi-keyboard"></i></button>
+            <span id="tecladoPCEstado" class="valor" title="Teclado do computador: deslocamento e sustain" hidden></span>
             <button id="btnNotasAtrasar" class="pequeno" title="Recuar 0,01 s as notas das faixas marcadas em Notas (tocam mais cedo; Ctrl+Z desfaz)" aria-label="Recuar as notas 0,01 s" disabled><i id="e4b8d2" class="bi bi-chevron-double-left"></i> 0,01 s</button>
             <span id="deslocamentoNotas" class="valor" title="Quanto as notas das faixas marcadas já foram deslocadas"></span>
             <button id="btnNotasAdiantar" class="pequeno" title="Avançar 0,01 s as notas das faixas marcadas em Notas (tocam mais tarde; Ctrl+Z desfaz)" aria-label="Avançar as notas 0,01 s" disabled>0,01 s <i id="f1c7a3" class="bi bi-chevron-double-right"></i></button>
@@ -513,7 +515,9 @@
         </div>
         <div id="d51023" class="dica">
           <kbd id="d681e8">Espaço</kbd> tocar/pausar · <kbd id="e55a80">←</kbd>/<kbd id="e9238f">→</kbd> nota anterior/próxima ·
-          <kbd id="b087ac">,</kbd>/<kbd id="a8fa5a">.</kbd> volta/avança 0,1 s · <kbd id="d9456a">Shift</kbd>+<kbd id="ac0e97">,</kbd>/<kbd id="b3f972">.</kbd> 5 s ·
+          <kbd id="b087ac">,</kbd>/<kbd id="a8fa5a">.</kbd> volta/avança 0,1 s · <kbd id="d9456a">Shift</kbd>+<kbd id="ac0e97">,</kbd>/<kbd id="b3f972">.</kbd> 5 s (tocando) ·
+          parado, <kbd id="c4e8a1">Shift</kbd>+<kbd id="d7f2b6">←</kbd>/<kbd id="e3a9c5">→</kbd> ou <kbd id="f6b1d4">Shift</kbd>+<kbd id="a9c5e2">&lt;</kbd>/<kbd id="b2d8f6">&gt;</kbd> seleciona notas,
+          <kbd id="c6f3a9">Ctrl</kbd>+<kbd id="d8a4c2">C</kbd> copia e <kbd id="e9b6d3">Ctrl</kbd>+<kbd id="f4c2e8">V</kbd> cola no cursor ·
           <kbd id="d01a97">[</kbd>/<kbd id="ea2776">]</kbd> velocidade ·
 clique na régua de tempo (embaixo da linha do tempo) para marcar um ponto (de novo na marcação: tira) ·
           <kbd id="f1165b">Ctrl</kbd>+<kbd id="cac3b8">S</kbd> salvar letra · clique ou arraste na linha do tempo para navegar ·
@@ -524,7 +528,10 @@ clique na régua de tempo (embaixo da linha do tempo) para marcar um ponto (de n
           roda do mouse sobre ela para zoom ·
           <i id="c8d2e5" class="bi bi-mic-fill"></i>/<i id="d1f6a3" class="bi bi-camera-reels-fill"></i> gravar junto com a música
           (pausar, mover a linha do tempo ou mudar a velocidade encerra e salva a gravação) ·
-          <i id="b6d2f8" class="bi bi-music-note-beamed"></i> REC MIDI: grava o teclado MIDI depois de 3 s (clicar de novo para e pausa)
+          <i id="b6d2f8" class="bi bi-music-note-beamed"></i> REC MIDI: grava o teclado MIDI (ou o do computador) depois de 3 s (clicar de novo para e pausa) ·
+          <i id="c5e9b2" class="bi bi-keyboard"></i> teclado do computador: Q…P e A…Ç tocam as notas do tom (as letras aparecem no teclado da tela),
+          <kbd id="d3a8f1">Z</kbd>/<kbd id="e6b2c4">X</kbd> oitava, <kbd id="f2c7d9">C</kbd>/<kbd id="f9b1e7">V</kbd> uma nota, <kbd id="e2d8b5">N</kbd> pausa e salva o REC MIDI
+          (com a música pausada, o REC MIDI começa junto com a primeira nota tocada)
         </div>
       </section>
 
@@ -2066,6 +2073,7 @@ function iniciarDe(pos) {
 
 function tocar() {
   if (!MUSICA) return;
+  selecaoNotas = null;
   notaSelecionada = null;  // tocando, a nota editável é a que está soando
   notaUnida = null;
   if (posicao >= fimMusica() - 0.01) posicao = 0;
@@ -2089,6 +2097,7 @@ function alternar() { tocando ? pausar() : tocar(); }
 
 function irPara(pos) {
   notaUnida = null;  // mexeu no cursor: a nota sob ele volta a ser editável
+  if (!estendendoSelecao) selecaoNotas = null;  // mexeu no cursor sem o Shift: a seleção acaba
   pos = limitar(pos, 0, fimMusica());
   if (tocando) iniciarDe(pos);
   else posicao = pos;
@@ -2458,6 +2467,13 @@ function desenhar(t, indiceAtivo, acordeAtivo) {
       g2d.lineWidth = 1.5;
       g2d.strokeRect(xi + 0.75, y + 1.75, Math.max(0, w - (xi - x) - 1.5), Math.max(0, hb - 1.5));
     }
+    if (selecaoNotas && !tocando && naSelecao(n)) {  // selecionada para copiar: contorno tracejado
+      g2d.strokeStyle = c.texto;
+      g2d.lineWidth = 1.5;
+      g2d.setLineDash([3, 2]);
+      g2d.strokeRect(xi - 1, y, w - (xi - x) + 2, Math.max(alt, 4));
+      g2d.setLineDash([]);
+    }
     if (n === notaSelecionada && !tocando) {  // nota em edição: contorno
       g2d.strokeStyle = c.texto;
       g2d.lineWidth = 2;
@@ -2487,6 +2503,16 @@ function desenhar(t, indiceAtivo, acordeAtivo) {
       g2d.fillStyle = c.texto;
       g2d.fillText(rotulo, x + 3, H - 2);
     }
+    g2d.restore();
+  }
+
+  // seleção para copiar (Shift + setas): faixa clara entre a âncora e o cursor
+  if (selecaoNotas && !tocando && selecaoNotas.fim > selecaoNotas.ini && selecaoNotas.fim >= t0 && selecaoNotas.ini <= t1) {
+    const xa = Math.max(MARGEM, xDoTempo(selecaoNotas.ini, t0, W)), xb = Math.min(W, xDoTempo(selecaoNotas.fim, t0, W));
+    g2d.save();
+    g2d.globalAlpha = 0.12;
+    g2d.fillStyle = c.cabeca;
+    g2d.fillRect(xa, topoNotas, Math.max(1, xb - xa), Hn);
     g2d.restore();
   }
 
@@ -2704,7 +2730,8 @@ function desenharPiano(alvo, acorde) {
   }
   const tema = cor("--ok") + cor("--erro") + cor("--acorde-ativo");
   const voz = faixaDaVoz(), faixa = voz && { grave: voz.grave + transp, aguda: voz.aguda + transp };  // como soa no player
-  const chave = tema + JSON.stringify([...marcadas]) + JSON.stringify(faixa);
+  const letras = letrasTecladoPC();  // midi -> letra, com o teclado do computador ligado
+  const chave = tema + JSON.stringify([...marcadas]) + JSON.stringify(faixa) + JSON.stringify([...letras]);
   if (chave === pianoDesenhado) return;
   pianoDesenhado = chave;
 
@@ -2749,6 +2776,18 @@ function desenharPiano(alvo, acorde) {
         }
       }
     }
+  }
+  // letra do teclado do computador em cada tecla que ele toca
+  for (const [m, letra] of letras) {
+    if (m < PIANO_MIN || m > PIANO_MAX) continue;
+    const preta = ePreta(m), x = x0 + teclaX(m) * k, w = (preta ? PRETA_L : BRANCA_L) * k, h = preta ? hP : hB;
+    const tam = Math.max(8, Math.min(13, Math.floor(w * (preta ? 0.75 : 0.55))));
+    g.font = `600 ${tam}px system-ui, sans-serif`;
+    g.textAlign = "center";
+    g.textBaseline = "bottom";
+    g.fillStyle = preta ? "#fff" : "#1f3a8a";
+    g.fillText(letra, x + w / 2, preta ? h - 4 : h - 4 - (pc(m) === 0 ? tam + 2 : 0));  // acima do nome do Dó
+    g.textAlign = "start";
   }
   // feltro vermelho em cima do teclado
   g.fillStyle = "#7a1f1f";
@@ -3101,6 +3140,79 @@ async function reprocessarNotas() {
   }
 }
 
+// ---------- copiar e colar notas (Shift + setas, Ctrl+C, Ctrl+V) ----------
+// Com a música parada, Shift + ←/→ (nota a nota) ou Shift + </> (0,1 s) move o cursor e seleciona as
+// notas que começam entre o ponto onde a seleção começou (âncora) e o cursor, de todas as faixas
+// marcadas em Notas (as gravações MIDI também). Ctrl+C copia; Ctrl+V cola no cursor: a primeira nota
+// copiada começa nele e as outras mantêm a distância entre si; cada nota volta para a faixa de onde
+// veio. Ctrl+Z desfaz a colagem inteira. Mexer no cursor sem o Shift, tocar ou Esc desfaz a seleção.
+let selecaoNotas = null;        // {ancora, ini, fim}: segundos da música
+let estendendoSelecao = false;  // irPara() chamado pela seleção: não a desfaz
+let notasCopiadas = [];         // [{fonte, nota}] (cópias, com o tempo original)
+let ultimaCopia = "";           // "notas" ou "letra": o que o Ctrl+V cola
+const naSelecao = n => !!selecaoNotas && n.t >= selecaoNotas.ini - 1e-6 && n.t < selecaoNotas.fim - 1e-6;
+const notasNaSelecao = () => selecaoNotas ? NOTAS.filter(naSelecao) : [];
+
+function estenderSelecao(codigo) {
+  const ancora = selecaoNotas ? selecaoNotas.ancora : posicao;
+  estendendoSelecao = true;
+  try {
+    if (codigo === "ArrowLeft") notaAnterior();
+    else if (codigo === "ArrowRight") proximaNota();
+    else irPara(posicao + (codigo === "Comma" ? -0.1 : 0.1));
+  } finally { estendendoSelecao = false; }
+  notaSelecionada = null;
+  selecaoNotas = { ancora, ini: Math.min(ancora, posicao), fim: Math.max(ancora, posicao) };
+  const k = notasNaSelecao().length;
+  statusNotas(k ? `${k} nota${k > 1 ? "s" : ""} selecionada${k > 1 ? "s" : ""} (Ctrl+C copia)` : "nenhuma nota selecionada");
+}
+
+function copiarNotas() {
+  const sel = notasNaSelecao();
+  if (!sel.length) return;
+  notasCopiadas = sel.map(n => ({ fonte: fonteDa(n), nota: { ...n } }));
+  ultimaCopia = "notas";
+  statusNotas(`${sel.length} nota${sel.length > 1 ? "s" : ""} copiada${sel.length > 1 ? "s" : ""}: leve o cursor até onde colar e aperte Ctrl+V`, "ok");
+}
+
+function colarNotas() {
+  if (!notasCopiadas.length || !MUSICA) return;
+  const destino = Math.round(tempoOuvido() * 1000) / 1000;
+  const desloc = destino - Math.min(...notasCopiadas.map(c => c.nota.t));
+  const coladas = [];
+  for (const { fonte, nota } of notasCopiadas) {
+    if (!todasFontes().includes(fonte)) continue;  // a faixa foi apagada
+    const n = { ...nota, t: Math.max(0, Math.round((nota.t + desloc) * 1000) / 1000) };
+    notasDaFonte(fonte, true).push(n);
+    fonteDaNota.set(n, fonte);
+    coladas.push({ fonte, nota: n });
+  }
+  if (!coladas.length) { statusNotas("as faixas das notas copiadas não existem mais", "erro"); return; }
+  const fontes = [...new Set(coladas.map(c => c.fonte))].sort((x, y) => (y === "vocals") - (x === "vocals"));
+  for (const f of fontes) notasDaFonte(f).sort(porTempo);
+  remontarNotasTocando();
+  historicoNotas.push({ tipo: "colar", fonte: fontes[0], fontes, coladas });
+  if (historicoNotas.length > MAXIMO_DESFAZER) historicoNotas.shift();
+  for (const f of fontes.slice(1)) salvarNotasDepois(f);
+  // as coladas ficam selecionadas (dá para colar de novo em outro lugar com Ctrl+V)
+  const fim = Math.max(...coladas.map(c => c.nota.t)) + 0.001;
+  notaSelecionada = null;
+  selecaoNotas = { ancora: destino, ini: destino, fim };
+  const k = coladas.length, fora = fontes.filter(f => !fontesEmUso().includes(f));
+  notasAlteradas(`${k} nota${k > 1 ? "s" : ""} colada${k > 1 ? "s" : ""} em ${formatarTempo(destino)} (Ctrl+Z desfaz)` +
+                 (fora.length ? ` · em ${fora.map(nomeFonte).join(", ")}, que não está marcada em Notas` : ""), fontes[0]);
+}
+
+// Refaz NOTAS (entraram ou saíram notas) e, tocando, continua agendando de onde está
+function remontarNotasTocando() {
+  montarNotas();
+  if (tocando) {
+    const limite = tempoAtual() + 0.15 * velocidade;
+    proximoIndice = NOTAS.findIndex(n => n.t >= limite);
+    if (proximoIndice < 0) proximoIndice = NOTAS.length;
+  }
+}
+
 // ---------- desfazer (Ctrl+Z) as edições de notas, uma de cada vez ----------
 // Cada edição guarda o que precisa para voltar; desfazer também é salvo sozinho. Vale para a
 // música aberta (trocar de música limpa o histórico), mesmo que a fonte de notas tenha mudado.
@@ -3119,6 +3231,17 @@ function desfazerNota() {
     aplicarDeslocamento(acao.fontes, -acao.delta);
     for (const f of acao.fontes.slice(1)) salvarNotasDepois(f);
     notasAlteradas(`desfeito: deslocamento de ${acao.delta > 0 ? "+" : "−"}0,01 s`, acao.fontes[0]);
+    return;
+  }
+  if (acao.tipo === "colar") {
+    for (const { fonte: f, nota: n } of acao.coladas) {
+      const lista = notasDaFonte(f), i = lista.indexOf(n);
+      if (i >= 0) lista.splice(i, 1);
+    }
+    remontarNotasTocando();
+    selecaoNotas = null;
+    for (const f of acao.fontes.slice(1)) salvarNotasDepois(f);
+    notasAlteradas(`desfeito: ${acao.coladas.length} nota${acao.coladas.length > 1 ? "s" : ""} colada${acao.coladas.length > 1 ? "s" : ""}`, acao.fontes[0]);
     return;
   }
   if (acao.tipo === "substituir") {  // varinha mágica: volta as notas de antes
@@ -3558,6 +3681,7 @@ function montarNotas() {
 function aplicarFontes() {
   atualizarVarinha();
   notaSelecionada = null;
+  selecaoNotas = null;
   montarNotas();
   recalcularFaixaMidi();
   montarListas();
@@ -4234,8 +4358,13 @@ async function encaixarLetra() {
   encaixando = true;
   botao.disabled = true;
   botao.classList.add("ativo");
-  atualizarStatusLetra("Encaixando a letra pela voz… na 1ª vez de cada música o modelo analisa a faixa de voz " +
-    "(1 a 3 min; na 1ª vez de todas ainda baixa o modelo, ~1,2 GB).");
+  // quanto vai demorar: a análise da voz fica guardada (só a 1ª vez de cada música) e o modelo é baixado uma vez só
+  let situacao = null;
+  try { situacao = await api(`/api/musicas/${id}/letra/encaixar`); } catch (e) { /* servidor antigo: sem a previsão */ }
+  atualizarStatusLetra("Encaixando a letra pela voz…" + (!situacao ? ""
+    : situacao.voz_analisada ? " (a voz desta música já foi analisada: leva alguns segundos)"
+    : situacao.modelo_baixado ? " 1ª vez desta música: o modelo analisa a faixa de voz (1 a 3 min); das próximas vezes leva segundos."
+    : " 1ª vez de todas: baixa o modelo de voz (~1,2 GB, só desta vez) e analisa a faixa de voz (mais 1 a 3 min)."));
   let trechos = null, metodo = "pela voz", aviso = "";
   try {
     trechos = (await api(`/api/musicas/${id}/letra/encaixar`, { method: "POST", body: JSON.stringify({ linhas }) })).trechos;
@@ -5570,8 +5699,10 @@ const tempoMidi = () => tocando ? tempoOuvido() : posicao;  // o tempo da músic
 function teclaMidiApertada(m, forca) {
   if (teclasMidi.has(m) || sustentadas.has(m)) finalizarTeclaMidi(m);  // a mesma tecla de novo
   garantirAudio();
-  teclasMidi.set(m, { inicio: tempoMidi(), forca: Math.round(forca * volumeMidi * expressaoMidi) || 1 });
-  if (configMidi.monitor) {
+  dispararRecArmado();  // REC MIDI esperando a primeira nota: a música e a gravação começam agora
+  const inicio = gravacaoMidi ? Math.max(tempoMidi(), gravacaoMidi.desde) : tempoMidi();
+  teclasMidi.set(m, { inicio, forca: Math.round(forca * volumeMidi * expressaoMidi) || 1 });
+  if (configMidi.monitor || tecladoPC.ligado) {  // o teclado do computador sempre soa
     const inst = instrumentoAoVivo(), v = curvaForca(forca / 127) * volumeMidi * expressaoMidi;
     if (inst && inst.iniciar) inst.iniciar(m, ctx.currentTime, v);
     else tocarCordaSint(m, ctx.currentTime, v, mestre, envelopeMidi());  // corda dedilhada (ou timbre ainda carregando)
@@ -5592,7 +5723,7 @@ function finalizarTeclaMidi(m) {
   const tecla = teclasMidi.get(m);
   teclasMidi.delete(m);
   sustentadas.delete(m);
-  if (configMidi.monitor) {
+  if (configMidi.monitor || tecladoPC.ligado) {
     const inst = instrumentoAoVivo();
     if (inst && inst.parar && ctx) inst.parar(m, ctx.currentTime);
   }
@@ -5613,21 +5744,123 @@ function controleMidi(cc, valor) {
 }
 function soltarTodasTeclasMidi() { for (const m of [...teclasMidi.keys()]) finalizarTeclaMidi(m); }
 
+// ---------- teclado do computador (botão btnTecladoPC) ----------
+// As teclas do computador viram um teclado MIDI sem sensibilidade: as notas são as da escala do tom
+// em vigor (o do trecho, se a música modula; com a transposição), a partir da tônica na 2ª oitava
+// (tom C: Q = C2, W = D2… Ç = A4). Z/X descem/sobem uma oitava, C/V uma nota da escala; N pausa e
+// encerra o REC MIDI. Sem sustain: a nota soa enquanto a tecla está apertada. Passam pelo mesmo caminho
+// do teclado MIDI: soam no Timbre, acendem no teclado da tela (que mostra as letras) e entram no REC
+// MIDI (várias ao mesmo tempo). Maiúscula ou minúscula, pela tecla física (e.code); com Ctrl/Alt e em
+// campos de texto as teclas continuam normais. Enquanto ligado, as teclas do mapa não acionam os
+// atalhos de sempre (Q/W/A/S/D da nota); o Espaço continua tocando/pausando.
+const TECLAS_PC = ["KeyQ", "KeyW", "KeyE", "KeyR", "KeyT", "KeyY", "KeyU", "KeyI", "KeyO", "KeyP",
+                   "KeyA", "KeyS", "KeyD", "KeyF", "KeyG", "KeyH", "KeyJ", "KeyK", "KeyL", "Semicolon"];
+const LETRA_PC = c => c === "Semicolon" ? "Ç" : c.slice(3);
+const FORCA_PC = 96;  // força fixa (o teclado do computador não tem sensibilidade)
+const tecladoPC = { ligado: false, oitava: 0, grau: 0, apertadas: new Map() };  // código -> midi
+
+// midi da tecla de índice i (0 = Q) no tom em vigor agora, ou null sem tom
+function midiTeclaPC(i) {
+  const tom = MUSICA && DADOS && tomAtual();
+  if (!tom) return null;
+  const escala = ESCALA_DO_TOM[tom.modo] || ESCALA_DO_TOM.maior, d = i + tecladoPC.grau;
+  const m = PIANO_MIN + 12 * tecladoPC.oitava + tom.tonica + 12 * Math.floor(d / 7) + escala[((d % 7) + 7) % 7];
+  return m >= 21 && m <= 108 ? m : null;
+}
+
+function letrasTecladoPC() {
+  const letras = new Map();
+  if (!tecladoPC.ligado) return letras;
+  TECLAS_PC.forEach((c, i) => { const m = midiTeclaPC(i); if (m !== null) letras.set(m, LETRA_PC(c)); });
+  return letras;
+}
+
+function mostrarEstadoTecladoPC() {
+  const b = $("btnTecladoPC"), e = $("tecladoPCEstado");
+  b.setAttribute("aria-pressed", String(tecladoPC.ligado));
+  e.hidden = !tecladoPC.ligado;
+  const partes = [];
+  if (tecladoPC.oitava) partes.push(`${tecladoPC.oitava > 0 ? "+" : ""}${tecladoPC.oitava} oit.`);
+  if (tecladoPC.grau) partes.push(`${tecladoPC.grau > 0 ? "+" : ""}${tecladoPC.grau} nota`);
+  e.textContent = partes.join(" · ");
+  pianoDesenhado = "";  // as letras mudaram
+}
+
+function soltarTecladoPC() {
+  for (const m of tecladoPC.apertadas.values()) finalizarTeclaMidi(m);
+  tecladoPC.apertadas.clear();
+}
+
+function alternarTecladoPC() {
+  if (tecladoPC.ligado) soltarTecladoPC();
+  tecladoPC.ligado = !tecladoPC.ligado;
+  if (tecladoPC.ligado) garantirAudio();  // dentro do clique
+  if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+  mostrarEstadoTecladoPC();
+}
+
+function deslocarTecladoPC(oitavas, graus) {
+  tecladoPC.oitava = limitar(tecladoPC.oitava + oitavas, -1, 3);
+  tecladoPC.grau = limitar(tecladoPC.grau + graus, -7, 7);
+  mostrarEstadoTecladoPC();
+}
+
+// true se a tecla é do teclado do computador (e já foi tratada)
+function teclaPC(e, apertou) {
+  if (!tecladoPC.ligado || e.ctrlKey || e.altKey || e.metaKey) return false;
+  if (abaAtual !== "player" && abaAtual !== "mixagem") return false;
+  const alvo = e.target, tag = alvo && alvo.tagName;
+  if (tag === "TEXTAREA" || (alvo && alvo.isContentEditable)
+      || (tag === "INPUT" && !["range", "checkbox", "radio", "button", "color", "file"].includes(alvo.type))) return false;
+  const codigo = e.code === "Semicolon" || (e.key || "").toLowerCase() === "ç" ? "Semicolon" : e.code;
+  const i = TECLAS_PC.indexOf(codigo);
+  const controle = { KeyZ: [-1, 0], KeyX: [1, 0], KeyC: [0, -1], KeyV: [0, 1] }[codigo];
+  if (i < 0 && !controle && codigo !== "KeyN") return false;
+  e.preventDefault();
+  e.stopImmediatePropagation();
+  if (apertou && e.repeat) return true;  // tecla segurada: o sistema repete, a nota já está soando
+  if (codigo === "KeyN") {  // pausa a música e encerra o REC MIDI (pausar() salva a faixa MIDI)
+    if (apertou) { cancelarRecArmado(); soltarTecladoPC(); if (tocando) pausar(); else pararGravacaoMidi(); mostrarEstadoTecladoPC(); }
+  } else if (controle) {
+    if (apertou) deslocarTecladoPC(...controle);
+  } else if (apertou) {
+    if (tecladoPC.apertadas.has(codigo)) return true;
+    const m = midiTeclaPC(i);
+    if (m === null) return true;
+    tecladoPC.apertadas.set(codigo, m);  // solta a mesma nota, mesmo que o mapa mude (Z/X, modulação)
+    teclaMidiApertada(m, FORCA_PC);
+  } else if (tecladoPC.apertadas.has(codigo)) {
+    const m = tecladoPC.apertadas.get(codigo);
+    tecladoPC.apertadas.delete(codigo);
+    if (![...tecladoPC.apertadas.values()].includes(m)) teclaMidiSolta(m);
+  }
+  return true;
+}
+// na captura: antes dos atalhos do player e sem o <select> com foco pular de opção
+window.addEventListener("keydown", e => teclaPC(e, true), true);
+window.addEventListener("keyup", e => teclaPC(e, false), true);
+window.addEventListener("blur", () => { if (tecladoPC.ligado) { soltarTecladoPC(); mostrarEstadoTecladoPC(); } });
+$("btnTecladoPC").addEventListener("click", alternarTecladoPC);
+
 // ---------- REC MIDI ----------
 // Clique: 3 s de contagem e então a gravação começa (a música começa a tocar, se estiver parada).
 // Clicar de novo (na contagem ou gravando), pausar ou mover a linha do tempo encerra; o botão
 // também pausa a música. Cada gravação vira uma faixa MIDI nova na tabela das faixas.
 const CONTAGEM_REC_MIDI = 3;
 let contagemMidi = null;  // {restante, relogio} durante a contagem antes do REC MIDI
+// REC MIDI com a música pausada: fica armado (a música continua pausada) e a primeira nota tocada,
+// no teclado MIDI ou no do computador, faz a música tocar e a gravação começar no mesmo instante.
+let recArmado = null;     // id da música
 
 function atualizarBotaoGravarMidi() {
-  const b = $("btnGravarMidi"), esta = !!gravacaoMidi || !!contagemMidi;
+  const b = $("btnGravarMidi"), esta = !!gravacaoMidi || !!contagemMidi || !!recArmado;
   b.classList.toggle("gravando", esta);
   b.setAttribute("aria-pressed", String(esta));
   b.firstElementChild.className = "bi " + (esta ? "bi-stop-fill" : "bi-music-note-beamed");
-  b.title = contagemMidi ? "Cancelar o REC MIDI (contagem)"
+  b.title = recArmado ? "Cancelar o REC MIDI (esperando a primeira nota)"
+    : contagemMidi ? "Cancelar o REC MIDI (contagem)"
     : gravacaoMidi ? "Parar o REC MIDI e pausar a música (a gravação vira uma faixa MIDI)"
-    : `REC MIDI: gravar o que for tocado no teclado MIDI junto com a música, depois de ${CONTAGEM_REC_MIDI} s (configure na aba Gravação)`;
+    : `REC MIDI: gravar o que for tocado no teclado MIDI (ou no do computador) junto com a música. Pausada: começa na primeira nota tocada; tocando: depois de ${CONTAGEM_REC_MIDI} s (configure na aba Gravação)`;
   b.setAttribute("aria-label", b.title);
 }
 
@@ -5639,7 +5872,24 @@ function cancelarContagemMidi() {
   return true;
 }
 
+function cancelarRecArmado() {
+  if (!recArmado) return false;
+  recArmado = null;
+  atualizarBotaoGravarMidi();
+  statusGravacao("REC MIDI cancelado.");
+  return true;
+}
+
+function dispararRecArmado() {
+  if (!recArmado) return;
+  const id = recArmado;
+  recArmado = null;
+  if (MUSICA && MUSICA.id === id && !gravacaoMidi) iniciarGravacaoMidi();
+  else atualizarBotaoGravarMidi();
+}
+
 async function alternarGravacaoMidi() {
+  if (cancelarRecArmado()) return;
   if (contagemMidi) { cancelarContagemMidi(); statusGravacao("REC MIDI cancelado."); return; }
   if (gravacaoMidi) {  // parar pelo botão também pausa a música (pausar() encerra e salva a gravação)
     if (tocando) pausar(); else pararGravacaoMidi();
@@ -5647,9 +5897,17 @@ async function alternarGravacaoMidi() {
   }
   if (!MUSICA) return;
   garantirAudio();  // dentro do clique
-  if (!(await ativarMidi())) { statusGravacao("Ative o teclado MIDI na aba Gravação (Controlador MIDI).", "erro"); return; }
-  if (![...acessoMidi.inputs.values()].length) { statusGravacao("Nenhum teclado MIDI ligado.", "erro"); return; }
+  if (tecladoPC.ligado) ativarMidi(true);  // grava o teclado do computador (e o MIDI, se houver)
+  else if (!(await ativarMidi())) { statusGravacao("Ative o teclado MIDI na aba Gravação (Controlador MIDI).", "erro"); return; }
+  else if (![...acessoMidi.inputs.values()].length) { statusGravacao("Nenhum teclado MIDI ligado (ou ligue o teclado do computador, ícone ao lado de −0,01 s).", "erro"); return; }
   const id = MUSICA.id;
+  if (!tocando) {  // pausada: continua pausada até a primeira nota
+    recArmado = id;
+    statusGravacao("REC MIDI pronto: toque uma nota para a música e a gravação começarem" +
+                   (tecladoPC.ligado ? " (N para e salva)" : ""), "gravando");
+    atualizarBotaoGravarMidi();
+    return;
+  }
   contagemMidi = { restante: CONTAGEM_REC_MIDI, relogio: 0 };
   const mostrar = () => statusGravacao(`REC MIDI em ${contagemMidi.restante}…`, "gravando");
   mostrar();
@@ -5664,8 +5922,9 @@ async function alternarGravacaoMidi() {
 }
 
 function iniciarGravacaoMidi() {
+  const desde = tocando ? tempoMidi() : posicao;  // nenhuma nota gravada começa antes disso
   if (!tocando) tocar();  // antes de marcar: tocar() reancora o relógio (e encerraria a gravação)
-  gravacaoMidi = { id: MUSICA.id, notas: [], inicioPerf: performance.now(), relogio: 0, timbre };
+  gravacaoMidi = { id: MUSICA.id, notas: [], inicioPerf: performance.now(), relogio: 0, timbre, desde };
   gravacaoMidi.relogio = setInterval(() => {
     if (!gravacaoMidi) return;
     statusGravacao(`● REC MIDI ${formatarTempo((performance.now() - gravacaoMidi.inicioPerf) / 1000).slice(0, 5)} · ` +
@@ -7861,8 +8120,14 @@ document.addEventListener("keydown", e => {
   if (abaAtual !== "player" && abaAtual !== "mixagem") return;
   if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") { e.preventDefault(); salvarLetra(); return; }
   const emTexto = e.target.tagName === "TEXTAREA" || (e.target.tagName === "INPUT" && e.target.type === "text");
+  // Ctrl+C / Ctrl+V das notas (seleção com Shift + setas); com frases da letra copiadas por último, colam elas
+  if ((e.ctrlKey || e.metaKey) && !e.shiftKey && !emTexto && abaAtual === "player") {
+    const k = e.key.toLowerCase();
+    if (k === "c" && notasNaSelecao().length) { e.preventDefault(); copiarNotas(); return; }
+    if (k === "v" && notasCopiadas.length && ultimaCopia === "notas") { e.preventDefault(); colarNotas(); return; }
+  }
   if (editandoLetra && (e.ctrlKey || e.metaKey) && !emTexto) {
-    if (e.key.toLowerCase() === "c" && selecionadas.size) { e.preventDefault(); copiarFrases(); return; }
+    if (e.key.toLowerCase() === "c" && selecionadas.size) { e.preventDefault(); copiarFrases(); ultimaCopia = "letra"; return; }
     if (e.key.toLowerCase() === "v" && copiadas.length) { e.preventDefault(); colarFrases(); return; }
   }
   // Ctrl+Z desfaz a última edição de notas (em campos de texto continua sendo o do navegador)
@@ -7885,6 +8150,13 @@ document.addEventListener("keydown", e => {
     return;
   }
   if (tag === "INPUT" && (!["range", "checkbox"].includes(alvo.type) || e.key !== " ")) return;
+  // parado, Shift + ←/→ ou Shift + </> (vírgula/ponto) seleciona notas para copiar
+  if (e.shiftKey && !tocando && abaAtual === "player" && ["ArrowLeft", "ArrowRight", "Comma", "Period"].includes(e.code)) {
+    e.preventDefault();
+    estenderSelecao(e.code);
+    return;
+  }
+  if (["ArrowLeft", "ArrowRight", "Comma", "Period"].includes(e.code)) selecaoNotas = null;  // sem Shift: a seleção acaba
   // vírgula e ponto pela tecla física (e.code): com Shift viram "<" e ">" em e.key.
   // Vírgula volta e ponto avança 0,1 s (os botões −0,1 s/+0,1 s); com Shift, 5 s
   if (e.code === "Comma" || e.code === "Period") {
@@ -7902,7 +8174,7 @@ document.addEventListener("keydown", e => {
       if (abaAtual === "player" && notaAlvo()) { e.preventDefault(); alterarNota((e.key === "ArrowUp" ? 1 : -1) * (e.shiftKey ? 12 : 1)); }
       break;
     case "Delete": if (abaAtual === "player" && notaAlvo()) { e.preventDefault(); excluirNota(); } break;
-    case "Escape": notaSelecionada = null; break;
+    case "Escape": notaSelecionada = null; selecaoNotas = null; break;
     case "]": definirVelocidade(velocidade + 0.05); break;
     case "[": definirVelocidade(velocidade - 0.05); break;
     case "Home": e.preventDefault(); irPara(0); break;

@@ -503,6 +503,9 @@ class Manipulador(BaseHTTPRequestHandler):
                 return self._letra(m.group(1))
             if m := ROTA_TOM.match(caminho):
                 return self._json(situacao_tom(m.group(1)))
+            if m := ROTA_ENCAIXE.match(caminho):  # o que o encaixe vai precisar fazer (a interface avisa quanto demora)
+                return self._json({"voz_analisada": encaixe.voz_analisada(m.group(1)),
+                                   "modelo_baixado": encaixe.modelo_baixado()})
             if m := ROTA_FAIXA.match(caminho):
                 # com o tom mudado, a cópia transposta no lugar da original (que fica intacta)
                 arquivo = transpor.faixa_transposta(*m.groups()) or os.path.join(PASTA_FAIXAS, m.group(1), m.group(2) + ".wav")
