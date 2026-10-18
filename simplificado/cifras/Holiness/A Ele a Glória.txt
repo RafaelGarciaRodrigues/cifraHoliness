@@ -1,5 +1,5 @@
 ﻿A Ele a Glória
-TOM:Bm
+TOM:Bm {D}
 
 <yt>https://www.youtube.com/watch?v=QC780wTNfKg</yt>
 <t>24</t>
@@ -24,7 +24,7 @@ pra sempre amém
 </intro>
 
 
-Bm                   G   
+Bm {B}               G   
    Porque dEle e por Ele
    
      A9(11)            Bm

@@ -1,5 +1,5 @@
 ﻿Meus Filhos São Teus
-TOM:E
+TOM:E {E}
 
 <t>24</t>
 
@@ -29,7 +29,7 @@ Meus filhos
 são teus
 </intro>
 
-E
+E {E}
 Herança de Deus
 A
 Presente do céu
