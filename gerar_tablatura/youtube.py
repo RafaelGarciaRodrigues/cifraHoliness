@@ -1,5 +1,5 @@
 """Publicação dos vídeos de karaokê (pasta videos/) no YouTube, pela YouTube Data API v3
-(google-api-python-client, videos.insert).
+(google-api-python-client, videos.insert), com a thumbnail de videos/thumbnail/ (thumbnails.set).
 
 A conta é conectada uma vez pela interface (Biblioteca → ⚙ YouTube), com o OAuth do Google: as
 credenciais do app ficam em docs/client_secret_*.json, o token da conta em docs/youtube_token.json
@@ -29,6 +29,7 @@ os.environ.setdefault("OAUTHLIB_RELAX_TOKEN_SCOPE", "1")
 
 PASTA_DOCS = os.path.join(BASE_DIR, "docs")
 PASTA_VIDEOS = os.path.join(BASE_DIR, "videos")
+PASTA_THUMBNAIL = os.path.join(PASTA_VIDEOS, "thumbnail")  # capa de cada vídeo: <nome do vídeo>.jpg
 CAMINHO_TOKEN = os.path.join(PASTA_DOCS, "youtube_token.json")
 CAMINHO_ESTADO = os.path.join(PASTA_DOCS, "youtube.json")
 ESCOPOS = ["https://www.googleapis.com/auth/youtube.upload",
@@ -225,6 +226,12 @@ def situacao(porta):
     }
 
 
+def caminho_thumbnail(arquivo):
+    """Capa do vídeo (videos/thumbnail/<nome do vídeo>.jpg), criada junto com ele; None se não existe."""
+    caminho = os.path.join(PASTA_THUMBNAIL, os.path.splitext(arquivo)[0] + ".jpg")
+    return caminho if os.path.isfile(caminho) else None
+
+
 # ---------------------------------------------------------------- envio (videos.insert)
 def _limpar_titulo(titulo):
     # o YouTube recusa "<" e ">" e títulos com mais de 100 caracteres
@@ -273,7 +280,7 @@ def main(argumentos):
     cfg = config()
     privacidade = a.privacidade or cfg["privacidade"]
 
-    print("[1/3] Conectando ao YouTube...", flush=True)
+    print("[1/4] Conectando ao YouTube...", flush=True)
     try:
         from googleapiclient.discovery import build
         from googleapiclient.errors import HttpError
@@ -311,7 +318,7 @@ def main(argumentos):
             progresso, resposta = pedido.next_chunk()
             tentativas = 0
             if progresso and (pct := int(progresso.progress() * 100)) != ultimo:
-                print(f"[2/3] Enviando o vídeo: {pct}%", flush=True)
+                print(f"[2/4] Enviando o vídeo: {pct}%", flush=True)
                 ultimo = pct
         except HttpError as e:
             if e.resp.status in (500, 502, 503, 504) and tentativas < 5:
@@ -331,8 +338,23 @@ def main(argumentos):
             print(f"Erro: falha de conexão durante o envio: {e}")
             return 1
 
-    print("[3/3] Registrando a publicação...", flush=True)
     video_id = resposta["id"]
+    if thumbnail := caminho_thumbnail(a.arquivo):
+        print("[3/4] Enviando a thumbnail...", flush=True)
+        try:
+            servico.thumbnails().set(videoId=video_id,
+                                     media_body=MediaFileUpload(thumbnail, mimetype="image/jpeg")).execute()
+        except HttpError as e:  # o vídeo já foi publicado: só avisa (ex.: canal sem verificação de telefone)
+            motivo = e.reason or str(e)
+            if e.resp.status == 403:
+                motivo += " (para usar thumbnails personalizadas o canal precisa ser verificado em youtube.com/verify)"
+            print(f"Aviso: a thumbnail não foi enviada: {motivo}", flush=True)
+        except OSError as e:
+            print(f"Aviso: a thumbnail não foi enviada: {e}", flush=True)
+    else:
+        print("[3/4] Sem thumbnail em videos/thumbnail/ (crie o vídeo de novo para gerá-la)", flush=True)
+
+    print("[4/4] Registrando a publicação...", flush=True)
     url = f"https://youtu.be/{video_id}"
     _registrar_publicacao(a.arquivo, {
         "id_musica": a.id, "video_id": video_id, "url": url, "titulo": titulo,

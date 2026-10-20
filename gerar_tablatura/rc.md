@@ -1210,3 +1210,20 @@ varinha reduz bastante a edição manual, mas não a elimina. Sugestão de ordem
 
 - eu já fiz ajuste de letra varias vezes, mas por que sempre mostra (Encaixando a letra pela voz… na 1ª vez de cada música o modelo analisa a faixa de voz (1 a 3 min; na 1ª vez de todas ainda baixa o modelo, ~1,2 GB).)
 - baixa o modelo 1.2G todas as vezes?
+
+# Thumbnail 
+- quero fazer tumbnails dos videos assim
+- deve ter o mesmo tamanho/dimensão da tela dos videos para o youtube
+- devem ser salvos na pasta \videos\thumbnail com o mesmo nome do video mas com a extensão.jpg
+- é uma umagem de capa, deve ter:
+-- titulo da música
+-- artista
+-- tom (meu tom)
+-- texto "TUTORIAL PIANO & VIOLÃO"
+-- Texto à esquerda: tipografia clara, hierarquia simples e espaço negativo para facilitar a leitura.
+-- Fundo: preto azulado ou grafite, com formas geométricas discretas e uma textura sutil.
+-- Acabamento: linhas finas e textura muito discreta, sem reflexos exagerados, partículas luminosas ou efeitos 3D.
+-- deve ter o piano e o violão na mesma posição do video com algumas notas aleatórias caindo do piano e no graço do violão o tom da música
+-- a imagem deve ser gerada no final do video clicando em nas ids com "video-padrao" dessa forma sei as informações que devem ser criadas
+- ao clicar para fazer upload no youtube deve mandar o Thumbnail
+

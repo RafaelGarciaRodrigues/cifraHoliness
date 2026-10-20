@@ -1,6 +1,6 @@
 {
   "config": {
-    "titulo": "{titulo} - {artista} - Playback - TOM: {tom} - {voz}",
+    "titulo": "{titulo} - {artista} - Cifra - Tutorial Piano e Violão - TOM: {tom} - {voz}",
     "descricao": "{titulo}\nArtista: {artista}\nTom: {tom}\nExtensão vocal: {extensao}\nCategoria vocal: {voz}\n\nTutorial Piano Violão\nPiano Visualizer\nFalling Notes\nPiano Roll \n\n\nLetra:\n{letra}\n\nEste vídeo foi produzido para auxiliar igrejas nos ensaios do grupo de louvor e nos cultos",
     "tags": "playback, cifra, violão, piano, karaokê, letra, {artista}, {titulo}",
     "hashtags": "#{titulo} #{artista} #karaoke #playback #letra #piano #cifra #louvor #gospel #worship #pianotutorial #tutorialpiano #violao #acordes #jesus #alma #pianovisualizer",
@@ -140,6 +140,42 @@
       "titulo": "A Ele a Glória - Jeyzer Maia - Playback - TOM: G#m - Tenor · Masculino",
       "privacidade": "public",
       "publicado_em": "2026-10-16T12:10:59"
+    },
+    "Fernandinho - Ainda Que a Figueira - Tom A.mp4": {
+      "id_musica": "ed9cec10",
+      "video_id": "X2rEJcUORWI",
+      "url": "https://youtu.be/X2rEJcUORWI",
+      "titulo": "Ainda Que a Figueira - Fernandinho - Playback - TOM: A - Tenor · Masculino",
+      "privacidade": "public",
+      "publicado_em": "2026-10-20T14:18:18",
+      "anteriores": [
+        {
+          "id_musica": "ed9cec10",
+          "video_id": "UylhSlHn6Qw",
+          "url": "https://youtu.be/UylhSlHn6Qw",
+          "titulo": "Ainda Que a Figueira - Fernandinho - Playback - TOM: A - Tenor · Masculino",
+          "privacidade": "public",
+          "publicado_em": "2026-10-20T14:09:02"
+        }
+      ]
+    },
+    "Rachel Novaes - Rachel Novaes - Adorado - Tom D.mp4": {
+      "id_musica": "a70c0369",
+      "video_id": "fHRV5RN6_5k",
+      "url": "https://youtu.be/fHRV5RN6_5k",
+      "titulo": "Adorado - Rachel Novaes - Cifra - Tutorial Piano e Violão - TOM: D - Mezzo-soprano",
+      "privacidade": "public",
+      "publicado_em": "2026-10-20T16:36:55",
+      "anteriores": [
+        {
+          "id_musica": "a70c0369",
+          "video_id": "XGtAlBUI1YE",
+          "url": "https://youtu.be/XGtAlBUI1YE",
+          "titulo": "Adorado - Rachel Novaes - Cifra - Tutorial Piano e Violão - TOM: D - Mezzo-soprano ·",
+          "privacidade": "public",
+          "publicado_em": "2026-10-20T16:07:46"
+        }
+      ]
     }
   },
   "canal": "LouvoresKaraoke"

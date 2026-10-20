@@ -5306,6 +5306,203 @@ function desenharQuadroVideo(g, formato, modelo, t, tv, notas) {
 
 const notasDoVideo = () => NOTAS.length ? NOTAS : ((DADOS.melodias || {}).solo || []);
 
+// ---------- thumbnail (capa) do vídeo padrão: videos\thumbnail\<nome do vídeo>.jpg ----------
+// Desenhada no fim do vídeo padrão e enviada com ele (o youtube.py a manda junto no upload). 1280×720,
+// como o vídeo: fundo grafite azulado com formas geométricas discretas e textura sutil, texto à
+// esquerda (TUTORIAL PIANO & VIOLÃO, título, artista e o tom do vídeo) e, na base, o violão e o
+// teclado na mesma posição do vídeo, com o acorde do tom no violão e algumas notas do tom caindo.
+const T_FUNDO = ["rgb(11,15,22)", "rgb(19,24,32)"], T_LINHA = "rgba(170,190,220,0.07)";
+const T_DESTAQUE = "rgb(255,215,0)", T_TEXTO = "#fff", T_SUAVE = "rgb(206,212,222)";
+// a capa aparece pequena na lista do YouTube (~250 px de largura): textos grandes, legíveis nesse tamanho
+const T_MARGEM = 56, T_LARGURA_TEXTO = 780;
+const fonteCapa = (peso, px) => `${peso} ${px}px "Segoe UI", system-ui, sans-serif`;
+
+function aleatorioSemente(texto) {  // mulberry32: a mesma música dá sempre a mesma capa
+  let a = 0;
+  for (const c of texto) a = (Math.imul(a, 31) + c.charCodeAt(0)) | 0;
+  return () => {
+    a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+// Linhas de até `largura` px; diminui a fonte até caber em `maxLinhas`
+function quebrarTexto(g, texto, tamanho, largura, maxLinhas, peso = 700) {
+  for (; ; tamanho -= 2) {
+    g.font = fonteCapa(peso, tamanho);
+    const linhas = [];
+    for (const p of texto.split(/\s+/).filter(Boolean)) {
+      const tentativa = linhas.length ? linhas[linhas.length - 1] + " " + p : p;
+      if (linhas.length && g.measureText(tentativa).width <= largura) linhas[linhas.length - 1] = tentativa;
+      else linhas.push(p);
+    }
+    if (tamanho <= 24 || (linhas.length <= maxLinhas && linhas.every(l => g.measureText(l).width <= largura)))
+      return { linhas, tamanho };
+  }
+}
+
+function espacamento(g, px) { if ("letterSpacing" in g) g.letterSpacing = px + "px"; }
+
+function desenharThumbnailVideo(g, modelo) {
+  const F = DESENHO_VIDEO.padrao, W = F.LARGURA, H = F.ALTURA_LETRA;
+  const sorteio = aleatorioSemente((MUSICA ? MUSICA.id : "") + modelo.titulo);
+  g.setTransform(1, 0, 0, 1, 0, 0);
+  g.globalAlpha = 1;
+  g.globalCompositeOperation = "source-over";
+  // fundo: grafite azulado, um pouco mais claro no alto à direita
+  const fundo = g.createLinearGradient(0, F.ALTURA, W, 0);
+  fundo.addColorStop(0, T_FUNDO[0]);
+  fundo.addColorStop(1, T_FUNDO[1]);
+  g.fillStyle = fundo;
+  g.fillRect(0, 0, W, F.ALTURA);
+  // textura muito discreta (ruído de ±4 no brilho)
+  const img = g.getImageData(0, 0, W, F.ALTURA), px = img.data;
+  for (let i = 0; i < px.length; i += 4) {
+    const r = (sorteio() - 0.5) * 8;
+    px[i] += r; px[i + 1] += r; px[i + 2] += r;
+  }
+  g.putImageData(img, 0, 0);
+  // formas geométricas em linhas finas: círculos concêntricos no alto à direita, um losango e diagonais
+  g.strokeStyle = T_LINHA;
+  g.lineWidth = 1;
+  for (const r of [120, 190, 260, 330]) { g.beginPath(); g.arc(W - 150, 70, r, 0, Math.PI * 2); g.stroke(); }
+  g.save();
+  g.translate(W - 380, H - 150);
+  g.rotate(Math.PI / 4);
+  g.strokeRect(-46, -46, 92, 92);
+  g.restore();
+  for (let i = 0; i < 3; i++) tracoVideo(g, 560 + i * 26, H, 760 + i * 26, 0, 1, "rgba(170,190,220,0.04)");
+
+  // notas caindo no teclado (mesma geometria de desenharInstrumentosVideo/desenharRoloVideo); notas e
+  // acorde nos dados originais: desenharInstrumentosVideo e desenharFeixe somam tomFaixas
+  const tom = MUSICA && MUSICA.tom_tonica != null ? { tonica: MUSICA.tom_tonica, modo: MUSICA.tom_modo } : DADOS.tom;
+  const acorde = tom ? { raiz: tom.tonica, tipo: tom.modo === "menor" ? "m" : "", t: 0, d: 1 } : null;
+  const escala = tom ? ESCALA_DO_TOM[tom.modo] : ESCALA_DO_TOM.maior;
+  const totalMm = LARGURA_VIOLAO_MM + LARGURA_PIANO;
+  const k = Math.min((W - 2 * F.LATERAL_PIANO) / totalMm, (F.FAIXA_INSTRUMENTOS - 2 * F.MARGEM_PIANO) / BRANCA_A);
+  const x0 = (W - totalMm * k) / 2 + LARGURA_VIOLAO_MM * k;
+  const candidatas = [];  // do D5 para cima (à direita do texto), só notas do tom
+  for (let m = 74; m <= PIANO_MAX - 2 - Math.max(0, tomFaixas); m++)
+    if (escala.includes(pc(m - (tom ? tom.tonica : 0)))) candidatas.push(m);
+  const feixes = [], vistas = new Set(), ocupadas = new Set();
+  while (feixes.length < 7 && vistas.size < candidatas.length) {
+    const m = candidatas[Math.floor(sorteio() * candidatas.length)];
+    if (vistas.has(m)) continue;
+    vistas.add(m);
+    if (ocupadas.has(m - 1) || ocupadas.has(m + 1) || ocupadas.has(m - 2) || ocupadas.has(m + 2)) continue;  // vizinhas grudadas
+    ocupadas.add(m);
+    const chega = feixes.length === 0 ? 0 : 30 + sorteio() * (H * 0.55);  // a primeira já encosta no teclado
+    feixes.push({ midi: m, base: H - chega, altura: 50 + sorteio() * 130 });
+  }
+  const rgba = (cor, a) => cor.replace("rgb(", "rgba(").replace(")", `,${a.toFixed(3)})`);
+  const desenharFeixe = (midi, base, altura, cor, alfa) => {
+    const midiTom = midi + tomFaixas;
+    if (midiTom < PIANO_MIN || midiTom > PIANO_MAX) return;
+    const preta = ePreta(midiTom), w = (preta ? PRETA_L : BRANCA_L) * k, x = x0 + teclaX(midiTom) * k;
+    const grad = g.createLinearGradient(0, base, 0, base - altura);
+    grad.addColorStop(0, rgba(cor, alfa));
+    grad.addColorStop(1, rgba(cor, alfa * 0.15));
+    g.fillStyle = grad;
+    g.beginPath();
+    const raio = Math.min(w / 2, 6);
+    if (g.roundRect) g.roundRect(x + 1, base - altura, w - 2, altura, raio); else g.rect(x + 1, base - altura, w - 2, altura);
+    g.fill();
+  };
+  if (acorde) for (const iv of NOTAS_DO_ACORDE[acorde.tipo]) desenharFeixe(36 + pc(acorde.raiz) + iv, H, 70, V_COR.noAcorde, 0.22);
+  for (const f of feixes) desenharFeixe(f.midi, f.base, f.altura, V_COR.noCampo, 0.5);
+  // o que passa por trás do texto esmaece para a esquerda (leitura limpa)
+  const largVeu = T_MARGEM + T_LARGURA_TEXTO + 60;
+  const veu = g.createLinearGradient(0, 0, largVeu, 0);
+  veu.addColorStop(0, "rgba(11,15,22,0.9)");
+  veu.addColorStop(0.8, "rgba(11,15,22,0.6)");
+  veu.addColorStop(1, "rgba(11,15,22,0)");
+  g.fillStyle = veu;
+  g.fillRect(0, 0, largVeu, H - 80);
+
+  // violão e teclado na base, como no vídeo: o acorde do tom no violão e a nota que chegou no teclado
+  const nota = feixes.length ? { midi: feixes[0].midi, t: 0, d: 1 } : null;
+  g.save();
+  g.translate(0, F.ALTURA_LETRA);
+  desenharInstrumentosVideo(g, F, nota, acorde);
+  g.restore();
+  if (F.FAIXA_MARCA) desenharMarcaVideo(g, F);
+  g.fillStyle = "rgba(170,190,220,0.12)";  // linha fina separando a capa dos instrumentos
+  g.fillRect(0, F.ALTURA_LETRA, W, 1);
+
+  // texto à esquerda: TUTORIAL PIANO & VIOLÃO / título / artista / tom
+  // o título começa grande (2 linhas) e diminui só se o bloco todo não couber acima dos instrumentos
+  const xt = T_MARGEM, larguraTexto = T_LARGURA_TEXTO;
+  const KICKER = 34, ARTISTA = 54, TOM_ROTULO = 30, TOM_CIFRA = 58, TOM_ALTURA = 80;
+  const tomTexto = tom ? cifraTom(pc(tom.tonica + tomFaixas), tom.modo) : "";
+  const artista = modelo.artista ? quebrarTexto(g, modelo.artista, ARTISTA, larguraTexto, 1, 600) : null;
+  const resto = KICKER + 24 + 18 + (artista ? artista.tamanho * 1.2 : 0) + (tomTexto ? 24 + TOM_ALTURA : 0);
+  let titulo = quebrarTexto(g, modelo.titulo || "", 128, larguraTexto, 2, 800);
+  if (titulo.tamanho < 84) titulo = quebrarTexto(g, modelo.titulo || "", 96, larguraTexto, 3, 800);  // título longo
+  while (titulo.tamanho > 48 && resto + titulo.linhas.length * titulo.tamanho * 1.02 > H - 40)
+    titulo = quebrarTexto(g, modelo.titulo || "", titulo.tamanho - 4, larguraTexto, 3, 800);
+  const { linhas, tamanho } = titulo;
+  const total = resto + linhas.length * tamanho * 1.02;
+  let y = Math.max(20, (H - total) / 2);
+  g.textAlign = "left";
+  g.textBaseline = "top";
+  g.fillStyle = T_DESTAQUE;
+  g.fillRect(xt, y + KICKER * 0.45, 40, 4);
+  g.font = fonteCapa(800, KICKER);
+  espacamento(g, 3);
+  g.fillText("TUTORIAL PIANO & VIOLÃO", xt + 56, y);
+  espacamento(g, 0);
+  y += KICKER + 24;
+  g.fillStyle = T_TEXTO;
+  g.font = fonteCapa(800, tamanho);
+  for (const l of linhas) { g.fillText(l, xt - 4, y); y += tamanho * 1.02; }
+  y += 18;
+  if (artista) {
+    g.font = fonteCapa(600, artista.tamanho);
+    g.fillStyle = T_SUAVE;
+    g.fillText(artista.linhas.join(" "), xt, y);
+    y += artista.tamanho * 1.2;
+  }
+  if (tomTexto) {  // "TOM  G#m" numa cápsula de linha fina
+    y += 24;
+    g.font = fonteCapa(600, TOM_ROTULO);
+    espacamento(g, 3);
+    const wr = g.measureText("TOM").width;
+    espacamento(g, 0);
+    g.font = fonteCapa(800, TOM_CIFRA);
+    const wt = g.measureText(tomTexto).width, larguraCaixa = 30 + wr + 18 + wt + 30;
+    g.strokeStyle = T_DESTAQUE;
+    g.lineWidth = 3;
+    g.beginPath();
+    if (g.roundRect) g.roundRect(xt + 1.5, y + 1.5, larguraCaixa, TOM_ALTURA, TOM_ALTURA / 2);
+    else g.rect(xt + 1.5, y + 1.5, larguraCaixa, TOM_ALTURA);
+    g.stroke();
+    g.textBaseline = "middle";
+    g.font = fonteCapa(600, TOM_ROTULO);
+    espacamento(g, 3);
+    g.fillStyle = T_DESTAQUE;
+    g.fillText("TOM", xt + 30, y + TOM_ALTURA / 2 + 2);
+    espacamento(g, 0);
+    g.font = fonteCapa(800, TOM_CIFRA);
+    g.fillStyle = T_TEXTO;
+    g.fillText(tomTexto, xt + 30 + wr + 18, y + TOM_ALTURA / 2 + 3);
+  }
+}
+
+// JPEG da capa (até 2 MB, o limite do YouTube)
+async function thumbnailVideo(modelo) {
+  const F = DESENHO_VIDEO.padrao, cv = document.createElement("canvas");
+  cv.width = F.LARGURA;
+  cv.height = F.ALTURA;
+  desenharThumbnailVideo(cv.getContext("2d"), modelo);
+  for (const qualidade of [0.92, 0.85, 0.75]) {
+    const blob = await new Promise(ok => cv.toBlob(ok, "image/jpeg", qualidade));
+    if (blob && blob.size <= 2 << 20) return blob;
+  }
+  throw new Error("thumbnail maior que 2 MB");
+}
+
 // ---------- abas da linha do tempo: Linha do tempo | Vídeo do YouTube | Vídeo do Instagram ----------
 const ABAS_LINHA = { linha: null, youtube: "padrao", instagram: "instagram" };  // aba -> formato da prévia
 const CANVAS_PREVIA = { padrao: "previaYoutube", instagram: "previaInstagram" };
@@ -5443,6 +5640,17 @@ async function renderizarQuadrosVideo(m, formato, modelo, avisar) {
       if (pct !== mostrado) { mostrado = pct; avisar(`desenhando o ${FORMATOS_VIDEO[formato].nome}: ${pct}%`); }
     }
     if (envio) await envio;
+    if (formato === "padrao") {  // a capa do vídeo (videos\thumbnail\), gravada quando ele ficar pronto
+      try {
+        avisar("desenhando a thumbnail…");
+        const capa = await thumbnailVideo(modelo);
+        const resp = await fetch(`/api/musicas/${m.id}/video/thumbnail?sessao=${sessao}`,
+                                 { method: "PUT", headers: { "Content-Type": "image/jpeg" }, body: capa });
+        if (!resp.ok) throw new Error((await resp.json().catch(() => ({}))).erro || `HTTP ${resp.status}`);
+      } catch (e) {
+        console.warn("thumbnail não enviada:", e);  // o vídeo sai mesmo assim
+      }
+    }
   } catch (e) {
     await api(`/api/musicas/${m.id}/video/cancelar`, { method: "POST", body: JSON.stringify({ formato, sessao, motivo: e.message }) })
       .catch(() => {});

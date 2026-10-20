@@ -155,6 +155,8 @@ class SessoesVideo:
     do player, já enviada em caminho_notas_video). A situação aparece na fila (PROCESSAMENTOS.estado),
     na chave do formato ("video:<id>" / "instagram:<id>"), como os vídeos do video.py."""
     PASTAS = {"padrao": os.path.join(BASE_DIR, "videos"), "instagram": os.path.join(BASE_DIR, "videos", "instagram")}
+    PASTA_THUMBNAIL = os.path.join(BASE_DIR, "videos", "thumbnail")  # capa do vídeo padrão (<nome do vídeo>.jpg)
+    TAMANHO_MAXIMO_THUMBNAIL = 2 << 20  # o YouTube aceita até 2 MB
     QPS = 30
     MEDIDAS = {"padrao": (1280, 720), "instagram": (1080, 1920)}
     SEM_RESPOSTA = 120  # s sem receber quadros: o navegador fechou; a sessão é cancelada
@@ -218,7 +220,8 @@ class SessoesVideo:
             token = os.urandom(8).hex()
             self.sessoes[chave] = {"token": token, "proc": proc, "saida": saida, "temporario": temporario,
                                    "total": max(1, int(total)), "recebidos": 0, "audio": audio,
-                                   "ultimo": time.time(), "trava": threading.Lock(), "formato": formato}
+                                   "ultimo": time.time(), "trava": threading.Lock(), "formato": formato,
+                                   "thumbnail": None}
         self._estado(chave, estado="processando", etapa="[2/3] Renderizando o vídeo (no navegador): 0%", log=[],
                      linha="[1/3] Áudio recebido; renderizando os quadros do HTML...")
         return chave, token
@@ -249,6 +252,30 @@ class SessoesVideo:
             s["ultimo"] = time.time()
             pct = min(99, s["recebidos"] * 100 // s["total"])
         self._estado(chave, etapa=f"[2/3] Renderizando o vídeo (no navegador): {pct}%")
+
+    def receber_thumbnail(self, chave, token, leitor, tamanho):
+        """Capa (JPEG) desenhada pela interface; é gravada quando o vídeo fica pronto, com o nome dele."""
+        s = self._sessao(chave, token)
+        dados = leitor.read(tamanho)
+        if len(dados) != tamanho or not dados.startswith(bytes([0xFF, 0xD8])):  # início de todo JPEG
+            raise ValueError("thumbnail inválida")
+        s["thumbnail"] = dados
+        s["ultimo"] = time.time()
+
+    def _gravar_thumbnail(self, s):
+        """videos/thumbnail/<nome do vídeo>.jpg (substitui a anterior); devolve o aviso para o log."""
+        if not s["thumbnail"]:
+            return ""
+        os.makedirs(self.PASTA_THUMBNAIL, exist_ok=True)
+        destino = os.path.join(self.PASTA_THUMBNAIL, os.path.splitext(os.path.basename(s["saida"]))[0] + ".jpg")
+        try:
+            with open(destino + ".parcial", "wb") as f:
+                f.write(s["thumbnail"])
+            os.replace(destino + ".parcial", destino)
+        except OSError as e:
+            self._apagar(destino + ".parcial")
+            return f" (a thumbnail não foi salva: {e})"
+        return f" + thumbnail {os.path.relpath(destino, BASE_DIR)}"
 
     @staticmethod
     def _erro_ffmpeg(s):
@@ -285,6 +312,7 @@ class SessoesVideo:
                 aberto, s["saida"] = s["saida"], self.copia_livre(s["saida"])
                 os.replace(s["temporario"], s["saida"])
                 aviso = f" (o anterior, {os.path.basename(aberto)}, está aberto em outro programa e não pôde ser substituído)"
+            aviso = self._gravar_thumbnail(s) + aviso
             marcador = FORMATOS_VIDEO[s["formato"]][1]
             self._estado(chave, estado="concluido", etapa="concluído",
                          linha=f"{marcador}! {os.path.relpath(s['saida'], BASE_DIR)}{aviso}")
@@ -354,6 +382,7 @@ ROTA_ENCAIXE = re.compile(rf"^/api/musicas/{ID}/letra/encaixar$")
 ROTA_VIDEO = re.compile(rf"^/api/musicas/{ID}/video$")
 ROTA_VIDEO_NOTAS = re.compile(rf"^/api/musicas/{ID}/video/notas$")
 ROTA_VIDEO_QUADROS = re.compile(rf"^/api/musicas/{ID}/video/quadros$")
+ROTA_VIDEO_THUMBNAIL = re.compile(rf"^/api/musicas/{ID}/video/thumbnail$")
 ROTA_VIDEO_SESSAO = re.compile(rf"^/api/musicas/{ID}/video/(concluir|cancelar)$")
 ROTA_YOUTUBE = re.compile(rf"^/api/musicas/{ID}/youtube$")
 ROTA_FAIXA = re.compile(rf"^/faixas/{ID}/([a-z]+)\.wav$")
@@ -599,6 +628,8 @@ class Manipulador(BaseHTTPRequestHandler):
             return self._salvar_notas_video(n.group(1), urlparse(self.path).query)
         if n := ROTA_VIDEO_QUADROS.match(caminho):
             return self._quadros_video(n.group(1), urlparse(self.path).query)
+        if n := ROTA_VIDEO_THUMBNAIL.match(caminho):
+            return self._thumbnail_video(n.group(1), urlparse(self.path).query)
         m = ROTA_LETRA.match(caminho)
         if not m:
             return self._erro(404, "não encontrado")
@@ -914,6 +945,25 @@ class Manipulador(BaseHTTPRequestHandler):
             return self._erro(404, str(e.args[0]))
         except OSError as e:
             return self._erro(500, f"o vídeo falhou: {e}")
+        self._json({"ok": True})
+
+    def _thumbnail_video(self, id_musica, query):
+        """Capa JPEG do vídeo padrão em criação (?sessao=): salva em videos/thumbnail/ quando ele termina."""
+        if self.headers.get("Content-Type", "") != "image/jpeg":
+            return self._erro(400, "Content-Type inválido")
+        try:
+            tamanho = int(self.headers.get("Content-Length") or 0)
+        except ValueError:
+            return self._erro(400, "parâmetros inválidos")
+        if tamanho <= 0 or tamanho > SessoesVideo.TAMANHO_MAXIMO_THUMBNAIL:
+            return self._erro(400, "thumbnail vazia ou maior que 2 MB")
+        chave = f"{FORMATOS_VIDEO['padrao'][0]}:{id_musica}"
+        try:
+            SESSOES_VIDEO.receber_thumbnail(chave, (parse_qs(query).get("sessao") or [""])[0], self.rfile, tamanho)
+        except KeyError as e:
+            return self._erro(404, str(e.args[0]))
+        except ValueError as e:
+            return self._erro(400, str(e))
         self._json({"ok": True})
 
     def _sessao_video(self, id_musica, acao):
