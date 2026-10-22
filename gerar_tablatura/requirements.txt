@@ -20,3 +20,5 @@ Pillow
 # publicação no YouTube (youtube.py)
 google-api-python-client
 google-auth-oauthlib
+# baixar o áudio de vídeos do YouTube (baixar.py, aba Adicionar); atualize de vez em quando: pip install -U yt-dlp
+yt-dlp

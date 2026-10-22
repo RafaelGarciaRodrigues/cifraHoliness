@@ -1227,3 +1227,77 @@ varinha reduz bastante a edição manual, mas não a elimina. Sugestão de ordem
 -- a imagem deve ser gerada no final do video clicando em nas ids com "video-padrao" dessa forma sei as informações que devem ser criadas
 - ao clicar para fazer upload no youtube deve mandar o Thumbnail
 
+# DELETAR
+- já tenho a funcionalidade de selecionar um trecho de notas em linha e copiar e colar
+- quero poder pressionar delete no teclado e deletar somente o trecho selecionado das notas selecionadas- somente as notas que estão marcadas em id="faixa-col-notas"
+
+# INTRODUZIR UMA MÚSICA
+- hoje inicio o processo copiando e colando um arquivo de audio na pasta \audio
+- depois disso ele já aparece em id="tabelaMusicas"
+- tenho uma extensão em C:\dev\Linkedin que possui uma funcionalidade que identifica audio na página "escuta" e faz download dele
+- quero inserir essa funcionalidade 
+- posso ter um primeiro botão em id="c41b8d" que vai para uma tela que:
+- insiro o link do youtube
+- embeda o video, escuta ele, baixa o audio e salva em \audio
+- a partir daí tudo continua como está
+- mas em id="tabelaMusicas" fica a informação do link original do video do youtube para rastreamento se necessário
+- não sei se a melhor abordagem é embedar o video e escutar ele, o que preciso é salvar o arquivo mp3 em \audio
+- você pode sugerir outra melhor prática já existente que desconheço
+# PADRÃO
+- ao iniciar uma nova edição
+
+# AUTOMAÇÃO
+- ao pressionar em 'Abrir' (exemplo id="bib-7d6c27a1-abrir-abrir") pela primeira vez
+-- somente na primeira vez, logo depois de 'PROCESSAR'
+- vai para id="tab-player" exatamente como faz hoje
+- em ÁUDIO (id="faixa-col-audio-rotulo") seleciona todos em 
+- em NOTAS (id="faixa-col-notas") apenas a linha de id="faixa-vocals-rotulo"
+- id="volumeFaixa" em 80
+- id="volumeSint" em 85
+- id="ataque" em 0,07
+- id="sustain" em 1,8
+- id="reverbNotas" em 10%
+- id="chorusNotas" em 15%
+- id="timbre" 'Acoustic Piano' id="timbre"
+- chamar a função id="btnVarinha" 'Reprocessar notas'
+- chamar essa rota somente na primeir vez que Abrir a música, logo depois de reprocessar
+- nas proximas vezes
+-- salva os parâmetros alterados no cache (como é atualmente)
+-- não chamar a função id="btnVarinha" 'Reprocessar notas'
+
+# AJUSTE
+- ajuste os itens abaixo, alteração do que mudamos em cima:
+- id="volumeFaixa" em 80
+- id="volumeSint" em 85
+- id="ataque" em 0,07
+- id="sustain" em 1,8
+
+- no thumbnail, adicione ao lado do tom a classificação vocal (genero e faixa vocal)
+
+
+# AJUSTES
+- quando mudo o timbre os valores abaixo são redefinidos para outros que eu não atualizei, como se o cache não fosse mantido
+-- id="volumeFaixa" em 80
+-- id="volumeSint" em 85
+-- id="ataque" em 0,07
+-- id="sustain" em 1,8
+-- id="reverbNotas" em 10%
+-- id="chorusNotas" em 15%
+
+- alerta
+-- quando pressionar qqr botão p gerar video (ex: id="bib-01950c03-video-padrao" ou id="bib-ed9cec10-video-instagram") e id="faixa-vocals-celula-audio" estiver marcado deve ter um alerta pedindo confirmação se quer seguir assim
+
+# AUTOMAÇÕES
+- ao lado de id="b5e07d" crie outro grupo com a label 'FLUXOS'
+- crie um prieiro botão com o logo do youtube que ao clicar:
+-- id="faixa-vocals-celula-audio" estiver marcado deve ter um alerta pedindo confirmação se quer seguir assim
+-- gera o video do youtube com a thumbnail (igual botão id="bib-01950c03-video-padrao", por exemplo)
+-- na sequencia publica no youtube o video selecioado id="seletorMusica"
+
+# ANALYTICS
+-  analytics ainda não está funcionando muito bem
+- Coleta finalizada! 49 arquivos em analytics\ (31 consulta(s) recusada(s); veja leia-me.txt) (C:\Users\cs385499\PycharmProjects\TelaCifras\gerar_tablatura\analytics)
+- id="estAnalise" não atualiza a data depois de pressionar id="btnEstAtualizar"
+- não entendi a diferença entre id="btnEstAtualizar" e id="btnAnalytics". se tiverem o mesmo objetivo deixar apenas id="btnEstAtualizar"
+
+- esse grafico id="a3c9f5" vem tudo como outros, embora no site do youtube exista a informação separada

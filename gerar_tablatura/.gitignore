@@ -10,6 +10,11 @@
 /docs/client_secret_*.json
 /docs/youtube_token.json
 
+# Dados do canal coletados pelo analytics.py (refeitos a cada coleta)
+/analytics/
+/analytics.novo/
+/analytics.antigo/
+
 # Python
 __pycache__/
 *.pyc

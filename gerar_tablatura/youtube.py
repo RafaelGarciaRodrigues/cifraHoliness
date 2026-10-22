@@ -32,8 +32,14 @@ PASTA_VIDEOS = os.path.join(BASE_DIR, "videos")
 PASTA_THUMBNAIL = os.path.join(PASTA_VIDEOS, "thumbnail")  # capa de cada vídeo: <nome do vídeo>.jpg
 CAMINHO_TOKEN = os.path.join(PASTA_DOCS, "youtube_token.json")
 CAMINHO_ESTADO = os.path.join(PASTA_DOCS, "youtube.json")
+# leitura do YouTube Analytics e da Reporting API (analytics.py); contas conectadas antes dele
+# precisam entrar de novo ("Trocar conta") para autorizar
+ESCOPO_ANALYTICS = "https://www.googleapis.com/auth/yt-analytics.readonly"
+ESCOPO_COMENTARIOS = "https://www.googleapis.com/auth/youtube.force-ssl"  # o commentThreads exige, mesmo só para ler
 ESCOPOS = ["https://www.googleapis.com/auth/youtube.upload",
-           "https://www.googleapis.com/auth/youtube.readonly"]  # readonly: só para mostrar o nome do canal
+           "https://www.googleapis.com/auth/youtube.readonly",  # nome do canal e vídeos
+           ESCOPO_COMENTARIOS,
+           ESCOPO_ANALYTICS]
 ROTA_RETORNO = "/api/youtube/retorno"
 
 PRIVACIDADES = ("private", "unlisted", "public")
@@ -161,11 +167,20 @@ def credenciais():
         return None
     from google.auth.transport.requests import Request
     from google.oauth2.credentials import Credentials
-    cred = Credentials.from_authorized_user_file(CAMINHO_TOKEN, ESCOPOS)
+    # com os escopos gravados no token (os autorizados de fato), não os de ESCOPOS
+    cred = Credentials.from_authorized_user_file(CAMINHO_TOKEN)
     if not cred.valid and cred.expired and cred.refresh_token:
         cred.refresh(Request())
         _salvar_token(cred)
     return cred
+
+
+def _token_tem_escopo(escopo):
+    try:
+        with open(CAMINHO_TOKEN, encoding="utf-8") as f:
+            return escopo in (json.load(f).get("scopes") or [])
+    except (OSError, ValueError):
+        return False
 
 
 def _salvar_token(cred):
@@ -219,6 +234,7 @@ def situacao(porta):
     return {
         "credenciais": os.path.basename(caminho_segredo() or "") or None,
         "conectado": os.path.isfile(CAMINHO_TOKEN),
+        "analytics": _token_tem_escopo(ESCOPO_ANALYTICS) and _token_tem_escopo(ESCOPO_COMENTARIOS),
         "canal": _ler_estado().get("canal"),
         "redirect_uri": redirect_uri(porta),
         "config": config(),

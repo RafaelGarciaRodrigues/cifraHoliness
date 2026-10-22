@@ -34,12 +34,14 @@ import afinar
 import banco
 import gravacoes
 import encaixe
+import estrategia
 import letra
 import mixagem
 import pastas
 import tonalidade
 import transpor
 import youtube
+import baixar
 
 BASE_DIR = pastas.BASE_DIR
 INTERFACE = os.path.join(BASE_DIR, "interface.html")
@@ -47,12 +49,15 @@ SCRIPT_SOLO = os.path.join(BASE_DIR, "solo.py")
 SCRIPT_VIDEO = os.path.join(BASE_DIR, "video.py")
 SCRIPT_TRANSPOR = os.path.join(BASE_DIR, "transpor.py")
 SCRIPT_YOUTUBE = os.path.join(BASE_DIR, "youtube.py")
+SCRIPT_BAIXAR = os.path.join(BASE_DIR, "baixar.py")
+SCRIPT_ANALYTICS = os.path.join(BASE_DIR, "analytics.py")
+PASTA_ANALYTICS = os.path.join(BASE_DIR, "analytics")
 PASTA_FAIXAS = os.path.join(BASE_DIR, "faixas")
 PASTA_DADOS = os.path.join(BASE_DIR, "dados")
 PASTA_LETRAS = os.path.join(BASE_DIR, "letras")
 PASTA_INSTRUMENTOS = os.path.join(BASE_DIR, "instrumentos")
 PASTA_NOTAS_VIDEO = os.path.join(tempfile.gettempdir(), "telacifras_notas_video")  # som das notas p/ o vídeo
-TAMANHO_MAXIMO_NOTAS = 1 << 30  # Tone.js e amostras (som gerado no navegador)
+TAMANHO_MAXIMO_NOTAS = 1 << 30  # amostras do piano e do violino (som gerado no navegador)
 # formato do vídeo -> (prefixo da tarefa na fila, início da linha do video.py que indica sucesso)
 FORMATOS_VIDEO = {"padrao": ("video", "Vídeo finalizado"), "instagram": ("instagram", "Vídeo do Instagram finalizado")}
 HOST = "127.0.0.1"  # só a própria máquina acessa
@@ -145,7 +150,16 @@ class Processamentos:
 
 
 PROCESSAMENTOS = Processamentos()
+DOWNLOADS = Processamentos()  # áudios baixados do YouTube (baixar.py): fila própria, não espera o processamento
+ANALYTICS = Processamentos()  # coleta dos dados do canal (analytics.py; chave "analytics") para analytics/
 TENTATIVAS_LOTE = 3  # "Processar todos os não processados": tentativas de cada áudio
+
+
+def situacao_analytics():
+    """Coleta em andamento (fila ANALYTICS) e data da última coleta gravada em analytics/."""
+    leia_me = os.path.join(PASTA_ANALYTICS, "leia-me.txt")
+    ultima = datetime.fromtimestamp(os.path.getmtime(leia_me)).isoformat(timespec="seconds") if os.path.isfile(leia_me) else None
+    return {"processo": ANALYTICS.instantaneo().get("analytics"), "ultima": ultima, "pasta": PASTA_ANALYTICS}
 
 
 # ---------------------------------------------------------------- vídeo renderizado no navegador
@@ -371,9 +385,17 @@ class Servidor(ThreadingHTTPServer):
 
 
 def listar_audios():
-    """Todos os áudios da pasta audio/, com o registro do cadastro quando já processados."""
+    """Todos os áudios da pasta audio/, com o registro do cadastro quando já processados e a origem
+    (link do YouTube) quando foram baixados pela aba Adicionar."""
     registros = {m["arquivo"]: m for m in banco.listar()}
-    return [{"arquivo": n, "musica": registros.get(n)} for n in pastas.listar_audios()]
+    origens = baixar.origens()
+    return [{"arquivo": n, "musica": registros.get(n), "origem": origens.get(n)} for n in pastas.listar_audios()]
+
+
+def com_origem(registros):
+    """Registros com "origem": o vídeo do YouTube de onde o áudio foi baixado (ou None)."""
+    origens = baixar.origens()
+    return [{**r, "origem": origens.get(r["arquivo"])} for r in registros]
 
 ID = r"([0-9a-f]{8})"
 ROTA_MUSICA = re.compile(rf"^/api/musicas/{ID}$")
@@ -513,19 +535,28 @@ class Manipulador(BaseHTTPRequestHandler):
                 self.send_header("Content-Length", "0")
                 return self.end_headers()
             if caminho == "/api/musicas":
-                return self._json([com_tom_faixas(r) for r in banco.listar()])
+                return self._json(com_origem(com_tom_faixas(r) for r in banco.listar()))
             if caminho == "/api/servidor":
                 return self._json({"desatualizado": servidor_desatualizado()})
             if caminho == "/api/youtube":
                 return self._json({**youtube.situacao(self.server.server_address[1]),
                                    "videos": youtube.situacao_videos(banco.listar()),
                                    "processamentos": PROCESSAMENTOS.instantaneo()})
+            if caminho == "/api/analytics":
+                return self._json(situacao_analytics())
+            if caminho == "/api/estrategia":  # indicadores da aba Estratégia (CSVs de analytics/)
+                return self._json(estrategia.situacao())
+            if caminho == "/api/estrategia/analise":  # análise escrita (analytics/analises/*.md)
+                nome = parse_qs(urlparse(self.path).query).get("nome", [""])[0]
+                if arquivo := estrategia.caminho_analise(nome):
+                    return self._arquivo(arquivo, "text/plain; charset=utf-8")
             if caminho == "/api/youtube/conectar":
                 return self._conectar_youtube()
             if caminho == youtube.ROTA_RETORNO:
                 return self._retorno_youtube()
             if caminho == "/api/audios":
-                return self._json({"audios": listar_audios(), "processamentos": PROCESSAMENTOS.instantaneo()})
+                return self._json({"audios": listar_audios(), "processamentos": PROCESSAMENTOS.instantaneo(),
+                                   "downloads": DOWNLOADS.instantaneo()})
             if m := ROTA_MUSICA.match(caminho):
                 return self._musica(m.group(1))
             if m := ROTA_LETRA.match(caminho):
@@ -575,6 +606,13 @@ class Manipulador(BaseHTTPRequestHandler):
             return self._json({"ok": True})
         if m := ROTA_GRAVACAO_NOVA.match(caminho):
             return self._salvar_gravacao(m.group(1), m.group(2), url.query)
+        if caminho == "/api/baixar":
+            return self._baixar_audio()
+        if caminho == "/api/analytics":
+            if not os.path.isfile(youtube.CAMINHO_TOKEN):
+                return self._erro(400, "conecte a conta do YouTube antes (⚙ YouTube)")
+            ANALYTICS.enfileirar("analytics", [SCRIPT_ANALYTICS], "Coleta finalizada")
+            return self._json(situacao_analytics())
         if caminho != "/api/processar":
             return self._erro(404, "não encontrado")
         try:
@@ -615,6 +653,11 @@ class Manipulador(BaseHTTPRequestHandler):
 
     def do_PUT(self):
         caminho = urlparse(self.path).path
+        if caminho == "/api/estrategia/diario":
+            try:
+                return self._json(estrategia.salvar_diario(self._ler_json().get("itens")))
+            except (ValueError, TypeError, AttributeError) as e:
+                return self._erro(400, str(e))
         if caminho == "/api/youtube/config":
             try:
                 return self._json(youtube.salvar_config(self._ler_json()))
@@ -983,6 +1026,22 @@ class Manipulador(BaseHTTPRequestHandler):
         except KeyError as e:
             return self._erro(404, str(e.args[0]))
         self._json({"ok": True, "processamentos": PROCESSAMENTOS.instantaneo()})
+
+    # ------------------------------------------------------------ baixar áudio do YouTube (aba Adicionar)
+    def _baixar_audio(self):
+        """Põe na fila o download do áudio (baixar.py; chave "baixar:<id do vídeo>") para audio/."""
+        try:
+            url = str(self._ler_json().get("url") or "").strip()
+        except (ValueError, TypeError, AttributeError) as e:
+            return self._erro(400, str(e))
+        video_id = baixar.id_do_video(url)
+        if not video_id:
+            return self._erro(400, "cole o link de um vídeo do YouTube (youtube.com/watch?v=... ou youtu.be/...)")
+        chave = f"baixar:{video_id}"
+        if not DOWNLOADS.enfileirar(chave, [SCRIPT_BAIXAR, f"https://www.youtube.com/watch?v={video_id}"],
+                                         "Download finalizado"):
+            return self._erro(409, "este vídeo já está sendo baixado")
+        self._json({"ok": True, "chave": chave, "downloads": DOWNLOADS.instantaneo()})
 
     # ------------------------------------------------------------ YouTube
     def _conectar_youtube(self):

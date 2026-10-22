@@ -304,7 +304,147 @@
                       padding: 1px 6px; border-radius: 4px; }
   .espelhado { transform: scaleX(-1); }
 
+  .timbres { display: flex; gap: 8px; margin-top: 4px; }
+  .timbreBotao { font-size: 1.6rem; line-height: 1; padding: 8px 14px; border-radius: 12px; min-width: 0;
+                 filter: grayscale(.7); opacity: .65; transition: filter .15s, opacity .15s, border-color .15s, box-shadow .15s; }
+  .timbreBotao:hover { opacity: .9; filter: none; }
+  .timbreBotao[aria-checked="true"] { filter: none; opacity: 1; border-color: var(--acento);
+                                       background: color-mix(in srgb, var(--acento) 14%, var(--painel));
+                                       box-shadow: 0 0 0 3px color-mix(in srgb, var(--acento) 18%, transparent); }
+  /* aba Estratégia (YouTube Analytics) */
+  :root { --t-sugeridos: #5c7cfa; --t-busca: #2f9e44; --t-externo: #f08c00; --t-direto: #ae3ec9; --t-inscritos: #1098ad;
+          --t-canal: #868e96; --t-playlists: #e64980; --t-shorts: #fa5252; --t-outros: #ced4da;
+          --sinal-aprofundar: #2b8a3e; --sinal-ajustar: #e67700; --sinal-abandonar: #c92a2a; --sinal-aguardando: #868e96;
+          --sexo-f: #e64980; --sexo-m: #4c6ef5; }
+  @media (prefers-color-scheme: dark) {
+    :root { --t-sugeridos: #748ffc; --t-busca: #51cf66; --t-externo: #ffa94d; --t-direto: #da77f2;
+      --t-inscritos: #3bc9db; --t-canal: #adb5bd; --t-playlists: #f783ac; --t-shorts: #ff8787; --t-outros: #495057;
+      --sinal-aprofundar: #51cf66; --sinal-ajustar: #ffa94d; --sinal-abandonar: #ff6b6b; --sinal-aguardando: #868e96;
+      --sexo-f: #f783ac; --sexo-m: #748ffc; }
+  }
+  .estCabecalho { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+  .estCabecalho h3 { margin: 0; }
+  .estCabecalho .dica { margin-top: 4px; }
+  .estAcoes { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .estAcoes select { max-width: 280px; }
+  .estKpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-top: 16px; }
+  .estKpi { background: var(--painel); border: 1px solid var(--borda); border-radius: 12px; padding: 14px 16px; }
+  .estKpi .rotulo { font-size: .78rem; color: var(--suave); text-transform: uppercase; letter-spacing: .03em; }
+  .estKpi .valor { font-size: 1.7rem; font-weight: 700; margin-top: 4px; font-variant-numeric: tabular-nums; }
+  .estKpi .detalhe { font-size: .82rem; color: var(--suave); margin-top: 2px; }
+  .estKpi .detalhe b.sobe { color: var(--ok); } .estKpi .detalhe b.desce { color: var(--erro); }
+  .estMeta { height: 6px; border-radius: 3px; background: var(--grade); margin-top: 8px; overflow: hidden; }
+  .estMeta > span { display: block; height: 100%; background: var(--acento); border-radius: 3px; }
+  .estMeta.ok > span { background: var(--ok); }
+  .estApostas { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+  .estAposta { border: 1px solid var(--borda); border-left: 4px solid var(--sinal-aguardando); border-radius: 10px; padding: 12px 14px; }
+  .estAposta.aprofundar { border-left-color: var(--sinal-aprofundar); }
+  .estAposta.ajustar { border-left-color: var(--sinal-ajustar); }
+  .estAposta.abandonar { border-left-color: var(--sinal-abandonar); }
+  .estAposta header { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+  .estAposta header b { font-size: 1rem; }
+  .estSinal { font-size: .78rem; font-weight: 600; padding: 2px 8px; border-radius: 999px; white-space: nowrap;
+              background: color-mix(in srgb, var(--sinal-aguardando) 16%, transparent); color: var(--sinal-aguardando); }
+  .estSinal.aprofundar { background: color-mix(in srgb, var(--sinal-aprofundar) 16%, transparent); color: var(--sinal-aprofundar); }
+  .estSinal.ajustar { background: color-mix(in srgb, var(--sinal-ajustar) 16%, transparent); color: var(--sinal-ajustar); }
+  .estSinal.abandonar { background: color-mix(in srgb, var(--sinal-abandonar) 16%, transparent); color: var(--sinal-abandonar); }
+  .estAposta .motivo { font-size: .82rem; color: var(--suave); margin: 4px 0 8px; }
+  .estAposta dl { display: grid; grid-template-columns: 1fr auto auto; gap: 3px 10px; margin: 8px 0; font-size: .86rem; }
+  .estAposta dt { color: var(--suave); } .estAposta dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; }
+  .estAposta dd.ref { color: var(--suave); font-size: .78rem; }
+  .estAposta dd.sobe { color: var(--ok); font-weight: 600; } .estAposta dd.desce { color: var(--erro); }
+  .estAposta .rodape { font-size: .8rem; color: var(--suave); margin-top: 6px; }
+  .estMix { display: flex; height: 10px; border-radius: 5px; overflow: hidden; background: var(--grade); min-width: 80px; }
+  .estMix > span { display: block; height: 100%; }
+  .g-sugeridos { background: var(--t-sugeridos); } .g-busca { background: var(--t-busca); } .g-externo { background: var(--t-externo); }
+  .g-direto { background: var(--t-direto); } .g-inscritos { background: var(--t-inscritos); } .g-canal { background: var(--t-canal); }
+  .g-playlists { background: var(--t-playlists); } .g-shorts { background: var(--t-shorts); } .g-outros { background: var(--t-outros); }
+  .estDuas { display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 16px; }
+  .estDuas > .painel { margin-top: 16px; }
+  .estSemBorda { gap: 24px; }
+  .estGraficoDiario { display: flex; align-items: flex-end; gap: 2px; height: 180px; padding-top: 18px; position: relative; }
+  .estGraficoDiario .dia { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: center;
+                           height: 100%; min-width: 0; position: relative; }
+  .estGraficoDiario .barra { width: 100%; max-width: 28px; background: var(--nota); border-radius: 3px 3px 0 0; min-height: 1px; }
+  .estGraficoDiario .dia:hover .barra { background: var(--acento); }
+  .estGraficoDiario .rot { font-size: .66rem; color: var(--suave); margin-top: 4px; white-space: nowrap; height: 1em; }
+  .estGraficoDiario .pub { position: absolute; bottom: calc(1em + 6px); font-size: .7rem; color: var(--acento); line-height: 1; }
+  .estGraficoDiario .num { font-size: .66rem; color: var(--suave); margin-bottom: 2px; }
+  .estSemanas { display: grid; gap: 8px; }
+  .estSemana { display: grid; grid-template-columns: 74px 1fr 52px; align-items: center; gap: 8px; font-size: .84rem; }
+  .estSemana .estMix { height: 18px; border-radius: 4px; }
+  .estSemana .total { text-align: right; color: var(--suave); font-variant-numeric: tabular-nums; }
+  .estLegenda { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 10px; font-size: .78rem; color: var(--suave); }
+  .estLegenda span { display: inline-flex; align-items: center; gap: 5px; }
+  .estLegenda i { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+  .estTituloLinha { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .estTituloLinha h3 { margin: 0; }
+  .estTabela td.num, .estTabela th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .estTabela th { cursor: default; }
+  .estTabela td { padding: 5px 6px; }
+  .estTabela .parcial { color: var(--suave); }
+  .estTabela td.titulo { max-width: 360px; }
+  .estTabela td.titulo a { color: var(--texto); text-decoration: none; }
+  .estTabela td.titulo a:hover { text-decoration: underline; }
+  .estTabela td.titulo small { display: block; color: var(--suave); font-size: .76rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  #estCorpoVideos tr.linhaVideo { cursor: pointer; }
+  #estCorpoVideos tr.linhaVideo:hover td { background: var(--grade); }
+  #estCorpoVideos tr.aberto td { background: var(--acorde); }
+  .estPct { display: inline-flex; align-items: center; gap: 6px; justify-content: flex-end; }
+  .estPct i { display: inline-block; width: 40px; height: 6px; border-radius: 3px; background: var(--grade); overflow: hidden; }
+  .estPct i span { display: block; height: 100%; background: var(--sinal-ajustar); }
+  .estPct.bom i span { background: var(--ok); } .estPct.ruim i span { background: var(--erro); }
+  .estDetalhe td { background: var(--bg); padding: 12px 14px; }
+  .estDetalhe .grade { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+  .estDetalhe ul { list-style: none; margin: 4px 0 0; padding: 0; font-size: .84rem; }
+  .estDetalhe li { display: flex; justify-content: space-between; gap: 8px; padding: 2px 0; border-bottom: 1px dashed var(--grade); }
+  .estDetalhe .estGraficoDiario { height: 110px; }
+  .estSubtitulo { font-size: .8rem; color: var(--suave); text-transform: uppercase; letter-spacing: .03em; margin-bottom: 6px; }
+  .estRolagemCurta { max-height: 380px; overflow-y: auto; }
+  .estSelo { font-size: .72rem; padding: 1px 7px; border-radius: 999px; white-space: nowrap; border: 1px solid var(--borda); color: var(--suave); }
+  .estSelo.falta { border-color: var(--acento); color: var(--acento); }
+  .estPiramide { display: grid; gap: 4px; font-size: .82rem; }
+  .estPiramide .linha { display: grid; grid-template-columns: 1fr 56px 1fr; align-items: center; gap: 8px; }
+  .estPiramide .lado { display: flex; align-items: center; gap: 6px; }
+  .estPiramide .lado.f { justify-content: flex-end; }
+  .estPiramide .lado span { display: block; height: 16px; border-radius: 3px; min-width: 1px; }
+  .estPiramide .lado.f span { background: var(--sexo-f); } .estPiramide .lado.m span { background: var(--sexo-m); }
+  .estPiramide .idade { text-align: center; color: var(--suave); }
+  .estPiramide .cab { font-weight: 600; color: var(--suave); }
+  .estDiario { display: grid; gap: 10px; margin-top: 10px; }
+  .estDecisao { display: grid; grid-template-columns: 140px 1fr 1fr auto; gap: 8px; align-items: start;
+                border: 1px solid var(--borda); border-radius: 10px; padding: 10px; }
+  .estDecisao label { display: block; font-size: .74rem; color: var(--suave); margin-bottom: 3px; }
+  .estDecisao textarea { width: 100%; min-height: 64px; resize: vertical; font: inherit; font-size: .88rem;
+                         background: var(--bg); color: var(--texto); border: 1px solid var(--borda); border-radius: 8px; padding: 6px 8px; box-sizing: border-box; }
+  .estDecisao input[type=date] { font: inherit; font-size: .88rem; background: var(--bg); color: var(--texto);
+                                 border: 1px solid var(--borda); border-radius: 8px; padding: 5px 6px; width: 100%; box-sizing: border-box; }
+  @media (max-width: 760px) { .estDecisao { grid-template-columns: 1fr; } .estDuas { grid-template-columns: 1fr; } }
   /* aba Gravação (configuração) */
+  /* aba Adicionar (áudio do YouTube) */
+  .adicionar { display: grid; grid-template-columns: minmax(320px, 560px) minmax(280px, 1fr); gap: 16px; align-items: start; }
+  .campoLink { display: flex; align-items: center; gap: 10px; margin-top: 12px; padding: 6px 6px 6px 16px;
+               background: var(--bg); border: 1px solid var(--borda); border-radius: 14px; cursor: text;
+               transition: border-color .15s, box-shadow .15s; }
+  .campoLink:hover { border-color: var(--grade-forte); }
+  .campoLink:focus-within { border-color: var(--acento); box-shadow: 0 0 0 4px color-mix(in srgb, var(--acento) 18%, transparent); }
+  .campoLink.erro, .campoLink.erro:focus-within { border-color: var(--erro); box-shadow: 0 0 0 4px color-mix(in srgb, var(--erro) 15%, transparent); }
+  .campoLink > i { font-size: 1.4rem; color: var(--suave); transition: color .15s; }
+  .campoLink.valido > i { color: #ff0033; }
+  .campoLink input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; color: var(--texto);
+                     font: inherit; font-size: 1rem; padding: 10px 2px; }
+  .campoLink input::placeholder { color: var(--suave); opacity: .8; }
+  .campoLink button { border-radius: 10px; padding: 10px 18px; white-space: nowrap; min-width: 0; }
+  .campoLink button i { margin-right: 4px; }
+  @media (max-width: 520px) { .campoLink { flex-wrap: wrap; padding: 8px; } .campoLink button { width: 100%; } }
+  .previaYoutubeAdd { aspect-ratio: 16 / 9; width: 100%; border: 0; border-radius: 8px; background: #000; margin-top: 12px; }
+  .listaDownloads { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 8px; }
+  .listaDownloads li { border: 1px solid var(--borda); border-radius: 8px; padding: 8px 10px; font-size: .9rem; }
+  .listaDownloads li.erro { border-color: var(--erro); }
+  .listaDownloads li.concluido { border-color: var(--ok); }
+  .listaDownloads small { display: block; color: var(--suave); margin-top: 2px; word-break: break-word; }
+  td.origem a { color: var(--erro); font-size: 1.1rem; text-decoration: none; }
+  @media (max-width: 860px) { .adicionar { grid-template-columns: 1fr; } }
   .configGravacao { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; }
   .configGravacao h3 { margin-bottom: 4px; }
   .configGravacao label { display: block; font-size: .85rem; color: var(--suave); margin: 12px 0 4px; }
@@ -367,15 +507,46 @@
   <div id="ffe6ae" class="barraApp">
     <h1 id="ce8583">Tela de Solos</h1>
     <div id="c41b8d" class="abas" role="tablist">
+      <button id="tab-adicionar" role="tab" aria-selected="false" title="Adicionar uma música: baixar o áudio de um vídeo do YouTube para a pasta audio\"><i id="a3d8f1" class="bi bi-plus-circle"></i> Adicionar</button>
       <button id="tab-player" role="tab" aria-selected="true">Player</button>
       <button id="tab-biblioteca" role="tab" aria-selected="false">Biblioteca</button>
       <button id="tab-mixagem" role="tab" aria-selected="false" title="Volume, efeitos e posição de cada faixa e gravação">Mixagem</button>
       <button id="tab-gravacao" role="tab" aria-selected="false" title="Microfone, câmera, teclado MIDI e qualidade das gravações">Gravação</button>
+      <button id="tab-estrategia" role="tab" aria-selected="false" title="Estratégia do canal: indicadores do YouTube Analytics, apostas, público e diário de decisões"><i id="b7c2e9" class="bi bi-graph-up-arrow"></i> Estratégia</button>
       <button id="tab-ajuda" role="tab" aria-selected="false" title="Como usar o teclado MIDI, documentação e referências"><i id="c6d2f9" class="bi bi-question-circle"></i> Ajuda</button>
     </div>
     <select id="seletorMusica" aria-label="Música aberta no player"></select>
   </div>
   <div id="mensagemGeral" class="mensagem" hidden></div>
+
+  <!-- ============================== aba Adicionar (áudio do YouTube) ============================== -->
+  <div id="aba-adicionar" role="tabpanel" hidden>
+    <div id="b6e2c9" class="adicionar">
+      <section id="c8f4a2" class="painel">
+        <h3 id="d1b7e5"><i id="e9c3a6" class="bi bi-youtube"></i> Baixar o áudio de um vídeo do YouTube</h3>
+        <label id="campoLink" class="campoLink" for="urlYoutube">
+          <i id="d5f8b3" class="bi bi-youtube" aria-hidden="true"></i>
+          <input id="urlYoutube" type="url" placeholder="Cole o link do vídeo (youtube.com/watch?v=… ou youtu.be/…)"
+                 aria-label="Link do vídeo do YouTube" autocomplete="off" spellcheck="false">
+          <button id="btnBaixarAudio" class="primario" disabled title="Baixar o áudio em MP3 para a pasta audio\"><i id="a7e1c4" class="bi bi-download"></i> Baixar áudio</button>
+        </label>
+        <div id="avisoAdicionar" class="dica" hidden></div>
+        <iframe id="previaAdicionar" class="previaYoutubeAdd" hidden title="Prévia do vídeo do YouTube"
+                allow="encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        <div id="b4c9e7" class="dica">O áudio é baixado direto do YouTube pelo <b id="c5d2f8">yt-dlp</b> (sem precisar tocar o
+          vídeo) e convertido em MP3 pelo FFmpeg, na pasta <code id="d9e3a1">audio\</code>. Daí em diante é como um áudio
+          colocado lá à mão: ele aparece na Biblioteca com o botão ⚙ Processar. O link fica guardado na coluna
+          "Origem" da Biblioteca. A prévia acima é só para conferir se é o vídeo certo.
+          Se o download começar a falhar, atualize o yt-dlp: <code id="e6f1b4">python -m pip install -U yt-dlp</code>.</div>
+      </section>
+      <section id="f3b8d6" class="painel">
+        <h3 id="a2c7e9"><i id="b1d4f7" class="bi bi-list-task"></i> Downloads</h3>
+        <ul id="listaDownloads" class="listaDownloads"></ul>
+        <div id="semDownloads" class="dica">Nenhum download desde que o servidor foi aberto.</div>
+        <button id="btnIrBiblioteca" class="pequeno" style="margin-top:12px"><i id="c6a9d2" class="bi bi-collection"></i> Ir para a Biblioteca</button>
+      </section>
+    </div>
+  </div>
 
   <!-- ============================== aba Player ============================== -->
   <div id="aba-player" role="tabpanel">
@@ -418,6 +589,11 @@
               <button id="btnGravarMidi" class="icone" aria-pressed="false" title="REC MIDI: gravar o que for tocado no teclado MIDI junto com a música"><i id="a1f6c3" class="bi bi-music-note-beamed"></i></button>
             </div>
             <div id="statusGravacao" class="statusGravacao"></div></div>
+          <div id="blocoFluxos" class="bloco gravar"><small id="c8f2a5">Fluxos</small>
+            <div id="e6b9d3" class="grupo">
+              <button id="btnFluxoYoutube" class="icone" title="Criar o vídeo do YouTube (com a thumbnail) e publicá-lo em seguida no YouTube, com os modelos de título e descrição" aria-label="Criar e publicar o vídeo no YouTube"><i id="f2d7a4" class="bi bi-youtube"></i></button>
+            </div>
+            <div id="statusFluxo" class="statusGravacao"></div></div>
         </div>
         <div id="de872a" style="margin-top:14px">
           <div id="abasLinha" class="abas abasLinha" role="tablist" aria-label="Linha do tempo e prévias dos vídeos">
@@ -595,22 +771,15 @@ clique na régua de tempo (embaixo da linha do tempo) para marcar um ponto (de n
         <input id="reverbNotas" type="range" min="0" max="1" step="0.01" value="0" title="Reverb de sala, o mesmo da aba Mixagem (duplo clique: 0%)">
         <label id="e8b1c4" for="chorusNotas" style="margin-top:10px">Chorus das notas: <span class="valor" id="chorusNotasValor">0%</span></label>
         <input id="chorusNotas" type="range" min="0" max="1" step="0.01" value="0" title="Chorus, o mesmo da aba Mixagem (duplo clique: 0%)">
-        <label id="a3f8c6" for="timbre" style="margin-top:10px">Timbre</label>
-        <select id="timbre">
-          <option id="b7d2e9" value="corda">Corda dedilhada (sintetizada, a mesma da edição de notas)</option>
-          <option id="c1e5a4" value="violino">Violino suave (amostras reais, entrada e eco longos)</option>
-          <option id="b5f3a8" value="cello">Cello (Violoncelo, amostras reais)</option>
-          <option id="d9a7f2" value="piano">Acoustic Piano (amostras reais)</option>
-          <option id="e2c6b8" value="cordas">Full Strings / Orchestra Pad</option>
-          <option id="f6b1d3" value="shimmer">Shimmer Pad</option>
-          <option id="a4e8c5" value="quente">Warm Pad / Ambient Pad</option>
-          <option id="c8f2a6" value="flauta">Flauta (amostras reais)</option>
-          <option id="d5b9e3" value="saxofone">Saxofone (amostras reais)</option>
-          <option id="e1c7a3" value="coroAh">Choir Aahs (vozes abrindo em "Ah")</option>
-          <option id="f4a9d6" value="vozesUh">Voice Oohs (vozes suaves em "Uh")</option>
-          <option id="b3e6c9" value="soulAhhs">Soul Ahhs (coro em "Ah", Voice Oohs: Ensemble)</option>
-          <option id="a8d2b5" value="synthVox">Synth Voice / Solo Vox</option>
-        </select>
+        <label id="a3f8c6" style="margin-top:10px">Timbre</label>
+        <div id="timbre" class="timbres" role="radiogroup" aria-labelledby="a3f8c6">
+          <button id="timbre-piano" type="button" class="timbreBotao" role="radio" aria-checked="true" data-timbre="piano"
+                  title="Piano acústico (Salamander Grand Piano, 4 camadas de força)" aria-label="Piano">🎹</button>
+          <button id="timbre-violino" type="button" class="timbreBotao" role="radio" aria-checked="false" data-timbre="violino"
+                  title="Violino solo com arco e vibrato (VSCO 2 CE), com legato" aria-label="Violino">🎻</button>
+        </div>
+        <label id="c7e2b9" class="marca" style="margin-top:8px" title="Força de cada nota pelo volume da faixa original, acentos de frase, pequenas variações de tempo e força, legato no violino e acordes em leque no piano. Desligado: todas as notas iguais"><input id="expressaoNotas" type="checkbox" checked> Expressão de intérprete</label>
+        <label id="d4a8f1" class="marca" title="Piano: o som de cada nota continua até a próxima troca de acorde, como o pedal de sustentação"><input id="pedalNotas" type="checkbox" checked> Pedal do piano nas trocas de acorde</label>
         <div id="f7343e" class="dica"></div>
       </div>
       <div id="bf49a0">
@@ -642,8 +811,8 @@ clique na régua de tempo (embaixo da linha do tempo) para marcar um ponto (de n
   <div id="aba-biblioteca" role="tabpanel" hidden>
     <section id="ab97f5" class="painel">
       <div id="b07b2e" class="filtros">
-        <input id="filtroBusca" type="search" placeholder="Buscar por título, artista, categoria, tags ou observações" aria-label="Buscar">
-        <select id="filtroCategoria" aria-label="Categoria"></select>
+        <input id="filtroBusca" type="search" placeholder="Buscar por título, artista, aposta, tags ou observações" aria-label="Buscar">
+        <select id="filtroCategoria" aria-label="Aposta (experimento da estratégia do canal)"></select>
         <select id="filtroStatus" aria-label="Status"></select>
         <label id="da69c3"><input id="filtroFavoritos" type="checkbox"> Só favoritas</label>
         <span id="contagemMusicas" class="contagem"></span>
@@ -728,7 +897,7 @@ clique na régua de tempo (embaixo da linha do tempo) para marcar um ponto (de n
       </div>
     </div>
     <div id="c5b3e7" class="dica">No título, descrição e tags podem entrar: <code id="d2f8a6">{titulo}</code>
-      <code id="e7a1c3">{artista}</code> <code id="f4c9d1">{tom}</code> <code id="a9b5e2">{categoria}</code>
+      <code id="e7a1c3">{artista}</code> <code id="f4c9d1">{tom}</code> <code id="a9b5e2">{categoria}</code> (a aposta)
       <code id="b4d2f7">{tags}</code> (os campos da Biblioteca), <code id="a3f7c2">{extensao}</code> (extensão vocal,
       ex.: C#3 a G4, a dos botões "Voz" do player, no tom original), <code id="b8e3d5">{voz}</code> (categoria
       da voz, ex.: Mezzo-soprano · Feminino, no tom original) e <code id="c6e1a9">{letra}</code>
@@ -929,6 +1098,123 @@ clique na régua de tempo (embaixo da linha do tempo) para marcar um ponto (de n
   </div>
 
   <!-- ============================== aba Ajuda ============================== -->
+  <!-- ============================== aba Estratégia (YouTube Analytics) ============================== -->
+  <div id="aba-estrategia" role="tabpanel" hidden>
+    <section id="e1a7c3" class="painel estCabecalho">
+      <div id="e2b8d4">
+        <h3 id="e3c9e5"><i id="e4d1f6" class="bi bi-graph-up-arrow"></i> Estratégia do canal</h3>
+        <div id="estInfo" class="dica"></div>
+      </div>
+      <div id="e5e2a7" class="estAcoes">
+        <select id="estAnalise" aria-label="Análise escrita (analytics\analises\)"></select>
+        <button id="btnEstAnalise" class="pequeno" title="Abrir a análise escrita numa nova aba"><i id="e6f3b8" class="bi bi-file-text"></i> Abrir análise</button>
+        <button id="btnEstAtualizar" class="primario pequeno" title="Baixar de novo os dados do canal (YouTube Analytics) em CSV para a pasta analytics\ (substitui a coleta anterior)"><i id="e7a4d0" class="bi bi-arrow-repeat"></i> Atualizar dados</button>
+      </div>
+    </section>
+
+    <section id="estVazio" class="painel" hidden>
+      Nenhuma coleta do YouTube Analytics ainda. Clique em <b id="e8b5d1">Atualizar dados</b> para baixar os dados do canal para a pasta <code id="e9c6e2">analytics\</code>.
+    </section>
+
+    <div id="estConteudo" hidden>
+      <div id="estKpis" class="estKpis"></div>
+
+      <section id="f1d7a3" class="painel">
+        <h3 id="f2e8b4"><i id="f3f9c5" class="bi bi-flag"></i> Apostas</h3>
+        <div id="estApostas" class="estApostas"></div>
+        <div id="f4a1d6" class="dica">Cada aposta é a coluna <b id="f5b2e7">Aposta</b> da Biblioteca. A comparação é com a
+          média do canal, sempre nos <b id="f6c3f8">primeiros 7 dias</b> de cada vídeo (para vídeos novos e antigos valerem o
+          mesmo). 🟢 aprofundar: acima da média em 3 ou 4 indicadores · 🟡 ajustar: parte acima, parte abaixo (problema de
+          título, capa ou formato) · 🔴 abandonar: abaixo em quase tudo com o lote completo · ⚪ aguardando: menos de 3 vídeos
+          com 7 dias de dados.</div>
+      </section>
+
+      <div id="f7d4a9" class="estDuas">
+        <section id="f8e5b1" class="painel">
+          <h3 id="f9f6c2"><i id="a1a7d3" class="bi bi-bar-chart"></i> Visualizações por dia</h3>
+          <div id="estGraficoDiario" class="estGraficoDiario"></div>
+          <div id="a2b8e4" class="dica">▲ = vídeo publicado no dia (passe o mouse para ver qual).</div>
+        </section>
+        <section id="a3c9f5" class="painel">
+          <h3 id="a4d1a6"><i id="a5e2b7" class="bi bi-signpost-split"></i> Como me encontram (por semana)</h3>
+          <div id="estGraficoTrafego" class="estSemanas"></div>
+          <div id="estLegenda" class="estLegenda"></div>
+          <div id="a6f3c8" class="dica"><b id="a7a4d9">Busca + externo</b> é o público com intenção (procurou a música ou
+            recebeu o link pelo WhatsApp): é quem assiste até o fim. <b id="a8b5e1">Sugeridos</b> é a vitrine do algoritmo.</div>
+        </section>
+      </div>
+
+      <section id="a9c6f2" class="painel">
+        <div id="b1d7a3" class="estTituloLinha">
+          <h3 id="b2e8b4"><i id="b3f9c7" class="bi bi-camera-video"></i> Vídeos</h3>
+          <select id="estFiltroAposta" aria-label="Filtrar por aposta"></select>
+        </div>
+        <div id="b4a1d6" class="tabelaRolagem">
+          <table id="estTabelaVideos" class="estTabela">
+            <thead id="b5b2e7"><tr id="b6c3f8">
+              <th id="b7d4a9">Vídeo</th><th id="b8e5b1">Aposta</th><th id="b9f6c2" title="Data de publicação (dias com dados)">Publicado</th>
+              <th id="c1a7d3" class="num" title="Visualizações nos primeiros 7 dias (* = ainda não completou 7 dias de dados)">7 dias</th>
+              <th id="c2b8e4" class="num" title="Visualizações nos primeiros 28 dias">28 dias</th>
+              <th id="c3c9f5" class="num">Total</th><th id="c4d1a6" class="num" title="% médio do vídeo assistido">% assistido</th>
+              <th id="c5e2b7" class="num" title="Duração média assistida">Duração média</th>
+              <th id="c6f3c8" class="num" title="Inscritos ganhos menos perdidos">Inscritos</th>
+              <th id="c7a4d9" title="De onde vieram as visualizações">Origem</th>
+            </tr></thead>
+            <tbody id="estCorpoVideos"></tbody>
+          </table>
+        </div>
+        <div id="c8b5e1" class="dica">Clique num vídeo para ver o dia a dia, as origens, os termos de busca e os dispositivos.</div>
+      </section>
+
+      <div id="c9c6f2" class="estDuas">
+        <section id="d1d7a3" class="painel">
+          <h3 id="d2e8b4"><i id="d3f9c5" class="bi bi-search"></i> Termos de busca</h3>
+          <div id="d4a1d6" class="tabelaRolagem estRolagemCurta">
+            <table id="estTermos" class="estTabela"></table>
+          </div>
+          <div id="d5b2e7" class="dica">O que as pessoas digitaram no YouTube antes de chegar ao canal. "Sem vídeo seu" =
+            demanda que o canal ainda não atende.</div>
+        </section>
+        <section id="d6c3f8" class="painel">
+          <h3 id="d7d4a9"><i id="d8e5b1" class="bi bi-lightbulb"></i> Próximas músicas</h3>
+          <div id="d9f6c2" class="tabelaRolagem estRolagemCurta">
+            <table id="estSugeridores" class="estTabela"></table>
+          </div>
+          <div id="e1a7d3" class="dica">Vídeos de outros canais que mandaram público para o seu pelos sugeridos: são os
+            "vizinhos" do canal no algoritmo, e a visualização deles mostra a demanda. <b id="e2b8e4">+</b> leva o link para a
+            aba Adicionar.</div>
+        </section>
+      </div>
+
+      <section id="e3c9f5" class="painel">
+        <h3 id="e4d1a6"><i id="e5e2b8" class="bi bi-people"></i> Quem assiste</h3>
+        <div id="e6f3c9" class="estDuas estSemBorda">
+          <div id="e7a4d1">
+            <div id="e8b5e2" class="estSubtitulo">Idade e sexo (% das visualizações de quem estava logado)</div>
+            <div id="estPiramide" class="estPiramide"></div>
+          </div>
+          <div id="e9c6f3">
+            <div id="f1d7a4" class="estSubtitulo">Dispositivos</div>
+            <table id="estDispositivos" class="estTabela"></table>
+            <div id="estCompartilhamento" class="dica"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="f2e8b5" class="painel">
+        <div id="f3f9c6" class="estTituloLinha">
+          <h3 id="f4a1d7"><i id="f5b2e8" class="bi bi-journal-text"></i> Diário de decisões</h3>
+          <button id="btnEstNovaDecisao" class="pequeno"><i id="f6c3f9" class="bi bi-plus-lg"></i> Nova decisão</button>
+        </div>
+        <div id="estDiario" class="estDiario"></div>
+        <div id="estDiarioStatus" class="dica">Registre o que decidiu e, na revisão, o que aconteceu. Fica em
+          <code id="f7d4a1">analytics\analises\diario.json</code> (não é apagado pelas coletas).</div>
+      </section>
+
+      <div id="estAvisos" class="dica"></div>
+    </div>
+  </div>
+
   <div id="aba-ajuda" role="tabpanel" hidden>
     <div id="a1c5e8" class="ajuda">
       <section id="ajuda-midi" class="painel">
@@ -1031,20 +1317,13 @@ clique na régua de tempo (embaixo da linha do tempo) para marcar um ponto (de n
         <h3 id="b5c1f7"><i id="c8e6a2" class="bi bi-book"></i> Documentação e referências</h3>
         <h4 id="d3f8b4">Timbres das notas sintetizadas</h4>
         <ul id="e7a4c9">
-          <li id="f1d9e6"><b id="a8c2f3">WebAudioFont — catálogo de sons:</b>
-            <a id="ajudaWebAudioFontDados" class="linkYt" href="https://surikov.github.io/webaudiofontdata/" target="_blank" rel="noopener">https://surikov.github.io/webaudiofontdata/</a>
-            <div id="b6e3d1" class="dica" style="margin-top:2px">Lista de todos os instrumentos e soundfonts (General MIDI). Cada
-              som é um arquivo <code id="c1f5a8">NNNN_Nome_sf2_file.js</code> com a variável
-              <code id="d8b2e4">_tone_NNNN_Nome_sf2_file</code>. Para acrescentar um timbre: baixe o .js para
-              <code id="e5c7f1">instrumentos\webaudiofont\</code> e registre-o em <code id="f9a3d6">INSTRUMENTOS</code> no
-              interface.html com <code id="a2d6b9">instrumentoWAF("NNNN_Nome_sf2_file", volume)</code>. Em uso: Choir Aahs,
-              Voice Oohs, Soul Ahhs e Synth Voice.</div></li>
-          <li id="b9a7c4"><b id="c4e1f8">WebAudioFont — projeto e player:</b>
-            <a id="ajudaWebAudioFont" class="linkYt" href="https://github.com/surikov/webaudiofont" target="_blank" rel="noopener">github.com/surikov/webaudiofont</a> (licença GPL-3.0)</li>
-          <li id="d5b8e7"><b id="e2f4a1">Tone.js</b> (samplers, pads, efeitos):
-            <a id="ajudaTone" class="linkYt" href="https://tonejs.github.io/" target="_blank" rel="noopener">tonejs.github.io</a></li>
-          <li id="f8c6d3"><b id="a1e9b7">tonejs-instruments</b> (violino, cello, piano, flauta e saxofone reais, CC-BY 3.0):
-            <a id="ajudaTonejsInstruments" class="linkYt" href="https://github.com/nbrosowsky/tonejs-instruments" target="_blank" rel="noopener">github.com/nbrosowsky/tonejs-instruments</a></li>
+          <li id="f1d9e6"><b id="a8c2f3">Piano: Salamander Grand Piano V3</b> (Alexander Holm, CC-BY 3.0), 4 das 16 camadas de força,
+            em OGG pelo pacote <a id="ajudaSalamander" class="linkYt" href="https://github.com/darosh/samples-piano" target="_blank" rel="noopener">darosh/samples-piano</a>
+            (original: <a id="ajudaSalamanderOriginal" class="linkYt" href="https://archive.org/details/SalamanderGrandPianoV3" target="_blank" rel="noopener">archive.org</a>).</li>
+          <li id="b9a7c4"><b id="c4e1f8">Violino: VSCO 2 Community Edition</b> (Versilian Studios, CC0), violino solo com arco e vibrato em p e f:
+            <a id="ajudaVsco" class="linkYt" href="https://github.com/sgossner/VSCO-2-CE" target="_blank" rel="noopener">github.com/sgossner/VSCO-2-CE</a></li>
+          <li id="d5b8e7"><b id="e2f4a1">Amostras em instrumentos\</b>: convertidas para mono, 44,1 kHz, OGG, cortadas em 6 s (piano) e 8 s
+            (violino); o violino foi nivelado (f −20 dB, p −26 dB).</li>
         </ul>
         <h4 id="b3d7f2">Teclado MIDI</h4>
         <ul id="c6a4e8">
@@ -1261,7 +1540,9 @@ function tocarNota(nota, inicioCtx, duracao) {
   }
   const inst = instrumentoAtivo();
   if (inst) {  // a duração é a da nota; o release de cada instrumento continua depois dela
-    inst.tocar(nota.midi + transp, dur, inicioCtx, forca);
+    const x = expressaoDe(nota);  // força, tempo, legato e pedal de intérprete (calcularExpressao)
+    const inicio = x ? Math.max(ctx.currentTime, inicioCtx + x.dt) : inicioCtx;
+    inst.tocar(nota.midi + transp, dur, inicio, x ? x.forca : forca, x && { ...x, pedal: x.pedal / velocidade });
     return;
   }
   tocarCordaSint(nota.midi + transp, inicioCtx, forca);
@@ -1304,7 +1585,7 @@ function silenciarTudo() {
   vozes.clear();
   ultimasCordas.clear();
   const inst = instrumentoAtivo();
-  if (inst) inst.soltar();  // os timbres do Tone.js soltam com o release deles (eco suave)
+  if (inst) inst.soltar();  // piano e violino soltam com o release deles (eco suave)
   for (const [chave, r] of instanciasMidi) if (chave !== CHAVE_AO_VIVO && r.inst) r.inst.soltar();
 }
 
@@ -1312,11 +1593,7 @@ function silenciarTudo() {
 // Ataque: tempo da nota entrar (0 = na hora). Sustentação: quanto o som continua depois do fim da
 // nota (release; na corda dedilhada, quanto ela soa). Cada timbre tem o seu padrão (PADRAO_ENVELOPE),
 // que volta ao trocar de timbre ou com duplo clique; os valores ficam nas preferências da música.
-const PADRAO_ENVELOPE = {
-  corda: [0, 1.6], violino: [1.8, 2.5], cello: [0.15, 1.5], piano: [0, 1.2], cordas: [0.6, 2.2],
-  shimmer: [1.4, 3.5], quente: [1.2, 3], flauta: [0.05, 0.8], saxofone: [0.03, 0.6],
-  coroAh: [0.25, 1.2], vozesUh: [0.2, 1], soulAhhs: [0.25, 1.2], synthVox: [0.1, 0.8],
-};
+const PADRAO_ENVELOPE = { corda: [0, 1.6], piano: [0, 1.2], violino: [0, 1.2] };
 const envelopeNotas = { ataque: 0, sustain: 1.6 };
 const fmtSeg = v => v.toFixed(2).replace(".", ",") + " s";
 
@@ -1363,223 +1640,141 @@ function envelopeCorda(g, inicio, pico, envelope = envelopeNotas) {
   return fim;
 }
 
-// ---------- timbre das notas sintetizadas ----------
-// "corda": a corda dedilhada acima (gerada aqui mesmo). Os demais usam o Tone.js (instrumentos\Tone.js):
-// samplers com amostras reais (instrumentos\<pasta>\*.mp3) ou pads sintetizados com efeitos. O servidor
-// só entrega os dados das notas e os arquivos; todo o som é gerado aqui no navegador, na placa de som
-// local, no mesmo AudioContext das faixas (sem atraso entre eles). Cada instrumento só é carregado quando
-// escolhido; enquanto carrega (ou se falhar), toca a corda.
-const notasAmostra = (pasta, nomes) => Object.fromEntries(nomes.map(n => [n.replace("s", "#"), `${pasta}/${n}.mp3`]));
+// ---------- timbre das notas sintetizadas: piano e violino ----------
+// Amostras reais com várias camadas de força: instrumentos\piano (Salamander Grand Piano V3, 4 das 16
+// camadas, uma amostra a cada terça menor) e instrumentos\violino (VSCO 2 CE, violino solo com arco e
+// vibrato, em p e f). O som é gerado com nós nativos da Web Audio, então o mesmo instrumento toca no
+// mestre do player e no OfflineAudioContext do vídeo: cada nota usa a amostra mais próxima (afinada pelo
+// detune) e a camada pela força (forte = mais brilhante, não só mais alto). Enquanto o timbre carrega (ou
+// se falhar), toca a corda dedilhada da edição de notas.
+const nomeAmostra = m => ["C", "Cs", "D", "Ds", "E", "F", "Fs", "G", "Gs", "A", "As", "B"][m % 12] + (Math.floor(m / 12) - 1);  // "Ds4"
+const VIOLINO_MINIMO = 55;  // G3, a corda solta mais grave: abaixo disso o violinista toca uma oitava acima
 const AMOSTRAS = {
-  violino: notasAmostra("violino", ["G3", "A3", "C4", "E4", "G4", "A4", "C5", "E5", "G5", "A5", "C6", "E6", "G6", "A6", "C7"]),
-  cello: notasAmostra("cello", ["C2", "E2", "G2", "A2", "C3", "E3", "G3", "A3", "C4", "E4", "G4", "A4", "C5"]),
-  piano: notasAmostra("piano", [1, 2, 3, 4, 5, 6, 7].flatMap(o => ["C", "Ds", "Fs", "A"].map(n => n + o)).concat("C8")),
-  flauta: notasAmostra("flauta", ["C4", "E4", "A4", "C5", "E5", "A5", "C6", "E6", "A6", "C7"]),
-  saxofone: notasAmostra("saxofone", ["Cs3", "D3", "Ds3", "E3", "F3", "Fs3", "G3", "Gs3", "As3", "B3",
-    "C4", "Cs4", "D4", "Ds4", "E4", "F4", "Fs4", "G4", "Gs4", "A4", "As4", "B4",
-    "C5", "Cs5", "D5", "Ds5", "E5", "F5", "Fs5", "G5", "Gs5", "A5"]),
-  // cordas: cello no grave, violino do A3 para cima
-  cordas: { ...notasAmostra("cello", ["C2", "E2", "G2", "A2", "C3", "E3", "G3"]),
-            ...notasAmostra("violino", ["A3", "C4", "E4", "G4", "A4", "C5", "E5", "G5", "A5", "C6", "E6", "G6", "A6", "C7"]) },
+  // [nome da camada, força máxima dela]
+  piano: { pasta: "piano", ganho: 0.8, notas: Array.from({ length: 30 }, (_, i) => 21 + 3 * i),  // A0 a C8
+           camadas: [["v4", 0.3], ["v8", 0.55], ["v12", 0.8], ["v16", 1]], arquivo: (m, c) => `${nomeAmostra(m)}${c}.ogg` },
+  violino: { pasta: "violino", ganho: 0.9, notas: [55, 57, 60, 64, 67, 69, 72, 76, 79, 81, 84, 88, 91, 93, 96],  // G3 a C7
+             camadas: [["p", 0.55], ["f", 1]], arquivo: (m, c) => `${nomeAmostra(m)}_${c}.ogg` },
 };
-
-function samplerDe(urls, opcoes) {
-  return new Promise((ok, falha) => {
-    const s = new Tone.Sampler({
-      urls, baseUrl: "/instrumentos/", ...opcoes,
-      onload: () => ok(s),
-      onerror: () => falha(new Error("amostras não encontradas em instrumentos\\")),
-    });
-  });
+const amostrasCarregadas = {};  // timbre -> Promise das amostras decodificadas (servem a qualquer AudioContext)
+// no máximo `limite` tarefas ao mesmo tempo (a fila de conexões do servidor local é curta)
+async function emLotes(itens, fazer, limite = 6) {
+  const resultado = new Array(itens.length);
+  let proximo = 0;
+  await Promise.all(Array.from({ length: Math.min(limite, itens.length) }, async () => {
+    while (proximo < itens.length) { const i = proximo++; resultado[i] = await fazer(itens[i]); }
+  }));
+  return resultado;
+}
+function carregarAmostras(nome) {
+  if (!amostrasCarregadas[nome]) {
+    const def = AMOSTRAS[nome];
+    const pedidos = def.notas.flatMap(m => def.camadas.map(([camada, ate]) => ({ m, ate, arquivo: `${def.pasta}/${def.arquivo(m, camada)}` })));
+    amostrasCarregadas[nome] = emLotes(pedidos, async p => {
+      const r = await fetch("/instrumentos/" + p.arquivo);
+      if (!r.ok) throw new Error(`amostra ${p.arquivo} não encontrada em instrumentos\\`);
+      return { ...p, buffer: await ctx.decodeAudioData(await r.arrayBuffer()) };
+    }).then(lidas => ({
+      ...def,
+      notas: def.notas.map(m => ({ midi: m, camadas: lidas.filter(l => l.m === m).map(l => ({ ate: l.ate, buffer: l.buffer })) })),
+    })).catch(e => { delete amostrasCarregadas[nome]; throw e; });
+  }
+  return amostrasCarregadas[nome];
 }
 
-const hz = m => Tone.Frequency(m, "midi").toFrequency();
+// congela a automação no valor de `t` (sem salto) antes de agendar outra
+const segurar = (param, t) => param.cancelAndHoldAtTime ? param.cancelAndHoldAtTime(t) : param.cancelScheduledValues(t);
 
-// ---------- vozes do WebAudioFont (instrumentos\webaudiofont: player e sons General MIDI do FluidR3) ----------
-// Funcionam com nós nativos da Web Audio (o mestre do player ou um OfflineAudioContext no vídeo).
-// Ataque e sustentação ficam num ganho por nota; o som da amostra continua (em loop) até o fim do release.
-let playerWAF = null;
-async function presetWAF(arquivo) {
-  if (!window.WebAudioFontPlayer) await carregarScript("/instrumentos/webaudiofont/WebAudioFontPlayer.js");
-  const variavel = "_tone_" + arquivo;
-  if (!window[variavel]) await carregarScript(`/instrumentos/webaudiofont/${arquivo}.js`);
-  const preset = window[variavel];
-  if (!preset) throw new Error(`som ${arquivo} não encontrado em instrumentos\\webaudiofont`);
-  playerWAF = playerWAF || new WebAudioFontPlayer();
-  playerWAF.adjustPreset(ctx, preset);  // decodifica as amostras (os AudioBuffer servem também no offline)
-  for (let i = 0; i < 200 && !preset.zones.every(z => z.buffer); i++) await new Promise(r => setTimeout(r, 50));
-  if (!preset.zones.every(z => z.buffer)) throw new Error("não foi possível decodificar " + arquivo);
-  return preset;
-}
-
-function instrumentoWAF(arquivo, volume) {
+// criar(saida) monta o instrumento ligado em saida e devolve
+// { tocar(midi, duracao, inicio, forca, expressao), iniciar(midi, inicio, forca), parar(midi, quando), soltar(),
+//   envelope(ataque, sustain) } (midi já transposto; tempos do AudioContext; forca 0 a 1; expressao: ver
+// calcularExpressao). iniciar/parar: nota de duração aberta, para o teclado MIDI ao vivo.
+function instrumentoAmostrado(nome) {
   return async saida => {
-    const preset = await presetWAF(arquivo), ac = saida.context, notas = new Set();
-    let ataque = 0, sustain = 1;
-    const abertas = new Map();  // midi -> {g, fonte}: notas do teclado ao vivo (duração aberta)
-    const comecar = (m, t, v, duracao) => {
-      const g = ac.createGain(), pico = volume * v;
-      g.connect(saida);
-      if (ataque > 0) { g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(pico, t + ataque); }
+    const amostras = await carregarAmostras(nome), ac = saida.context, violino = nome === "violino";
+    const vozes = new Set(), abertas = new Map();
+    let ataque = 0, sustain = 1, ultima = null;  // ultima: a nota anterior do violino (legato)
+    const naExtensao = m => violino && m < VIOLINO_MINIMO ? m + 12 * Math.ceil((VIOLINO_MINIMO - m) / 12) : m;
+    const comecar = (m, t, forca, x = {}, d = null) => {
+      m = naExtensao(m);
+      forca = limitar(forca, 0.05, 1);
+      let amostra = amostras.notas[0];
+      for (const a of amostras.notas) if (Math.abs(a.midi - m) < Math.abs(amostra.midi - m)) amostra = a;
+      const i = amostra.camadas.findIndex(c => forca <= c.ate), camada = amostra.camadas[i < 0 ? amostra.camadas.length - 1 : i];
+      const piso = i > 0 ? amostra.camadas[i - 1].ate : 0;
+      const pico = amostras.ganho * (0.55 + 0.45 * limitar((forca - piso) / (camada.ate - piso), 0, 1));  // dentro da camada
+      const fonte = ac.createBufferSource(), g = ac.createGain();
+      fonte.buffer = camada.buffer;
+      const cents = (m - amostra.midi) * 100;
+      // legato do violino: o arco passa de uma nota à outra sem parar, deslizando um pouco (portamento)
+      const de = x.intervalo != null ? naExtensao(m + x.intervalo) : null;
+      const legato = violino && de != null && Math.abs(de - m) <= 7 && ultima && t - ultima.fim < 0.15;
+      fonte.detune.setValueAtTime(legato ? cents + (de - m) * 100 : cents, t);
+      if (legato) fonte.detune.linearRampToValueAtTime(cents, t + 0.07);
+      // violino: nota suave entra mais devagar (o arco "pega" a corda); o Ataque do player é o mínimo
+      const atk = violino ? Math.max(ataque, legato ? 0.03 : 0.05 * (1.6 - forca)) : ataque;
+      if (atk > 0.005) { g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(pico, t + atk); }
       else g.gain.setValueAtTime(pico, t);
-      const env = playerWAF.queueWaveTable(ac, g, preset, t, m, duracao, 1);
-      notas.add(g);
-      const fonte = env && env.audioBufferSourceNode;
-      if (fonte) fonte.addEventListener("ended", () => { notas.delete(g); g.disconnect(); });
-      return { g, fonte };
+      if (x.curva && x.curva.length > 1 && d > atk + 0.1) {  // a dinâmica dentro da nota (arcada), do áudio original
+        x.curva.forEach((v, k) => { if (k) g.gain.linearRampToValueAtTime(pico * v, t + atk + (d - atk) * k / (x.curva.length - 1)); });
+      }
+      fonte.connect(g);
+      g.connect(saida);
+      fonte.start(t);
+      if (legato) { segurar(ultima.g.gain, t); ultima.g.gain.setTargetAtTime(0, t, 0.04); }
+      const voz = { fonte, g, fim: t + (d || 0) };
+      vozes.add(voz);
+      fonte.onended = () => { vozes.delete(voz); g.disconnect(); };
+      if (violino) ultima = voz;
+      return voz;
     };
-    const terminar = ({ g, fonte }, t) => {  // release a partir de t
-      g.gain.cancelScheduledValues(t);
-      g.gain.setTargetAtTime(0, t, Math.max(0.01, sustain / 4));
-      if (fonte) try { fonte.stop(t + sustain + 0.2); } catch (e) { /* já parou */ }
+    const terminar = (voz, t) => {  // release a partir de t
+      segurar(voz.g.gain, t);
+      voz.g.gain.setTargetAtTime(0, t, Math.max(0.02, sustain / 4));
+      voz.fim = t;
+      try { voz.fonte.stop(t + sustain + 0.3); } catch (e) { /* já parou */ }
     };
     return {
-      tocar(m, d, t, v = 1) {
-        const nota = comecar(m, t, v, d + sustain + 0.1);
-        nota.g.gain.setTargetAtTime(0, Math.max(t + d, t + 0.02), Math.max(0.01, sustain / 4));  // release
+      tocar(m, d, t, v = 1, x = null) {
+        const voz = comecar(m, t, v, x || {}, d);
+        terminar(voz, Math.max(t + 0.03, t + d + (x && x.pedal || 0)));  // pedal: soa até a troca de acorde
+        voz.fim = t + d;
       },
       iniciar(m, t, v = 1) {
         if (abertas.has(m)) terminar(abertas.get(m), t);
-        abertas.set(m, comecar(m, t, v, 120));  // até soltar a tecla (no máximo 2 min)
+        abertas.set(m, comecar(m, t, v));
       },
       parar(m, t) {
-        const nota = abertas.get(m);
-        if (nota) { abertas.delete(m); terminar(nota, Math.max(t, ac.currentTime)); }
+        const voz = abertas.get(m);
+        if (voz) { abertas.delete(m); terminar(voz, Math.max(t, ac.currentTime)); }
       },
       soltar() {
         const agora = ac.currentTime;
-        for (const g of notas) { g.gain.cancelScheduledValues(agora); g.gain.setTargetAtTime(0, agora, Math.max(0.02, sustain / 4)); }
+        for (const voz of vozes) { segurar(voz.g.gain, agora); voz.g.gain.setTargetAtTime(0, agora, Math.max(0.02, sustain / 4)); }
+        abertas.clear();
+        ultima = null;
       },
       envelope(a, r) { ataque = a; sustain = r; },
     };
   };
 }
 
-// criar(saida) monta o instrumento ligado em saida e devolve
-// { tocar(midi, duracao, inicio, forca), iniciar(midi, inicio, forca), parar(midi, quando), soltar(),
-//   envelope(ataque, sustain) } (midi já transposto; tempos do AudioContext; forca 0 a 1).
-// iniciar/parar: nota de duração aberta, para o teclado MIDI ao vivo.
-
-// Sampler ou PolySynth do Tone.js com uma ou mais camadas [semitons, força, midi mínimo]
-function tocadorTone(fonte, camadas) {
-  const sintetizador = fonte instanceof Tone.PolySynth;
-  const notasDe = m => camadas.filter(([d, , min]) => min == null || m + d >= min).map(([d, v]) => [hz(m + d), v]);
-  return {
-    tocar(m, d, t, v = 1) { for (const [f, forca] of notasDe(m)) fonte.triggerAttackRelease(f, d, t, forca * v); },
-    iniciar(m, t, v = 1) { for (const [f, forca] of notasDe(m)) fonte.triggerAttack(f, t, forca * v); },
-    parar(m, t) { for (const [f] of notasDe(m)) fonte.triggerRelease(f, t); },
-    soltar: () => fonte.releaseAll(),
-    envelope: sintetizador
-      ? (a, r) => fonte.set({ envelope: { attack: Math.max(0.005, a), release: Math.max(0.01, r) } })
-      : (a, r) => { fonte.attack = a; fonte.release = r; },
-  };
-}
 const INSTRUMENTOS = {
-  violino: {
-    dica: "Violino com amostras reais: entra devagar (1,8 s) e ecoa por 2,5 s depois de cada nota.",
-    async criar(saida) {
-      const s = (await samplerDe(AMOSTRAS.violino, { attack: 1.8, release: 2.5 })).connect(saida);
-      return tocadorTone(s, [[0, 0.9]]);
-    },
-  },
-  cello: {
-    dica: "Violoncelo com amostras reais (C2 a C5; acima disso as amostras são esticadas), com reverb leve.",
-    async criar(saida) {
-      const reverb = new Tone.Reverb({ decay: 2.5, wet: 0.25 }).connect(saida);
-      const s = (await samplerDe(AMOSTRAS.cello, { attack: 0.15, release: 1.5 })).connect(reverb);
-      await reverb.ready;
-      return tocadorTone(s, [[0, 0.85]]);
-    },
-  },
   piano: {
-    dica: "Piano acústico com amostras reais (Salamander Grand Piano).",
-    async criar(saida) {
-      const s = (await samplerDe(AMOSTRAS.piano, { release: 1.2 })).connect(saida);
-      return tocadorTone(s, [[0, 0.8]]);
-    },
+    icone: "🎹", nome: "Piano",
+    dica: "Piano acústico (Salamander Grand Piano): 4 camadas de força, a nota forte soa mais brilhante.",
+    criar: instrumentoAmostrado("piano"),
   },
-  cordas: {
-    dica: "Naipe de cordas (cello e violino reais) dobrado uma oitava abaixo, com chorus e reverb de sala.",
-    async criar(saida) {
-      const reverb = new Tone.Reverb({ decay: 3.5, wet: 0.35 }).connect(saida);
-      const chorus = new Tone.Chorus({ frequency: 0.8, delayTime: 4, depth: 0.4, wet: 0.4 }).connect(reverb).start();
-      const s = (await samplerDe(AMOSTRAS.cordas, { attack: 0.6, release: 2.2 })).connect(chorus);
-      await reverb.ready;
-      return tocadorTone(s, [[0, 0.75], [-12, 0.4, 36]]);  // a oitava de baixo enche o naipe
-    },
-  },
-  flauta: {
-    dica: "Flauta transversal com amostras reais (C4 a C7; fora disso as amostras são esticadas), com reverb leve.",
-    async criar(saida) {
-      const reverb = new Tone.Reverb({ decay: 2.2, wet: 0.22 }).connect(saida);
-      const s = (await samplerDe(AMOSTRAS.flauta, { attack: 0.05, release: 0.8 })).connect(reverb);
-      await reverb.ready;
-      return tocadorTone(s, [[0, 0.9]]);
-    },
-  },
-  saxofone: {
-    dica: "Saxofone com amostras reais (C#3 a A5, uma amostra por semitom), com reverb leve.",
-    async criar(saida) {
-      const reverb = new Tone.Reverb({ decay: 2, wet: 0.2 }).connect(saida);
-      const s = (await samplerDe(AMOSTRAS.saxofone, { attack: 0.03, release: 0.6 })).connect(reverb);
-      await reverb.ready;
-      return tocadorTone(s, [[0, 0.9]]);
-    },
-  },
-  coroAh: {
-    nativo: true,  // nós nativos da Web Audio (no vídeo: OfflineAudioContext, não Tone.Offline)
-    dica: "Coro abrindo em \"Ah\" (Choir Aahs, General MIDI 53, soundfont FluidR3 pelo WebAudioFont).",
-    criar: instrumentoWAF("0520_FluidR3_GM_sf2_file", 0.9),
-  },
-  vozesUh: {
-    nativo: true,
-    dica: "Vozes suaves em \"Uh\" (Voice Oohs, General MIDI 54, soundfont FluidR3 pelo WebAudioFont).",
-    criar: instrumentoWAF("0530_FluidR3_GM_sf2_file", 0.7),
-  },
-  soulAhhs: {
-    nativo: true,
-    dica: "Coro em \"Ah\" (Soul Ahhs, General MIDI 54 Voice Oohs: Ensemble, pelo WebAudioFont).",
-    criar: instrumentoWAF("0530_Soul_Ahhs_sf2_file", 0.9),
-  },
-  synthVox: {
-    nativo: true,
-    dica: "Voz sintetizada / Solo Vox (Synth Voice, General MIDI 55, soundfont FluidR3 pelo WebAudioFont).",
-    criar: instrumentoWAF("0540_FluidR3_GM_sf2_file", 0.55),
-  },
-  shimmer: {
-    dica: "Shimmer pad: som etéreo, com a oitava de cima brilhando num reverb longo.",
-    async criar(saida) {
-      const reverb = new Tone.Reverb({ decay: 9, wet: 0.6 }).connect(saida);
-      const chorus = new Tone.Chorus({ frequency: 0.3, delayTime: 5, depth: 0.6, wet: 0.5 }).connect(reverb).start();
-      const synth = new Tone.PolySynth(Tone.Synth, {
-        maxPolyphony: 48,
-        oscillator: { type: "fattriangle", count: 3, spread: 18 },
-        envelope: { attack: 1.4, decay: 0.8, sustain: 0.8, release: 3.5 },
-      }).connect(chorus);
-      synth.volume.value = -16;
-      await reverb.ready;
-      return tocadorTone(synth, [[0, 0.8], [12, 0.3]]);  // o "brilho" uma oitava acima
-    },
-  },
-  quente: {
-    dica: "Warm pad: som macio e encorpado (filtro passa-baixas, chorus e reverb), entra devagar.",
-    async criar(saida) {
-      const reverb = new Tone.Reverb({ decay: 4.5, wet: 0.35 }).connect(saida);
-      const chorus = new Tone.Chorus({ frequency: 0.5, delayTime: 3.5, depth: 0.5, wet: 0.45 }).connect(reverb).start();
-      const filtro = new Tone.Filter({ type: "lowpass", frequency: 950, Q: 0.6 }).connect(chorus);
-      const synth = new Tone.PolySynth(Tone.Synth, {
-        maxPolyphony: 48,
-        oscillator: { type: "fatsawtooth", count: 3, spread: 28 },
-        envelope: { attack: 1.2, decay: 1, sustain: 0.75, release: 3 },
-      }).connect(filtro);
-      synth.volume.value = -18;
-      await reverb.ready;
-      return tocadorTone(synth, [[0, 0.8]]);
-    },
+  violino: {
+    icone: "🎻", nome: "Violino",
+    dica: "Violino solo com arco e vibrato (VSCO 2 CE), em p e f, com legato entre notas seguidas; abaixo do G3 toca uma oitava acima.",
+    criar: instrumentoAmostrado("violino"),
   },
 };
-const TIMBRES = ["corda", ...Object.keys(INSTRUMENTOS)];
-let timbre = "corda";
+const TIMBRES = Object.keys(INSTRUMENTOS);
+// timbres que existiam antes (preferências antigas): as cordas viram violino, o resto piano
+const normalizarTimbre = v => TIMBRES.includes(v) ? v : ["cello", "cordas"].includes(v) ? "violino" : "piano";
+let timbre = "piano";
 const carregados = {};  // timbre -> { pronto, carregando, erro, inst }
 
 function carregarScript(src) {
@@ -1596,26 +1791,21 @@ const instrumentoAtivo = () => carregados[timbre] && carregados[timbre].pronto ?
 
 function dicaTimbre() {
   const c = carregados[timbre];
-  $("f7343e").textContent = timbre === "corda"
-    ? "As notas sintetizadas tocam com o mesmo som de corda dedilhada da edição de notas."
-    : c && c.erro ? `Timbre indisponível (${c.erro}); tocando a corda dedilhada.`
-    : c && c.pronto ? INSTRUMENTOS[timbre].dica
+  $("f7343e").textContent = c && c.erro ? `Timbre indisponível (${c.erro}); tocando a corda dedilhada.`
+    : c && c.pronto || !ctx ? INSTRUMENTOS[timbre].dica
     : "Carregando o timbre… até lá, toca a corda dedilhada.";
 }
 
-// Carrega o Tone.js e o instrumento escolhido (só quando o AudioContext já existe)
+// Carrega as amostras do instrumento escolhido (só quando o AudioContext já existe)
 function prepararTimbre() {
   const nome = timbre;
-  if (nome === "corda" || !ctx) return null;
+  if (!ctx) return null;
   const c = carregados[nome] || (carregados[nome] = { pronto: false, carregando: null, erro: "", inst: null });
   if (c.carregando) return c.carregando;
   c.erro = "";
   c.carregando = (async () => {
     try {
-      if (!window.Tone) await carregarScript("/instrumentos/Tone.js");
-      // nosso AudioContext: mesmo relógio e mesma saída (volume/mudo/limitador)
-      if (Tone.getContext().rawContext !== ctx) Tone.setContext(ctx);
-      c.inst = await INSTRUMENTOS[nome].criar(mestre);
+      c.inst = await INSTRUMENTOS[nome].criar(mestre);  // nosso AudioContext: mesmo relógio e saída (volume/mudo/limitador)
       c.inst.envelope(envelopeNotas.ataque, envelopeNotas.sustain);
       c.pronto = true;
     } catch (e) {
@@ -1638,9 +1828,8 @@ const instanciasMidi = new Map();  // chave -> { timbre, saida, inst, erro, carr
 let TIMBRES_MIDI = {};             // id da gravação -> timbre
 const timbreDaFonte = fonte => {
   const t = TIMBRES_MIDI[String(fonte).slice(5)];
-  return TIMBRES.includes(t) ? t : timbre;  // sem timbre próprio: o do player
+  return t ? normalizarTimbre(t) : timbre;  // sem timbre próprio: o do player
 };
-const nomeTimbre = t => { const o = [...$("timbre").options].find(x => x.value === t); return o ? o.textContent : t; };
 
 // Entrada do canal da gravação MIDI, depois do volume das notas sintetizadas (um nó por gravação)
 const volumesMidi = new Map();  // fonte -> GainNode
@@ -1662,11 +1851,8 @@ function instanciaMidi(chave, nome, saida) {
   if (r && r.inst) r.inst.soltar();
   r = { timbre: nome, saida, inst: null, erro: "", carregando: null };
   instanciasMidi.set(chave, r);
-  if (nome === "corda") return r;
   r.carregando = (async () => {
     try {
-      if (!window.Tone) await carregarScript("/instrumentos/Tone.js");
-      if (Tone.getContext().rawContext !== ctx) Tone.setContext(ctx);
       const inst = await INSTRUMENTOS[nome].criar(saida);
       const { ataque, sustain } = envelopeMidi();
       inst.envelope(ataque, sustain);
@@ -1688,24 +1874,24 @@ function descartarInstanciasMidi() {
 
 // Troca o timbre de uma gravação MIDI (tabela das faixas e aba Mixagem)
 function definirTimbreMidi(fonte, valor) {
-  TIMBRES_MIDI[fonte.slice(5)] = TIMBRES.includes(valor) ? valor : "corda";
+  TIMBRES_MIDI[fonte.slice(5)] = normalizarTimbre(valor);
   if (ctx) instanciaMidi(fonte, timbreDaFonte(fonte), saidaMidiDe(fonte));  // já carrega, antes do play
   for (const sel of document.querySelectorAll(`select[data-fonte="${fonte}"]`)) sel.value = timbreDaFonte(fonte);
   salvarPreferencias();
 }
 
-// <select> de timbre de uma gravação MIDI (as mesmas opções do Timbre do player)
+// <select> de timbre de uma gravação MIDI (os mesmos timbres do player)
 function seletorTimbreMidi(fonte, id) {
   const sel = document.createElement("select");
   sel.id = id;
   sel.dataset.fonte = fonte;
   sel.title = "Timbre desta gravação MIDI";
   sel.setAttribute("aria-label", sel.title);
-  for (const o of $("timbre").options) {
+  for (const t of TIMBRES) {
     const c = document.createElement("option");
-    c.id = `${id}-${o.value}`;
-    c.value = o.value;
-    c.textContent = o.textContent;
+    c.id = `${id}-${t}`;
+    c.value = t;
+    c.textContent = `${INSTRUMENTOS[t].icone} ${INSTRUMENTOS[t].nome}`;
     sel.appendChild(c);
   }
   sel.value = timbreDaFonte(fonte);
@@ -1714,15 +1900,135 @@ function seletorTimbreMidi(fonte, id) {
 }
 
 function definirTimbre(valor) {
-  valor = TIMBRES.includes(valor) ? valor : "corda";  // timbres que não existem mais viram corda
+  valor = normalizarTimbre(valor);
   const anterior = instrumentoAtivo();
   if (anterior && valor !== timbre) anterior.soltar();
   timbre = valor;
-  $("timbre").value = timbre;
+  for (const b of $("timbre").querySelectorAll("button[data-timbre]")) {
+    b.setAttribute("aria-checked", String(b.dataset.timbre === timbre));
+  }
   for (const sel of document.querySelectorAll("select[data-fonte]")) sel.value = timbreDaFonte(sel.dataset.fonte);
   envelopePadrao();
   prepararTimbre();
   dicaTimbre();
+  calcularExpressao();  // legato (violino), acordes e pedal (piano) dependem do instrumento
+}
+
+// ---------- expressão: as notas tocadas como um músico tocaria ----------
+// As notas extraídas pela IA não têm força: todas soariam iguais. Aqui cada nota ganha:
+//  - força pelo volume da faixa separada de onde ela veio (picos do áudio no começo da nota), relativa
+//    ao volume mediano das notas da faixa: a dinâmica e o fraseado de quem gravou;
+//  - acento no começo de cada frase e final de frase mais suave; pequenas variações de tempo (±12 ms) e
+//    de força (±6%), sempre as mesmas para a mesma nota (o vídeo soa igual ao player);
+//  - violino: legato entre notas seguidas (sem reatacar, com portamento) e a curva de volume dentro da
+//    nota acompanhando o áudio (a arcada);
+//  - piano: as notas de um acorde entram em leque (5–25 ms, do grave ao agudo), a de cima mais forte, e
+//    o pedal segura o som até a próxima troca de acorde (no máximo 1,5 s além da nota).
+// Notas gravadas no teclado MIDI (com força própria) mantêm a força e o tempo de quem tocou.
+let expressaoLigada = true, pedalLigado = true;  // preferências da música
+const EXPRESSAO = new WeakMap();  // nota -> { dt, forca, intervalo, pedal, curva }
+const ENVELOPES = new Map();      // "<id>/<faixa>" -> {taxa, picos} | null (indisponível) | "carregando"
+let temporizadorExpressao = null;
+
+function envelopeDaFaixa(faixa) {
+  if (!MUSICA || !(DADOS.faixas || []).includes(faixa)) return null;
+  const chave = MUSICA.id + "/" + faixa, atual = ENVELOPES.get(chave);
+  if (atual !== undefined) return atual === "carregando" ? null : atual;
+  ENVELOPES.set(chave, "carregando");
+  api(`/api/musicas/${MUSICA.id}/picos/faixa/${faixa}`)
+    .then(r => ENVELOPES.set(chave, r && r.picos ? r : null))
+    .catch(() => ENVELOPES.set(chave, null))
+    .finally(() => { clearTimeout(temporizadorExpressao); temporizadorExpressao = setTimeout(calcularExpressao, 50); });
+  return null;
+}
+
+// volume (dB) da faixa entre a e b (s): o maior pico; os picos vêm como raiz da amplitude (0–255)
+function nivelNoAudio(env, a, b) {
+  const i0 = Math.max(0, Math.floor(a * env.taxa)), i1 = Math.min(env.picos.length, Math.ceil(b * env.taxa) + 1);
+  let maior = 0;
+  for (let i = i0; i < i1; i++) if (env.picos[i] > maior) maior = env.picos[i];
+  return i1 > i0 ? 20 * Math.log10(Math.max((maior / 255) ** 2, 1e-4)) : null;
+}
+
+// pseudoaleatório fixo por nota (0 a 1)
+function sorteioNota(n, k) {
+  let h = Math.imul(Math.round(n.t * 1000) + 7919 * k, 2654435761) ^ Math.imul(n.midi + 31 * k, 40503);
+  h = Math.imul(h ^ (h >>> 15), 2246822507);
+  return ((h ^ (h >>> 13)) >>> 0) / 4294967296;
+}
+
+function calcularExpressao() {
+  if (!MUSICA) return;
+  const piano = timbre === "piano", violino = timbre === "violino";
+  const trocas = ACORDES.map(a => a.t);
+  const porFonte = new Map();
+  for (const n of NOTAS) {
+    const f = fonteDa(n);
+    if (!gravacaoMidiDe(f)) (porFonte.get(f) || porFonte.set(f, []).get(f)).push(n);
+  }
+  for (const [fonte, notas] of porFonte) {
+    // 1) força pelo áudio: a nota no volume mediano da faixa vale 0,72; cada dB a mais ou a menos, 3,5%
+    const niveis = new Map(notas.map(n => {
+      const env = envelopeDaFaixa(n.f || fonte);
+      return [n, env ? nivelNoAudio(env, n.t - 0.02, n.t + Math.min(0.25, n.d)) : null];
+    }));
+    const ordenados = [...niveis.values()].filter(x => x != null).sort((a, b) => a - b);
+    const ref = ordenados.length >= 5 ? ordenados[Math.floor(ordenados.length / 2)] : null;
+    // grupos de notas que começam juntas (acordes)
+    const grupos = [];
+    for (const n of notas) {
+      const g = grupos[grupos.length - 1];
+      if (g && n.t - g[0].t < 0.03) g.push(n); else grupos.push([n]);
+    }
+    grupos.forEach((grupo, gi) => {
+      const fimAnterior = gi ? Math.max(...grupos[gi - 1].map(n => n.t + n.d)) : -Infinity;
+      const inicioSeguinte = gi + 1 < grupos.length ? grupos[gi + 1][0].t : Infinity;
+      grupo.sort((a, b) => a.midi - b.midi);
+      grupo.forEach((n, k) => {
+        const nivel = niveis.get(n);
+        let forca = n.v ? forcaDaNota(n) : ref != null && nivel != null ? limitar(0.72 + (nivel - ref) * 0.035, 0.25, 1) : 0.72;
+        let dt = 0;
+        const humano = !n.v;  // a nota do teclado MIDI já tem a força e o tempo de quem tocou
+        if (humano) {
+          if (grupo[0].t - fimAnterior > 0.6) forca *= 1.12;          // começo de frase
+          if (inicioSeguinte - (n.t + n.d) > 0.6) forca *= 0.88;      // final de frase
+          forca *= 1 + (sorteioNota(n, 1) - 0.5) * 0.12;
+          dt = (sorteioNota(n, 2) - 0.5) * 0.024;
+        }
+        if (piano && grupo.length > 1) {  // acorde em leque, a nota de cima cantando
+          dt += Math.min(0.025, k * 0.008);
+          forca *= k === grupo.length - 1 ? 1.1 : 0.88;
+        }
+        const x = { dt, forca: limitar(forca, 0.05, 1), intervalo: null, pedal: 0, curva: null };
+        if (violino && grupo.length === 1 && gi && grupos[gi - 1].length === 1 && n.t - fimAnterior < 0.12) {
+          x.intervalo = grupos[gi - 1][0].midi - n.midi;  // legato com a nota anterior
+        }
+        if (piano && pedalLigado) {  // o pedal desce no acorde e sobe na troca seguinte (no máximo 1,5 s a mais)
+          const troca = trocas.find(t => t > n.t + 0.05);
+          if (troca != null) x.pedal = limitar(troca - (n.t + n.d), 0, 1.5);
+        }
+        const env = violino && n.d >= 0.35 ? envelopeDaFaixa(n.f || fonte) : null;
+        if (env) {  // a arcada: o volume ao longo da nota, relativo ao mais forte dela
+          const pontos = Array.from({ length: 8 }, (_, i) => nivelNoAudio(env, n.t + n.d * i / 7 - 0.03, n.t + n.d * i / 7 + 0.03));
+          const maior = Math.max(...pontos);
+          const ganhos = pontos.map(db => Math.max(0.35, 10 ** (limitar(db - maior, -15, 0) / 20)));
+          x.curva = ganhos.map((g, i) => (ganhos[Math.max(0, i - 1)] + g + ganhos[Math.min(7, i + 1)]) / 3);
+        }
+        EXPRESSAO.set(n, x);
+      });
+    });
+  }
+}
+
+const expressaoDe = n => expressaoLigada ? EXPRESSAO.get(n) || null : null;
+
+function definirExpressao(ligada, pedal) {
+  expressaoLigada = ligada !== false;
+  pedalLigado = pedal !== false;
+  $("expressaoNotas").checked = expressaoLigada;
+  $("pedalNotas").checked = pedalLigado;
+  $("pedalNotas").disabled = !expressaoLigada;
+  calcularExpressao();
 }
 
 // ---------- extensão vocal ----------
@@ -3140,12 +3446,39 @@ async function reprocessarNotas() {
   }
 }
 
-// ---------- copiar e colar notas (Shift + setas, Ctrl+C, Ctrl+V) ----------
+// ---------- automação da 1ª abertura (logo depois de processar) ----------
+// Na primeira vez que a música é aberta pelo "▶ Abrir" da Biblioteca (ainda sem preferências gravadas):
+// áudio de todas as faixas, notas só da voz, volumes, envelope, efeitos e timbre de piano, e a varinha
+// mágica reprocessa as notas da voz. As preferências são gravadas na hora, então nas próximas vezes a
+// música abre como ficou salva e a varinha não é chamada.
+const AUTOMACAO_INICIAL = { volumeFaixa: 0.8, volumeSint: 0.85, ataque: 0.07, sustain: 1.8, reverb: 0.1, chorus: 0.15, timbre: "piano" };
+const primeiraAbertura = m => !m.preferencias || !Object.keys(m.preferencias).length;
+async function automatizarPrimeiraAbertura() {
+  if (!MUSICA || !primeiraAbertura(MUSICA)) return;
+  const a = AUTOMACAO_INICIAL, voz = !!(DADOS.melodias || {}).vocals;
+  garantirAudio();
+  if (voz) { montarFontesNotas(["vocals"]); aplicarFontes(); }  // NOTAS: só a voz (refaz a tabela das faixas)
+  ligarTodasFaixas();  // ÁUDIO: todas
+  $("volumeFaixa").value = a.volumeFaixa;
+  $("volumeFaixa").dispatchEvent(new Event("input"));
+  definirVolumeSint(a.volumeSint);
+  definirTimbre(a.timbre);  // antes do envelope: trocar o timbre volta o envelope ao padrão dele
+  definirEnvelope(a.ataque, a.sustain);
+  for (const [efeito, v] of [["reverb", a.reverb], ["chorus", a.chorus]]) {
+    $(efeito + "Notas").value = v;
+    $(efeito + "Notas").dispatchEvent(new Event("input"));  // aplica e salva (canal de mixagem das notas)
+  }
+  salvarPreferencias();  // grava já: a próxima abertura não é mais a primeira
+  if (voz) await reprocessarNotas();
+}
+
+// ---------- copiar, colar e apagar notas (Shift + setas, Ctrl+C, Ctrl+V, Delete) ----------
 // Com a música parada, Shift + ←/→ (nota a nota) ou Shift + </> (0,1 s) move o cursor e seleciona as
 // notas que começam entre o ponto onde a seleção começou (âncora) e o cursor, de todas as faixas
 // marcadas em Notas (as gravações MIDI também). Ctrl+C copia; Ctrl+V cola no cursor: a primeira nota
 // copiada começa nele e as outras mantêm a distância entre si; cada nota volta para a faixa de onde
-// veio. Ctrl+Z desfaz a colagem inteira. Mexer no cursor sem o Shift, tocar ou Esc desfaz a seleção.
+// veio. Delete apaga as notas selecionadas (só as das faixas marcadas em Notas). Ctrl+Z desfaz a
+// colagem ou a exclusão inteira. Mexer no cursor sem o Shift, tocar ou Esc desfaz a seleção.
 let selecaoNotas = null;        // {ancora, ini, fim}: segundos da música
 let estendendoSelecao = false;  // irPara() chamado pela seleção: não a desfaz
 let notasCopiadas = [];         // [{fonte, nota}] (cópias, com o tempo original)
@@ -3164,7 +3497,7 @@ function estenderSelecao(codigo) {
   notaSelecionada = null;
   selecaoNotas = { ancora, ini: Math.min(ancora, posicao), fim: Math.max(ancora, posicao) };
   const k = notasNaSelecao().length;
-  statusNotas(k ? `${k} nota${k > 1 ? "s" : ""} selecionada${k > 1 ? "s" : ""} (Ctrl+C copia)` : "nenhuma nota selecionada");
+  statusNotas(k ? `${k} nota${k > 1 ? "s" : ""} selecionada${k > 1 ? "s" : ""} (Ctrl+C copia, Delete apaga)` : "nenhuma nota selecionada");
 }
 
 function copiarNotas() {
@@ -3201,6 +3534,26 @@ function colarNotas() {
   const k = coladas.length, fora = fontes.filter(f => !fontesEmUso().includes(f));
   notasAlteradas(`${k} nota${k > 1 ? "s" : ""} colada${k > 1 ? "s" : ""} em ${formatarTempo(destino)} (Ctrl+Z desfaz)` +
                  (fora.length ? ` · em ${fora.map(nomeFonte).join(", ")}, que não está marcada em Notas` : ""), fontes[0]);
+}
+
+// Apaga as notas selecionadas: só as de NOTAS (as faixas marcadas em Notas), cada uma da sua faixa
+function apagarSelecaoNotas() {
+  const sel = notasNaSelecao();
+  if (!sel.length || !MUSICA) return;
+  const apagadas = sel.map(n => ({ fonte: fonteDa(n), nota: n }));
+  const fontes = [...new Set(apagadas.map(a => a.fonte))].sort((x, y) => (y === "vocals") - (x === "vocals"));
+  for (const f of fontes) {
+    const fora = new Set(apagadas.filter(a => a.fonte === f).map(a => a.nota));
+    definirNotasDaFonte(f, notasDaFonte(f).filter(n => !fora.has(n)));
+  }
+  remontarNotasTocando();
+  historicoNotas.push({ tipo: "apagarSelecao", fonte: fontes[0], fontes, apagadas });
+  if (historicoNotas.length > MAXIMO_DESFAZER) historicoNotas.shift();
+  for (const f of fontes.slice(1)) salvarNotasDepois(f);
+  notaSelecionada = null;
+  selecaoNotas = null;
+  const k = apagadas.length;
+  notasAlteradas(`${k} nota${k > 1 ? "s" : ""} apagada${k > 1 ? "s" : ""} (Ctrl+Z desfaz)`, fontes[0]);
 }
 
 // Refaz NOTAS (entraram ou saíram notas) e, tocando, continua agendando de onde está
@@ -3242,6 +3595,18 @@ function desfazerNota() {
     selecaoNotas = null;
     for (const f of acao.fontes.slice(1)) salvarNotasDepois(f);
     notasAlteradas(`desfeito: ${acao.coladas.length} nota${acao.coladas.length > 1 ? "s" : ""} colada${acao.coladas.length > 1 ? "s" : ""}`, acao.fontes[0]);
+    return;
+  }
+  if (acao.tipo === "apagarSelecao") {  // Delete com notas selecionadas: voltam todas
+    for (const f of acao.fontes) {
+      const lista = notasDaFonte(f, true);
+      for (const a of acao.apagadas) if (a.fonte === f) { lista.push(a.nota); fonteDaNota.set(a.nota, f); }
+      lista.sort(porTempo);
+    }
+    remontarNotasTocando();
+    for (const f of acao.fontes.slice(1)) salvarNotasDepois(f);
+    const k = acao.apagadas.length;
+    notasAlteradas(`desfeito: ${k} nota${k > 1 ? "s" : ""} apagada${k > 1 ? "s" : ""}`, acao.fontes[0]);
     return;
   }
   if (acao.tipo === "substituir") {  // varinha mágica: volta as notas de antes
@@ -3289,6 +3654,7 @@ function desfazerNota() {
 
 function notasAlteradas(descricao, fonte) {
   alvoNotaMostrado = undefined;  // reavalia os botões (ex.: a nota passou a ser a primeira)
+  calcularExpressao();
   recalcularFaixaMidi();
   montarListas();
   if (fonte === "vocals") { extensao = calcularExtensao(); atualizarExtensao(); }
@@ -3676,6 +4042,7 @@ function montarNotas() {
     }
   }
   NOTAS.sort(porTempo);
+  calcularExpressao();
 }
 
 function aplicarFontes() {
@@ -3770,6 +4137,7 @@ function salvarPreferencias() {
     preferencias: { velocidade, fontesNotas: fontesSelecionadas(),
                     fonteNotas: fontesSelecionadas().find(f => !gravacaoMidiDe(f)) || "solo",
                     faixas: [...faixasAtivas.keys()], mudo, timbre, envelope: { ...envelopeNotas }, mixagem: MIXAGEM,
+                    expressao: expressaoLigada, pedal: pedalLigado,
                     marcas: MARCAS, nomes: NOMES, timbresMidi: TIMBRES_MIDI, envelopeMidi: { ...envelopeMidiCfg },
                     deslocamentos: Object.fromEntries([...deslocamentos]
                       .filter(([k, v]) => k.startsWith(id + "/") && v).map(([k, v]) => [k.slice(id.length + 1), v])) },
@@ -3816,7 +4184,7 @@ function preencherSeletor() {
 function atualizarCabecalhoMusica() {
   $("tituloMusica").textContent = MUSICA ? MUSICA.titulo || MUSICA.arquivo : "—";
   $("subtitulo").textContent = MUSICA
-    ? [MUSICA.artista, MUSICA.categoria, `arquivo: ${MUSICA.arquivo}`, `id ${MUSICA.id}`].filter(Boolean).join(" · ")
+    ? [MUSICA.artista, MUSICA.categoria && `aposta: ${MUSICA.categoria}`, `arquivo: ${MUSICA.arquivo}`, `id ${MUSICA.id}`].filter(Boolean).join(" · ")
     : "";
   document.title = MUSICA ? `${MUSICA.titulo || MUSICA.arquivo} · Tela de Solos` : "Tela de Solos";
 }
@@ -3871,6 +4239,7 @@ async function abrirMusica(id) {
     .filter(f => DADOS.melodias[f] || gravacaoMidiDe(f));
   definirMudo(!!pref.mudo);
   definirTimbre(pref.timbre);
+  definirExpressao(pref.expressao, pref.pedal);
   definirMarcas(pref.marcas);
   if (pref.envelope) definirEnvelope(pref.envelope.ataque, pref.envelope.sustain);
   definirEnvelopeMidi((pref.envelopeMidi || {}).controles, (pref.envelopeMidi || {}).sustain);
@@ -4581,29 +4950,25 @@ async function renderizarNotasVideo(ini, fim, lista, nome = timbre, envelope = e
   const taxa = ctx.sampleRate, dur = Math.max(0.1, fim - ini);
   const ganho = 1;  // o volume das notas é aplicado na mistura (renderizarMisturaVideo)
   const notas = (lista || NOTAS.filter(n => !gravacaoMidiDe(fonteDa(n)))).filter(n => n.t < fim && n.t + n.d > ini)
-    .map(n => ({ midi: n.midi + tomFaixas, t: Math.max(0, n.t - ini), d: n.t + n.d - Math.max(n.t, ini), v: forcaDaNota(n) }));
+    .map(n => {
+      const x = lista ? null : expressaoDe(n);  // a mesma expressão do player (fixa por nota)
+      return { midi: n.midi + tomFaixas, t: Math.max(0, n.t - ini + (x ? x.dt : 0)), d: n.t + n.d - Math.max(n.t, ini),
+               v: x ? x.forca : forcaDaNota(n), x };
+    });
   if (pronto === undefined) {
     if (nome !== "corda") await prepararTimbre();
     pronto = !!(carregados[nome] && carregados[nome].pronto);
   }
   let buffer;
-  if (nome !== "corda" && pronto && INSTRUMENTOS[nome].nativo) {
+  if (nome !== "corda" && pronto) {
     const off = new OfflineAudioContext(1, Math.ceil(dur * taxa), taxa);
     const saida = off.createGain();
     saida.gain.value = ganho;
     saida.connect(off.destination);
     const inst = await INSTRUMENTOS[nome].criar(saida);
-    inst.envelope(envelope.ataque, envelope.sustain);
-    for (const n of notas) inst.tocar(n.midi, Math.max(0.05, n.d), n.t, n.v);
+    inst.envelope(envelope.ataque, envelope.sustain);  // o mesmo ataque/sustentação do player
+    for (const n of notas) inst.tocar(n.midi, Math.max(0.05, n.d), n.t, n.v, n.x);
     buffer = await off.startRendering();
-  } else if (nome !== "corda" && pronto) {
-    const tb = await Tone.Offline(async () => {
-      const saida = new Tone.Gain(ganho).toDestination();
-      const inst = await INSTRUMENTOS[nome].criar(saida);
-      inst.envelope(envelope.ataque, envelope.sustain);  // o mesmo ataque/sustentação do player
-      for (const n of notas) inst.tocar(n.midi, Math.max(0.05, n.d), n.t, n.v);
-    }, dur, 1, taxa);
-    buffer = tb.get();
   } else {  // corda dedilhada (ou timbre que não carregou: o player também toca a corda)
     const off = new OfflineAudioContext(1, Math.ceil(dur * taxa), taxa);
     const saida = off.createGain();
@@ -5436,8 +5801,11 @@ function desenharThumbnailVideo(g, modelo) {
   const xt = T_MARGEM, larguraTexto = T_LARGURA_TEXTO;
   const KICKER = 34, ARTISTA = 54, TOM_ROTULO = 30, TOM_CIFRA = 58, TOM_ALTURA = 80;
   const tomTexto = tom ? cifraTom(pc(tom.tonica + tomFaixas), tom.modo) : "";
+  // classificação vocal ao lado do tom (no tom das faixas, como no vídeo): "MEZZO-SOPRANO" / "VOZ FEMININA"
+  const extVoz = extensao ? deslocarExtensao(extensao, tomFaixas) : null;
+  const tipoVoz = extVoz ? categoriaVoz(extVoz.p10, extVoz.mediana, extVoz.p90)[0] : null;
   const artista = modelo.artista ? quebrarTexto(g, modelo.artista, ARTISTA, larguraTexto, 1, 600) : null;
-  const resto = KICKER + 24 + 18 + (artista ? artista.tamanho * 1.2 : 0) + (tomTexto ? 24 + TOM_ALTURA : 0);
+  const resto = KICKER + 24 + 18 + (artista ? artista.tamanho * 1.2 : 0) + (tomTexto || tipoVoz ? 24 + TOM_ALTURA : 0);
   let titulo = quebrarTexto(g, modelo.titulo || "", 128, larguraTexto, 2, 800);
   if (titulo.tamanho < 84) titulo = quebrarTexto(g, modelo.titulo || "", 96, larguraTexto, 3, 800);  // título longo
   while (titulo.tamanho > 48 && resto + titulo.linhas.length * titulo.tamanho * 1.02 > H - 40)
@@ -5464,8 +5832,9 @@ function desenharThumbnailVideo(g, modelo) {
     g.fillText(artista.linhas.join(" "), xt, y);
     y += artista.tamanho * 1.2;
   }
+  if (tomTexto || tipoVoz) y += 24;
+  let xVoz = xt;
   if (tomTexto) {  // "TOM  G#m" numa cápsula de linha fina
-    y += 24;
     g.font = fonteCapa(600, TOM_ROTULO);
     espacamento(g, 3);
     const wr = g.measureText("TOM").width;
@@ -5487,6 +5856,23 @@ function desenharThumbnailVideo(g, modelo) {
     g.font = fonteCapa(800, TOM_CIFRA);
     g.fillStyle = T_TEXTO;
     g.fillText(tomTexto, xt + 30 + wr + 18, y + TOM_ALTURA / 2 + 3);
+    xVoz = xt + larguraCaixa + 28;
+  }
+  if (tipoVoz) {  // gênero (grande) e faixa vocal (menor), centrados na altura da cápsula
+    const genero = tipoVoz.genero === "Masculino" ? "VOZ MASCULINA" : "VOZ FEMININA";
+    const faixa = tipoVoz.nome.toLocaleUpperCase("pt-BR");
+    let tamanhoGenero = 40;
+    g.font = fonteCapa(800, tamanhoGenero);
+    while (tamanhoGenero > 26 && g.measureText(genero).width > xt + larguraTexto - xVoz) g.font = fonteCapa(800, tamanhoGenero -= 2);
+    g.textBaseline = "alphabetic";
+    g.fillStyle = T_TEXTO;
+    g.fillText(genero, xVoz, y + TOM_ALTURA / 2 + 4);
+    g.font = fonteCapa(600, 24);
+    espacamento(g, 3);
+    g.fillStyle = T_SUAVE;
+    g.textBaseline = "top";
+    g.fillText(faixa, xVoz, y + TOM_ALTURA / 2 + 12);
+    espacamento(g, 0);
   }
 }
 
@@ -7318,6 +7704,8 @@ function quadro() {
 
 // ---------- biblioteca ----------
 const STATUS = ["", "Quero aprender", "Aprendendo", "Praticando", "Pronta"];
+// apostas da estratégia atual (analytics/analises/2026-10-21 - analise e estrategia.md), sugeridas na coluna Aposta
+const APOSTAS_PADRAO = ["A · Playback no seu tom", "B · Tutorial Piano & Violão"];
 const COLUNAS = [
   { campo: "selecionar", titulo: "", tipo: "selecionar" },
   { campo: "abrir", titulo: "", tipo: "abrir" },
@@ -7326,7 +7714,9 @@ const COLUNAS = [
   { campo: "video", titulo: "Vídeo", tipo: "video" },
   { campo: "titulo", titulo: "Título", tipo: "texto" },
   { campo: "artista", titulo: "Artista", tipo: "texto" },
-  { campo: "categoria", titulo: "Categoria", tipo: "texto", lista: "listaCategorias" },
+  // aposta = experimento da estratégia do canal (analytics/analises/), no campo "categoria" do banco;
+  // vai para o videos.csv da coleta do Analytics
+  { campo: "categoria", titulo: "Aposta", tipo: "texto", lista: "listaCategorias" },
   { campo: "status", titulo: "Status", tipo: "status" },
   { campo: "transposicao", titulo: "Meu tom", tipo: "tom" },
   { campo: "tags", titulo: "Tags", tipo: "texto" },
@@ -7337,6 +7727,7 @@ const COLUNAS = [
   { campo: "qtd_frases", titulo: "Letra", tipo: "ro", valor: m => m.qtd_frases ? m.qtd_frases + " frases" : "—" },
   { campo: "processado_em", titulo: "Processada em", tipo: "ro",
     valor: m => m.processado_em ? new Date(m.processado_em).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" }) : "—" },
+  { campo: "origem", titulo: "Origem", tipo: "origem" },
   { campo: "id", titulo: "Id", tipo: "id" },
   { campo: "excluir", titulo: "", tipo: "excluir" },
 ];
@@ -7344,7 +7735,7 @@ let ordem = { campo: "titulo", direcao: 1 };
 try { ordem = JSON.parse(recuperar("bibliotecaOrdem")) || ordem; } catch (e) { /* padrão */ }
 
 function valorOrdenacao(m, campo) {
-  const v = m[campo];
+  const v = campo === "origem" ? m.origem && m.origem.url : m[campo];  // origem: pelo link
   if (typeof v === "number" || typeof v === "boolean") return Number(v);
   return (v || "").toString().toLocaleLowerCase("pt");
 }
@@ -7383,9 +7774,10 @@ function montarCabecalho() {
 
 function preencherFiltros() {
   const categorias = [...new Set(MUSICAS.map(m => m.categoria).filter(Boolean))].sort((a, b) => a.localeCompare(b, "pt"));
+  const sugestoes = [...new Set([...APOSTAS_PADRAO, ...categorias])];
   const selCat = $("filtroCategoria"), atualCat = selCat.value;
   selCat.textContent = "";
-  [["", "Todas as categorias"], ...categorias.map(c => [c, c])].forEach(([v, t], k) => {
+  [["", "Todas as apostas"], ...categorias.map(c => [c, c])].forEach(([v, t], k) => {
     const o = document.createElement("option");
     o.id = "filtroCategoria-" + k; o.value = v; o.textContent = t;
     selCat.appendChild(o);
@@ -7394,7 +7786,7 @@ function preencherFiltros() {
 
   const lista = $("listaCategorias");
   lista.textContent = "";
-  categorias.forEach((c, k) => {
+  sugestoes.forEach((c, k) => {
     const o = document.createElement("option");
     o.id = "listaCategorias-" + k; o.value = c;
     lista.appendChild(o);
@@ -7410,6 +7802,109 @@ function preencherFiltros() {
   }
 }
 
+// ---------- aba Adicionar: baixar o áudio de um vídeo do YouTube (baixar.py, yt-dlp) ----------
+// O servidor baixa só o áudio (MP3) para audio\, numa fila própria; a origem (link) aparece na
+// coluna "Origem" da Biblioteca. A prévia (embed) serve só para conferir o vídeo.
+let DOWNLOADS = {};             // "baixar:<id do vídeo>" -> {estado, etapa, log}
+let temporizadorDownloads = null;
+
+function idVideoYoutube(url) {  // o mesmo critério do baixar.py (id_do_video)
+  if (!/^https?:\/\/([a-z0-9-]+\.)*(youtube\.com|youtu\.be|youtube-nocookie\.com)\//i.test(url || "")) return null;
+  const m = url.match(/(?:v=|youtu\.be\/|\/shorts\/|\/live\/|\/embed\/)([A-Za-z0-9_-]{11})/);
+  return m ? m[1] : null;
+}
+
+function avisoAdicionar(texto, tipo = "") {
+  const el = $("avisoAdicionar");
+  el.hidden = !texto;
+  el.textContent = texto || "";
+  el.style.color = tipo === "erro" ? "var(--erro)" : tipo === "ok" ? "var(--ok)" : "";
+}
+
+function atualizarPreviaAdicionar() {
+  const id = idVideoYoutube($("urlYoutube").value.trim()), previa = $("previaAdicionar");
+  $("btnBaixarAudio").disabled = !id || processoAtivo(DOWNLOADS["baixar:" + id]);
+  const src = id ? `https://www.youtube-nocookie.com/embed/${id}` : "";
+  if (previa.dataset.video !== (id || "")) { previa.dataset.video = id || ""; previa.src = src || "about:blank"; }
+  previa.hidden = !id;
+  $("campoLink").classList.toggle("valido", !!id);
+  $("campoLink").classList.toggle("erro", !!$("urlYoutube").value.trim() && !id);
+  if ($("urlYoutube").value.trim() && !id) avisoAdicionar("Isso não parece um link de vídeo do YouTube.", "erro");
+  else if (!processoAtivo(DOWNLOADS["baixar:" + id])) avisoAdicionar("");
+}
+
+async function baixarAudio() {
+  const url = $("urlYoutube").value.trim();
+  if (!idVideoYoutube(url)) return;
+  $("btnBaixarAudio").disabled = true;
+  try {
+    const r = await api("/api/baixar", { method: "POST", body: JSON.stringify({ url }) });
+    DOWNLOADS = r.downloads || DOWNLOADS;
+    avisoAdicionar("Baixando… acompanhe em Downloads; quando terminar, o áudio aparece na Biblioteca.");
+  } catch (e) {
+    avisoAdicionar("Não foi possível baixar: " + e.message +
+      (/não encontrado|404/.test(e.message) ? " (reinicie o SOLO.bat: o servidor é antigo)" : ""), "erro");
+  }
+  renderDownloads();
+  acompanharDownloads();
+}
+
+function renderDownloads() {
+  const lista = $("listaDownloads"), itens = Object.entries(DOWNLOADS).reverse();  // o mais novo em cima
+  lista.textContent = "";
+  $("semDownloads").hidden = itens.length > 0;
+  for (const [chave, d] of itens) {
+    const li = document.createElement("li"), id = chave.slice(7);
+    li.id = "download-" + id;
+    li.className = d.estado === "erro" ? "erro" : d.estado === "concluido" ? "concluido" : "";
+    const log = d.log || [];
+    const final = log.filter(l => /^(Download finalizado|Erro)/.test(l)).pop();
+    const nome = (log.find(l => l.startsWith("[2/3] Baixando o áudio de")) || "").replace(/^\[2\/3\] Baixando o áudio de /, "").replace(/\.\.\.$/, "");
+    const titulo = document.createElement("b");
+    titulo.id = li.id + "-titulo";
+    titulo.textContent = nome || `youtu.be/${id}`;
+    const situacao = document.createElement("small");
+    situacao.id = li.id + "-situacao";
+    situacao.textContent = d.estado === "concluido" ? "✓ " + (final || "concluído").replace("Download finalizado! ", "salvo em ")
+      : d.estado === "erro" ? (final || d.etapa) : d.estado === "na fila" ? "na fila" : (d.etapa || "").replace(/^\[\d\/\d\]\s*/, "");
+    li.append(titulo, situacao);
+    lista.appendChild(li);
+  }
+}
+
+async function atualizarDownloads() {
+  try {
+    const r = await api("/api/audios");
+    DOWNLOADS = r.downloads || {};
+  } catch (e) { return; }
+  renderDownloads();
+  atualizarPreviaAdicionar();
+  if (Object.values(DOWNLOADS).some(processoAtivo)) acompanharDownloads();
+}
+
+function acompanharDownloads() {
+  if (temporizadorDownloads) return;
+  temporizadorDownloads = setInterval(async () => {
+    let r;
+    try { r = await api("/api/audios"); } catch (e) { return; }
+    const antes = DOWNLOADS;
+    DOWNLOADS = r.downloads || {};
+    const concluiu = Object.entries(DOWNLOADS).some(([k, d]) => d.estado === "concluido" && (antes[k] || {}).estado !== "concluido");
+    if (!Object.values(DOWNLOADS).some(processoAtivo)) { clearInterval(temporizadorDownloads); temporizadorDownloads = null; }
+    renderDownloads();
+    atualizarPreviaAdicionar();
+    if (concluiu) {
+      avisoAdicionar("Pronto! O áudio já está na Biblioteca, pronto para processar.", "ok");
+      await atualizarBiblioteca();
+    }
+  }, 1500);
+}
+
+$("urlYoutube").addEventListener("input", atualizarPreviaAdicionar);
+$("urlYoutube").addEventListener("keydown", e => { if (e.key === "Enter" && !$("btnBaixarAudio").disabled) baixarAudio(); });
+$("btnBaixarAudio").addEventListener("click", baixarAudio);
+$("btnIrBiblioteca").addEventListener("click", () => mostrarAba("biblioteca"));
+
 // ---------- áudios ainda não processados (pasta audio/) ----------
 const PENDENTES = "__pendentes";
 let AUDIOS_PENDENTES = [];   // [{pendente, arquivo, titulo, chave}]
@@ -7421,8 +7916,9 @@ const processoAtivo = p => p && (p.estado === "na fila" || p.estado === "process
 async function carregarAudios() {
   const r = await api("/api/audios");
   PROCESSOS = r.processamentos || {};
+  DOWNLOADS = r.downloads || DOWNLOADS;
   AUDIOS_PENDENTES = r.audios.filter(a => !a.musica).map(a => ({
-    pendente: true, arquivo: a.arquivo, titulo: a.arquivo.replace(/\.[^.]+$/, ""),
+    pendente: true, arquivo: a.arquivo, titulo: a.arquivo.replace(/\.[^.]+$/, ""), origem: a.origem,
     chave: "pend-" + a.arquivo.replace(/[^A-Za-z0-9]+/g, "_"),
   }));
   if (Object.values(PROCESSOS).some(processoAtivo)) acompanharProcessos();
@@ -7530,6 +8026,8 @@ function celulaPendente(p, col) {
     preencherSituacao(td, p);
   } else if (col.tipo === "excluir") {
     td.appendChild(botaoExcluirMusica(p, `bib-${p.chave}-excluir-botao`));
+  } else if (col.tipo === "origem") {
+    preencherCelulaOrigem(td, p, `bib-${p.chave}-origem`);
   } else {
     td.className = "ro";
     td.textContent = ["favorito", "youtube", "video"].includes(col.tipo) ? "" : "—";
@@ -7564,7 +8062,11 @@ function celula(m, col) {
     b.id = base + "-abrir";
     b.className = "pequeno";
     b.textContent = "▶ Abrir";
-    b.addEventListener("click", async () => { mostrarAba("player"); if (!MUSICA || MUSICA.id !== m.id) await abrirMusica(m.id); });
+    b.addEventListener("click", async () => {
+      mostrarAba("player");
+      if (!MUSICA || MUSICA.id !== m.id) await abrirMusica(m.id);
+      await automatizarPrimeiraAbertura();  // só na 1ª vez (logo depois de processar)
+    });
     td.appendChild(b);
   } else if (col.tipo === "favorito") {
     const b = document.createElement("button");
@@ -7626,6 +8128,8 @@ function celula(m, col) {
     preencherCelulaVideo(td, m);
   } else if (col.tipo === "excluir") {
     td.appendChild(botaoExcluirMusica(m, base + "-botao"));
+  } else if (col.tipo === "origem") {
+    preencherCelulaOrigem(td, m, base);
   } else if (col.tipo === "id") {
     td.className = "ro";
     const c = document.createElement("code");
@@ -7637,6 +8141,24 @@ function celula(m, col) {
     td.textContent = col.valor(m);
   }
   return td;
+}
+
+// Link do vídeo do YouTube de onde o áudio foi baixado (aba Adicionar); "—" se veio de outro lugar
+function preencherCelulaOrigem(td, m, base) {
+  td.className = "ro origem";
+  const o = m.origem;
+  if (!o || !o.url) { td.textContent = "—"; td.title = "Áudio colocado na pasta audio\\ à mão"; return; }
+  const a = document.createElement("a");
+  a.id = base + "-link";
+  a.href = o.url;
+  a.target = "_blank";
+  a.rel = "noopener";
+  a.title = [o.titulo, o.canal && "Canal: " + o.canal, o.url,
+             o.baixado_em && "Baixado em " + new Date(o.baixado_em).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" })]
+    .filter(Boolean).join("\n");
+  a.setAttribute("aria-label", "Abrir o vídeo de origem no YouTube");
+  a.innerHTML = `<i id="${base}-icone" class="bi bi-youtube"></i>`;
+  td.appendChild(a);
 }
 
 // ---------- apagar uma música (ou um áudio ainda não processado) ----------
@@ -8035,9 +8557,14 @@ function semitonsDoVideo(m, arquivo) {
 }
 
 async function abrirPublicacao(m) {
+  if (await prepararPublicacao(m)) $("janelaPublicar").showModal();
+}
+
+// Preenche a janela "Publicar" com os modelos (título, descrição...); false se não há o que publicar
+async function prepararPublicacao(m) {
   const video = YOUTUBE && YOUTUBE.videos[m.id];
-  if (!video) return;
-  if (!YOUTUBE.conectado) { abrirConfigYoutube("Conecte a conta do YouTube antes de publicar."); return; }
+  if (!video) return false;
+  if (!YOUTUBE.conectado) { abrirConfigYoutube("Conecte a conta do YouTube antes de publicar."); return false; }
   m = { ...m, tom_faixas: semitonsDoVideo(m, video.arquivo) };  // os textos no tom do vídeo
   const cfg = YOUTUBE.config;
   const letra = /\{letra\}/.test(cfg.titulo + cfg.descricao + cfg.tags) ? await textoLetra(m.id) : "";
@@ -8056,18 +8583,19 @@ async function abrirPublicacao(m) {
   $("pubStatus").textContent = descricao.length > 5000
     ? `A descrição tem ${descricao.length} caracteres; o YouTube aceita até 5000 (o excesso será cortado).` : "";
   $("pubEnviar").disabled = false;
-  $("janelaPublicar").showModal();
+  return true;
 }
 
+// Devolve true se o envio entrou na fila do servidor (a janela "Publicar" mostra o erro, se não)
 async function enviarPublicacao() {
   const m = publicando;
-  if (!m) return;
+  if (!m) return false;
   const corpo = {
     arquivo: YOUTUBE.videos[m.id].arquivo, titulo: $("pubTitulo").value.trim(),
     descricao: $("pubDescricao").value, tags: $("pubTags").value, hashtags: $("pubHashtags").value,
     privacidade: $("pubPrivacidade").value,
   };
-  if (!corpo.titulo) { $("pubStatus").textContent = "Informe o título."; return; }
+  if (!corpo.titulo) { $("pubStatus").textContent = "Informe o título."; return false; }
   $("pubEnviar").disabled = true;
   try {
     const r = await api(`/api/musicas/${m.id}/youtube`, { method: "POST", body: JSON.stringify(corpo) });
@@ -8075,11 +8603,90 @@ async function enviarPublicacao() {
   } catch (e) {
     $("pubStatus").textContent = "Não foi possível iniciar: " + e.message;
     $("pubEnviar").disabled = false;
-    return;
+    return false;
   }
   $("janelaPublicar").close();
   atualizarCelulasYoutube();
   acompanharProcessos();
+  return true;
+}
+
+// ---------- fluxos (grupo "Fluxos" do player) ----------
+// Vídeo com a voz original: pede confirmação antes de criar (o karaokê costuma sair sem a faixa vocals)
+const confirmarVozNoVideo = () => !faixasAtivas.has("vocals") ||
+  confirm("A faixa de voz (vocals) está marcada e vai entrar no áudio do vídeo.\nQuer seguir assim?");
+
+function statusFluxo(texto, tipo = "") {
+  $("statusFluxo").textContent = texto;
+  $("statusFluxo").className = "statusGravacao" + (tipo ? " " + tipo : "");
+}
+
+const esperar = ms => new Promise(r => setTimeout(r, ms));
+
+// Cria o vídeo do YouTube da música do player (como o botão da coluna Vídeo, com a thumbnail) e,
+// quando ele fica pronto, publica com os modelos de título/descrição da configuração do YouTube
+async function fluxoYoutube() {
+  const m = MUSICA && MUSICAS.find(x => x.id === MUSICA.id);
+  if (!m) { statusFluxo("Abra uma música no player.", "erro"); return; }
+  if (!confirmarVozNoVideo()) return;
+  const botao = $("btnFluxoYoutube");
+  botao.disabled = true;
+  try {
+    statusFluxo("verificando o YouTube…");
+    try { await carregarYoutube(); } catch (e) { statusFluxo("YouTube indisponível: " + e.message, "erro"); return; }
+    if (!YOUTUBE.conectado) { abrirConfigYoutube("Conecte a conta do YouTube antes de publicar."); statusFluxo(""); return; }
+    if (criandoVideo) { statusFluxo("Já há um vídeo sendo preparado; aguarde e tente de novo.", "erro"); return; }
+    const chave = m.id + "/padrao", processo = `${FORMATOS_VIDEO.padrao.chave}:${m.id}`;
+    const assinatura = p => p ? p.estado + "|" + (p.log || []).join("\n") : "";
+    const antes = assinatura(PROCESSOS[processo]);
+    statusFluxo("criando o vídeo…");
+    await criarVideo(m, "padrao");
+    const aviso = avisosVideo.get(chave);
+    if (aviso && aviso.tipo === "erro") { statusFluxo("O vídeo não foi criado: " + aviso.texto, "erro"); return; }
+    // o servidor junta os quadros e o áudio no FFmpeg; espera o processamento (novo) terminar
+    let p = PROCESSOS[processo], semMudar = 0;
+    while (assinatura(p) === antes || processoAtivo(p)) {
+      if (assinatura(p) === antes && ++semMudar > 30) {
+        statusFluxo("O vídeo não entrou na fila do servidor (veja a coluna Vídeo na Biblioteca).", "erro");
+        return;
+      }
+      const etapa = p && processoAtivo(p) && (p.etapa || "").match(/\d+%/);
+      statusFluxo("finalizando o vídeo" + (etapa ? " " + etapa[0] : "…"));
+      await esperar(2000);
+      try { p = ((await api("/api/audios")).processamentos || {})[processo]; } catch (e) { /* tenta de novo */ }
+    }
+    if (p.estado !== "concluido") {
+      statusFluxo("O vídeo falhou (veja a coluna Vídeo na Biblioteca).", "erro");
+      return;
+    }
+    statusFluxo("publicando no YouTube…");
+    await carregarYoutube();  // o vídeo novo (videos\...) passa a ser o mais recente da música
+    const video = YOUTUBE.videos[m.id];
+    if (!video) { statusFluxo("O vídeo novo não apareceu em videos\\; publique pela Biblioteca.", "erro"); return; }
+    // o vídeo novo substitui o arquivo de mesmo nome (mesmo tom): se aquele já estava no YouTube, vira outro vídeo lá
+    if (video.publicado && !confirm(`O arquivo videos\\${video.arquivo} já foi publicado (${video.publicado.url}).\n` +
+        "O YouTube não deixa trocar o arquivo: publicar cria um vídeo novo (depois apague o antigo no YouTube Studio).\nPublicar mesmo assim?")) {
+      statusFluxo("Vídeo criado; publicação cancelada.");
+      return;
+    }
+    if (!(await prepararPublicacao(m)) || !(await enviarPublicacao())) {
+      statusFluxo("Não foi possível publicar: " + ($("pubStatus").textContent || "veja a Biblioteca."), "erro");
+      return;
+    }
+    while (processoAtivo(PROCESSOS[chaveYoutube(m.id)])) {
+      const etapa = (PROCESSOS[chaveYoutube(m.id)].etapa || "").match(/\d+%/);
+      statusFluxo("enviando ao YouTube" + (etapa ? " " + etapa[0] : "…"));
+      await esperar(2000);
+      if (!temporizadorProcessos) acompanharProcessos();
+    }
+    const envio = PROCESSOS[chaveYoutube(m.id)];
+    if (envio && envio.estado === "concluido") statusFluxo("✔ Vídeo criado e publicado no YouTube.", "ok");
+    else statusFluxo("O envio ao YouTube falhou (veja a coluna YouTube na Biblioteca).", "erro");
+  } catch (e) {
+    statusFluxo("O fluxo parou: " + e.message, "erro");
+  } finally {
+    botao.disabled = false;
+  }
 }
 
 function preencherSituacaoYoutube() {
@@ -8143,6 +8750,554 @@ async function salvarConfigYoutube() {
 }
 
 $("btnConfigYoutube").addEventListener("click", () => abrirConfigYoutube());
+
+// ---------- coleta do YouTube Analytics (analytics.py → CSVs em analytics\) ----------
+let timerAnalytics = null;
+
+function renderAnalytics(r) {
+  const b = $("btnEstAtualizar"), p = r.processo;
+  const ativo = processoAtivo(p);
+  b.disabled = ativo;
+  b.lastChild.textContent = !ativo ? " Atualizar dados"
+    : " " + (p.estado === "na fila" ? "na fila…" : (p.etapa || "coletando…").replace(/^\[(\d\/\d)\]\s*/, "$1 · "));
+  b.title = "Baixar de novo os dados do canal (YouTube Analytics) em CSV para a pasta analytics\\ (substitui a coleta anterior)"
+    + (r.ultima ? `\nÚltima coleta: ${new Date(r.ultima).toLocaleString("pt-BR")}` : "\nNenhuma coleta ainda.");
+  return ativo;
+}
+
+async function acompanharAnalytics(avisarFim = false) {
+  clearTimeout(timerAnalytics);
+  let r;
+  try { r = await api("/api/analytics"); } catch (e) { return; }
+  if (renderAnalytics(r)) { timerAnalytics = setTimeout(() => acompanharAnalytics(true), 1500); return; }
+  if (!avisarFim || !r.processo) return;
+  const log = r.processo.log || [];
+  if (r.processo.estado === "concluido") {
+    mensagem((log.filter(l => l.startsWith("Coleta finalizada")).pop() || "Coleta finalizada.") + ` (${r.pasta})`);
+    carregarEstrategia();
+  } else if (log.some(l => l.includes("sem_escopo_analytics"))) {
+    abrirConfigYoutube("Para coletar o Analytics, clique em \"Trocar conta\" e entre de novo com a mesma conta (autoriza a leitura dos dados do canal).");
+  } else {
+    mensagem("A coleta do Analytics falhou:\n" + (log.filter(l => /^(Erro|  )/.test(l)).join("\n") || log.slice(-5).join("\n")));
+  }
+}
+
+$("btnEstAtualizar").addEventListener("click", async () => {
+  $("btnEstAtualizar").disabled = true;
+  try {
+    renderAnalytics(await api("/api/analytics", { method: "POST", body: "{}" }));
+  } catch (e) {
+    $("btnEstAtualizar").disabled = false;
+    if (/conecte a conta/.test(e.message)) abrirConfigYoutube("Conecte a conta do YouTube para coletar o Analytics.");
+    else mensagem("Não foi possível iniciar a coleta: " + e.message);
+    return;
+  }
+  acompanharAnalytics(true);
+});
+acompanharAnalytics();  // retoma o acompanhamento se uma coleta já está em andamento
+// ---------- aba Estratégia (indicadores calculados pelo estrategia.py a partir de analytics\) ----------
+let ESTRATEGIA = null;     // resposta de /api/estrategia
+let DIARIO_EST = [];       // decisões (analytics\analises\diario.json)
+let videoEstAberto = null; // vídeo com o detalhe aberto na tabela
+const NOMES_GRUPOS = { sugeridos: "Sugeridos", busca: "Busca", externo: "Externo (WhatsApp…)", direto: "Direto",
+  inscritos: "Página inicial/inscrições", canal: "Página do canal", playlists: "Playlists", shorts: "Shorts",
+  outros: "Outros recursos do YouTube" };
+const NOMES_SINAIS = { aprofundar: "🟢 Aprofundar", ajustar: "🟡 Ajustar", abandonar: "🔴 Abandonar", aguardando: "⚪ Aguardando dados" };
+const NOMES_COMPARTILHAMENTO = { WHATS_APP: "WhatsApp", WHATS_APP_BUSINESS: "WhatsApp Business", COPY_PASTE: "link copiado",
+  FACEBOOK: "Facebook", FACEBOOK_MESSENGER: "Messenger", TWITTER: "X/Twitter", TELEGRAM: "Telegram", INSTAGRAM: "Instagram",
+  EMAIL: "e-mail", GMAIL: "Gmail", TEXT_MESSAGE: "SMS", OTHER: "outros" };
+const NOMES_DISPOSITIVOS = { MOBILE: "Celular", DESKTOP: "Computador", TV: "TV", TABLET: "Tablet", GAME_CONSOLE: "Videogame", UNKNOWN_PLATFORM: "Outro" };
+const numEst = n => n == null ? "—" : Number(n).toLocaleString("pt-BR", { maximumFractionDigits: 1 });
+const compactoEst = n => n == null ? "—" : Intl.NumberFormat("pt-BR", { notation: "compact", maximumFractionDigits: 1 }).format(n);
+const pctEst = n => n == null ? "—" : numEst(n) + "%";
+const dataEst = iso => iso ? new Date(iso.slice(0, 10) + "T12:00:00").toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" }) : "—";
+let contadorEst = 0;
+
+// cria um elemento com id (todo elemento da interface tem um), classes e texto
+function elEst(tag, classe = "", texto = "", prefixo = "est") {
+  const e = document.createElement(tag);
+  e.id = `${prefixo}-${++contadorEst}`;
+  if (classe) e.className = classe;
+  if (texto !== "") e.textContent = texto;
+  return e;
+}
+
+function mixEst(grupos, ordem) {
+  grupos = grupos || {};
+  const total = ordem.reduce((a, g) => a + (grupos[g] || 0), 0);  // só os grupos: a semana traz também a data
+  const barra = elEst("div", "estMix");
+  if (!total) return barra;
+  barra.title = ordem.filter(g => grupos[g]).map(g => `${NOMES_GRUPOS[g]}: ${grupos[g]} (${Math.round(grupos[g] * 100 / total)}%)`).join("\n");
+  for (const g of ordem) {
+    if (!grupos[g]) continue;
+    const s = elEst("span", "g-" + g);
+    s.style.width = (grupos[g] * 100 / total) + "%";
+    barra.appendChild(s);
+  }
+  return barra;
+}
+
+function graficoDiarioEst(dias, publicacoes = {}) {
+  const caixa = elEst("div", "estGraficoDiario");
+  const maximo = Math.max(1, ...dias.map(d => d.views));
+  const passo = Math.max(1, Math.ceil(dias.length / 12));  // no máximo ~12 datas no eixo
+  dias.forEach((d, i) => {
+    const col = elEst("div", "dia");
+    col.title = `${dataEst(d.dia)}: ${numEst(d.views)} visualizações` + (d.minutos != null ? ` · ${numEst(d.minutos)} min` : "")
+      + (publicacoes[d.dia] ? "\nPublicado: " + publicacoes[d.dia].join("\n") : "");
+    if (d.views && d.views === maximo) col.appendChild(elEst("div", "num", numEst(d.views)));
+    const b = elEst("div", "barra");
+    b.style.height = `calc(${d.views * 100 / maximo}% - 1.4em)`;
+    col.appendChild(b);
+    if (publicacoes[d.dia]) col.appendChild(elEst("div", "pub", "▲"));
+    col.appendChild(elEst("div", "rot", i % passo === 0 ? dataEst(d.dia) : ""));
+    caixa.appendChild(col);
+  });
+  return caixa;
+}
+
+function kpiEst(rotulo, valor, detalhe = "", meta = null) {
+  const c = elEst("div", "estKpi");
+  c.appendChild(elEst("div", "rotulo", rotulo));
+  c.appendChild(elEst("div", "valor", valor));
+  if (detalhe) {
+    const d = elEst("div", "detalhe");
+    d.innerHTML = detalhe;
+    d.querySelectorAll("*").forEach(x => { x.id = `est-${++contadorEst}`; });
+    c.appendChild(d);
+  }
+  if (meta) {
+    const m = elEst("div", "estMeta" + (meta.atual >= meta.alvo ? " ok" : ""));
+    m.title = `Meta: ${meta.texto}`;
+    const s = elEst("span");
+    s.style.width = Math.min(100, (meta.atual || 0) * 100 / meta.alvo) + "%";
+    m.appendChild(s);
+    c.appendChild(m);
+  }
+  return c;
+}
+
+function variacaoEst(atual, anterior) {
+  if (!anterior) return "";
+  const v = Math.round((atual - anterior) * 100 / anterior);
+  return `<b class="${v >= 0 ? "sobe" : "desce"}">${v >= 0 ? "▲" : "▼"} ${Math.abs(v)}%</b> vs. 7 dias antes`;
+}
+
+function renderKpisEst(e) {
+  const k = e.kpis, m = e.metas, caixa = $("estKpis");
+  caixa.textContent = "";
+  caixa.appendChild(kpiEst("Horas assistidas (7 dias)", numEst(k.horas_semana) + " h",
+    variacaoEst(k.horas_semana, k.horas_semana_anterior), { atual: k.horas_semana, alvo: m.horas_semana, texto: `${m.horas_semana} h por semana` }));
+  caixa.appendChild(kpiEst("Visualizações (7 dias)", numEst(k.views_semana), variacaoEst(k.views_semana, k.views_semana_anterior)));
+  caixa.appendChild(kpiEst("Inscritos", numEst(k.inscritos),
+    `${k.inscritos_28d >= 0 ? "+" : ""}${numEst(k.inscritos_28d)} em 28 dias · ${numEst(k.inscritos_por_mil_28d)} por mil visualizações`,
+    { atual: k.inscritos_por_mil_28d, alvo: m.inscritos_por_mil, texto: `${m.inscritos_por_mil} inscritos por mil visualizações` }));
+  caixa.appendChild(kpiEst("% assistido (28 dias)", pctEst(k.pct_assistido_28d), `meta: ${m.pct_assistido}%`,
+    { atual: k.pct_assistido_28d, alvo: m.pct_assistido, texto: `${m.pct_assistido}% do vídeo` }));
+  caixa.appendChild(kpiEst("Busca + externo (28 dias)", pctEst(k.busca_externo_28d), `meta: ${m.busca_externo}% do tráfego`,
+    { atual: k.busca_externo_28d, alvo: m.busca_externo, texto: `${m.busca_externo}% do tráfego` }));
+  const anos = k.dias_para_horas ? (k.dias_para_horas > 730 ? `~${Math.round(k.dias_para_horas / 365)} anos` : `~${k.dias_para_horas} dias`) : "—";
+  const mon = kpiEst("Monetização", `${numEst(k.horas_ano)} / ${numEst(e.monetizacao.horas)} h`,
+    `${numEst(k.inscritos)} / ${numEst(e.monetizacao.inscritos)} inscritos · no ritmo da semana: ${anos} para as horas`,
+    { atual: k.horas_ano, alvo: e.monetizacao.horas, texto: `${e.monetizacao.horas} horas em 12 meses` });
+  const ins = elEst("div", "estMeta" + (k.inscritos >= e.monetizacao.inscritos ? " ok" : ""));
+  ins.title = `Meta: ${e.monetizacao.inscritos} inscritos`;
+  const s = elEst("span"); s.style.width = Math.min(100, k.inscritos * 100 / e.monetizacao.inscritos) + "%"; ins.appendChild(s);
+  mon.appendChild(ins);
+  caixa.appendChild(mon);
+}
+
+function renderApostasEst(e) {
+  const caixa = $("estApostas"), ref = e.referencia;
+  caixa.textContent = "";
+  const linhas = [
+    ["v7_mediana", "Visualizações em 7 dias (mediana)", v => numEst(v)],
+    ["pct_assistido", "% assistido", pctEst],
+    ["inscritos_por_mil", "Inscritos por mil", v => numEst(v)],
+    ["busca_externo", "Busca + externo", pctEst],
+    ["minutos_por_view", "Minutos por visualização", v => numEst(v)],
+  ];
+  for (const a of e.apostas) {
+    const c = elEst("div", "estAposta " + a.sinal);
+    const cab = elEst("header");
+    cab.appendChild(elEst("b", "", a.nome));
+    cab.appendChild(elEst("span", "estSinal " + a.sinal, NOMES_SINAIS[a.sinal]));
+    c.appendChild(cab);
+    c.appendChild(elEst("div", "motivo", a.motivo));
+    const lote = elEst("div", "estMeta" + (a.completos >= e.lote ? " ok" : ""));
+    lote.title = `Lote: ${a.completos} de ${e.lote} vídeos com 7 dias de dados`;
+    const ls = elEst("span"); ls.style.width = Math.min(100, a.completos * 100 / e.lote) + "%"; lote.appendChild(ls);
+    c.appendChild(lote);
+    const dl = elEst("dl");
+    for (const [chave, nome, fmt] of linhas) {
+      dl.appendChild(elEst("dt", "", nome));
+      const ok = a[chave] != null && ref[chave] != null;
+      dl.appendChild(elEst("dd", ok ? (a[chave] >= ref[chave] ? "sobe" : "desce") : "", fmt(a[chave])));
+      dl.appendChild(elEst("dd", "ref", "canal " + fmt(ref[chave])));
+    }
+    c.appendChild(dl);
+    c.appendChild(mixEst(a.trafego, e.grupos));
+    const disp = Object.entries(a.dispositivos).sort((x, y) => y[1] - x[1]);
+    const totalDisp = disp.reduce((s, [, n]) => s + n, 0);
+    c.appendChild(elEst("div", "rodape",
+      `${a.videos} vídeo(s) · ${numEst(a.views)} visualizações` +
+      (totalDisp ? " · " + disp.slice(0, 3).map(([d, n]) => `${NOMES_DISPOSITIVOS[d] || d} ${Math.round(n * 100 / totalDisp)}%`).join(", ") : "") +
+      (a.melhor ? ` · melhor: ${a.melhor.titulo} (${pctEst(a.melhor.pct_assistido)})` : "")));
+    caixa.appendChild(c);
+  }
+}
+
+function renderGraficosEst(e) {
+  const publicacoes = {};
+  for (const v of e.videos) (publicacoes[v.publicado] = publicacoes[v.publicado] || []).push(v.musica || v.titulo);
+  const g = $("estGraficoDiario");
+  g.replaceWith(Object.assign(graficoDiarioEst(e.diario_canal, publicacoes), { id: "estGraficoDiario" }));
+
+  const caixa = $("estGraficoTrafego");
+  caixa.textContent = "";
+  const maximo = Math.max(1, ...e.trafego_semanas.map(s => e.grupos.reduce((t, k) => t + (s[k] || 0), 0)));
+  for (const s of e.trafego_semanas) {
+    const total = e.grupos.reduce((t, k) => t + (s[k] || 0), 0);
+    const linha = elEst("div", "estSemana");
+    const fimSemana = new Date(new Date(s.semana + "T12:00:00").getTime() + 6 * 864e5).toISOString().slice(0, 10);
+    const rot = linha.appendChild(elEst("span", "", "sem. " + dataEst(s.semana) + (fimSemana > e.dados_ate ? "*" : "")));
+    if (fimSemana > e.dados_ate) rot.title = `semana incompleta: dados até ${dataEst(e.dados_ate)}`;
+    const trilho = elEst("div");
+    const mix = mixEst(s, e.grupos);
+    mix.style.width = Math.max(2, total * 100 / maximo) + "%";
+    trilho.appendChild(mix);
+    linha.appendChild(trilho);
+    const intencao = total ? Math.round(((s.busca || 0) + (s.externo || 0)) * 100 / total) : 0;
+    const t = elEst("span", "total", numEst(total));
+    t.title = `busca + externo: ${intencao}%`;
+    linha.appendChild(t);
+    caixa.appendChild(linha);
+  }
+  const leg = $("estLegenda");
+  leg.textContent = "";
+  for (const k of e.grupos) {
+    if (!e.trafego_semanas.some(s => s[k])) continue;
+    const item = elEst("span");
+    item.appendChild(elEst("i", "g-" + k));
+    item.appendChild(document.createTextNode(NOMES_GRUPOS[k]));
+    leg.appendChild(item);
+  }
+}
+
+function celulaEst(tr, texto, classe = "", titulo = "") {
+  const td = elEst("td", classe, texto);
+  if (titulo) td.title = titulo;
+  tr.appendChild(td);
+  return td;
+}
+
+function pctBarraEst(p, metas) {
+  const s = elEst("span", "estPct" + (p == null ? "" : p >= metas.pct_assistido ? " bom" : p < 25 ? " ruim" : ""));
+  s.appendChild(document.createTextNode(pctEst(p)));
+  const i = elEst("i"), b = elEst("span");
+  b.style.width = Math.min(100, p || 0) + "%";
+  i.appendChild(b); s.appendChild(i);
+  return s;
+}
+
+function renderVideosEst(e) {
+  const sel = $("estFiltroAposta"), atual = sel.value;
+  sel.textContent = "";
+  [["", "Todas as apostas"], ...e.apostas.map(a => [a.nome, a.nome])].forEach(([v, t], k) => {
+    const o = document.createElement("option");
+    o.id = "estFiltroAposta-" + k; o.value = v; o.textContent = t;
+    sel.appendChild(o);
+  });
+  sel.value = e.apostas.some(a => a.nome === atual) ? atual : "";
+  const corpo = $("estCorpoVideos");
+  corpo.textContent = "";
+  for (const v of e.videos.filter(x => !sel.value || x.aposta === sel.value)) {
+    const tr = elEst("tr", "linhaVideo" + (videoEstAberto === v.video_id ? " aberto" : ""));
+    tr.id = "estVideo-" + v.video_id;
+    const td = celulaEst(tr, "", "titulo");
+    const a = elEst("a", "", v.musica || v.titulo);
+    a.href = v.url; a.target = "_blank"; a.rel = "noopener"; a.title = "Abrir no YouTube";
+    a.addEventListener("click", ev => ev.stopPropagation());
+    td.appendChild(a);
+    td.appendChild(elEst("small", "", [v.artista, v.tom && "tom " + v.tom].filter(Boolean).join(" · ") || v.titulo));
+    celulaEst(tr, v.aposta === "Sem aposta" ? "—" : v.aposta);
+    celulaEst(tr, `${dataEst(v.publicado)} (${Math.max(0, v.dias)} d)`, "", `${Math.max(0, v.dias)} dia(s) com dados do Analytics`);
+    celulaEst(tr, v.v7 == null ? "—" : numEst(v.v7) + (v.v7_completo ? "" : "*"), "num" + (v.v7_completo ? "" : " parcial"),
+      v.v7_completo ? "" : "ainda não completou 7 dias de dados");
+    celulaEst(tr, v.v28 == null ? "—" : numEst(v.v28) + (v.v28_completo ? "" : "*"), "num" + (v.v28_completo ? "" : " parcial"));
+    celulaEst(tr, numEst(v.views), "num", `${numEst(v.views_publicas)} no contador público do YouTube`);
+    celulaEst(tr, "", "num").appendChild(pctBarraEst(v.pct_assistido, e.metas));
+    celulaEst(tr, v.duracao_media == null ? "—" : formatarTempo(v.duracao_media).slice(0, 5), "num",
+      v.duracao_s ? `de ${formatarTempo(v.duracao_s).slice(0, 5)}` : "");
+    celulaEst(tr, numEst(v.inscritos), "num");
+    celulaEst(tr, "").appendChild(mixEst(v.trafego, e.grupos));
+    tr.addEventListener("click", () => { videoEstAberto = videoEstAberto === v.video_id ? null : v.video_id; renderVideosEst(ESTRATEGIA); });
+    corpo.appendChild(tr);
+    if (videoEstAberto === v.video_id) corpo.appendChild(detalheVideoEst(v, e));
+  }
+}
+
+function listaEst(titulo, itens, vazio) {
+  const caixa = elEst("div");
+  caixa.appendChild(elEst("div", "estSubtitulo", titulo));
+  if (!itens.length) { caixa.appendChild(elEst("div", "dica", vazio)); return caixa; }
+  const ul = elEst("ul");
+  for (const [a, b] of itens) {
+    const li = elEst("li");
+    li.appendChild(elEst("span", "", a));
+    li.appendChild(elEst("b", "", b));
+    ul.appendChild(li);
+  }
+  caixa.appendChild(ul);
+  return caixa;
+}
+
+function detalheVideoEst(v, e) {
+  const tr = elEst("tr", "estDetalhe");
+  const td = elEst("td");
+  td.colSpan = 10;
+  const grade = elEst("div", "grade");
+  const dia = elEst("div");
+  dia.appendChild(elEst("div", "estSubtitulo", "Dia a dia"));
+  dia.appendChild(graficoDiarioEst(v.diario));
+  grade.appendChild(dia);
+  const totalT = Object.values(v.trafego).reduce((a, b) => a + b, 0);
+  grade.appendChild(listaEst("Origens", e.grupos.filter(g => v.trafego[g]).map(g =>
+    [NOMES_GRUPOS[g], `${v.trafego[g]} (${Math.round(v.trafego[g] * 100 / totalT)}%)`]), "sem dados de tráfego ainda"));
+  grade.appendChild(listaEst("Termos de busca", v.termos.map(t => [t.termo, numEst(t.views)]), "nenhum termo ainda"));
+  const totalD = Object.values(v.dispositivos).reduce((a, b) => a + b, 0);
+  const extra = listaEst("Dispositivos e engajamento", [
+    ...Object.entries(v.dispositivos).sort((a, b) => b[1] - a[1]).map(([d, n]) => [NOMES_DISPOSITIVOS[d] || d, `${Math.round(n * 100 / totalD)}%`]),
+    ["Curtidas", numEst(v.curtidas)], ["Compartilhamentos", numEst(v.compartilhamentos)],
+    ["Minutos assistidos", numEst(v.minutos)], ["Thumbnail própria", v.thumbnail || "—"],
+  ], "");
+  if (v.id_musica && MUSICAS.some(m => m.id === v.id_musica)) {
+    const b = elEst("button", "pequeno", "Abrir no player");
+    b.style.marginTop = "8px";
+    b.addEventListener("click", async () => { await abrirMusica(v.id_musica); mostrarAba("player"); });
+    extra.appendChild(b);
+  }
+  grade.appendChild(extra);
+  td.appendChild(grade);
+  tr.appendChild(td);
+  return tr;
+}
+
+function tabelaEst(tabela, cabecalho, linhas) {
+  tabela.textContent = "";
+  const thead = elEst("thead"), trh = elEst("tr");
+  for (const [t, c] of cabecalho) trh.appendChild(elEst("th", c || "", t));
+  thead.appendChild(trh);
+  tabela.appendChild(thead);
+  const tbody = elEst("tbody");
+  for (const l of linhas) tbody.appendChild(l);
+  tabela.appendChild(tbody);
+}
+
+function levarParaAdicionar(url) {
+  mostrarAba("adicionar");
+  $("urlYoutube").value = url;
+  $("urlYoutube").dispatchEvent(new Event("input"));
+}
+
+function renderTermosEst(e) {
+  tabelaEst($("estTermos"), [["Termo"], ["Visualizações", "num"], ["Min", "num"], [""]], e.termos.map(t => {
+    const tr = elEst("tr");
+    celulaEst(tr, t.termo);
+    celulaEst(tr, numEst(t.views), "num");
+    celulaEst(tr, numEst(t.minutos), "num");
+    const td = celulaEst(tr, "");
+    if (t.tem_video) td.appendChild(elEst("span", "estSelo", "tem vídeo"));
+    else {
+      const a = elEst("a", "estSelo falta", "sem vídeo seu ↗");
+      a.href = "https://www.youtube.com/results?search_query=" + encodeURIComponent(t.termo);
+      a.target = "_blank"; a.rel = "noopener"; a.title = "Procurar no YouTube (para copiar o link para a aba Adicionar)";
+      td.appendChild(a);
+    }
+    return tr;
+  }));
+  if (!e.termos.length) $("estTermos").appendChild(elEst("caption", "dica", "Nenhum termo de busca ainda."));
+}
+
+function renderSugeridoresEst(e) {
+  tabelaEst($("estSugeridores"), [["Vídeo"], ["Demanda", "num"], ["Me trouxe", "num"], [""]], e.sugeridores.map(s => {
+    const tr = elEst("tr");
+    const td = celulaEst(tr, "", "titulo");
+    const a = elEst("a", "", s.titulo);
+    a.href = s.url; a.target = "_blank"; a.rel = "noopener";
+    td.appendChild(a);
+    td.appendChild(elEst("small", "", s.canal || ""));
+    celulaEst(tr, compactoEst(s.visualizacoes), "num", `${numEst(s.visualizacoes)} visualizações desse vídeo`);
+    celulaEst(tr, numEst(s.views_para_mim), "num", "visualizações que esse vídeo mandou para o canal pelos sugeridos");
+    const acao = celulaEst(tr, "");
+    if (s.tem_video) acao.appendChild(elEst("span", "estSelo", "tem vídeo"));
+    else {
+      const b = elEst("button", "pequeno", "+");
+      b.title = "Levar o link para a aba Adicionar (baixar o áudio)";
+      b.addEventListener("click", () => levarParaAdicionar(s.url));
+      acao.appendChild(b);
+    }
+    return tr;
+  }));
+  if (!e.sugeridores.length) $("estSugeridores").appendChild(elEst("caption", "dica",
+    e.avisos.sugeridores ? "Nenhum vídeo sugeriu o canal ainda." : "Faça uma nova coleta para trazer os vídeos que sugerem o canal."));
+}
+
+function renderPublicoEst(e) {
+  const pir = $("estPiramide");
+  pir.textContent = "";
+  const idades = [...new Set(e.demografia.map(d => d.idade))].sort();
+  if (!idades.length) pir.appendChild(elEst("div", "dica", "O YouTube ainda não liberou a demografia (poucas visualizações)."));
+  else {
+    const valor = (idade, sexo) => (e.demografia.find(d => d.idade === idade && d.sexo === sexo) || {}).pct || 0;
+    const maximo = Math.max(1, ...e.demografia.map(d => d.pct));
+    const total = sexo => e.demografia.filter(d => d.sexo === sexo).reduce((a, d) => a + d.pct, 0);
+    const cab = elEst("div", "linha cab");
+    cab.appendChild(elEst("div", "lado f", `♀ ${Math.round(total("female"))}%`));
+    cab.appendChild(elEst("div", "idade", "idade"));
+    cab.appendChild(elEst("div", "lado m", `♂ ${Math.round(total("male"))}%`));
+    pir.appendChild(cab);
+    for (const idade of idades) {
+      const linha = elEst("div", "linha");
+      for (const [sexo, classe] of [["female", "f"], ["male", "m"]]) {
+        const lado = elEst("div", "lado " + classe), barra = elEst("span"), p = valor(idade, sexo);
+        barra.style.width = (p * 100 / maximo) * 0.8 + "%";
+        const rotulo = elEst("small", "", p ? numEst(p) + "%" : "");
+        if (classe === "f") { lado.appendChild(rotulo); lado.appendChild(barra); } else { lado.appendChild(barra); lado.appendChild(rotulo); }
+        linha.appendChild(lado);
+        if (classe === "f") linha.appendChild(elEst("div", "idade", idade));
+      }
+      pir.appendChild(linha);
+    }
+  }
+  const disp = Object.entries(e.dispositivos).sort((a, b) => b[1].views - a[1].views);
+  const total = disp.reduce((s, [, d]) => s + d.views, 0);
+  tabelaEst($("estDispositivos"), [["Dispositivo"], ["Visualizações", "num"], ["%", "num"], ["Min/visualização", "num"]], disp.map(([nome, d]) => {
+    const tr = elEst("tr");
+    celulaEst(tr, NOMES_DISPOSITIVOS[nome] || nome);
+    celulaEst(tr, numEst(d.views), "num");
+    celulaEst(tr, pctEst(total ? d.views * 100 / total : null), "num");
+    celulaEst(tr, numEst(d.views ? d.minutos / d.views : null), "num");
+    return tr;
+  }));
+  const comp = Object.entries(e.compartilhamento).sort((a, b) => b[1] - a[1]);
+  $("estCompartilhamento").textContent =
+    (comp.length ? "Compartilhamentos: " + comp.map(([s, n]) => `${NOMES_COMPARTILHAMENTO[s] || s.toLowerCase()} ${n}`).join(" · ") : "Nenhum compartilhamento ainda.")
+    + (e.paises.length ? " · Países: " + e.paises.map(p => `${p.pais} ${numEst(p.views)}`).join(", ") : "");
+}
+
+// ---------- diário de decisões ----------
+let timerDiario = null;
+function salvarDiarioDepois() {
+  clearTimeout(timerDiario);
+  $("estDiarioStatus").textContent = "Salvando…";
+  timerDiario = setTimeout(async () => {
+    try {
+      DIARIO_EST = await api("/api/estrategia/diario", { method: "PUT", body: JSON.stringify({ itens: DIARIO_EST }) });
+      $("estDiarioStatus").textContent = "Salvo em analytics\\analises\\diario.json.";
+    } catch (err) {
+      $("estDiarioStatus").textContent = "Não salvo: " + err.message;
+    }
+  }, 600);
+}
+
+function renderDiarioEst() {
+  const caixa = $("estDiario");
+  caixa.textContent = "";
+  DIARIO_EST.sort((a, b) => b.data.localeCompare(a.data));
+  for (const d of DIARIO_EST) {
+    const item = elEst("div", "estDecisao");
+    item.id = "estDecisao-" + d.id;
+    const campo = (rotulo, el) => { const c = elEst("div"); const l = elEst("label", "", rotulo); l.htmlFor = el.id; c.appendChild(l); c.appendChild(el); item.appendChild(c); };
+    const data = elEst("input"); data.type = "date"; data.value = d.data;
+    data.addEventListener("change", () => { if (data.value) { d.data = data.value; salvarDiarioDepois(); } });
+    campo("Data", data);
+    const dec = elEst("textarea"); dec.value = d.decisao; dec.placeholder = "O que foi decidido e por quê";
+    dec.addEventListener("input", () => { d.decisao = dec.value; salvarDiarioDepois(); });
+    campo("Decisão", dec);
+    const res = elEst("textarea"); res.value = d.resultado; res.placeholder = "Na revisão: o que aconteceu (números da época)";
+    res.addEventListener("input", () => { d.resultado = res.value; salvarDiarioDepois(); });
+    campo("Resultado", res);
+    const apagar = elEst("button", "pequeno", "");
+    apagar.title = "Apagar esta decisão";
+    apagar.appendChild(Object.assign(elEst("i", "bi bi-trash"), {}));
+    apagar.addEventListener("click", () => { DIARIO_EST = DIARIO_EST.filter(x => x !== d); renderDiarioEst(); salvarDiarioDepois(); });
+    item.appendChild(apagar);
+    caixa.appendChild(item);
+  }
+  if (!DIARIO_EST.length) caixa.appendChild(elEst("div", "dica", "Nenhuma decisão registrada."));
+}
+
+$("btnEstNovaDecisao").addEventListener("click", () => {
+  const hoje = new Date();
+  const iso = new Date(hoje.getTime() - hoje.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+  DIARIO_EST.unshift({ id: "d" + Date.now().toString(36), data: iso, decisao: "", resultado: "" });
+  renderDiarioEst();
+  const primeiro = $("estDiario").querySelector("textarea");
+  if (primeiro) primeiro.focus();
+});
+
+function renderAvisosEst(e) {
+  const a = e.avisos, partes = [];
+  if (!a.retencao) partes.push("Curva de retenção: o YouTube ainda não liberou (precisa de mais visualizações por vídeo).");
+  partes.push(a.alcance_dias ? `Impressões e CTR da thumbnail: ${a.alcance_dias} dia(s) de relatório (relatorios\\channel_reach_*).`
+    : "Impressões e CTR da thumbnail: os relatórios já foram pedidos ao YouTube e chegam em alguns dias.");
+  if (a.recusadas) partes.push(`${a.recusadas} consulta(s) recusada(s) pelo YouTube na coleta (veja analytics\\leia-me.txt).`);
+  $("estAvisos").textContent = partes.join(" · ");
+}
+
+function renderEstrategia() {
+  const e = ESTRATEGIA;
+  $("estVazio").hidden = !e.vazio;
+  $("estConteudo").hidden = e.vazio;
+  const sel = $("estAnalise"), atual = sel.value;
+  sel.textContent = "";
+  // as análises são textos escritos sobre uma coleta (analytics\analises\): não mudam quando os dados são
+  // atualizados; a data é a do nome do arquivo e o aviso diz se já há dados mais novos que ela
+  const coleta = e.coletado_em ? String(e.coletado_em).slice(0, 10) : "";
+  (e.analises.length ? e.analises : [""]).forEach((n, k) => {
+    const o = document.createElement("option");
+    const data = (n.match(/^(\d{4}-\d{2}-\d{2})/) || [])[1];
+    const titulo = n.replace(/\.md$/i, "").replace(/^\d{4}-\d{2}-\d{2}\s*-?\s*/, "") || "análise";
+    o.id = "estAnalise-" + k; o.value = n;
+    o.textContent = !n ? "Nenhuma análise escrita"
+      : (data ? `Análise de ${dataEst(data)}: ` : "") + titulo + (data && coleta > data ? " (dados mais novos disponíveis)" : "");
+    sel.appendChild(o);
+  });
+  sel.title = "Análises escritas sobre uma coleta (pasta analytics\\analises\\). Elas não mudam quando os dados são atualizados:" +
+    " para uma análise nova da coleta de agora, peça ao Claude.";
+  if (e.analises.includes(atual)) sel.value = atual;
+  $("btnEstAnalise").disabled = !e.analises.length;
+  DIARIO_EST = e.diario || [];
+  renderDiarioEst();
+  if (e.vazio) { $("estInfo").textContent = "Sem dados ainda."; return; }
+  $("estInfo").textContent = `${e.canal.titulo || "Canal"} · coleta de ${new Date(e.coletado_em).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" })}`
+    + ` · dados do YouTube até ${dataEst(e.dados_ate)} (chegam com 1 a 3 dias de atraso)`;
+  renderKpisEst(e);
+  renderApostasEst(e);
+  renderGraficosEst(e);
+  renderVideosEst(e);
+  renderTermosEst(e);
+  renderSugeridoresEst(e);
+  renderPublicoEst(e);
+  renderAvisosEst(e);
+}
+
+async function carregarEstrategia() {
+  try {
+    ESTRATEGIA = await api("/api/estrategia");
+  } catch (err) {
+    $("estInfo").textContent = "Não foi possível ler os dados: " + err.message;
+    return;
+  }
+  renderEstrategia();
+}
+
+$("estFiltroAposta").addEventListener("change", () => renderVideosEst(ESTRATEGIA));
+$("btnEstAnalise").addEventListener("click", () => {
+  if ($("estAnalise").value) window.open("/api/estrategia/analise?nome=" + encodeURIComponent($("estAnalise").value), "_blank");
+});
+
 $("ytSalvar").addEventListener("click", salvarConfigYoutube);
 $("ytFechar").addEventListener("click", () => $("janelaYoutube").close());
 $("ytConectar").addEventListener("click", () => {
@@ -8162,11 +9317,12 @@ window.addEventListener("message", async e => {
 });
 $("pubEnviar").addEventListener("click", enviarPublicacao);
 $("pubCancelar").addEventListener("click", () => $("janelaPublicar").close());
+$("btnFluxoYoutube").addEventListener("click", fluxoYoutube);
 
 // ---------- abas ----------
 let abaAtual = null;
 function mostrarAba(nome) {
-  for (const aba of ["player", "biblioteca", "mixagem", "gravacao", "ajuda"]) {
+  for (const aba of ["adicionar", "player", "biblioteca", "mixagem", "gravacao", "estrategia", "ajuda"]) {
     $("aba-" + aba).hidden = aba !== nome;
     $("tab-" + aba).setAttribute("aria-selected", String(aba === nome));
   }
@@ -8183,11 +9339,15 @@ function mostrarAba(nome) {
   if (anterior === "gravacao" && nome !== "gravacao") fecharConfigGravacao();
   if (nome === "gravacao" && anterior !== "gravacao") abrirConfigGravacao();
   if (nome === "biblioteca") { renderBiblioteca(); atualizarBiblioteca(); }
+  if (nome === "adicionar") { atualizarDownloads(); $("urlYoutube").focus(); }
+  if (nome === "estrategia") carregarEstrategia();
 }
+$("tab-adicionar").addEventListener("click", () => mostrarAba("adicionar"));
 $("tab-player").addEventListener("click", () => mostrarAba("player"));
 $("tab-biblioteca").addEventListener("click", () => mostrarAba("biblioteca"));
 $("tab-mixagem").addEventListener("click", () => mostrarAba("mixagem"));
 $("tab-gravacao").addEventListener("click", () => mostrarAba("gravacao"));
+$("tab-estrategia").addEventListener("click", () => mostrarAba("estrategia"));
 $("tab-ajuda").addEventListener("click", () => mostrarAba("ajuda"));
 $("seletorMusica").addEventListener("change", e => abrirMusica(e.target.value));
 
@@ -8267,11 +9427,16 @@ $("sustainMidi").addEventListener("change", salvarPreferencias);
 $("sustainMidi").addEventListener("dblclick", () => { definirEnvelopeMidi(envelopeMidiCfg.controles, 0.4); salvarPreferencias(); });
 definirVolumeSint(parseFloat(recuperar("volumeSint") ?? "1"));
 $("btnMudo").addEventListener("click", () => { definirMudo(!mudo); salvarPreferencias(); });
-$("timbre").addEventListener("change", e => {
-  definirTimbre(e.target.value);
-  if (timbre !== "corda") garantirAudio();  // já carrega o timbre, antes do play
-  salvarPreferencias();
-});
+for (const b of $("timbre").querySelectorAll("button[data-timbre]")) {
+  b.addEventListener("click", () => {
+    if (b.dataset.timbre === timbre) return;
+    garantirAudio();  // já carrega o timbre, antes do play
+    definirTimbre(b.dataset.timbre);
+    salvarPreferencias();
+  });
+}
+$("expressaoNotas").addEventListener("change", e => { definirExpressao(e.target.checked, pedalLigado); salvarPreferencias(); });
+$("pedalNotas").addEventListener("change", e => { definirExpressao(expressaoLigada, e.target.checked); salvarPreferencias(); });
 dicaTimbre();
 $("volumeFaixa").addEventListener("input", e => {
   const v = parseFloat(e.target.value);
@@ -8381,7 +9546,10 @@ document.addEventListener("keydown", e => {
     case "ArrowUp": case "ArrowDown":
       if (abaAtual === "player" && notaAlvo()) { e.preventDefault(); alterarNota((e.key === "ArrowUp" ? 1 : -1) * (e.shiftKey ? 12 : 1)); }
       break;
-    case "Delete": if (abaAtual === "player" && notaAlvo()) { e.preventDefault(); excluirNota(); } break;
+    case "Delete":  // com notas selecionadas (Shift + setas), apaga o trecho; senão, a nota do cursor
+      if (abaAtual === "player" && !tocando && notasNaSelecao().length) { e.preventDefault(); apagarSelecaoNotas(); }
+      else if (abaAtual === "player" && notaAlvo()) { e.preventDefault(); excluirNota(); }
+      break;
     case "Escape": notaSelecionada = null; selecaoNotas = null; break;
     case "]": definirVelocidade(velocidade + 0.05); break;
     case "[": definirVelocidade(velocidade - 0.05); break;

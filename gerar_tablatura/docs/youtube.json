@@ -1,7 +1,7 @@
 {
   "config": {
-    "titulo": "{titulo} - {artista} - Cifra - Tutorial Piano e Violão - TOM: {tom} - {voz}",
-    "descricao": "{titulo}\nArtista: {artista}\nTom: {tom}\nExtensão vocal: {extensao}\nCategoria vocal: {voz}\n\nTutorial Piano Violão\nPiano Visualizer\nFalling Notes\nPiano Roll \n\n\nLetra:\n{letra}\n\nEste vídeo foi produzido para auxiliar igrejas nos ensaios do grupo de louvor e nos cultos",
+    "titulo": "{titulo} - {artista} - Cifra - Playback Tutorial - TOM: {tom} - {voz}",
+    "descricao": "{titulo}\nArtista: {artista}\nTom: {tom}\nExtensão vocal: {extensao}\nCategoria vocal: {voz}\n\nLetra:\n{letra}\n\n\nTutorial Piano Violão\nPiano Visualizer\nFalling Notes\nPiano Roll \n\nKaraoke Tom Masculino\nKaraoke Tom Feminino\nPlayback Gospel com Letra\nLouvores Playback\nPlayback Católico\nPlayback Evangélico\nPlayback Cristão\n\n\n\n\nEste vídeo foi produzido para auxiliar igrejas nos ensaios do grupo de louvor e nos cultos",
     "tags": "playback, cifra, violão, piano, karaokê, letra, {artista}, {titulo}",
     "hashtags": "#{titulo} #{artista} #karaoke #playback #letra #piano #cifra #louvor #gospel #worship #pianotutorial #tutorialpiano #violao #acordes #jesus #alma #pianovisualizer",
     "categoria": "10",
@@ -176,6 +176,82 @@
           "publicado_em": "2026-10-20T16:07:46"
         }
       ]
+    },
+    "Heloisa Rosa - Há um Lugar - Tom G.mp4": {
+      "id_musica": "e0190d0e",
+      "video_id": "Rv2L3rNznSg",
+      "url": "https://youtu.be/Rv2L3rNznSg",
+      "titulo": "Há um Lugar - Heloisa Rosa - Cifra - Tutorial Piano e Violão - TOM: G - Mezzo-soprano · Feminino",
+      "privacidade": "public",
+      "publicado_em": "2026-10-21T08:59:54"
+    },
+    "Isadora Pompeo - Bênçãos Que Não Têm Fim - Tom Db.mp4": {
+      "id_musica": "01950c03",
+      "video_id": "75Su8MKMlFE",
+      "url": "https://youtu.be/75Su8MKMlFE",
+      "titulo": "Bênçãos Que Não Têm Fim - Isadora Pompeo - Cifra - Tutorial Piano e Violão - TOM: Db - Contralto · F",
+      "privacidade": "public",
+      "publicado_em": "2026-10-21T11:15:42"
+    },
+    "Maria Marçal - O Processo - Tom A.mp4": {
+      "id_musica": "ea25041c",
+      "video_id": "D0THUA_Qllk",
+      "url": "https://youtu.be/D0THUA_Qllk",
+      "titulo": "O Processo - Maria Marçal - Cifra - Tutorial Piano e Violão - TOM: A - Contralto · Feminino",
+      "privacidade": "public",
+      "publicado_em": "2026-10-21T14:56:36"
+    },
+    "Aline Barros - Bem Mais Que Tudo - Tom G.mp4": {
+      "id_musica": "7d6c27a1",
+      "video_id": "slwjTpV7KFM",
+      "url": "https://youtu.be/slwjTpV7KFM",
+      "titulo": "Bem Mais Que Tudo - Aline Barros - Cifra - Tutorial Piano e Violão - TOM: G - Contralto · Feminino",
+      "privacidade": "public",
+      "publicado_em": "2026-10-22T09:07:14"
+    },
+    "Aline Barros - Bem Mais Que Tudo - Tom F.mp4": {
+      "id_musica": "7d6c27a1",
+      "video_id": "viefWFsTowY",
+      "url": "https://youtu.be/viefWFsTowY",
+      "titulo": "Bem Mais Que Tudo - Aline Barros - Cifra - Tutorial Piano e Violão - TOM: F - Tenor · Masculino",
+      "privacidade": "public",
+      "publicado_em": "2026-10-22T11:17:37",
+      "anteriores": [
+        {
+          "id_musica": "7d6c27a1",
+          "video_id": "vONFGjBpkK4",
+          "url": "https://youtu.be/vONFGjBpkK4",
+          "titulo": "Bem Mais Que Tudo - Aline Barros - Cifra - Tutorial Piano e Violão - TOM: F - Tenor · Masculino",
+          "privacidade": "public",
+          "publicado_em": "2026-10-22T10:11:55"
+        }
+      ]
+    },
+    "Stella Laura - Em Teus Braços - Tom Db.mp4": {
+      "id_musica": "5680f0de",
+      "video_id": "tvAZ-0v9Fo4",
+      "url": "https://youtu.be/tvAZ-0v9Fo4",
+      "titulo": "Em Teus Braços - Stella Laura - Cifra - Playback Tutorial - TOM: Db - Mezzo-soprano · Feminino",
+      "privacidade": "public",
+      "publicado_em": "2026-10-22T13:49:24",
+      "anteriores": [
+        {
+          "id_musica": "5680f0de",
+          "video_id": "vBLBj-ka6HQ",
+          "url": "https://youtu.be/vBLBj-ka6HQ",
+          "titulo": "Em Teus Braços - Stella Laura - Playback Tutorial - TOM: Db - Mezzo-soprano · Feminino",
+          "privacidade": "public",
+          "publicado_em": "2026-10-22T13:37:29"
+        }
+      ]
+    },
+    "Stella Laura - Em Teus Braços - Tom A.mp4": {
+      "id_musica": "5680f0de",
+      "video_id": "T82alIdjbtw",
+      "url": "https://youtu.be/T82alIdjbtw",
+      "titulo": "Em Teus Braços - Stella Laura - Cifra - Playback Tutorial - TOM: A - Tenor · Masculino",
+      "privacidade": "public",
+      "publicado_em": "2026-10-22T17:33:58"
     }
   },
   "canal": "LouvoresKaraoke"
